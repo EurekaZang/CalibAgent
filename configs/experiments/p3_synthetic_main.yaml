@@ -1,6 +1,6 @@
-# Preregistered P3 main experiment. These seeds are disjoint from every pilot.
+# Frozen P3 main experiment. These seeds are disjoint from every pilot.
 experiment_role: main
-protocol_frozen_utc: "2026-07-18T00:00:00Z"
+protocol_frozen_utc: "2026-07-18T06:21:21Z"
 output_dir: outputs/p3_main
 seeds:
   - 1001

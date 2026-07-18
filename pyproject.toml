@@ -38,6 +38,7 @@ calibagent-figures = "calibagent.cli.build_figures:main"
 calibagent-convert = "calibagent.cli.convert_dataset:main"
 calibagent-replay = "calibagent.cli.replay_run:main"
 calibagent-audit = "calibagent.cli.audit_readiness:main"
+calibagent-real-replay = "calibagent.cli.real_replay:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

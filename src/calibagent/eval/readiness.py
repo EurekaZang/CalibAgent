@@ -16,6 +16,7 @@ from scipy import stats
 
 from calibagent.backends.replay import OfflineReplayBackend
 from calibagent.data.observations import load_observations
+from calibagent.eval.real_replay import file_sha256
 from calibagent.eval.synthetic import SyntheticDistortion, make_observation
 from calibagent.interfaces.types import TrialPolicy
 from calibagent.measurement.pipeline import MeasurementPipeline
@@ -111,20 +112,125 @@ def _reproducible_environment_check(workspace: Path) -> AuditCheck:
     )
 
 
-def _real_data_check(workspace: Path, criteria: dict[str, Any]) -> AuditCheck:
+def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
     relative = Path(str(criteria["required_real_data_manifest"]))
     path = workspace / relative
     if not path.is_file():
-        return AuditCheck("p1_real_data_evidence", False, f"missing {relative}")
+        missing = f"missing {relative}"
+        return [
+            AuditCheck("p1_real_data_evidence", False, missing),
+            AuditCheck("p1_real_data_scale_coverage", False, missing),
+            AuditCheck("p1_real_baseline_improvement", False, missing),
+        ]
     payload = json.loads(path.read_text(encoding="utf-8"))
+    real_criteria = criteria["real_data"]
     backend = str(payload.get("backend", ""))
     synthetic = bool(payload.get("synthetic", True))
-    passed = backend == "offline_replay" and not synthetic
-    return AuditCheck(
-        "p1_real_data_evidence",
-        passed,
-        f"backend={backend!r}, synthetic={synthetic}",
+    robot_model = str(payload.get("robot_model", ""))
+    reference_sensor = str(payload.get("reference_sensor", ""))
+    artifacts = payload.get("artifacts", {})
+    raw_path = path.parent / str(artifacts.get("raw_source", "missing"))
+    dataset_path = path.parent / str(artifacts.get("dataset", "missing"))
+    hashes_valid = (
+        raw_path.is_file()
+        and dataset_path.is_file()
+        and file_sha256(raw_path) == payload.get("source_sha256")
+        and file_sha256(dataset_path) == payload.get("dataset_sha256")
     )
+    commit = str(payload.get("git_commit", ""))
+    commit_result = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=workspace,
+        capture_output=True,
+        check=False,
+    )
+    authenticity_passed = (
+        backend == "offline_replay"
+        and not synthetic
+        and robot_model == str(real_criteria["robot_model"])
+        and reference_sensor not in {"", "onboard_state", "synthetic"}
+        and hashes_valid
+        and commit_result.returncode == 0
+    )
+    authenticity = AuditCheck(
+        "p1_real_data_evidence",
+        authenticity_passed,
+        (
+            f"backend={backend!r}, synthetic={synthetic}, robot={robot_model!r}, "
+            f"reference={reference_sensor!r}, hashes={hashes_valid}, commit={commit[:12]}"
+        ),
+    )
+
+    if not dataset_path.is_file():
+        return [
+            authenticity,
+            AuditCheck("p1_real_data_scale_coverage", False, "dataset artifact missing"),
+            AuditCheck("p1_real_baseline_improvement", False, "dataset artifact missing"),
+        ]
+    observations = load_observations(dataset_path)
+    valid = [observation for observation in observations if observation.valid]
+    sessions = {observation.context.session_id for observation in valid}
+    commands = (
+        np.vstack([observation.command.as_array() for observation in valid])
+        if valid
+        else np.empty((0, 3))
+    )
+    magnitude = float(real_criteria["min_axis_command_magnitude"])
+    axis_coverage = bool(
+        len(commands)
+        and np.all(np.min(commands, axis=0) <= -magnitude)
+        and np.all(np.max(commands, axis=0) >= magnitude)
+    )
+    scale_passed = (
+        len(valid) >= int(real_criteria["min_valid_observations"])
+        and len(sessions) >= int(real_criteria["min_sessions"])
+        and axis_coverage
+        and all(observation.raw_ref for observation in valid)
+    )
+    scale = AuditCheck(
+        "p1_real_data_scale_coverage",
+        scale_passed,
+        (
+            f"valid={len(valid)}, sessions={len(sessions)}, axis_coverage={axis_coverage}, "
+            f"required_valid={real_criteria['min_valid_observations']}"
+        ),
+    )
+
+    metrics_path = path.parent / str(artifacts.get("metrics", "missing"))
+    if not metrics_path.is_file():
+        improvement = AuditCheck(
+            "p1_real_baseline_improvement", False, "baseline metrics artifact missing"
+        )
+    else:
+        metrics = pd.read_csv(metrics_path)
+        raw_rmse = float(metrics.loc[metrics["model"] == "B0_raw", "validation_rmse"].iloc[0])
+        lhs_m0 = float(
+            metrics.loc[
+                (metrics["sampler"] == "lhs") & (metrics["model"] == "M0_diagonal_affine"),
+                "validation_rmse",
+            ].iloc[0]
+        )
+        lhs_m1 = float(
+            metrics.loc[
+                (metrics["sampler"] == "lhs") & (metrics["model"] == "M1_full_affine"),
+                "validation_rmse",
+            ].iloc[0]
+        )
+        raw_reduction = 1.0 - lhs_m1 / raw_rmse
+        m0_reduction = 1.0 - lhs_m1 / lhs_m0
+        improvement = AuditCheck(
+            "p1_real_baseline_improvement",
+            (
+                raw_reduction >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
+                and m0_reduction >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
+            ),
+            (
+                f"M1_vs_raw={raw_reduction:.6f}, M1_vs_M0={m0_reduction:.6f}, "
+                f"required={real_criteria['min_m1_vs_raw_rmse_reduction']:.2f}/"
+                f"{real_criteria['min_m1_vs_m0_rmse_reduction']:.2f}"
+            ),
+        )
+    return [authenticity, scale, improvement]
 
 
 def _replay_vertical_slice_check(workspace: Path) -> AuditCheck:
@@ -323,7 +429,7 @@ def audit_publication_readiness(workspace: Path) -> PublicationReadinessReport:
         _git_check(root),
         _manifest_check(root),
         _reproducible_environment_check(root),
-        _real_data_check(root, criteria),
+        *_real_data_checks(root, criteria),
         _replay_vertical_slice_check(root),
         _noise_contract_check(root),
         _coverage_check(metrics, criteria["uncertainty"]),
