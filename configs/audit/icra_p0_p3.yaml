@@ -1,0 +1,29 @@
+schema_version: "1.0"
+
+# These gates answer a different question from unit/CI tests: whether the
+# current evidence can support the P0-P3 claims in an ICRA submission.
+statistics:
+  alpha: 0.05
+  independent_unit: seed
+  min_main_seeds_per_family: 20
+  min_relative_trials_reduction: 0.30
+  min_task_ablation_reduction: 0.10
+  max_dense_oracle_rmse_gap: 0.10
+  primary_baseline: lhs
+
+required_p3_methods:
+  - active
+  - lhs
+  - random
+  - sobol
+  - d_opt
+  - active_no_task
+  - dense
+
+uncertainty:
+  coverage_95_min: 0.90
+  coverage_95_max: 0.98
+
+required_real_data_manifest: outputs/p1_real/manifest.json
+p3_main_config: configs/experiments/p3_synthetic_main.yaml
+p3_main_metrics: outputs/p3_main/metrics.csv

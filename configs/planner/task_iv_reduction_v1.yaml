@@ -1,0 +1,9 @@
+planner:
+  id: task_iv_reduction_v1
+  candidate_count: 512
+  seed_design_count: 8
+  task_grid_size: 400
+  risk_weight: 0.0
+  distance_weight: 0.0
+  duplicate_distance: 0.025
+

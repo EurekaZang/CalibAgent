@@ -1,0 +1,16 @@
+output_dir: outputs/offline_active_m2
+seeds: [1]
+methods: [active]
+families: [deadzone]
+max_trials: 30
+seed_design_count: 8
+candidate_count: 512
+task_grid_size: 400
+evaluation_grid_size: 600
+prior_scale: 1.0
+assumed_noise_variance: [0.000625, 0.000324, 0.001225]
+target_rmse: 0.08
+target_uncertainty: 0.02
+risk_weight: 0.0
+distance_weight: 0.0
+

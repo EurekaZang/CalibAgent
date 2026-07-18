@@ -1,0 +1,11 @@
+agent:
+  min_trials: 8
+  max_trials: 40
+  retry_invalid_trial: 1
+trial:
+  ramp_in_s: 0.6
+  settle_s: 0.8
+  measure_s: 2.0
+  ramp_out_s: 0.6
+  sample_rate_hz: 50
+

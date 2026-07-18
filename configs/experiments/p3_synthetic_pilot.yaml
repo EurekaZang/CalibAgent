@@ -1,0 +1,17 @@
+# Frozen P3 pilot seeds. Main-paper seeds must not reuse these values.
+output_dir: outputs/p3_pilot
+seeds: [11, 23, 37, 53, 71]
+methods: [active, lhs, random, sobol]
+families: [affine, deadzone, heteroscedastic]
+max_trials: 30
+seed_design_count: 8
+candidate_count: 512
+task_grid_size: 400
+evaluation_grid_size: 600
+prior_scale: 1.0
+assumed_noise_variance: [0.000625, 0.000324, 0.001225]
+target_rmse: 0.08
+target_uncertainty: 0.02
+risk_weight: 0.0
+distance_weight: 0.0
+

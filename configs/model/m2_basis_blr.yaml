@@ -1,0 +1,8 @@
+model:
+  id: M2_basis_blr
+  feature_set: m2_affine_cross_hinge
+  hinge_thresholds: [0.15, 0.10, 0.25]
+  prior_scale: 1.0
+  noise_mode: fixed_diagonal_pilot
+  noise_variance: [0.000625, 0.000324, 0.001225]
+

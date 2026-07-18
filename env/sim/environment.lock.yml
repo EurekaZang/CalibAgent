@@ -1,0 +1,9 @@
+name: calibagent-sim
+channels: [conda-forge]
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - -e ../.. 
+# Isaac Lab is intentionally pinned by env/isaaclab_commit.txt after P5 integration.
+

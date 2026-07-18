@@ -1,0 +1,56 @@
+{
+  "checks": [
+    {
+      "check_id": "p0_versioned_commit",
+      "evidence": "workspace is not a Git worktree",
+      "passed": false
+    },
+    {
+      "check_id": "p0_versioned_manifests",
+      "evidence": "recorded commits: ['UNVERSIONED_WORKTREE', 'UNVERSIONED_WORKTREE']",
+      "passed": false
+    },
+    {
+      "check_id": "p1_real_data_evidence",
+      "evidence": "missing outputs/p1_real/manifest.json",
+      "passed": false
+    },
+    {
+      "check_id": "p1_replay_measurement_vertical_slice",
+      "evidence": "samples=2, quality=INSUFFICIENT_SAMPLES,TIMESTAMP_GAP,INSUFFICIENT_STEADY_RATIO,NONFINITE_ESTIMATE",
+      "passed": false
+    },
+    {
+      "check_id": "p2_synthetic_noise_contract",
+      "evidence": "generative=[0.000625, 0.000324, 0.001225], update=[0.00125, 0.000648, 0.00245]",
+      "passed": false
+    },
+    {
+      "check_id": "p2_synthetic_coverage",
+      "evidence": "mean=0.963260, target=[0.90, 0.98]",
+      "passed": true
+    },
+    {
+      "check_id": "p3_required_baselines",
+      "evidence": "missing=['active_no_task', 'd_opt', 'dense']",
+      "passed": false
+    },
+    {
+      "check_id": "p3_main_seed_count",
+      "evidence": "observed=5, required=20",
+      "passed": false
+    },
+    {
+      "check_id": "p3_primary_independent_significance",
+      "evidence": "unit=seed, n=5, p=0.09375000, alpha=0.050",
+      "passed": false
+    },
+    {
+      "check_id": "p3_target_effect_size",
+      "evidence": "observed=0.135246, required=0.30",
+      "passed": false
+    }
+  ],
+  "schema_version": "1.0",
+  "verdict": "NO_GO"
+}

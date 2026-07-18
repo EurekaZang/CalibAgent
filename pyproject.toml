@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calibagent"
+version = "0.1.0"
+description = "Safe and uncertainty-aware active velocity calibration for quadruped robots"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "CalibAgent contributors"}]
+dependencies = [
+  "numpy>=1.24,<2",
+  "scipy>=1.10,<1.15",
+  "pandas>=2.0,<3",
+  "pyarrow>=14,<22",
+  "PyYAML>=6,<7",
+  "matplotlib>=3.6,<4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.10,<2",
+  "pandas-stubs>=2.2,<3",
+  "pre-commit>=3.7,<5",
+  "pytest>=7.4,<9",
+  "pytest-cov>=5,<7",
+  "ruff>=0.5,<1",
+  "setuptools>=69",
+  "types-PyYAML>=6,<7",
+]
+
+[project.scripts]
+calibagent-calibrate = "calibagent.cli.run_calibration:main"
+calibagent-benchmark = "calibagent.cli.run_benchmark:main"
+calibagent-figures = "calibagent.cli.build_figures:main"
+calibagent-convert = "calibagent.cli.convert_dataset:main"
+calibagent-replay = "calibagent.cli.replay_run:main"
+calibagent-audit = "calibagent.cli.audit_readiness:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unreachable = true
+packages = ["calibagent"]
+
+[[tool.mypy.overrides]]
+module = ["scipy", "scipy.*"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["calibagent"]
+branch = true
+omit = [
+  "src/calibagent/backends/isaaclab.py",
+  "src/calibagent/backends/go2_ros.py",
+  "src/calibagent/cli/run_*.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85

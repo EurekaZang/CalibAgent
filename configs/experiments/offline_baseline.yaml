@@ -1,0 +1,10 @@
+experiment_id: p1_offline_baseline
+backend: replay
+models: [M0_diagonal_affine, M1_full_affine]
+samplers: [grid, random, lhs, sobol]
+split:
+  mode: session_grouped
+  validation_fraction: 0.2
+  seed: 1701
+leakage_policy: dense_oracle_evaluation_only
+
