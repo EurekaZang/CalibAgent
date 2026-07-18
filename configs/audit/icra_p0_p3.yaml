@@ -25,6 +25,7 @@ uncertainty:
   coverage_95_max: 0.98
 
 required_real_data_manifest: outputs/p1_real/manifest.json
+required_capture_config: configs/experiments/p1_go2_capture.yaml
 real_data:
   robot_model: unitree_go2
   min_sessions: 3
@@ -32,5 +33,7 @@ real_data:
   min_axis_command_magnitude: 0.10
   min_m1_vs_raw_rmse_reduction: 0.05
   min_m1_vs_m0_rmse_reduction: 0.05
+  min_capture_plan_command_match: 0.99
+  min_capture_plan_completion: 0.82
 p3_main_config: configs/experiments/p3_synthetic_main.yaml
 p3_main_metrics: outputs/p3_main/metrics.csv

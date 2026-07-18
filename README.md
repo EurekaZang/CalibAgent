@@ -33,6 +33,9 @@ python -m venv .venv
 .venv/bin/pip install --no-deps -e .
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/pytest -p pytest_cov --cov=calibagent
 .venv/bin/python -m calibagent.cli.audit_readiness --workspace .
+.venv/bin/calibagent-p1-plan \
+  --config configs/experiments/p1_go2_capture.yaml \
+  --output outputs/p1_capture/plan.csv
 .venv/bin/python -m calibagent.cli.run_benchmark \
   --config configs/experiments/p3_synthetic_main.yaml
 .venv/bin/python -m calibagent.cli.build_figures \

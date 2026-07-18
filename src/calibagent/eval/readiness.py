@@ -16,6 +16,7 @@ from scipy import stats
 
 from calibagent.backends.replay import OfflineReplayBackend
 from calibagent.data.observations import load_observations
+from calibagent.eval.capture_plan import CapturePlanConfig, generate_capture_plan
 from calibagent.eval.real_replay import file_sha256
 from calibagent.eval.synthetic import SyntheticDistortion, make_observation
 from calibagent.interfaces.types import TrialPolicy
@@ -131,12 +132,20 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
     artifacts = payload.get("artifacts", {})
     raw_path = path.parent / str(artifacts.get("raw_source", "missing"))
     dataset_path = path.parent / str(artifacts.get("dataset", "missing"))
+    plan_path = path.parent / str(artifacts.get("capture_plan", "missing"))
     hashes_valid = (
         raw_path.is_file()
         and dataset_path.is_file()
         and file_sha256(raw_path) == payload.get("source_sha256")
         and file_sha256(dataset_path) == payload.get("dataset_sha256")
+        and plan_path.is_file()
+        and file_sha256(plan_path) == payload.get("capture_plan_sha256")
     )
+    plan_match = float(payload.get("capture_plan_command_match") or 0.0)
+    plan_completion = float(payload.get("capture_plan_completion") or 0.0)
+    plan_valid = plan_match >= float(
+        real_criteria["min_capture_plan_command_match"]
+    ) and plan_completion >= float(real_criteria["min_capture_plan_completion"])
     commit = str(payload.get("git_commit", ""))
     commit_result = subprocess.run(
         ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
@@ -150,6 +159,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
         and robot_model == str(real_criteria["robot_model"])
         and reference_sensor not in {"", "onboard_state", "synthetic"}
         and hashes_valid
+        and plan_valid
         and commit_result.returncode == 0
     )
     authenticity = AuditCheck(
@@ -157,7 +167,8 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
         authenticity_passed,
         (
             f"backend={backend!r}, synthetic={synthetic}, robot={robot_model!r}, "
-            f"reference={reference_sensor!r}, hashes={hashes_valid}, commit={commit[:12]}"
+            f"reference={reference_sensor!r}, hashes={hashes_valid}, plan={plan_valid}, "
+            f"commit={commit[:12]}"
         ),
     )
 
@@ -231,6 +242,39 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
             ),
         )
     return [authenticity, scale, improvement]
+
+
+def _capture_design_check(workspace: Path, criteria: dict[str, Any]) -> AuditCheck:
+    config_path = workspace / str(criteria["required_capture_config"])
+    config = CapturePlanConfig.from_yaml(config_path)
+    plan = generate_capture_plan(config)
+    commands = plan[["cmd_vx", "cmd_vy", "cmd_wz"]].to_numpy(dtype=float)
+    real_criteria = criteria["real_data"]
+    magnitude = float(real_criteria["min_axis_command_magnitude"])
+    signed_coverage = bool(
+        np.all(np.min(commands, axis=0) <= -magnitude)
+        and np.all(np.max(commands, axis=0) >= magnitude)
+    )
+    required_planned = int(
+        np.ceil(
+            int(real_criteria["min_valid_observations"])
+            / float(real_criteria["min_capture_plan_completion"])
+        )
+    )
+    passed = (
+        plan["session_id"].nunique() >= int(real_criteria["min_sessions"])
+        and len(plan) >= required_planned
+        and signed_coverage
+        and bool(np.all(np.linalg.norm(commands[:, :2], axis=1) <= config.max_linear_norm))
+    )
+    return AuditCheck(
+        "p1_frozen_capture_design",
+        passed,
+        (
+            f"sessions={plan['session_id'].nunique()}, planned={len(plan)}/{required_planned}, "
+            f"signed_axes={signed_coverage}, max_linear_norm={config.max_linear_norm:.2f}"
+        ),
+    )
 
 
 def _replay_vertical_slice_check(workspace: Path) -> AuditCheck:
@@ -429,6 +473,7 @@ def audit_publication_readiness(workspace: Path) -> PublicationReadinessReport:
         _git_check(root),
         _manifest_check(root),
         _reproducible_environment_check(root),
+        _capture_design_check(root, criteria),
         *_real_data_checks(root, criteria),
         _replay_vertical_slice_check(root),
         _noise_contract_check(root),

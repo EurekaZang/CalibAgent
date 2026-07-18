@@ -6,6 +6,7 @@
 | P0 immutable provenance | Git commit and manifest checks | Both evidence manifests resolve to source commit `461d30b` | PASS |
 | P0 environment/CI | Exact analysis/dev locks; actions pinned by SHA | Reproduction commands and artifact hashes frozen | PASS |
 | P1 raw-to-observation processing | SE(2) dynamic-turn, empty input, gap and replay tests | 101-sample replay vertical slice passes | PASS for software path |
+| P1 frozen acquisition design | Deterministic signed-axis/anchor/sentinel/LHS generator | 3 sessions, 183 planned trials, command-plan alignment enforced | PASS |
 | P1 real Go2 dense replay | Raw ingestion, hashing and session-split tooling pass fixtures | At least 3 real sessions/150 valid trials required | **NO-GO: data absent** |
 | P1 M0/M1 real improvement | Passive baseline implementation verified | M1 must improve over raw and M0 by at least 5% | **NO-GO: data absent** |
 | P2 noise contract | Base noise plus heteroscedastic excess charged once | Generative/update variance check passes | PASS |

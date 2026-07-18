@@ -1,0 +1,30 @@
+experiment_id: p1_go2_real_capture
+session_ids: [go2-session-01, go2-session-02, go2-session-03]
+trials_per_session: 61
+session_seeds: [4101, 4102, 4103]
+bounds:
+  - [-0.60, 0.60]
+  - [-0.30, 0.30]
+  - [-0.80, 0.80]
+max_linear_norm: 0.65
+anchor_commands:
+  - [-0.50, 0.00, 0.00]
+  - [0.50, 0.00, 0.00]
+  - [0.00, -0.25, 0.00]
+  - [0.00, 0.25, 0.00]
+  - [0.00, 0.00, -0.70]
+  - [0.00, 0.00, 0.70]
+  - [-0.35, -0.15, -0.45]
+  - [-0.35, 0.15, 0.45]
+  - [0.35, -0.15, 0.45]
+  - [0.35, 0.15, -0.45]
+sentinel_commands:
+  - [0.30, 0.00, 0.00]
+  - [0.25, 0.00, 0.50]
+  - [0.25, 0.00, -0.50]
+sentinel_repeats: 3
+ramp_in_s: 0.6
+settle_s: 0.8
+measure_s: 2.0
+ramp_out_s: 0.6
+sample_rate_hz: 50.0

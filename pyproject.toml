@@ -39,6 +39,7 @@ calibagent-convert = "calibagent.cli.convert_dataset:main"
 calibagent-replay = "calibagent.cli.replay_run:main"
 calibagent-audit = "calibagent.cli.audit_readiness:main"
 calibagent-real-replay = "calibagent.cli.real_replay:main"
+calibagent-p1-plan = "calibagent.cli.capture_plan:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

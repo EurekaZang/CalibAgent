@@ -3,6 +3,7 @@
     {"check_id": "p0_versioned_commit", "passed": true},
     {"check_id": "p0_versioned_manifests", "passed": true},
     {"check_id": "p0_reproducible_environment", "passed": true},
+    {"check_id": "p1_frozen_capture_design", "passed": true},
     {"check_id": "p1_real_data_evidence", "passed": false},
     {"check_id": "p1_real_data_scale_coverage", "passed": false},
     {"check_id": "p1_real_baseline_improvement", "passed": false},
