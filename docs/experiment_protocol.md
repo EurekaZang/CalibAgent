@@ -1,40 +1,49 @@
-# P1–P3 experiment protocol
+# P1-P3 experiment protocol
 
-## Questions and preregistered comparisons
+## Claims and frozen comparisons
 
-P1 checks whether M1 captures cross-axis structure missed by M0 under identical
-train/validation splits. P2 checks posterior correctness and 95% interval
-coverage against known synthetic truth. P3 checks whether task-weighted exact
-integrated variance reduction lowers trials-to-target relative to LHS and
-random sampling.
+P1 tests whether M1 captures cross-axis structure missed by M0 under an
+identical session-grouped split. Genuine P1 evidence must follow
+`p1_real_data_protocol.md`; synthetic replay is only a software control.
 
-The primary P3 endpoint is the first effective trial satisfying both frozen
-task-weighted RMSE and integrated epistemic-variance thresholds. A run that does
-not reach the target is assigned `max_trials + 1`; it is not dropped. In the
-current pilot, families with the same seed share latent mapping parameters, so
-the conservative independent unit is `seed`; family is a repeated condition,
-not an independent replicate. Main experiments must either generate independent
-family-specific distortion seeds or use a hierarchical/repeated-measures model.
-The report includes a one-sided paired test and a bootstrap interval for trials
-saved. Because the configured five seeds are a pilot, p-values are diagnostic
-rather than the final paper claim.
+P2 tests the declared base-plus-excess noise contract and 95% predictive
+coverage overall and within each synthetic distortion family.
+
+P3 tests whether task-weighted exact integrated variance reduction lowers the
+first trial meeting both RMSE and epistemic-uncertainty thresholds relative to
+LHS. Random, Sobol, Bayesian D-optimal, without-task-weight, and a full
+candidate-pool dense oracle are secondary controls.
+
+The five development seeds fixed a six-command warm start covering both signs
+of all three axes, the task distribution, RMSE threshold 0.04, uncertainty
+threshold 0.0015, and final evaluation budget 160. The main config was frozen
+locally at 2026-07-18 06:21:21 UTC before evaluating the disjoint seeds
+1001-1020. This is a local protocol lock, not third-party preregistration.
+
+A run that misses the target is assigned `max_trials + 1`; it is never dropped.
+Distortion families use independent latent parameter offsets. Family remains a
+repeated condition and seed is the conservative independent unit. Inference
+therefore averages families within each seed before a one-sided paired Wilcoxon
+test and seed bootstrap.
 
 ## Isolation
 
-- task and evaluation points use disjoint fixed Sobol seeds;
-- mappings and noise use the same seeds across methods;
-- every method receives the same eight safe seed-design commands;
-- the feature standardizer sees candidate commands but no output;
-- evaluation truth is called only after a posterior update and never returned
-  to the planner;
-- thresholds and the pilot seed list are frozen before execution.
+- task and evaluation commands use disjoint fixed Sobol seeds;
+- mapping and observation-noise seeds are paired across methods;
+- every sequential method receives the same six safe seed-design commands;
+- feature scaling sees predeclared candidate commands but no output;
+- held-out mapping truth and reference covariance are used only for metrics;
+- pilot and main seeds are disjoint;
+- main thresholds, baselines, and seeds are source-versioned.
 
 ## Outputs
 
-`trial_trace.csv` contains every selected command and post-update metric.
-`metrics.csv` contains one row per condition and seed. The original
-`paired_statistics.json` pools `(family, seed)` and is retained as a raw pilot
-artifact, but it is not valid publication evidence for the primary LHS claim.
-`manifest.json` and `resolved_config.json` record the attempted execution
-identity; manifests with `UNVERSIONED_WORKTREE` do not prove reproducibility.
-`build_figures` regenerates the curve from the trace.
+`outputs/p3_main/trial_trace.csv` contains every sequential command and metric.
+`metrics.csv` has 420 unique family/method/seed rows. `paired_statistics.json`
+uses 20 independent seeds; it does not pool the 60 repeated family conditions.
+`dense_oracle_metrics.csv` records the 256-command performance ceiling.
+`manifest.json` points to a resolvable source commit and `resolved_config.json`
+contains every algorithm parameter. Figures rebuild from CSV artifacts.
+
+The legacy `outputs/p3_pilot/paired_statistics.json` is retained only as a
+historical artifact and is invalid for publication inference.

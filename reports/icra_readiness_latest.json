@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {"check_id": "p0_versioned_commit", "passed": true},
+    {"check_id": "p0_versioned_manifests", "passed": true},
+    {"check_id": "p0_reproducible_environment", "passed": true},
+    {"check_id": "p1_real_data_evidence", "passed": false},
+    {"check_id": "p1_real_data_scale_coverage", "passed": false},
+    {"check_id": "p1_real_baseline_improvement", "passed": false},
+    {"check_id": "p1_replay_measurement_vertical_slice", "passed": true},
+    {"check_id": "p2_synthetic_noise_contract", "passed": true},
+    {"check_id": "p2_synthetic_coverage", "passed": true},
+    {"check_id": "p2_stratified_synthetic_coverage", "passed": true},
+    {"check_id": "p3_required_baselines", "passed": true},
+    {"check_id": "p3_main_artifact_completeness", "passed": true},
+    {"check_id": "p3_main_seed_count", "passed": true},
+    {"check_id": "p3_primary_independent_significance", "passed": true},
+    {"check_id": "p3_target_effect_size", "passed": true},
+    {"check_id": "p3_task_weight_ablation", "passed": true},
+    {"check_id": "p3_dense_oracle_gap", "passed": true}
+  ],
+  "schema_version": "1.0",
+  "source_commit": "461d30ba0e785bd82b7a1e8713d602a6e61a0c03",
+  "verdict": "NO_GO"
+}

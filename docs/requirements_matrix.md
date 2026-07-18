@@ -1,32 +1,20 @@
 # P0-P3 evidence matrix
 
-Status is reported at three separate levels. See `completion_semantics.md`.
-Presence of an implementation is not evidence that a phase or publication claim
-has passed.
-
-| Phase / requirement | Implementation | Software evidence | Phase evidence | Publication status |
-|---|---|---|---|---|
-| P0 package/src layout and interfaces | Present | Import, JSON, shape, typing tests pass | ADRs present | **NO_GO:** workspace is not versioned |
-| P0 backend seams | Present | Component tests pass | Isaac/Go2 intentionally deferred | **NO_GO:** replay vertical slice fails common measurement pipeline |
-| P0 manifests/environment/CI | Present | Hash/config tests and local CI commands pass | Manifests exist | **NO_GO:** `UNVERSIONED_WORKTREE`, floating CI dependencies, no observed remote CI |
-| P1 converter/Parquet schema | Present | Round-trip and CSV conversion tests pass | Synthetic data only | **NO_GO:** real dense-data evidence absent |
-| P1 measurement pipeline | Present | Static-yaw and timestamp-gap tests pass | Dynamic SE(2), bootstrap covariance, empty input not validated | **NO_GO** |
-| P1 offline replay | Present | Nearest/consume methods tested | Backend emits two samples and measurement rejects them; baseline bypasses backend | **NO_GO** |
-| P1 M0/M1 and passive samplers | Present | Formula/coupling/sampler tests pass | One synthetic affine dataset and one split | **NO_GO:** no real-data result or repeated synthetic seeds |
-| P2 minimal M2 basis BLR | Present | Closed-form, PSD, serialization, hypothetical update pass | Synthetic affine coverage gate passes | Conditional only |
-| P2 uncertainty calibration | Present | Coverage metric tested | Mean pilot coverage 96.33% | **NO_GO:** generative and update noise contracts double-count variance |
-| P3 candidate pool/task/IVR | Present | Formula, weighting, cost, symmetry, batch tests pass | Planner component is credible | Conditional only |
-| P3 sample-efficiency claim | Present | Benchmark smoke test passes | Independent seed reanalysis: Active vs LHS `p=0.09375`; only 5 seeds | **NO_GO** |
-| P3 strong baselines/ablations | Partial | Random/LHS/Sobol run | D-opt, dense oracle, without-task-weight absent | **NO_GO** |
-| P3 target effect | Measured | Raw metrics/checksums valid | 13.52% vs LHS | **NO_GO:** below 30% target |
+| Phase / requirement | Software evidence | Phase/publication evidence | Status |
+|---|---|---|---|
+| P0 package, interfaces, backend seams | 47 tests, strict typing and lint pass | ADRs and fail-closed later-phase seams | PASS |
+| P0 immutable provenance | Git commit and manifest checks | Both evidence manifests resolve to source commit `461d30b` | PASS |
+| P0 environment/CI | Exact analysis/dev locks; actions pinned by SHA | Reproduction commands and artifact hashes frozen | PASS |
+| P1 raw-to-observation processing | SE(2) dynamic-turn, empty input, gap and replay tests | 101-sample replay vertical slice passes | PASS for software path |
+| P1 real Go2 dense replay | Raw ingestion, hashing and session-split tooling pass fixtures | At least 3 real sessions/150 valid trials required | **NO-GO: data absent** |
+| P1 M0/M1 real improvement | Passive baseline implementation verified | M1 must improve over raw and M0 by at least 5% | **NO-GO: data absent** |
+| P2 noise contract | Base noise plus heteroscedastic excess charged once | Generative/update variance check passes | PASS |
+| P2 uncertainty calibration | Coverage and stratified audit executable | Overall 94.14%; family means 92.70%-95.12% | PASS |
+| P3 candidate/task/IVR | Exact IVR, fantasy batch and D-opt tests pass | Complete main artifact has 420 unique rows | PASS |
+| P3 sample efficiency | Seed-level statistics generated from raw metrics | 39.52% vs LHS, n=20, p=9.54e-7 | PASS |
+| P3 strong controls | LHS/random/Sobol/D-opt/no-task/dense all implemented | Task ablation 27.27%; dense gap 6.90% | PASS |
 
 ## Current authoritative verdict
 
-```bash
-python -m calibagent.cli.audit_readiness --workspace .
-```
-
-Expected verdict on 2026-07-18: `NO_GO`. The prior “Passed” entries were removed
-because they conflated L0/L1 implementation evidence with L2/L3 scientific
-evidence.
-
+`calibagent-audit --workspace .` returns **NO_GO** solely because the three P1
+real-data checks have no genuine input artifact. P0, P2, and P3 checks pass.

@@ -1,0 +1,34 @@
+{
+  "audit_status": "PASS",
+  "config_hash": "9da4a3b13ebd1474",
+  "dense_oracle_rmse_gap": 0.069010,
+  "families": [
+    "affine",
+    "deadzone",
+    "heteroscedastic"
+  ],
+  "git_commit": "461d30ba0e785bd82b7a1e8713d602a6e61a0c03",
+  "independent_unit": "seed",
+  "main_seeds": 20,
+  "primary_active_vs_lhs": {
+    "mean_trials_active": 18.66666666666667,
+    "mean_trials_lhs": 30.866666666666667,
+    "paired_trials_saved_ci95": [
+      10.732916666666664,
+      13.73333333333333
+    ],
+    "relative_reduction": 0.3952483801295895,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "task_weight_ablation": {
+    "mean_trials_active_no_task": 25.666666666666668,
+    "relative_reduction": 0.2727272727272726,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "active_final_coverage_95": 0.941396909,
+  "active_family_coverage_95": {
+    "affine": 0.951181102,
+    "deadzone": 0.927034121,
+    "heteroscedastic": 0.945975503
+  }
+}

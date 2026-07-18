@@ -32,10 +32,9 @@ Governance tests require README/report claims to agree with this verdict.
 
 | Phase | Highest supported level | Status |
 |---|---|---|
-| P0 | L1 | Software structure verified; versioned provenance and real CI evidence missing |
-| P1 | L1 | Components verified; replay-measurement vertical slice and real dense-data evidence fail |
-| P2 | L1, partial synthetic L2 evidence | BLR formulas verified; synthetic noise contract is inconsistent |
-| P3 | L1 | Planner formula verified; independent-unit LHS significance and main-effect gates fail |
+| P0 | L3 for P0 scope | Versioned provenance, pinned environment and source-linked manifests pass |
+| P1 | L1/L2 software path | End-to-end replay passes; genuine Go2 evidence remains absent |
+| P2 | L3 for frozen synthetic claim | Noise contract and overall/stratified coverage pass |
+| P3 | L3 for frozen synthetic claim | Main seeds, primary effect, strong baselines, ablation and dense gap pass |
 
 Overall ICRA readiness is **NO_GO**.
-

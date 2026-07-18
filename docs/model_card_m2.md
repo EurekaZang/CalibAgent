@@ -18,8 +18,11 @@ to the configured diagonal noise variance during each update.
 
 ## Uncertainty
 
-The predictive covariance is diagonal and equals parameter epistemic variance
-plus configured aleatoric noise. It does not represent correlated outputs,
+The predictive covariance is diagonal. Training likelihood variance equals
+configured base process noise plus the observation's command-dependent excess
+measurement variance, each charged once. Held-out coverage combines posterior
+epistemic variance with held-out reference covariance strictly in evaluation.
+The model does not represent correlated outputs,
 unmodeled dynamics, context shift, or localization failure. Those limitations
 must be disclosed and are assigned to P5/P6.
 
@@ -29,5 +32,5 @@ must be disclosed and are assigned to P5/P6.
 - covariance remains symmetric positive semidefinite and does not increase;
 - serialization is prediction-preserving;
 - synthetic interval coverage is reported, not assumed;
+- overall and family-stratified 95% coverage must remain inside 90%-98%;
 - active planning uses only covariance, commands, and task weights.
-

@@ -33,3 +33,14 @@ def test_historical_audit_is_a_valid_immutable_snapshot() -> None:
         "p1_replay_measurement_vertical_slice",
         "p2_synthetic_noise_contract",
     }
+
+
+def test_latest_audit_snapshot_matches_live_gate() -> None:
+    live = audit_publication_readiness(WORKSPACE)
+    latest = json.loads(
+        (WORKSPACE / "reports/icra_readiness_latest.json").read_text(encoding="utf-8")
+    )
+    assert latest["verdict"] == live.verdict
+    assert {item["check_id"]: item["passed"] for item in latest["checks"]} == {
+        item.check_id: item.passed for item in live.checks
+    }
