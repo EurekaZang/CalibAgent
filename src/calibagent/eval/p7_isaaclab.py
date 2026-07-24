@@ -108,6 +108,8 @@ class P7BenchmarkConfig:
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:
             raise ValueError("P7 goal radius must be positive")
+        if float(self.navigation["inverse_undertracking_confidence_weight"]) < 0.0:
+            raise ValueError("P7 inverse confidence weight must be nonnegative")
         recovery = dict(self.navigation["stall_recovery"])
         if (
             float(recovery["minimum_desired_speed_mps"]) <= 0.0

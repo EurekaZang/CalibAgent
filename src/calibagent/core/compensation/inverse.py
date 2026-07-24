@@ -38,6 +38,7 @@ class ConstrainedInverseCompensator:
         *,
         regularization: float = 0.02,
         risk_weight: float = 0.05,
+        undertracking_confidence_weight: float = 0.0,
         duration_s: float = 0.10,
         enforce_axis_signs: bool = False,
         sign_threshold: float = 0.02,
@@ -45,6 +46,7 @@ class ConstrainedInverseCompensator:
         if (
             regularization < 0.0
             or risk_weight < 0.0
+            or undertracking_confidence_weight < 0.0
             or duration_s <= 0.0
             or sign_threshold < 0.0
         ):
@@ -53,6 +55,7 @@ class ConstrainedInverseCompensator:
         self.safety_filter = safety_filter
         self.regularization = float(regularization)
         self.risk_weight = float(risk_weight)
+        self.undertracking_confidence_weight = float(undertracking_confidence_weight)
         self.duration_s = float(duration_s)
         self.enforce_axis_signs = bool(enforce_axis_signs)
         self.sign_threshold = float(sign_threshold)
@@ -72,20 +75,26 @@ class ConstrainedInverseCompensator:
             raise ValueError("compensation inputs must be finite")
         commands = self.candidate_pool.commands
         means, variances = model.predict_batch(commands)
+        tracking_means = means.copy()
+        active_axes = np.abs(desired) >= self.sign_threshold
+        if self.undertracking_confidence_weight > 0.0 and np.any(active_axes):
+            tracking_means[:, active_axes] -= (
+                np.sign(desired[active_axes])[None, :]
+                * self.undertracking_confidence_weight
+                * np.sqrt(variances[:, active_axes])
+            )
         objective = (
-            np.sum((means - desired[None, :]) ** 2, axis=1)
+            np.sum((tracking_means - desired[None, :]) ** 2, axis=1)
             + self.regularization * np.sum((commands - desired[None, :]) ** 2, axis=1)
             + self.risk_weight * np.sum(variances, axis=1)
         )
         order = np.argsort(objective, kind="stable")
-        if self.enforce_axis_signs:
-            active_axes = np.abs(desired) >= self.sign_threshold
-            if np.any(active_axes):
-                consistent = np.all(
-                    commands[:, active_axes] * desired[active_axes] >= 0.0,
-                    axis=1,
-                )
-                order = order[consistent[order]]
+        if self.enforce_axis_signs and np.any(active_axes):
+            consistent = np.all(
+                commands[:, active_axes] * desired[active_axes] >= 0.0,
+                axis=1,
+            )
+            order = order[consistent[order]]
         previous_velocity = VelocityCommand.from_array(
             previous,
             duration_s=self.duration_s,

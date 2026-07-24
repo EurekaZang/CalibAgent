@@ -84,6 +84,37 @@ def test_constrained_inverse_rejects_nonfinite_input() -> None:
         )
 
 
+def test_robust_inverse_uses_lower_confidence_tracking_velocity() -> None:
+    space = CommandSpace(
+        np.asarray([[-0.4, 0.4], [-0.3, 0.3], [-0.7, 0.7]]),
+        max_linear_norm=0.45,
+    )
+    pool = CandidatePool.generate(space, count=256, seed=87)
+    model = _identity_model(pool)
+    state = RobotState(
+        0.0,
+        (0.0, 0.0),
+        0.0,
+        0.0,
+        0.0,
+        0.4,
+        (0.0, 0.0, 0.0),
+    )
+    nominal = ConstrainedInverseCompensator(
+        pool,
+        HardSafetyFilter(),
+        risk_weight=0.0,
+    ).solve(np.asarray([0.25, 0.0, 0.0]), model, state, np.zeros(3))
+    robust = ConstrainedInverseCompensator(
+        pool,
+        HardSafetyFilter(),
+        risk_weight=0.0,
+        undertracking_confidence_weight=1.0,
+    ).solve(np.asarray([0.25, 0.0, 0.0]), model, state, np.zeros(3))
+
+    assert robust.predicted_velocity[0] >= nominal.predicted_velocity[0]
+
+
 def test_constrained_inverse_can_preserve_task_axis_signs() -> None:
     space = CommandSpace(
         np.asarray([[-0.4, 0.4], [-0.3, 0.3], [-0.7, 0.7]]),
