@@ -33,14 +33,6 @@ calibration:
   dense_trials: 30
   active_trials: 12
   dense_design_seed: 77149
-  active_seed_commands:
-    - [0.00, 0.00, 0.00]
-    - [-0.18, 0.00, 0.00]
-    - [0.18, 0.00, 0.00]
-    - [0.00, -0.14, 0.00]
-    - [0.00, 0.14, 0.00]
-    - [0.00, 0.00, -0.25]
-    - [0.00, 0.00, 0.25]
   warmup_s: 0.50
   ramp_in_s: 0.30
   settle_s: 0.60

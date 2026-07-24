@@ -101,19 +101,6 @@ class P7BenchmarkConfig:
             raise ValueError("P7 inverse maximum linear norm must be positive")
         if active > 0.40 * dense:
             raise ValueError("P7 B8 calibration budget exceeds 40% of B1")
-        seed_commands = np.asarray(self.calibration["active_seed_commands"], dtype=np.float64)
-        if (
-            seed_commands.ndim != 2
-            or seed_commands.shape[1] != 3
-            or len(seed_commands) >= active
-            or not np.all(np.isfinite(seed_commands))
-            or not np.all(
-                (seed_commands >= command_bounds[:, 0]) & (seed_commands <= command_bounds[:, 1])
-            )
-        ):
-            raise ValueError(
-                "P7 active seed commands must be finite, in bounds, and leave IVR trials"
-            )
         if int(self.navigation["sample_rate_hz"]) % int(self.navigation["planner_rate_hz"]):
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:

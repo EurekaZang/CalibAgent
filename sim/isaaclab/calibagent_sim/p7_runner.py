@@ -241,7 +241,18 @@ def _run_calibration(
         (0.0, 0.0, 0.0),
     )
     zero_history = [VelocityCommand(0.0, 0.0, 0.0, 0.1)]
-    calibration_seed = np.asarray(calibration["active_seed_commands"], dtype=np.float64)
+    bounds = pool.command_space.bounds
+    calibration_seed = np.asarray(
+        [
+            [bounds[0, 0], 0.0, 0.0],
+            [bounds[0, 1], 0.0, 0.0],
+            [0.0, bounds[1, 0], 0.0],
+            [0.0, bounds[1, 1], 0.0],
+            [0.0, 0.0, bounds[2, 0]],
+            [0.0, 0.0, bounds[2, 1]],
+        ],
+        dtype=np.float64,
+    )
     for trial in range(config.calibration_trials):
         desired = np.zeros((len(config.seeds), 3), dtype=np.float64)
         sources: list[str] = []
