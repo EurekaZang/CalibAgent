@@ -42,9 +42,9 @@ def test_frozen_p6_config_and_gates_pass() -> None:
 
     assert result["verdict"] == "GO"
     assert all(result["gates"].values())
-    payload = _scenario_payload(config, config.scenarios[0], 2)
+    payload = _scenario_payload(config, config.scenarios[0], 2, "full")
     assert payload["simulator_seed"] == 760242
-    assert payload["methods"] == ["frozen", "passive", "full"]
+    assert payload["methods"] == ["full"]
 
 
 def test_p6_gates_reject_missed_shift_and_no_effect() -> None:

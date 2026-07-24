@@ -9,6 +9,7 @@ from typing import Any
 
 import gymnasium as gym
 import numpy as np
+import torch
 
 from calibagent.core.models.bayesian import BayesianBasisModel
 from calibagent.core.models.features import BasisTransformer
@@ -190,6 +191,51 @@ def _distortion(
     )
 
 
+def _apply_physics_shift(
+    env: Any,
+    pre_physics: dict[str, Any],
+    post_physics: dict[str, Any],
+) -> dict[str, Any]:
+    """Apply the declared material, base-mass and COM event in-place."""
+
+    robot = env.unwrapped.scene["robot"]
+    env_count = int(env.unwrapped.num_envs)
+    indices = torch.arange(env_count, dtype=torch.int32, device="cpu")
+    materials = robot.root_physx_view.get_material_properties()
+    materials[:, :, 0] = float(post_physics["static_friction"])
+    materials[:, :, 1] = float(post_physics["dynamic_friction"])
+    robot.root_physx_view.set_material_properties(materials, indices)
+
+    base_ids, _ = robot.find_bodies("base")
+    if len(base_ids) != 1:
+        raise RuntimeError(f"expected one Go2 base body, found {base_ids}")
+    base_id = int(base_ids[0])
+    payload_delta = float(post_physics["payload_add_kg"]) - float(pre_physics["payload_add_kg"])
+    masses = robot.root_physx_view.get_masses()
+    old_mass = masses[:, base_id].clone()
+    masses[:, base_id] += payload_delta
+    if torch.any(masses[:, base_id] <= 0.0):
+        raise RuntimeError("P6 shift produced a non-positive base mass")
+    robot.root_physx_view.set_masses(masses, indices)
+    inertias = robot.root_physx_view.get_inertias()
+    inertias[:, base_id] *= (masses[:, base_id] / torch.clamp(old_mass, min=1e-9))[:, None]
+    robot.root_physx_view.set_inertias(inertias, indices)
+
+    com_delta = float(post_physics["com_offset_x_m"]) - float(pre_physics["com_offset_x_m"])
+    coms = robot.root_physx_view.get_coms()
+    coms[:, base_id, 0] += com_delta
+    robot.root_physx_view.set_coms(coms, indices)
+    return {
+        "event": "in_place_material_mass_com_shift",
+        "num_envs": env_count,
+        "base_body_id": base_id,
+        "payload_delta_kg": payload_delta,
+        "com_delta_x_m": com_delta,
+        "static_friction": float(post_physics["static_friction"]),
+        "dynamic_friction": float(post_physics["dynamic_friction"]),
+    }
+
+
 def _predict_rows(
     models: dict[tuple[str, int], BayesianBasisModel],
     slots: list[tuple[str, int]],
@@ -212,22 +258,6 @@ def _rmse(residuals: list[np.ndarray]) -> float:
     return float(np.sqrt(np.mean(values**2)))
 
 
-def _bootstrap_ci(
-    values: np.ndarray,
-    *,
-    seed: int,
-) -> list[float]:
-    rng = np.random.default_rng(seed)
-    samples = np.mean(
-        rng.choice(values, size=(4000, len(values)), replace=True),
-        axis=1,
-    )
-    return [
-        float(np.quantile(samples, 0.025)),
-        float(np.quantile(samples, 0.975)),
-    ]
-
-
 def run_p6_scenario(
     payload: dict[str, Any],
     checkpoint: Path,
@@ -237,6 +267,8 @@ def run_p6_scenario(
     output.mkdir(parents=True, exist_ok=True)
     seeds = tuple(int(item) for item in payload["seeds"])
     methods = tuple(str(item) for item in payload["methods"])
+    if len(methods) != 1:
+        raise ValueError("one P6 simulator process must execute exactly one method")
     slots = [(method, seed) for method in methods for seed in seeds]
     slot_seeds = tuple(seed for _, seed in slots)
     pre_config = _physical_config(payload, dict(payload["pre_physics"]), slot_seeds)
@@ -388,8 +420,9 @@ def run_p6_scenario(
                         "safety_events": "|".join(observation.safety_events),
                     }
                 )
-    finally:
+    except BaseException:
         env.close()
+        raise
 
     pre_rmse = {key: _rmse(values) for key, values in pre_residuals.items()}
     target_rmse = {
@@ -410,9 +443,10 @@ def run_p6_scenario(
     )
     detection_delay: dict[tuple[str, int], int | None] = {key: None for key in slots}
     shifted_residuals: dict[tuple[str, int], list[np.ndarray]] = {key: [] for key in slots}
-    env = gym.make(
-        post_config.task,
-        cfg=_configure_environment(post_config, device),
+    applied_shift = _apply_physics_shift(
+        env,
+        dict(payload["pre_physics"]),
+        dict(payload["post_physics"]),
     )
     try:
         pre_monitor_count = int(trial_cfg["pre_monitor_trials"])
@@ -650,64 +684,45 @@ def run_p6_scenario(
                     "final_rmse": final_rmse[key],
                 }
             )
-    full_rows = [row for row in per_seed_rows if row["method"] == "full"]
-    frozen_rows = [row for row in per_seed_rows if row["method"] == "frozen"]
-    frozen_by_seed = {int(row["seed"]): row for row in frozen_rows}
-    improvements = np.asarray(
-        [
-            float(frozen_by_seed[int(row["seed"])]["final_rmse"]) - float(row["final_rmse"])
-            for row in full_rows
-        ],
-        dtype=np.float64,
-    )
+    method = methods[0]
     detected_delays = np.asarray(
-        [float(row["detection_delay_trials"]) for row in full_rows if bool(row["detected"])],
+        [float(row["detection_delay_trials"]) for row in per_seed_rows if bool(row["detected"])],
         dtype=np.float64,
     )
     recovered_trials = np.asarray(
-        [float(row["recovery_trials"]) for row in full_rows if bool(row["recovered"])],
+        [float(row["recovery_trials"]) for row in per_seed_rows if bool(row["recovered"])],
         dtype=np.float64,
     )
-    full_recovery_rate = float(np.mean([bool(row["recovered"]) for row in full_rows]))
     summary = {
         "schema_version": "1.0",
         "scenario": payload["id"],
+        "method": method,
         "num_seeds": len(seeds),
-        "methods": list(methods),
         "no_shift_false_alarm_rate": float(
-            np.mean([bool(row["false_alarm"]) for row in full_rows])
+            np.mean([bool(row["false_alarm"]) for row in per_seed_rows])
         ),
-        "detection_rate": float(np.mean([bool(row["detected"]) for row in full_rows])),
+        "detection_rate": float(np.mean([bool(row["detected"]) for row in per_seed_rows])),
         "median_detection_delay_trials": (
             float(np.median(detected_delays)) if len(detected_delays) else float("inf")
         ),
         "p95_detection_delay_trials": (
             float(np.quantile(detected_delays, 0.95)) if len(detected_delays) else float("inf")
         ),
-        "full_recovery_rate": full_recovery_rate,
-        "median_full_recovery_trials": (
+        "recovery_rate": float(np.mean([bool(row["recovered"]) for row in per_seed_rows])),
+        "median_recovery_trials": (
             float(np.median(recovered_trials)) if len(recovered_trials) else float("inf")
         ),
-        "p95_full_recovery_trials": (
+        "p95_recovery_trials": (
             float(np.quantile(recovered_trials, 0.95)) if len(recovered_trials) else float("inf")
         ),
         "recovery_to_dense_budget_ratio": (
             int(trial_cfg["recovery_budget_trials"]) / int(trial_cfg["dense_budget_trials"])
         ),
-        "full_vs_frozen_final_improvement_mean": float(np.mean(improvements)),
-        "full_vs_frozen_final_improvement_ci95": _bootstrap_ci(
-            improvements,
-            seed=int(payload["simulator_seed"]) + 311,
-        ),
-        "full_vs_frozen_win_rate": float(np.mean(improvements > 0.0)),
         "valid_observation_ratio": float(np.mean(all_valid)),
         "safety_aborts": int(safety_aborts),
         "maximum_abort_latency_s": (1.0 / post_config.sample_rate_hz if safety_aborts else 0.0),
         "serious_safety_events": int(serious_events),
-        "finite": bool(
-            np.all(np.isfinite(improvements))
-            and np.all(np.isfinite([float(row["final_rmse"]) for row in per_seed_rows]))
-        ),
+        "finite": bool(np.all(np.isfinite([float(row["final_rmse"]) for row in per_seed_rows]))),
     }
     curve_rows = [
         {
@@ -735,6 +750,7 @@ def run_p6_scenario(
                 "post_seed_offset": payload["post_seed_offset"],
                 "pre_physics": payload["pre_physics"],
                 "post_physics": payload["post_physics"],
+                "applied_event": applied_shift,
             },
             indent=2,
             sort_keys=True,

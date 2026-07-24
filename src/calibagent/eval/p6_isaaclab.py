@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import csv
 import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import yaml
+from numpy.typing import NDArray
 
 from calibagent.eval.p5_isaaclab import (
     _artifact_manifest,
@@ -184,17 +187,136 @@ def _scenario_payload(
     config: P6BenchmarkConfig,
     scenario: dict[str, Any],
     index: int,
+    method: str,
 ) -> dict[str, Any]:
     return {
         **scenario,
         "seeds": [int(item) for item in config.vectorization["seeds"]],
-        "methods": list(config.methods),
+        "methods": [method],
         "trial": config.trial,
         "detector": config.detector,
         "adaptation": config.adaptation,
         "safety": config.safety,
         "simulator_seed": int(config.vectorization["simulator_seed"]) + index,
     }
+
+
+def _read_csv_rows(path: Path) -> list[dict[str, str]]:
+    with path.open(encoding="utf-8", newline="") as stream:
+        return list(csv.DictReader(stream))
+
+
+def _write_csv_rows(path: Path, rows: list[dict[str, str]]) -> None:
+    if not rows:
+        raise ValueError(f"refusing to write empty aggregate: {path}")
+    with path.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _as_bool(value: str) -> bool:
+    if value not in {"True", "False"}:
+        raise ValueError(f"invalid serialized boolean: {value}")
+    return value == "True"
+
+
+def _bootstrap_mean_ci(values: NDArray[np.float64], seed: int) -> list[float]:
+    rng = np.random.default_rng(seed)
+    samples = np.mean(
+        rng.choice(values, size=(4000, len(values)), replace=True),
+        axis=1,
+    )
+    return [
+        float(np.quantile(samples, 0.025)),
+        float(np.quantile(samples, 0.975)),
+    ]
+
+
+def _aggregate_method_outputs(
+    scenario: dict[str, Any],
+    scenario_output: Path,
+    methods: tuple[str, ...],
+    simulator_seed: int,
+) -> dict[str, Any]:
+    summaries = {
+        method: json.loads((scenario_output / method / "summary.json").read_text(encoding="utf-8"))
+        for method in methods
+    }
+    rows = [
+        row
+        for method in methods
+        for row in _read_csv_rows(scenario_output / method / "per_seed_metrics.csv")
+    ]
+    _write_csv_rows(scenario_output / "per_seed_metrics.csv", rows)
+    for filename in (
+        "monitor_metrics.csv",
+        "recovery_metrics.csv",
+        "recovery_curve.csv",
+    ):
+        combined = [
+            row for method in methods for row in _read_csv_rows(scenario_output / method / filename)
+        ]
+        _write_csv_rows(scenario_output / filename, combined)
+    indexed = {(str(row["method"]), int(row["seed"])): row for row in rows}
+    seeds = sorted(int(row["seed"]) for row in rows if row["method"] == "full")
+    improvements = np.asarray(
+        [
+            float(indexed[("frozen", seed)]["final_rmse"])
+            - float(indexed[("full", seed)]["final_rmse"])
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    full_rows = [indexed[("full", seed)] for seed in seeds]
+    full_recovered = [
+        float(row["recovery_trials"]) for row in full_rows if _as_bool(row["recovered"])
+    ]
+    full_summary = summaries["full"]
+    aggregate = {
+        "schema_version": "1.0",
+        "scenario": str(scenario["id"]),
+        "num_seeds": len(seeds),
+        "methods": list(methods),
+        "no_shift_false_alarm_rate": float(full_summary["no_shift_false_alarm_rate"]),
+        "detection_rate": float(full_summary["detection_rate"]),
+        "median_detection_delay_trials": float(full_summary["median_detection_delay_trials"]),
+        "p95_detection_delay_trials": float(full_summary["p95_detection_delay_trials"]),
+        "full_recovery_rate": float(np.mean([_as_bool(row["recovered"]) for row in full_rows])),
+        "median_full_recovery_trials": (
+            float(np.median(full_recovered)) if full_recovered else float("inf")
+        ),
+        "p95_full_recovery_trials": (
+            float(np.quantile(full_recovered, 0.95)) if full_recovered else float("inf")
+        ),
+        "recovery_to_dense_budget_ratio": float(full_summary["recovery_to_dense_budget_ratio"]),
+        "full_vs_frozen_final_improvement_mean": float(np.mean(improvements)),
+        "full_vs_frozen_final_improvement_ci95": _bootstrap_mean_ci(
+            improvements,
+            simulator_seed + 311,
+        ),
+        "full_vs_frozen_win_rate": float(np.mean(improvements > 0.0)),
+        "valid_observation_ratio": min(
+            float(item["valid_observation_ratio"]) for item in summaries.values()
+        ),
+        "safety_aborts": sum(int(item["safety_aborts"]) for item in summaries.values()),
+        "maximum_abort_latency_s": max(
+            float(item["maximum_abort_latency_s"]) for item in summaries.values()
+        ),
+        "serious_safety_events": sum(
+            int(item["serious_safety_events"]) for item in summaries.values()
+        ),
+        "finite": bool(
+            np.all(np.isfinite(improvements))
+            and all(bool(item["finite"]) for item in summaries.values())
+        ),
+        "method_summaries": summaries,
+    }
+    (scenario_output / "summary.json").write_text(
+        json.dumps(aggregate, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    return aggregate
 
 
 def run_p6_suite(
@@ -247,53 +369,64 @@ def run_p6_suite(
         scenario_id = str(scenario["id"])
         scenario_output = output / "scenarios" / scenario_id
         scenario_output.mkdir(parents=True)
-        payload_path = scenario_output / "launch_config.json"
-        payload_path.write_text(
-            json.dumps(
-                _scenario_payload(config, scenario, index),
-                indent=2,
-                sort_keys=True,
-            ),
-            encoding="utf-8",
-        )
-        command = [
-            str(isaaclab / "isaaclab.sh"),
-            "-p",
-            str(root / "sim" / "isaaclab" / "scripts" / "run_p6_scenario.py"),
-            "--scenario-config",
-            str(payload_path),
-            "--checkpoint",
-            str(checkpoints[str(scenario["checkpoint"])]),
-            "--output",
-            str(scenario_output),
-            "--headless",
-        ]
-        (scenario_output / "launch_command.json").write_text(
-            json.dumps(command, indent=2),
-            encoding="utf-8",
-        )
-        result = _run(command, cwd=root, env=environment, check=False)
-        (scenario_output / "simulator.log").write_text(
-            result.stdout + result.stderr,
-            encoding="utf-8",
-        )
-        required = (
-            "summary.json",
-            "monitor_metrics.csv",
-            "recovery_metrics.csv",
-            "per_seed_metrics.csv",
-            "pose_trace.csv",
-            "shift_events.json",
-            "scenario_config.json",
-        )
-        missing = [name for name in required if not (scenario_output / name).is_file()]
-        if result.returncode != 0 or missing:
-            raise RuntimeError(
-                f"P6 scenario {scenario_id} failed "
-                f"(returncode={result.returncode}, missing={missing}); "
-                f"see {scenario_output / 'simulator.log'}"
+        for method in config.methods:
+            method_output = scenario_output / method
+            method_output.mkdir()
+            payload_path = method_output / "launch_config.json"
+            payload_path.write_text(
+                json.dumps(
+                    _scenario_payload(config, scenario, index, method),
+                    indent=2,
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
             )
-        summaries.append(json.loads((scenario_output / "summary.json").read_text(encoding="utf-8")))
+            command = [
+                str(isaaclab / "isaaclab.sh"),
+                "-p",
+                str(root / "sim" / "isaaclab" / "scripts" / "run_p6_scenario.py"),
+                "--scenario-config",
+                str(payload_path),
+                "--checkpoint",
+                str(checkpoints[str(scenario["checkpoint"])]),
+                "--output",
+                str(method_output),
+                "--headless",
+            ]
+            (method_output / "launch_command.json").write_text(
+                json.dumps(command, indent=2),
+                encoding="utf-8",
+            )
+            result = _run(command, cwd=root, env=environment, check=False)
+            (method_output / "simulator.log").write_text(
+                result.stdout + result.stderr,
+                encoding="utf-8",
+            )
+            required = (
+                "summary.json",
+                "monitor_metrics.csv",
+                "recovery_metrics.csv",
+                "per_seed_metrics.csv",
+                "recovery_curve.csv",
+                "pose_trace.csv",
+                "shift_events.json",
+                "scenario_config.json",
+            )
+            missing = [name for name in required if not (method_output / name).is_file()]
+            if result.returncode != 0 or missing:
+                raise RuntimeError(
+                    f"P6 scenario {scenario_id}/{method} failed "
+                    f"(returncode={result.returncode}, missing={missing}); "
+                    f"see {method_output / 'simulator.log'}"
+                )
+        summaries.append(
+            _aggregate_method_outputs(
+                scenario,
+                scenario_output,
+                config.methods,
+                int(config.vectorization["simulator_seed"]) + index,
+            )
+        )
     aggregate = evaluate_p6_summaries(config, summaries)
     aggregate["runtime"] = runtime
     (output / "summary.json").write_text(
