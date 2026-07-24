@@ -100,7 +100,10 @@ class DomainShiftDetector:
         if increment > 0.0:
             self._positive_streak += 1
         else:
-            self._positive_streak = 0
+            # One borderline innovation should not erase a large accumulated
+            # CUSUM.  Decay provides hysteresis while repeated nominal samples
+            # still clear an isolated outlier.
+            self._positive_streak = max(0, self._positive_streak - 1)
         alarm = bool(
             not self._latched
             and trial >= self.config.minimum_dwell_trials

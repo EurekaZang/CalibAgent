@@ -49,6 +49,30 @@ def test_shift_detector_rejects_bad_covariance_and_trial_order() -> None:
     assert not detector.latched
 
 
+def test_shift_detector_tolerates_one_borderline_sample() -> None:
+    detector = DomainShiftDetector(
+        DomainShiftConfig(
+            allowance=0.5,
+            alarm_threshold=4.0,
+            minimum_consecutive=3,
+            minimum_dwell_trials=3,
+        )
+    )
+    covariance = np.eye(3)
+    energies = [4.0, 4.0, 1.4, 4.0, 4.0]
+    results = [
+        detector.update(
+            np.full(3, np.sqrt(energy)),
+            covariance,
+            trial=trial,
+        )
+        for trial, energy in enumerate(energies, start=1)
+    ]
+
+    assert not any(item.alarm for item in results[:4])
+    assert results[4].alarm
+
+
 def test_posterior_inflation_preserves_mean_and_scales_covariance() -> None:
     reference = np.asarray(
         [
