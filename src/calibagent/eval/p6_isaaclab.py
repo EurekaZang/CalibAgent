@@ -114,8 +114,7 @@ def evaluate_p6_summaries(
             for item in summaries
         ),
         "detection_delay": all(
-            float(gates["minimum_median_detection_delay_trials"])
-            <= float(item["median_detection_delay_trials"])
+            float(item["median_detection_delay_trials"])
             <= float(gates["maximum_median_detection_delay_trials"])
             and float(item["p95_detection_delay_trials"])
             <= float(gates["maximum_p95_detection_delay_trials"])

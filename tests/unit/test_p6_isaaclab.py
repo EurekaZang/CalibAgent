@@ -60,6 +60,18 @@ def test_p6_gates_reject_missed_shift_and_no_effect() -> None:
     assert not result["gates"]["paired_adaptation_effect"]
 
 
+def test_p6_allows_earlier_detection_after_three_sample_debounce() -> None:
+    config = P6BenchmarkConfig.from_yaml(
+        Path("configs/experiments/p6_domain_shift_main.yaml")
+    )
+    summaries = [_summary(item) for item in config.scenarios]
+    summaries[0]["median_detection_delay_trials"] = 2.0
+
+    result = evaluate_p6_summaries(config, summaries)
+
+    assert result["gates"]["detection_delay"]
+
+
 def test_p6_config_rejects_budget_and_control_changes() -> None:
     config = P6BenchmarkConfig.from_yaml(Path("configs/experiments/p6_domain_shift_main.yaml"))
     trial = dict(config.trial)
