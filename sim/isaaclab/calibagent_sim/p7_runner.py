@@ -426,6 +426,9 @@ def _run_navigation(
     velocity_feedback = dict(navigation["velocity_feedback"])
     feedback_alpha = float(velocity_feedback["ema_alpha"])
     feedback_startup_delay_s = float(velocity_feedback["startup_delay_s"])
+    feedback_recovery_reengagement_delay_s = float(
+        velocity_feedback["recovery_reengagement_delay_s"]
+    )
     recovery_detection_ticks = max(1, round(float(recovery["detection_s"]) * planner_rate))
     recovery_zero_ticks = max(1, round(float(recovery["zero_command_s"]) * planner_rate))
     emergency_recovery_zero_ticks = max(
@@ -487,6 +490,11 @@ def _run_navigation(
     emergency_recovery_active = np.zeros(count, dtype=bool)
     feedback_active = np.zeros(count, dtype=bool)
     feedback_updates = np.zeros(count, dtype=np.int64)
+    feedback_resume_after_s = np.full(
+        count,
+        feedback_startup_delay_s,
+        dtype=np.float64,
+    )
     trace_rows: list[dict[str, Any]] = []
     valid_flags: list[bool] = []
     arrays = _state_arrays(robot, origins)
@@ -586,17 +594,22 @@ def _run_navigation(
                         recovery_ticks[env_index] -= 1
                         if recovery_ticks[env_index] == 0:
                             emergency_recovery_active[env_index] = False
+                            feedback_resume_after_s[env_index] = max(
+                                feedback_resume_after_s[env_index],
+                                step * dt + feedback_recovery_reengagement_delay_s,
+                            )
                     elif method == "B0_raw":
                         proposed = desired[env_index]
                         inverse_target[env_index] = desired[env_index]
                         feedback_active[env_index] = False
                         inverse_objective[env_index] = np.nan
-                    elif step * dt < feedback_startup_delay_s:
+                    elif step * dt < feedback_resume_after_s[env_index]:
                         # Let the locomotion policy establish its gait before
-                        # closing the outer velocity loop.  The startup
-                        # velocity estimate begins at zero, so immediate
-                        # feedback would otherwise request the maximum
-                        # correction during the least stable transient.
+                        # closing the outer velocity loop at startup or after
+                        # a zero-command recovery.  The filtered velocity is
+                        # near zero in both cases, so immediate feedback would
+                        # otherwise request the maximum correction during the
+                        # least stable transient.
                         inverse_target[env_index] = desired[env_index]
                         feedback_active[env_index] = False
                         solution = compensators[env_index].solve(

@@ -46,10 +46,10 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert all(result["gates"].values())
     assert config.experiment_role == "pilot"
     assert len(config.vectorization["seeds"]) == 20
-    assert config.vectorization["seeds"] == list(range(7601, 7621))
+    assert config.vectorization["seeds"] == list(range(7631, 7651))
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 860241
+    assert payload["simulator_seed"] == 865241
     assert payload["enhanced_determinism"] is True
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
@@ -72,6 +72,7 @@ def test_p7_pilot_config_and_publication_gates() -> None:
         "maximum_correction": [0.12, 0.08, 0.15],
         "activation_threshold": 0.02,
         "startup_delay_s": 2.0,
+        "recovery_reengagement_delay_s": 2.0,
     }
     assert payload["navigation"]["stall_recovery"]["maximum_attempts"] == 3
     assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 10
@@ -130,6 +131,13 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
     navigation["velocity_feedback"] = {
         **config.navigation["velocity_feedback"],
         "ema_alpha": 0.0,
+    }
+    with pytest.raises(ValueError, match="feedback configuration"):
+        replace(config, navigation=navigation).validate()
+    navigation = dict(config.navigation)
+    navigation["velocity_feedback"] = {
+        **config.navigation["velocity_feedback"],
+        "recovery_reengagement_delay_s": config.navigation["timeout_s"],
     }
     with pytest.raises(ValueError, match="feedback configuration"):
         replace(config, navigation=navigation).validate()
