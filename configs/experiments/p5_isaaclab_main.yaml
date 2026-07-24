@@ -1,0 +1,111 @@
+experiment_role: main
+protocol_frozen_utc: "2026-07-24T07:22:00Z"
+output_dir: outputs/p5_main
+
+isaaclab:
+  tag: v2.3.2
+  commit: 37ddf626871758333d6ed89cf64ad702aef127d0
+  isaac_sim_version_prefix: "5.1.0"
+  physics_backend: physx
+
+vectorization:
+  num_envs: 20
+  simulator_seed: 720240
+  seeds:
+    - 5101
+    - 5102
+    - 5103
+    - 5104
+    - 5105
+    - 5106
+    - 5107
+    - 5108
+    - 5109
+    - 5110
+    - 5111
+    - 5112
+    - 5113
+    - 5114
+    - 5115
+    - 5116
+    - 5117
+    - 5118
+    - 5119
+    - 5120
+
+trial:
+  calibration_trials: 12
+  warmup_s: 1.00
+  ramp_in_s: 0.40
+  settle_s: 0.80
+  measure_s: 1.00
+  ramp_out_s: 1.00
+  sample_rate_hz: 50.0
+
+safety:
+  min_base_height_m: 0.15
+  max_base_height_m: 0.65
+
+checkpoints:
+  flat:
+    url: https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt
+    sha256: 47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439
+  rough:
+    url: https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Rough-Unitree-Go2-v0/checkpoint.pt
+    sha256: f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2
+
+scenarios:
+  - id: tier_a_affine
+    tier: A
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    distortion: affine
+    terrain: flat
+    static_friction: 0.80
+    dynamic_friction: 0.60
+    payload_add_kg: 0.0
+    com_offset_x_m: 0.0
+  - id: tier_a_deadzone
+    tier: A
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    distortion: deadzone
+    terrain: flat
+    static_friction: 0.80
+    dynamic_friction: 0.60
+    payload_add_kg: 0.0
+    com_offset_x_m: 0.0
+  - id: tier_b_friction_payload
+    tier: B
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    distortion: identity
+    terrain: flat_low_friction
+    static_friction: 0.45
+    dynamic_friction: 0.35
+    payload_add_kg: 2.0
+    com_offset_x_m: 0.02
+  - id: tier_b_rough
+    tier: B
+    task: Isaac-Velocity-Rough-Unitree-Go2-Play-v0
+    checkpoint: rough
+    distortion: identity
+    terrain: rough
+    static_friction: 0.80
+    dynamic_friction: 0.60
+    payload_add_kg: 1.0
+    com_offset_x_m: 0.01
+
+publication_gates:
+  minimum_scenarios: 4
+  minimum_tier_a_scenarios: 2
+  minimum_tier_b_scenarios: 2
+  minimum_seeds_per_scenario: 20
+  minimum_valid_calibration_ratio: 0.85
+  minimum_valid_validation_ratio: 0.80
+  minimum_actual_motion_ratio: 0.85
+  minimum_calibrated_vs_raw_rmse_reduction: 0.05
+  minimum_paired_improvement_ci95_lower: 0.0
+  maximum_serious_safety_events: 0
+  maximum_abort_latency_s: 0.04
+  maximum_nonfinite_rows: 0
