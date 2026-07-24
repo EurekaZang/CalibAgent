@@ -74,22 +74,53 @@ def make_distortion_parameters(
     delay_steps = np.zeros(count, dtype=np.int64)
     time_constant = np.zeros(count, dtype=np.float64)
     noise_std = np.zeros((count, 3), dtype=np.float64)
-    valid = {"identity", "affine", "deadzone", "dynamic", "mixed"}
+    valid = {
+        "identity",
+        "affine",
+        "affine_high",
+        "affine_low",
+        "deadzone",
+        "dynamic",
+        "mixed",
+        "mixed_low",
+    }
     if family not in valid:
         raise ValueError(f"unsupported distortion family: {family}")
     for index, seed in enumerate(seed_values):
         rng = np.random.default_rng(int(seed))
-        if family in {"affine", "mixed"}:
-            gains = rng.uniform([0.72, 0.72, 0.72], [0.92, 0.92, 0.92])
+        if family in {
+            "affine",
+            "affine_high",
+            "affine_low",
+            "mixed",
+            "mixed_low",
+        }:
+            if family == "affine_high":
+                gain_low, gain_high = 1.05, 1.15
+                coupling_limit = 0.04
+            elif family in {"affine_low", "mixed_low"}:
+                gain_low, gain_high = 0.65, 0.72
+                coupling_limit = 0.12
+            else:
+                gain_low, gain_high = 0.72, 0.92
+                coupling_limit = 0.08
+            gains = rng.uniform(
+                [gain_low, gain_low, gain_low],
+                [gain_high, gain_high, gain_high],
+            )
             affine[index] = np.diag(gains)
-            coupling = rng.uniform(-0.08, 0.08, size=(3, 3))
+            coupling = rng.uniform(
+                -coupling_limit,
+                coupling_limit,
+                size=(3, 3),
+            )
             np.fill_diagonal(coupling, 0.0)
             affine[index] += coupling
             bias[index] = rng.uniform(
                 [-0.025, -0.020, -0.035],
                 [0.025, 0.020, 0.035],
             )
-        if family in {"deadzone", "mixed"}:
+        if family in {"deadzone", "mixed", "mixed_low"}:
             deadzone[index] = rng.uniform(
                 [0.035, 0.025, 0.060],
                 [0.090, 0.070, 0.150],
@@ -98,10 +129,10 @@ def make_distortion_parameters(
                 [0.55, 0.30, 0.85],
                 [0.72, 0.42, 1.15],
             )
-        if family in {"dynamic", "mixed"}:
+        if family in {"dynamic", "mixed", "mixed_low"}:
             delay_steps[index] = int(rng.integers(1, 6))
             time_constant[index] = float(rng.uniform(0.05, 0.22))
-        if family == "mixed":
+        if family in {"mixed", "mixed_low"}:
             noise_std[index] = rng.uniform(
                 [0.002, 0.002, 0.004],
                 [0.008, 0.008, 0.012],

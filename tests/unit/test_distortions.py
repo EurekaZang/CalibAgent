@@ -43,6 +43,20 @@ def test_deadzone_and_saturation_are_enforced() -> None:
     assert np.all(np.abs(mapped) <= parameters.saturation + 1e-12)
 
 
+def test_p6_gain_steps_remain_inside_declared_engineering_range() -> None:
+    high = make_distortion_parameters("affine_high", [11, 12])
+    low = make_distortion_parameters("affine_low", [11, 12])
+    mixed_low = make_distortion_parameters("mixed_low", [11, 12])
+
+    high_gains = np.diagonal(high.affine, axis1=1, axis2=2)
+    low_gains = np.diagonal(low.affine, axis1=1, axis2=2)
+    assert np.all((high_gains >= 1.05) & (high_gains <= 1.15))
+    assert np.all((low_gains >= 0.65) & (low_gains <= 0.72))
+    assert np.all(high_gains - low_gains >= 0.33)
+    assert np.any(mixed_low.deadzone > 0.0)
+    assert np.any(mixed_low.delay_steps > 0)
+
+
 def test_invalid_distortion_inputs_fail_closed() -> None:
     with pytest.raises(ValueError, match="unsupported"):
         make_distortion_parameters("unknown", [1])
