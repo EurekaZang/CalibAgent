@@ -12,6 +12,9 @@ import gymnasium as gym
 import isaaclab_tasks  # noqa: F401
 import numpy as np
 import torch
+from isaaclab.envs import mdp
+from isaaclab.managers import EventTermCfg as EventTerm
+from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils import math as math_utils
 from isaaclab_tasks.utils import parse_env_cfg
 
@@ -55,6 +58,7 @@ class ScenarioConfig:
     simulator_seed: int
     safety_min_base_height_m: float
     safety_max_base_height_m: float
+    model_prior_scale: float
 
 
 _CALIBRATION_SEED = np.asarray(
@@ -121,7 +125,23 @@ def _configure_environment(config: ScenarioConfig, device: str) -> Any:
         config.payload_add_kg,
         config.payload_add_kg,
     )
-    if getattr(events, "base_com", None) is not None:
+    if config.com_offset_x_m != 0.0:
+        # Go2 disables the parent locomotion COM event in its task config.
+        # Restore a deterministic startup term so the declared Tier-B shift is
+        # actually applied and appears in EventManager provenance.
+        events.base_com = EventTerm(
+            func=mdp.randomize_rigid_body_com,
+            mode="startup",
+            params={
+                "asset_cfg": SceneEntityCfg("robot", body_names="base"),
+                "com_range": {
+                    "x": (config.com_offset_x_m, config.com_offset_x_m),
+                    "y": (0.0, 0.0),
+                    "z": (0.0, 0.0),
+                },
+            },
+        )
+    elif getattr(events, "base_com", None) is not None:
         events.base_com.params["com_range"] = {
             "x": (config.com_offset_x_m, config.com_offset_x_m),
             "y": (0.0, 0.0),
@@ -383,7 +403,7 @@ def run_scenario(
     models = [
         BayesianBasisModel(
             transformer,
-            prior_scale=1.0,
+            prior_scale=config.model_prior_scale,
             noise_variance=[0.0025, 0.0025, 0.0050],
         )
         for _ in config.seeds

@@ -1,5 +1,5 @@
 experiment_role: main
-protocol_frozen_utc: "2026-07-24T07:22:00Z"
+protocol_frozen_utc: "2026-07-24T07:31:00Z"
 output_dir: outputs/p5_main
 
 isaaclab:
@@ -10,28 +10,28 @@ isaaclab:
 
 vectorization:
   num_envs: 20
-  simulator_seed: 720240
+  simulator_seed: 730240
   seeds:
-    - 5101
-    - 5102
-    - 5103
-    - 5104
-    - 5105
-    - 5106
-    - 5107
-    - 5108
-    - 5109
-    - 5110
-    - 5111
-    - 5112
-    - 5113
-    - 5114
-    - 5115
-    - 5116
-    - 5117
-    - 5118
-    - 5119
-    - 5120
+    - 5201
+    - 5202
+    - 5203
+    - 5204
+    - 5205
+    - 5206
+    - 5207
+    - 5208
+    - 5209
+    - 5210
+    - 5211
+    - 5212
+    - 5213
+    - 5214
+    - 5215
+    - 5216
+    - 5217
+    - 5218
+    - 5219
+    - 5220
 
 trial:
   calibration_trials: 12
@@ -45,6 +45,11 @@ trial:
 safety:
   min_base_height_m: 0.15
   max_base_height_m: 0.65
+
+model:
+  feature_set: m2_affine_cross_hinge
+  prior_mean: identity_projection
+  prior_scale: 0.01
 
 checkpoints:
   flat:

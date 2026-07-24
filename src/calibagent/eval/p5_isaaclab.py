@@ -22,6 +22,7 @@ class P5BenchmarkConfig:
     vectorization: dict[str, Any]
     trial: dict[str, Any]
     safety: dict[str, Any]
+    model: dict[str, Any]
     checkpoints: dict[str, dict[str, str]]
     scenarios: tuple[dict[str, Any], ...]
     publication_gates: dict[str, Any]
@@ -39,6 +40,7 @@ class P5BenchmarkConfig:
             vectorization=dict(payload["vectorization"]),
             trial=dict(payload["trial"]),
             safety=dict(payload["safety"]),
+            model=dict(payload["model"]),
             checkpoints={
                 str(name): dict(value)
                 for name, value in dict(payload["checkpoints"]).items()
@@ -70,6 +72,12 @@ class P5BenchmarkConfig:
             self.safety["max_base_height_m"]
         ):
             raise ValueError("P5 safety base-height limits are inverted")
+        if (
+            str(self.model["feature_set"]) != "m2_affine_cross_hinge"
+            or str(self.model["prior_mean"]) != "identity_projection"
+            or float(self.model["prior_scale"]) <= 0.0
+        ):
+            raise ValueError("P5 model configuration does not match the runner")
 
 
 def _run(
@@ -166,6 +174,7 @@ def _scenario_payload(
         "safety_max_base_height_m": float(
             config.safety["max_base_height_m"]
         ),
+        "model_prior_scale": float(config.model["prior_scale"]),
     }
 
 

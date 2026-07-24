@@ -100,9 +100,10 @@ def test_p5_payload_and_cached_checkpoint_are_deterministic(
         cache,
     )
 
-    assert payload["simulator_seed"] == 720243
-    assert payload["seeds"] == list(range(5101, 5121))
+    assert payload["simulator_seed"] == 730243
+    assert payload["seeds"] == list(range(5201, 5221))
     assert payload["safety_min_base_height_m"] == 0.15
+    assert payload["model_prior_scale"] == 0.01
     assert resolved == checkpoint
 
 
