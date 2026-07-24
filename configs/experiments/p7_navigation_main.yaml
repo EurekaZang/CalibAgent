@@ -1,6 +1,6 @@
-experiment_role: pilot
-protocol_frozen_utc: ""
-output_dir: outputs/p7_pilot
+experiment_role: main
+protocol_frozen_utc: "2026-07-24T16:46:46Z"
+output_dir: outputs/p7_main
 
 isaaclab:
   tag: v2.3.2
@@ -11,29 +11,69 @@ isaaclab:
   maximum_startup_attempts: 2
 
 vectorization:
-  num_seeds: 20
-  simulator_seed: 905240
+  num_seeds: 60
+  simulator_seed: 920240
   seeds:
-    - 7931
-    - 7932
-    - 7933
-    - 7934
-    - 7935
-    - 7936
-    - 7937
-    - 7938
-    - 7939
-    - 7940
-    - 7941
-    - 7942
-    - 7943
-    - 7944
-    - 7945
-    - 7946
-    - 7947
-    - 7948
-    - 7949
-    - 7950
+    - 8001
+    - 8002
+    - 8003
+    - 8004
+    - 8005
+    - 8006
+    - 8007
+    - 8008
+    - 8009
+    - 8010
+    - 8011
+    - 8012
+    - 8013
+    - 8014
+    - 8015
+    - 8016
+    - 8017
+    - 8018
+    - 8019
+    - 8020
+    - 8021
+    - 8022
+    - 8023
+    - 8024
+    - 8025
+    - 8026
+    - 8027
+    - 8028
+    - 8029
+    - 8030
+    - 8031
+    - 8032
+    - 8033
+    - 8034
+    - 8035
+    - 8036
+    - 8037
+    - 8038
+    - 8039
+    - 8040
+    - 8041
+    - 8042
+    - 8043
+    - 8044
+    - 8045
+    - 8046
+    - 8047
+    - 8048
+    - 8049
+    - 8050
+    - 8051
+    - 8052
+    - 8053
+    - 8054
+    - 8055
+    - 8056
+    - 8057
+    - 8058
+    - 8059
+    - 8060
 
 methods:
   - B0_raw
@@ -99,8 +139,6 @@ navigation:
     emergency_base_height_m: 0.16
     zero_command_s: 1.00
     emergency_zero_command_s: 0.50
-    reengagement_ramp_s: 2.00
-    reengagement_linear_accel_mps2: 0.25
     maximum_attempts: 3
     maximum_emergency_attempts: 30
   task_commands:
@@ -179,7 +217,7 @@ maps:
 
 publication_gates:
   minimum_maps: 3
-  minimum_seeds_per_map: 20
+  minimum_seeds_per_map: 60
   minimum_b8_success_rate: 0.90
   maximum_b8_collision_rate: 0.05
   minimum_b8_vs_b0_time_improvement_ci95_lower_s: 0.0

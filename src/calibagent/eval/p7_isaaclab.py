@@ -196,11 +196,6 @@ class P7BenchmarkConfig:
             or float(recovery["detection_s"]) <= 0.0
             or float(recovery["zero_command_s"]) <= 0.0
             or float(recovery["emergency_zero_command_s"]) <= 0.0
-            or float(recovery["reengagement_ramp_s"]) <= 0.0
-            or float(recovery["reengagement_ramp_s"]) >= float(self.navigation["timeout_s"])
-            or float(recovery["reengagement_linear_accel_mps2"]) <= 0.0
-            or float(recovery["reengagement_linear_accel_mps2"])
-            > float(self.navigation["maximum_linear_accel_mps2"])
             or int(recovery["maximum_attempts"]) < 1
             or int(recovery["maximum_emergency_attempts"]) < 1
         ):
