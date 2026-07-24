@@ -26,7 +26,6 @@ from calibagent.interfaces.types import PriorState, RobotState, VelocityCommand
 from calibagent.sim import CommandDistortion, make_distortion_parameters
 from calibagent_sim.policy import load_actor
 from calibagent_sim.runner import (
-    _CALIBRATION_SEED,
     ScenarioConfig,
     _configure_environment,
     _execute_batch_trial,
@@ -38,6 +37,17 @@ from calibagent_sim.runner import (
 _METHODS = {"B0_raw", "B1_dense", "B8_full"}
 _NAVIGATION_BOUNDS = np.asarray(
     [[-0.50, 0.50], [-0.35, 0.35], [-0.90, 0.90]],
+    dtype=np.float64,
+)
+_P7_CALIBRATION_SEED = np.asarray(
+    [
+        [-0.30, 0.00, 0.00],
+        [0.50, 0.00, 0.00],
+        [0.00, -0.35, 0.00],
+        [0.00, 0.35, 0.00],
+        [0.00, 0.00, -0.90],
+        [0.00, 0.00, 0.90],
+    ],
     dtype=np.float64,
 )
 
@@ -236,8 +246,8 @@ def _run_calibration(
             if method == "B1_dense":
                 desired[env_index] = dense_pool.commands[trial]
                 sources.append("dense_grid")
-            elif trial < len(_CALIBRATION_SEED):
-                desired[env_index] = _CALIBRATION_SEED[trial]
+            elif trial < len(_P7_CALIBRATION_SEED):
+                desired[env_index] = _P7_CALIBRATION_SEED[trial]
                 sources.append("seed_design")
             else:
                 candidates = planners[env_index].propose(

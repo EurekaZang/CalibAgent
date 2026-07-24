@@ -37,10 +37,10 @@ calibration:
 navigation:
   sample_rate_hz: 50
   planner_rate_hz: 10
-  timeout_s: 22.0
+  timeout_s: 40.0
   initial_stabilization_s: 0.50
   environment_spacing_m: 8.0
-  cruise_speed_mps: 0.24
+  cruise_speed_mps: 0.22
   maximum_lateral_speed_mps: 0.18
   maximum_yaw_rate_rps: 0.45
   position_gain: 0.80
@@ -50,12 +50,12 @@ navigation:
   collision_footprint_radius_m: 0.20
   maximum_linear_accel_mps2: 1.0
   maximum_angular_accel_rps2: 2.5
-  inverse_regularization: 0.02
-  inverse_risk_weight: 0.05
+  inverse_regularization: 0.005
+  inverse_risk_weight: 0.01
   task_commands:
     - [0.12, 0.00, 0.00]
     - [0.20, 0.00, 0.00]
-    - [0.24, 0.00, 0.00]
+    - [0.22, 0.00, 0.00]
     - [0.16, 0.10, 0.25]
     - [0.16, -0.10, -0.25]
     - [0.12, 0.12, 0.40]
@@ -82,9 +82,9 @@ maps:
       payload_add_kg: 0.0
       com_offset_x_m: 0.0
     waypoints:
-      - [1.20, 0.00]
-      - [2.40, 0.00]
-      - [3.20, 0.00]
+      - [0.80, 0.00]
+      - [1.50, 0.00]
+      - [2.20, 0.00]
     obstacles: []
   - id: slalom
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
@@ -96,17 +96,17 @@ maps:
       payload_add_kg: 1.0
       com_offset_x_m: 0.01
     waypoints:
-      - [0.90, -0.38]
-      - [1.65, 0.38]
-      - [2.40, -0.38]
-      - [3.20, 0.00]
+      - [0.60, -0.34]
+      - [1.15, 0.34]
+      - [1.70, -0.34]
+      - [2.30, 0.00]
     obstacles:
-      - center: [0.90, 0.24]
-        size: [0.32, 0.38, 0.50]
-      - center: [1.65, -0.24]
-        size: [0.32, 0.38, 0.50]
-      - center: [2.40, 0.24]
-        size: [0.32, 0.38, 0.50]
+      - center: [0.60, 0.20]
+        size: [0.28, 0.30, 0.50]
+      - center: [1.15, -0.20]
+        size: [0.28, 0.30, 0.50]
+      - center: [1.70, 0.20]
+        size: [0.28, 0.30, 0.50]
   - id: narrow_corridor
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
@@ -117,14 +117,14 @@ maps:
       payload_add_kg: 1.5
       com_offset_x_m: 0.015
     waypoints:
-      - [1.00, 0.00]
-      - [2.00, 0.12]
-      - [3.20, 0.00]
+      - [0.80, 0.00]
+      - [1.50, 0.10]
+      - [2.30, 0.00]
     obstacles:
-      - center: [1.70, 0.72]
-        size: [3.40, 0.25, 0.50]
-      - center: [1.70, -0.72]
-        size: [3.40, 0.25, 0.50]
+      - center: [1.20, 0.65]
+        size: [2.40, 0.20, 0.50]
+      - center: [1.20, -0.65]
+        size: [2.40, 0.20, 0.50]
 
 publication_gates:
   minimum_maps: 3
