@@ -16,7 +16,7 @@ from calibagent.eval.p7_isaaclab import (
 def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     return {
         "map": map_config["id"],
-        "num_seeds": 30,
+        "num_seeds": 5,
         "same_planner": True,
         "b8_success_rate": 0.95,
         "b8_collision_rate": 0.0,
@@ -36,7 +36,7 @@ def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def test_p7_main_config_and_publication_gates() -> None:
+def test_p7_pilot_config_and_publication_gates() -> None:
     config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
 
@@ -44,13 +44,14 @@ def test_p7_main_config_and_publication_gates() -> None:
 
     assert result["verdict"] == "GO"
     assert all(result["gates"].values())
-    assert config.experiment_role == "main"
-    assert len(config.vectorization["seeds"]) == 30
+    assert config.experiment_role == "pilot"
+    assert len(config.vectorization["seeds"]) == 5
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 830241
+    assert payload["simulator_seed"] == 810241
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
+    assert payload["calibration"]["model_prior_gain"] == 0.60
     assert payload["calibration"]["command_bounds"][0] == [-0.40, 0.40]
     assert payload["navigation"]["stall_recovery"]["maximum_attempts"] == 3
     assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 10

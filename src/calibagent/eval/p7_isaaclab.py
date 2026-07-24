@@ -91,6 +91,8 @@ class P7BenchmarkConfig:
         active = int(self.calibration["active_trials"])
         if str(self.calibration["feature_set"]) != "m1_affine":
             raise ValueError("P7 affine navigation requires the frozen M1 affine model")
+        if not 0.0 < float(self.calibration["model_prior_gain"]) <= 1.0:
+            raise ValueError("P7 model prior gain must be in (0, 1]")
         command_bounds = np.asarray(self.calibration["command_bounds"], dtype=np.float64)
         if (
             command_bounds.shape != (3, 2)

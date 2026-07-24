@@ -132,7 +132,8 @@ def _model_components(
         reference.commands
     )
     basis = transformer.transform(reference.commands)
-    identity_prior = np.linalg.lstsq(basis, reference.commands, rcond=None)[0].T
+    prior_targets = float(calibration["model_prior_gain"]) * reference.commands
+    command_prior = np.linalg.lstsq(basis, prior_targets, rcond=None)[0].T
     models = [
         BayesianBasisModel(
             transformer,
@@ -142,7 +143,7 @@ def _model_components(
         for _ in config.seeds
     ]
     for model in models:
-        model.initialize(PriorState(mean=identity_prior))
+        model.initialize(PriorState(mean=command_prior))
     envelope = SafetyEnvelope(
         min_base_height=config.safety_min_base_height_m,
         max_base_height=config.safety_max_base_height_m,
