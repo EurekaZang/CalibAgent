@@ -24,7 +24,11 @@ from calibagent.core.models.features import BasisTransformer
 from calibagent.core.planning.candidates import CandidatePool, CommandSpace
 from calibagent.core.planning.ivr import IntegratedVariancePlanner
 from calibagent.core.planning.task import TaskDistribution
-from calibagent.core.safety import HardSafetyFilter, SafetyEnvelope
+from calibagent.core.safety import (
+    HardSafetyFilter,
+    SafetyEnvelope,
+    height_rate_guarded_command,
+)
 from calibagent.interfaces.types import PriorState, RobotState, VelocityCommand
 from calibagent.sim import CommandDistortion, make_distortion_parameters
 from calibagent_sim.policy import load_actor
@@ -424,10 +428,15 @@ def _run_navigation(
     goal_radius = float(navigation["goal_radius_m"])
     recovery = dict(navigation["stall_recovery"])
     velocity_feedback = dict(navigation["velocity_feedback"])
+    height_rate_guard = dict(navigation["height_rate_guard"])
     feedback_alpha = float(velocity_feedback["ema_alpha"])
     feedback_startup_delay_s = float(velocity_feedback["startup_delay_s"])
     feedback_recovery_reengagement_delay_s = float(
         velocity_feedback["recovery_reengagement_delay_s"]
+    )
+    height_guard_hold_ticks = max(
+        1,
+        round(float(height_rate_guard["hold_s"]) * planner_rate),
     )
     recovery_detection_ticks = max(1, round(float(recovery["detection_s"]) * planner_rate))
     recovery_zero_ticks = max(1, round(float(recovery["zero_command_s"]) * planner_rate))
@@ -490,6 +499,9 @@ def _run_navigation(
     emergency_recovery_active = np.zeros(count, dtype=bool)
     feedback_active = np.zeros(count, dtype=bool)
     feedback_updates = np.zeros(count, dtype=np.int64)
+    height_guard_ticks = np.zeros(count, dtype=np.int64)
+    height_guard_active = np.zeros(count, dtype=bool)
+    height_guard_updates = np.zeros(count, dtype=np.int64)
     feedback_resume_after_s = np.full(
         count,
         feedback_startup_delay_s,
@@ -499,6 +511,7 @@ def _run_navigation(
     valid_flags: list[bool] = []
     arrays = _state_arrays(robot, origins)
     previous_position = arrays[0][:, :2].copy()
+    previous_planner_height = arrays[0][:, 2].copy()
     safety_event_count = 0
 
     with torch.no_grad():
@@ -521,6 +534,8 @@ def _run_navigation(
                         inverse_target[env_index] = 0.0
                         compensated[env_index] = 0.0
                         feedback_active[env_index] = False
+                        height_guard_active[env_index] = False
+                        height_guard_ticks[env_index] = 0
                         continue
                     while waypoint_index[env_index] < len(waypoints) - 1:
                         distance = np.linalg.norm(
@@ -542,6 +557,8 @@ def _run_navigation(
                         inverse_target[env_index] = 0.0
                         compensated[env_index] = 0.0
                         feedback_active[env_index] = False
+                        height_guard_active[env_index] = False
+                        height_guard_ticks[env_index] = 0
                         continue
                     target = waypoints[waypoint_index[env_index]]
                     desired[env_index] = _planner_command(
@@ -643,16 +660,39 @@ def _run_navigation(
                         )
                         proposed = solution.command
                         inverse_objective[env_index] = solution.objective
-                    compensated[env_index] = (
-                        np.zeros(3, dtype=np.float64)
-                        if recovery_active[env_index]
-                        else _slew_limit(
+                    if recovery_active[env_index]:
+                        compensated[env_index] = np.zeros(3, dtype=np.float64)
+                        height_guard_active[env_index] = False
+                        height_guard_ticks[env_index] = 0
+                    else:
+                        guarded_proposed, guard_now = height_rate_guarded_command(
                             proposed,
+                            base_height_m=float(position[env_index, 2]),
+                            previous_base_height_m=float(previous_planner_height[env_index]),
+                            activation_height_m=float(height_rate_guard["activation_height_m"]),
+                            minimum_drop_m=float(
+                                height_rate_guard["minimum_drop_per_planner_tick_m"]
+                            ),
+                            maximum_linear_norm=float(
+                                height_rate_guard["maximum_linear_command_norm"]
+                            ),
+                            force_active=bool(height_guard_ticks[env_index] > 0),
+                        )
+                        compensated[env_index] = _slew_limit(
+                            guarded_proposed,
                             compensated[env_index],
                             navigation,
                             control_dt,
                         )
-                    )
+                        if guard_now:
+                            if height_guard_ticks[env_index] == 0:
+                                height_guard_ticks[env_index] = height_guard_hold_ticks
+                            height_guard_active[env_index] = True
+                            height_guard_updates[env_index] += 1
+                            height_guard_ticks[env_index] -= 1
+                        else:
+                            height_guard_active[env_index] = False
+                previous_planner_height = position[:, 2].copy()
             effective = distortion.step(compensated, dt)
             effective[finished] = 0.0
             command_term.vel_command_b[:] = torch.as_tensor(
@@ -709,6 +749,7 @@ def _run_navigation(
                         "inverse_target_vy": inverse_target[env_index, 1],
                         "inverse_target_wz": inverse_target[env_index, 2],
                         "velocity_feedback_active": bool(feedback_active[env_index]),
+                        "height_rate_guard_active": bool(height_guard_active[env_index]),
                         "compensated_vx": compensated[env_index, 0],
                         "compensated_vy": compensated[env_index, 1],
                         "compensated_wz": compensated[env_index, 2],
@@ -760,6 +801,7 @@ def _run_navigation(
             "regular_recovery_attempts": int(regular_recovery_attempts[index]),
             "emergency_recovery_attempts": int(emergency_recovery_attempts[index]),
             "velocity_feedback_updates": int(feedback_updates[index]),
+            "height_rate_guard_updates": int(height_guard_updates[index]),
             "serious_safety_event": bool(serious[index]),
         }
         for index, seed in enumerate(config.seeds)
@@ -843,6 +885,9 @@ def run_p7_navigation(
         ),
         "velocity_feedback_updates": int(
             sum(int(row["velocity_feedback_updates"]) for row in episode_rows)
+        ),
+        "height_rate_guard_updates": int(
+            sum(int(row["height_rate_guard_updates"]) for row in episode_rows)
         ),
         "valid_observation_ratio": float(np.mean(valid)) if valid else 1.0,
         "safety_events": int(safety_events),

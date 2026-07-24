@@ -3,7 +3,11 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from calibagent.core.safety import HardSafetyFilter, SafetyEnvelope
+from calibagent.core.safety import (
+    HardSafetyFilter,
+    SafetyEnvelope,
+    height_rate_guarded_command,
+)
 from calibagent.interfaces.types import Candidate, RobotState, VelocityCommand
 
 
@@ -39,10 +43,20 @@ def test_safe_candidate_is_accepted() -> None:
     [
         (_candidate((0.8, 0.0, 0.0)), _state(), [], "COMMAND_AXIS_0"),
         (_candidate((0.6, 0.6, 0.0)), _state(), [], "COMMAND_AXIS_1"),
-        (_candidate((0.6, 0.0, 1.0)), _state(), [_candidate((0.4, 0.0, 0.5))], "LINEAR_ANGULAR_COUPLING"),
+        (
+            _candidate((0.6, 0.0, 1.0)),
+            _state(),
+            [_candidate((0.4, 0.0, 0.5))],
+            "LINEAR_ANGULAR_COUPLING",
+        ),
         (_candidate((0.5, 0.0, 0.0)), _state(), [], "LINEAR_SLEW"),
         (_candidate((0.0, 0.0, 0.9)), _state(), [], "ANGULAR_SLEW"),
-        (_candidate((0.3, 0.0, 0.0)), _state(position_xy=(4.5, 0.0)), [], "WORKSPACE_PROJECTED_AXIS_0"),
+        (
+            _candidate((0.3, 0.0, 0.0)),
+            _state(position_xy=(4.5, 0.0)),
+            [],
+            "WORKSPACE_PROJECTED_AXIS_0",
+        ),
         (_candidate((0.1, 0.0, 0.0)), _state(roll=0.5), [], "ROLL_LIMIT"),
         (_candidate((0.1, 0.0, 0.0)), _state(pitch=-0.5), [], "PITCH_LIMIT"),
         (_candidate((0.1, 0.0, 0.0)), _state(base_height=0.1), [], "BASE_HEIGHT_LIMIT"),
@@ -78,3 +92,28 @@ def test_invalid_envelope_is_rejected() -> None:
     state = _state(position_xy=(float("nan"), 0.0))
     assert HardSafetyFilter().monitor(state).reason_codes == ("STATE_NONFINITE",)
     assert np.isfinite(_candidate((0.1, 0.0, 0.0)).command.as_array()).all()
+
+
+def test_height_rate_guard_derates_only_low_descending_commands() -> None:
+    command = np.asarray([0.40, 0.30, 0.20])
+    guarded, active = height_rate_guarded_command(
+        command,
+        base_height_m=0.18,
+        previous_base_height_m=0.185,
+        activation_height_m=0.19,
+        minimum_drop_m=0.003,
+        maximum_linear_norm=0.25,
+    )
+    assert active
+    assert np.linalg.norm(guarded[:2]) == pytest.approx(0.25)
+    assert guarded[2] == command[2]
+    unguarded, active = height_rate_guarded_command(
+        command,
+        base_height_m=0.20,
+        previous_base_height_m=0.205,
+        activation_height_m=0.19,
+        minimum_drop_m=0.003,
+        maximum_linear_norm=0.25,
+    )
+    assert not active
+    assert np.array_equal(unguarded, command)

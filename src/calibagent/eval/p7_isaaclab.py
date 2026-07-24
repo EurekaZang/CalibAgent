@@ -150,13 +150,26 @@ class P7BenchmarkConfig:
             or np.any(maximum_correction < 0.0)
             or float(velocity_feedback["activation_threshold"]) < 0.0
             or float(velocity_feedback["startup_delay_s"]) < 0.0
-            or float(velocity_feedback["startup_delay_s"])
-            >= float(self.navigation["timeout_s"])
+            or float(velocity_feedback["startup_delay_s"]) >= float(self.navigation["timeout_s"])
             or float(velocity_feedback["recovery_reengagement_delay_s"]) < 0.0
             or float(velocity_feedback["recovery_reengagement_delay_s"])
             >= float(self.navigation["timeout_s"])
         ):
             raise ValueError("P7 velocity feedback configuration is invalid")
+        height_rate_guard = dict(self.navigation["height_rate_guard"])
+        if (
+            float(height_rate_guard["activation_height_m"])
+            < float(self.safety["min_base_height_m"]) + 0.02
+            or float(height_rate_guard["activation_height_m"])
+            >= float(self.safety["max_base_height_m"])
+            or float(height_rate_guard["minimum_drop_per_planner_tick_m"]) <= 0.0
+            or float(height_rate_guard["hold_s"]) <= 0.0
+            or float(height_rate_guard["maximum_linear_command_norm"])
+            <= float(self.navigation["cruise_speed_mps"])
+            or float(height_rate_guard["maximum_linear_command_norm"])
+            > float(self.calibration["maximum_linear_norm"])
+        ):
+            raise ValueError("P7 height-rate guard configuration is invalid")
         task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)
         if (
             task_commands.ndim != 2
@@ -178,8 +191,6 @@ class P7BenchmarkConfig:
             or float(recovery["maximum_actual_speed_mps"]) <= 0.0
             or float(recovery["maximum_base_height_m"]) <= float(self.safety["min_base_height_m"])
             or float(recovery["emergency_base_height_m"]) <= float(self.safety["min_base_height_m"])
-            or float(recovery["emergency_base_height_m"])
-            < float(self.safety["min_base_height_m"]) + 0.02
             or float(recovery["emergency_base_height_m"])
             >= float(recovery["maximum_base_height_m"])
             or float(recovery["detection_s"]) <= 0.0

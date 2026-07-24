@@ -120,7 +120,11 @@ class HardSafetyFilter:
             zip(state.position_xy, self.envelope.workspace_bounds, strict=True)
         ):
             low, high = bounds
-            if not low + self.envelope.boundary_margin <= position <= high - self.envelope.boundary_margin:
+            if (
+                not low + self.envelope.boundary_margin
+                <= position
+                <= high - self.envelope.boundary_margin
+            ):
                 reasons.append(f"WORKSPACE_STATE_AXIS_{axis}")
         return reasons
 
@@ -186,7 +190,11 @@ class HardSafetyFilter:
             zip(projected, self.envelope.workspace_bounds, strict=True)
         ):
             low, high = bounds
-            if not low + self.envelope.boundary_margin <= position <= high - self.envelope.boundary_margin:
+            if (
+                not low + self.envelope.boundary_margin
+                <= position
+                <= high - self.envelope.boundary_margin
+            ):
                 reasons.append(f"WORKSPACE_PROJECTED_AXIS_{axis}")
 
         unique = tuple(dict.fromkeys(reasons))
@@ -211,3 +219,48 @@ class HardSafetyFilter:
             ("NO_SAFE_CANDIDATE", *tuple(dict.fromkeys(collected))),
             None,
         )
+
+
+def height_rate_guarded_command(
+    command: NDArray[np.floating[Any]] | Sequence[float],
+    *,
+    base_height_m: float,
+    previous_base_height_m: float,
+    activation_height_m: float,
+    minimum_drop_m: float,
+    maximum_linear_norm: float,
+    force_active: bool = False,
+) -> tuple[NDArray[np.float64], bool]:
+    """Derate a command when a low base is descending faster than a fixed margin."""
+
+    output = np.asarray(command, dtype=np.float64).copy()
+    scalars = np.asarray(
+        [
+            base_height_m,
+            previous_base_height_m,
+            activation_height_m,
+            minimum_drop_m,
+            maximum_linear_norm,
+        ],
+        dtype=np.float64,
+    )
+    if (
+        output.shape != (3,)
+        or not np.all(np.isfinite(output))
+        or not np.all(np.isfinite(scalars))
+        or activation_height_m <= 0.0
+        or minimum_drop_m <= 0.0
+        or maximum_linear_norm <= 0.0
+    ):
+        raise ValueError("height-rate guard inputs are invalid")
+    active = bool(
+        force_active
+        or (
+            base_height_m <= activation_height_m
+            and previous_base_height_m - base_height_m >= minimum_drop_m
+        )
+    )
+    linear_norm = float(np.linalg.norm(output[:2]))
+    if active and linear_norm > maximum_linear_norm:
+        output[:2] *= maximum_linear_norm / linear_norm
+    return output, active
