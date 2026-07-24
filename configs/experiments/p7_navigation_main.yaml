@@ -24,6 +24,7 @@ methods:
   - B8_full
 
 calibration:
+  feature_set: m1_affine
   dense_trials: 30
   active_trials: 12
   dense_design_seed: 77149

@@ -36,9 +36,7 @@ def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
 
 
 def test_p7_pilot_config_and_publication_gates() -> None:
-    config = P7BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p7_navigation_main.yaml")
-    )
+    config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
 
     result = evaluate_p7_summaries(config, summaries)
@@ -49,12 +47,11 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert payload["method"] == "B8_full"
     assert payload["simulator_seed"] == 810241
     assert payload["waypoints"] == config.maps[1]["waypoints"]
+    assert payload["calibration"]["feature_set"] == "m1_affine"
 
 
 def test_p7_gates_reject_no_raw_effect_and_dense_regression() -> None:
-    config = P7BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p7_navigation_main.yaml")
-    )
+    config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
     summaries[0]["b8_vs_b0_completion_time_improvement_ci95_s"] = [-0.1, 0.5]
     summaries[1]["b8_to_b1_completion_time_ratio_ci95"] = [1.1, 1.2]
@@ -67,12 +64,14 @@ def test_p7_gates_reject_no_raw_effect_and_dense_regression() -> None:
 
 
 def test_p7_config_rejects_budget_and_method_changes() -> None:
-    config = P7BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p7_navigation_main.yaml")
-    )
+    config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     calibration = dict(config.calibration)
     calibration["active_trials"] = 13
     with pytest.raises(ValueError, match="40%"):
         replace(config, calibration=calibration).validate()
     with pytest.raises(ValueError, match="B0/B1/B8"):
         replace(config, methods=("B0_raw", "B8_full")).validate()
+    calibration = dict(config.calibration)
+    calibration["feature_set"] = "m2_affine_cross_hinge"
+    with pytest.raises(ValueError, match="M1 affine"):
+        replace(config, calibration=calibration).validate()

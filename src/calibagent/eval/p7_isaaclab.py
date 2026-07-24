@@ -79,11 +79,11 @@ class P7BenchmarkConfig:
             raise ValueError("P7 requires at least three unique maps")
         dense = int(self.calibration["dense_trials"])
         active = int(self.calibration["active_trials"])
+        if str(self.calibration["feature_set"]) != "m1_affine":
+            raise ValueError("P7 affine navigation requires the frozen M1 affine model")
         if active > 0.40 * dense:
             raise ValueError("P7 B8 calibration budget exceeds 40% of B1")
-        if int(self.navigation["sample_rate_hz"]) % int(
-            self.navigation["planner_rate_hz"]
-        ):
+        if int(self.navigation["sample_rate_hz"]) % int(self.navigation["planner_rate_hz"]):
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:
             raise ValueError("P7 goal radius must be positive")
@@ -179,9 +179,7 @@ def _paired_map_summary(
     b8_to_b1_ratio = _bootstrap_interval(
         count,
         simulator_seed + 701,
-        lambda sample: float(
-            np.mean(b8_time[sample]) / max(np.mean(b1_time[sample]), 1e-12)
-        ),
+        lambda sample: float(np.mean(b8_time[sample]) / max(np.mean(b1_time[sample]), 1e-12)),
     )
 
     def difference_interval(
@@ -214,27 +212,17 @@ def _paired_map_summary(
         "b0_mean_completion_time_s": float(np.mean(b0_time)),
         "b1_mean_completion_time_s": float(np.mean(b1_time)),
         "b8_mean_completion_time_s": float(np.mean(b8_time)),
-        "b8_vs_b0_completion_time_improvement_mean_s": float(
-            np.mean(time_improvement)
-        ),
+        "b8_vs_b0_completion_time_improvement_mean_s": float(np.mean(time_improvement)),
         "b8_vs_b0_completion_time_improvement_ci95_s": _bootstrap_interval(
             count,
             simulator_seed + 703,
             lambda sample: float(np.mean(time_improvement[sample])),
         ),
         "b8_vs_b0_completion_time_win_rate": float(np.mean(time_improvement > 0.0)),
-        "b8_minus_b0_success_ci95": difference_interval(
-            b8_success, b0_success, 709
-        ),
-        "b0_minus_b8_collision_ci95": difference_interval(
-            b0_collision, b8_collision, 719
-        ),
-        "b8_minus_b1_success_ci95": difference_interval(
-            b8_success, b1_success, 727
-        ),
-        "b1_minus_b8_collision_ci95": difference_interval(
-            b1_collision, b8_collision, 733
-        ),
+        "b8_minus_b0_success_ci95": difference_interval(b8_success, b0_success, 709),
+        "b0_minus_b8_collision_ci95": difference_interval(b0_collision, b8_collision, 719),
+        "b8_minus_b1_success_ci95": difference_interval(b8_success, b1_success, 727),
+        "b1_minus_b8_collision_ci95": difference_interval(b1_collision, b8_collision, 733),
         "b8_to_b1_completion_time_ratio_ci95": b8_to_b1_ratio,
         "b8_to_b1_calibration_budget_ratio": float(
             method_summaries["B8_full"]["calibration_trials"]
@@ -273,14 +261,12 @@ def evaluate_p7_summaries(
         "map_identity": actual == expected,
         "minimum_maps": len(summaries) >= int(gates["minimum_maps"]),
         "seed_coverage": all(
-            int(item["num_seeds"]) >= int(gates["minimum_seeds_per_map"])
-            for item in summaries
+            int(item["num_seeds"]) >= int(gates["minimum_seeds_per_map"]) for item in summaries
         ),
         "same_planner": all(bool(item["same_planner"]) for item in summaries),
         "b8_task_success": all(
             float(item["b8_success_rate"]) >= float(gates["minimum_b8_success_rate"])
-            and float(item["b8_collision_rate"])
-            <= float(gates["maximum_b8_collision_rate"])
+            and float(item["b8_collision_rate"]) <= float(gates["maximum_b8_collision_rate"])
             for item in summaries
         ),
         "b8_over_raw": all(
@@ -336,17 +322,11 @@ def evaluate_p7_summaries(
             (float(item["b8_collision_rate"]) for item in summaries), default=1.0
         ),
         "minimum_b8_vs_b0_time_improvement_ci95_lower_s": min(
-            (
-                float(item["b8_vs_b0_completion_time_improvement_ci95_s"][0])
-                for item in summaries
-            ),
+            (float(item["b8_vs_b0_completion_time_improvement_ci95_s"][0]) for item in summaries),
             default=float("-inf"),
         ),
         "maximum_b8_to_b1_time_ratio_ci95_upper": max(
-            (
-                float(item["b8_to_b1_completion_time_ratio_ci95"][1])
-                for item in summaries
-            ),
+            (float(item["b8_to_b1_completion_time_ratio_ci95"][1]) for item in summaries),
             default=float("inf"),
         ),
         "total_serious_safety_events": sum(

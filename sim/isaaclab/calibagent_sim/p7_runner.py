@@ -139,7 +139,9 @@ def _model_components(
 ]:
     command_space = CommandSpace(_NAVIGATION_BOUNDS, max_linear_norm=0.45)
     reference = CandidatePool.generate(command_space, count=512, seed=77131)
-    transformer = BasisTransformer("m2_affine_cross_hinge").fit(reference.commands)
+    transformer = BasisTransformer(str(payload["calibration"]["feature_set"])).fit(
+        reference.commands
+    )
     basis = transformer.transform(reference.commands)
     identity_prior = np.linalg.lstsq(basis, reference.commands, rcond=None)[0].T
     models = [
@@ -164,10 +166,7 @@ def _model_components(
         reference.commands[coupled <= envelope.max_coupled_load],
         command_space,
     )
-    planners = [
-        IntegratedVariancePlanner(safe_pool, duplicate_distance=0.02)
-        for _ in config.seeds
-    ]
+    planners = [IntegratedVariancePlanner(safe_pool, duplicate_distance=0.02) for _ in config.seeds]
     task_commands = np.asarray(payload["navigation"]["task_commands"], dtype=np.float64)
     return (
         models,
@@ -283,9 +282,7 @@ def _run_calibration(
                 models[env_index].update(observation)
             histories[env_index].append(desired[env_index].copy())
             safety_events += int(bool(observation.safety_events))
-            serious_events += int(
-                "SIM_TERMINATION" in "|".join(observation.safety_events)
-            )
+            serious_events += int("SIM_TERMINATION" in "|".join(observation.safety_events))
             rows.append(
                 {
                     "map": payload["id"],
@@ -365,9 +362,7 @@ def _slew_limit(
     if norm > limit:
         output[:2] = previous[:2] + delta * (limit / norm)
     angular_limit = float(navigation["maximum_angular_accel_rps2"]) * control_dt
-    output[2] = previous[2] + float(
-        np.clip(output[2] - previous[2], -angular_limit, angular_limit)
-    )
+    output[2] = previous[2] + float(np.clip(output[2] - previous[2], -angular_limit, angular_limit))
     return output
 
 
@@ -450,6 +445,7 @@ def _run_navigation(
     finished = np.zeros(count, dtype=bool)
     serious = np.zeros(count, dtype=bool)
     arrival_time = np.full(count, timeout, dtype=np.float64)
+    arrival_position = np.full((count, 2), np.nan, dtype=np.float64)
     path_length = np.zeros(count, dtype=np.float64)
     desired = np.zeros((count, 3), dtype=np.float64)
     compensated = np.zeros((count, 3), dtype=np.float64)
@@ -479,15 +475,12 @@ def _run_navigation(
                         continue
                     while waypoint_index[env_index] < len(waypoints) - 1:
                         distance = np.linalg.norm(
-                            waypoints[waypoint_index[env_index]]
-                            - position[env_index, :2]
+                            waypoints[waypoint_index[env_index]] - position[env_index, :2]
                         )
                         if distance > waypoint_radius:
                             break
                         waypoint_index[env_index] += 1
-                    goal_distance = np.linalg.norm(
-                        waypoints[-1] - position[env_index, :2]
-                    )
+                    goal_distance = np.linalg.norm(waypoints[-1] - position[env_index, :2])
                     if (
                         waypoint_index[env_index] == len(waypoints) - 1
                         and goal_distance <= goal_radius
@@ -495,6 +488,7 @@ def _run_navigation(
                         success[env_index] = True
                         finished[env_index] = True
                         arrival_time[env_index] = step * dt
+                        arrival_position[env_index] = position[env_index, :2]
                         desired[env_index] = 0.0
                         compensated[env_index] = 0.0
                         continue
@@ -532,15 +526,11 @@ def _run_navigation(
             )
             observation = unwrapped.observation_manager.compute()["policy"]
             actions = actor(torch.clamp(observation, -100.0, 100.0))
-            _, _, terminated, truncated, _ = env.step(
-                torch.clamp(actions, -100.0, 100.0)
-            )
+            _, _, terminated, truncated, _ = env.step(torch.clamp(actions, -100.0, 100.0))
             arrays = _state_arrays(robot, origins)
             position, velocity, angular, roll, pitch, yaw = arrays
             done = (terminated | truncated).detach().cpu().numpy()
-            path_length += np.linalg.norm(position[:, :2] - previous_position, axis=1) * (
-                ~finished
-            )
+            path_length += np.linalg.norm(position[:, :2] - previous_position, axis=1) * (~finished)
             previous_position = position[:, :2].copy()
             for env_index in range(count):
                 was_active = not finished[env_index]
@@ -610,16 +600,17 @@ def _run_navigation(
             "method": method,
             "success": bool(success[index]),
             "collision": bool(collision[index]),
-            "arrival_time_s": (
-                float(arrival_time[index]) if success[index] else float("nan")
-            ),
+            "arrival_time_s": (float(arrival_time[index]) if success[index] else float("nan")),
             "completion_time_s": float(arrival_time[index]),
             "path_length_m": float(path_length[index]),
+            "arrival_x": float(arrival_position[index, 0]),
+            "arrival_y": float(arrival_position[index, 1]),
+            "goal_distance_at_arrival_m": float(
+                np.linalg.norm(waypoints[-1] - arrival_position[index])
+            ),
             "final_x": float(arrays[0][index, 0]),
             "final_y": float(arrays[0][index, 1]),
-            "goal_distance_m": float(
-                np.linalg.norm(waypoints[-1] - arrays[0][index, :2])
-            ),
+            "goal_distance_m": float(np.linalg.norm(waypoints[-1] - arrays[0][index, :2])),
             "serious_safety_event": bool(serious[index]),
         }
         for index, seed in enumerate(config.seeds)
@@ -695,9 +686,7 @@ def run_p7_navigation(
         "valid_observation_ratio": float(np.mean(valid)) if valid else 1.0,
         "safety_events": int(safety_events),
         "maximum_abort_latency_s": (
-            1.0 / float(payload["navigation"]["sample_rate_hz"])
-            if safety_events
-            else 0.0
+            1.0 / float(payload["navigation"]["sample_rate_hz"]) if safety_events else 0.0
         ),
         "serious_safety_events": int(serious_events),
         "finite": bool(np.all(np.isfinite(completion))),
