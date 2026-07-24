@@ -36,17 +36,17 @@ from calibagent_sim.runner import (
 
 _METHODS = {"B0_raw", "B1_dense", "B8_full"}
 _NAVIGATION_BOUNDS = np.asarray(
-    [[-0.50, 0.50], [-0.35, 0.35], [-0.90, 0.90]],
+    [[-0.40, 0.40], [-0.30, 0.30], [-0.70, 0.70]],
     dtype=np.float64,
 )
 _P7_CALIBRATION_SEED = np.asarray(
     [
         [-0.30, 0.00, 0.00],
-        [0.50, 0.00, 0.00],
-        [0.00, -0.35, 0.00],
-        [0.00, 0.35, 0.00],
-        [0.00, 0.00, -0.90],
-        [0.00, 0.00, 0.90],
+        [0.40, 0.00, 0.00],
+        [0.00, -0.30, 0.00],
+        [0.00, 0.30, 0.00],
+        [0.00, 0.00, -0.70],
+        [0.00, 0.00, 0.70],
     ],
     dtype=np.float64,
 )
@@ -137,7 +137,7 @@ def _model_components(
     HardSafetyFilter,
     TaskDistribution,
 ]:
-    command_space = CommandSpace(_NAVIGATION_BOUNDS, max_linear_norm=0.52)
+    command_space = CommandSpace(_NAVIGATION_BOUNDS, max_linear_norm=0.45)
     reference = CandidatePool.generate(command_space, count=512, seed=77131)
     transformer = BasisTransformer("m2_affine_cross_hinge").fit(reference.commands)
     basis = transformer.transform(reference.commands)

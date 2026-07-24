@@ -37,12 +37,12 @@ calibration:
 navigation:
   sample_rate_hz: 50
   planner_rate_hz: 10
-  timeout_s: 40.0
+  timeout_s: 60.0
   initial_stabilization_s: 0.50
   environment_spacing_m: 8.0
-  cruise_speed_mps: 0.22
-  maximum_lateral_speed_mps: 0.18
-  maximum_yaw_rate_rps: 0.45
+  cruise_speed_mps: 0.18
+  maximum_lateral_speed_mps: 0.14
+  maximum_yaw_rate_rps: 0.40
   position_gain: 0.80
   heading_gain: 1.40
   waypoint_radius_m: 0.25
@@ -54,12 +54,12 @@ navigation:
   inverse_risk_weight: 0.01
   task_commands:
     - [0.12, 0.00, 0.00]
-    - [0.20, 0.00, 0.00]
-    - [0.22, 0.00, 0.00]
-    - [0.16, 0.10, 0.25]
-    - [0.16, -0.10, -0.25]
-    - [0.12, 0.12, 0.40]
-    - [0.12, -0.12, -0.40]
+    - [0.16, 0.00, 0.00]
+    - [0.18, 0.00, 0.00]
+    - [0.14, 0.08, 0.22]
+    - [0.14, -0.08, -0.22]
+    - [0.10, 0.10, 0.35]
+    - [0.10, -0.10, -0.35]
 
 safety:
   min_base_height_m: 0.15
@@ -96,17 +96,17 @@ maps:
       payload_add_kg: 1.0
       com_offset_x_m: 0.01
     waypoints:
-      - [0.60, -0.34]
-      - [1.15, 0.34]
-      - [1.70, -0.34]
-      - [2.30, 0.00]
+      - [0.70, -0.15]
+      - [1.50, 0.15]
+      - [2.30, -0.15]
+      - [3.00, 0.00]
     obstacles:
-      - center: [0.60, 0.20]
-        size: [0.28, 0.30, 0.50]
-      - center: [1.15, -0.20]
-        size: [0.28, 0.30, 0.50]
-      - center: [1.70, 0.20]
-        size: [0.28, 0.30, 0.50]
+      - center: [0.70, 0.35]
+        size: [0.20, 0.20, 0.50]
+      - center: [1.50, -0.35]
+        size: [0.20, 0.20, 0.50]
+      - center: [2.30, 0.35]
+        size: [0.20, 0.20, 0.50]
   - id: narrow_corridor
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
@@ -118,7 +118,7 @@ maps:
       com_offset_x_m: 0.015
     waypoints:
       - [0.80, 0.00]
-      - [1.50, 0.10]
+      - [1.50, 0.05]
       - [2.30, 0.00]
     obstacles:
       - center: [1.20, 0.65]
