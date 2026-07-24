@@ -459,7 +459,9 @@ def _run_navigation(
     stall_ticks = np.zeros(count, dtype=np.int64)
     recovery_ticks = np.zeros(count, dtype=np.int64)
     recovery_attempts = np.zeros(count, dtype=np.int64)
+    emergency_recovery_attempts = np.zeros(count, dtype=np.int64)
     recovery_active = np.zeros(count, dtype=bool)
+    emergency_recovery_active = np.zeros(count, dtype=bool)
     trace_rows: list[dict[str, Any]] = []
     valid_flags: list[bool] = []
     arrays = _state_arrays(robot, origins)
@@ -516,19 +518,28 @@ def _run_navigation(
                         and position[env_index, 2] <= float(recovery["maximum_base_height_m"])
                     )
                     stall_ticks[env_index] = stall_ticks[env_index] + 1 if stalled else 0
+                    emergency_trigger = bool(
+                        position[env_index, 2] <= float(recovery["emergency_base_height_m"])
+                    )
                     if (
                         recovery_ticks[env_index] == 0
-                        and stall_ticks[env_index] >= recovery_detection_ticks
+                        and (
+                            stall_ticks[env_index] >= recovery_detection_ticks or emergency_trigger
+                        )
                         and recovery_attempts[env_index] < maximum_recovery_attempts
                     ):
                         recovery_ticks[env_index] = recovery_zero_ticks
                         recovery_attempts[env_index] += 1
+                        emergency_recovery_active[env_index] = emergency_trigger
+                        emergency_recovery_attempts[env_index] += int(emergency_trigger)
                         stall_ticks[env_index] = 0
                     recovery_active[env_index] = recovery_ticks[env_index] > 0
                     if recovery_active[env_index]:
                         proposed = np.zeros(3, dtype=np.float64)
                         inverse_objective[env_index] = np.nan
                         recovery_ticks[env_index] -= 1
+                        if recovery_ticks[env_index] == 0:
+                            emergency_recovery_active[env_index] = False
                     elif method == "B0_raw":
                         proposed = desired[env_index]
                         inverse_objective[env_index] = np.nan
@@ -541,11 +552,15 @@ def _run_navigation(
                         )
                         proposed = solution.command
                         inverse_objective[env_index] = solution.objective
-                    compensated[env_index] = _slew_limit(
-                        proposed,
-                        compensated[env_index],
-                        navigation,
-                        control_dt,
+                    compensated[env_index] = (
+                        np.zeros(3, dtype=np.float64)
+                        if recovery_active[env_index]
+                        else _slew_limit(
+                            proposed,
+                            compensated[env_index],
+                            navigation,
+                            control_dt,
+                        )
                     )
             effective = distortion.step(compensated, dt)
             effective[finished] = 0.0
@@ -608,6 +623,8 @@ def _run_navigation(
                         "inverse_objective": inverse_objective[env_index],
                         "stall_recovery_active": bool(recovery_active[env_index]),
                         "stall_recovery_attempts": int(recovery_attempts[env_index]),
+                        "emergency_recovery_active": bool(emergency_recovery_active[env_index]),
+                        "emergency_recovery_attempts": int(emergency_recovery_attempts[env_index]),
                         "pose_x": position[env_index, 0],
                         "pose_y": position[env_index, 1],
                         "pose_yaw": yaw[env_index],
@@ -644,6 +661,7 @@ def _run_navigation(
             "final_y": float(arrays[0][index, 1]),
             "goal_distance_m": float(np.linalg.norm(waypoints[-1] - arrays[0][index, :2])),
             "stall_recovery_attempts": int(recovery_attempts[index]),
+            "emergency_recovery_attempts": int(emergency_recovery_attempts[index]),
             "serious_safety_event": bool(serious[index]),
         }
         for index, seed in enumerate(config.seeds)
@@ -718,6 +736,9 @@ def run_p7_navigation(
         "median_completion_time_s": float(np.median(completion)),
         "stall_recovery_attempts": int(
             sum(int(row["stall_recovery_attempts"]) for row in episode_rows)
+        ),
+        "emergency_recovery_attempts": int(
+            sum(int(row["emergency_recovery_attempts"]) for row in episode_rows)
         ),
         "valid_observation_ratio": float(np.mean(valid)) if valid else 1.0,
         "safety_events": int(safety_events),

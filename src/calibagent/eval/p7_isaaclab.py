@@ -101,6 +101,9 @@ class P7BenchmarkConfig:
             float(recovery["minimum_desired_speed_mps"]) <= 0.0
             or float(recovery["maximum_actual_speed_mps"]) <= 0.0
             or float(recovery["maximum_base_height_m"]) <= float(self.safety["min_base_height_m"])
+            or float(recovery["emergency_base_height_m"]) <= float(self.safety["min_base_height_m"])
+            or float(recovery["emergency_base_height_m"])
+            >= float(recovery["maximum_base_height_m"])
             or float(recovery["detection_s"]) <= 0.0
             or float(recovery["zero_command_s"]) <= 0.0
             or int(recovery["maximum_attempts"]) < 1

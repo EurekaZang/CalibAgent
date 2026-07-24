@@ -38,7 +38,7 @@ calibration:
   settle_s: 0.60
   measure_s: 0.70
   ramp_out_s: 0.50
-  model_prior_scale: 0.50
+  model_prior_scale: 0.10
 
 navigation:
   sample_rate_hz: 50
@@ -60,9 +60,10 @@ navigation:
   inverse_risk_weight: 0.01
   stall_recovery:
     minimum_desired_speed_mps: 0.10
-    maximum_actual_speed_mps: 0.06
-    maximum_base_height_m: 0.17
-    detection_s: 0.20
+    maximum_actual_speed_mps: 0.02
+    maximum_base_height_m: 0.20
+    detection_s: 0.30
+    emergency_base_height_m: 0.16
     zero_command_s: 1.00
     maximum_attempts: 3
   task_commands:
