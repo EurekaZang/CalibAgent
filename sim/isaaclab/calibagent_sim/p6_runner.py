@@ -298,7 +298,8 @@ def run_p6_scenario(
                 "reference_nis",
                 "allowance",
                 "alarm_threshold",
-                "minimum_consecutive",
+                "minimum_positive_evidence",
+                "evidence_window_trials",
                 "minimum_dwell_trials",
             }
         }

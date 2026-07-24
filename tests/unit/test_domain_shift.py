@@ -14,7 +14,8 @@ def test_cusum_ignores_isolated_outlier_and_detects_persistent_shift() -> None:
         DomainShiftConfig(
             allowance=0.5,
             alarm_threshold=4.0,
-            minimum_consecutive=3,
+            minimum_positive_evidence=3,
+            evidence_window_trials=5,
             minimum_dwell_trials=3,
         )
     )
@@ -24,15 +25,18 @@ def test_cusum_ignores_isolated_outlier_and_detects_persistent_shift() -> None:
         for trial in range(1, 5)
     ]
     outlier = detector.update(np.asarray([4.0, 0.0, 0.0]), covariance, trial=5)
-    recovery = detector.update(np.zeros(3), covariance, trial=6)
+    recovery = [
+        detector.update(np.zeros(3), covariance, trial=trial)
+        for trial in range(6, 11)
+    ]
     shifted = [
         detector.update(np.asarray([3.0, 3.0, 3.0]), covariance, trial=trial)
-        for trial in range(7, 10)
+        for trial in range(11, 14)
     ]
 
     assert not any(item.alarm for item in nominal)
     assert not outlier.alarm
-    assert recovery.positive_streak == 0
+    assert recovery[-1].positive_evidence == 0
     assert [item.alarm for item in shifted] == [False, False, True]
     assert detector.latched
 
@@ -54,12 +58,13 @@ def test_shift_detector_tolerates_one_borderline_sample() -> None:
         DomainShiftConfig(
             allowance=0.5,
             alarm_threshold=4.0,
-            minimum_consecutive=3,
+            minimum_positive_evidence=3,
+            evidence_window_trials=5,
             minimum_dwell_trials=3,
         )
     )
     covariance = np.eye(3)
-    energies = [4.0, 4.0, 1.4, 4.0, 4.0]
+    energies = [4.0, 4.0, 1.4, 4.0]
     results = [
         detector.update(
             np.full(3, np.sqrt(energy)),
@@ -69,8 +74,33 @@ def test_shift_detector_tolerates_one_borderline_sample() -> None:
         for trial, energy in enumerate(energies, start=1)
     ]
 
-    assert not any(item.alarm for item in results[:4])
-    assert results[4].alarm
+    assert not any(item.alarm for item in results[:3])
+    assert results[3].alarm
+
+
+def test_shift_detector_rejects_two_spaced_outliers_in_window() -> None:
+    detector = DomainShiftDetector(
+        DomainShiftConfig(
+            allowance=0.5,
+            alarm_threshold=4.0,
+            minimum_positive_evidence=3,
+            evidence_window_trials=5,
+            minimum_dwell_trials=3,
+        )
+    )
+    covariance = np.eye(3)
+    energies = [5.0, 0.1, 5.0, 0.1, 0.1]
+    results = [
+        detector.update(
+            np.full(3, np.sqrt(energy)),
+            covariance,
+            trial=trial,
+        )
+        for trial, energy in enumerate(energies, start=1)
+    ]
+
+    assert not any(item.alarm for item in results)
+    assert results[-1].positive_evidence == 2
 
 
 def test_posterior_inflation_preserves_mean_and_scales_covariance() -> None:

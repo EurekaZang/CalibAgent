@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import dataclass
 from typing import Any
 
@@ -15,14 +16,17 @@ class DomainShiftConfig:
 
     Under a calibrated three-dimensional Gaussian predictive distribution,
     ``normalized_nis`` has expectation one.  The allowance suppresses ordinary
-    variation while the consecutive and dwell gates prevent a single bad
-    localization sample from triggering adaptation.
+    variation while the rolling-evidence and dwell gates prevent one or two
+    bad localization samples from triggering adaptation.  A bounded rolling
+    window tolerates an intervening nominal sample caused by a safety abort
+    without retaining evidence indefinitely.
     """
 
     reference_nis: float = 1.0
     allowance: float = 0.50
     alarm_threshold: float = 4.0
-    minimum_consecutive: int = 3
+    minimum_positive_evidence: int = 3
+    evidence_window_trials: int = 5
     minimum_dwell_trials: int = 3
     covariance_jitter: float = 1e-9
 
@@ -31,8 +35,10 @@ class DomainShiftConfig:
             raise ValueError("reference_nis must be positive")
         if self.allowance < 0.0 or self.alarm_threshold <= 0.0:
             raise ValueError("CUSUM allowance/threshold are invalid")
-        if self.minimum_consecutive < 1 or self.minimum_dwell_trials < 1:
+        if self.minimum_positive_evidence < 1 or self.minimum_dwell_trials < 1:
             raise ValueError("CUSUM trial gates must be positive")
+        if self.evidence_window_trials < self.minimum_positive_evidence:
+            raise ValueError("evidence window must contain the required evidence")
         if self.covariance_jitter <= 0.0:
             raise ValueError("covariance_jitter must be positive")
 
@@ -42,7 +48,7 @@ class ShiftDetection:
     trial: int
     normalized_nis: float
     statistic: float
-    positive_streak: int
+    positive_evidence: int
     alarm: bool
     latched: bool
 
@@ -53,7 +59,9 @@ class DomainShiftDetector:
     def __init__(self, config: DomainShiftConfig | None = None) -> None:
         self.config = config or DomainShiftConfig()
         self._statistic = 0.0
-        self._positive_streak = 0
+        self._positive_window: deque[bool] = deque(
+            maxlen=self.config.evidence_window_trials
+        )
         self._latched = False
         self._last_trial = 0
 
@@ -67,7 +75,7 @@ class DomainShiftDetector:
 
     def reset(self) -> None:
         self._statistic = 0.0
-        self._positive_streak = 0
+        self._positive_window.clear()
         self._latched = False
         self._last_trial = 0
 
@@ -97,17 +105,12 @@ class DomainShiftDetector:
         boundary = self.config.reference_nis + self.config.allowance
         increment = normalized_nis - boundary
         self._statistic = max(0.0, self._statistic + increment)
-        if increment > 0.0:
-            self._positive_streak += 1
-        else:
-            # One borderline innovation should not erase a large accumulated
-            # CUSUM.  Decay provides hysteresis while repeated nominal samples
-            # still clear an isolated outlier.
-            self._positive_streak = max(0, self._positive_streak - 1)
+        self._positive_window.append(increment > 0.0)
+        positive_evidence = sum(self._positive_window)
         alarm = bool(
             not self._latched
             and trial >= self.config.minimum_dwell_trials
-            and self._positive_streak >= self.config.minimum_consecutive
+            and positive_evidence >= self.config.minimum_positive_evidence
             and self._statistic >= self.config.alarm_threshold
         )
         if alarm:
@@ -117,7 +120,7 @@ class DomainShiftDetector:
             trial=trial,
             normalized_nis=normalized_nis,
             statistic=self._statistic,
-            positive_streak=self._positive_streak,
+            positive_evidence=positive_evidence,
             alarm=alarm,
             latched=self._latched,
         )

@@ -56,7 +56,8 @@ detector:
   reference_nis: 1.0
   allowance: 0.50
   alarm_threshold: 4.0
-  minimum_consecutive: 3
+  minimum_positive_evidence: 3
+  evidence_window_trials: 5
   minimum_dwell_trials: 3
 
 adaptation:

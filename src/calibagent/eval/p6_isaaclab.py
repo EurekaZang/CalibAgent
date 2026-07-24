@@ -80,8 +80,12 @@ class P6BenchmarkConfig:
             self.trial["dense_budget_trials"]
         ):
             raise ValueError("P6 recovery budget exceeds 40% of dense")
-        if int(self.detector["minimum_consecutive"]) < 3:
+        minimum_evidence = int(self.detector["minimum_positive_evidence"])
+        evidence_window = int(self.detector["evidence_window_trials"])
+        if minimum_evidence < 3:
             raise ValueError("P6 detector must reject isolated/two-sample outliers")
+        if evidence_window < minimum_evidence:
+            raise ValueError("P6 detector evidence window is too short")
         for scenario in self.scenarios:
             if str(scenario["checkpoint"]) not in self.checkpoints:
                 raise ValueError("P6 scenario uses an unknown checkpoint")
