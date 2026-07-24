@@ -25,6 +25,11 @@ methods:
 
 calibration:
   feature_set: m1_affine
+  command_bounds:
+    - [-0.30, 0.30]
+    - [-0.22, 0.22]
+    - [-0.45, 0.45]
+  maximum_linear_norm: 0.34
   dense_trials: 30
   active_trials: 12
   dense_design_seed: 77149
@@ -41,9 +46,9 @@ navigation:
   timeout_s: 60.0
   initial_stabilization_s: 0.50
   environment_spacing_m: 8.0
-  cruise_speed_mps: 0.18
-  maximum_lateral_speed_mps: 0.14
-  maximum_yaw_rate_rps: 0.25
+  cruise_speed_mps: 0.16
+  maximum_lateral_speed_mps: 0.12
+  maximum_yaw_rate_rps: 0.20
   position_gain: 0.80
   heading_gain: 0.50
   waypoint_radius_m: 0.25
@@ -102,11 +107,11 @@ maps:
       - [2.30, -0.15]
       - [3.00, 0.00]
     obstacles:
-      - center: [0.70, 0.35]
+      - center: [0.70, 0.55]
         size: [0.20, 0.20, 0.50]
-      - center: [1.50, -0.35]
+      - center: [1.50, -0.55]
         size: [0.20, 0.20, 0.50]
-      - center: [2.30, 0.35]
+      - center: [2.30, 0.55]
         size: [0.20, 0.20, 0.50]
   - id: narrow_corridor
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0

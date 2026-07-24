@@ -35,21 +35,6 @@ from calibagent_sim.runner import (
 )
 
 _METHODS = {"B0_raw", "B1_dense", "B8_full"}
-_NAVIGATION_BOUNDS = np.asarray(
-    [[-0.40, 0.40], [-0.30, 0.30], [-0.70, 0.70]],
-    dtype=np.float64,
-)
-_P7_CALIBRATION_SEED = np.asarray(
-    [
-        [-0.30, 0.00, 0.00],
-        [0.40, 0.00, 0.00],
-        [0.00, -0.30, 0.00],
-        [0.00, 0.30, 0.00],
-        [0.00, 0.00, -0.70],
-        [0.00, 0.00, 0.70],
-    ],
-    dtype=np.float64,
-)
 
 
 def _write_csv_gzip(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -137,7 +122,11 @@ def _model_components(
     HardSafetyFilter,
     TaskDistribution,
 ]:
-    command_space = CommandSpace(_NAVIGATION_BOUNDS, max_linear_norm=0.45)
+    calibration = dict(payload["calibration"])
+    command_space = CommandSpace(
+        np.asarray(calibration["command_bounds"], dtype=np.float64),
+        max_linear_norm=float(calibration["maximum_linear_norm"]),
+    )
     reference = CandidatePool.generate(command_space, count=512, seed=77131)
     transformer = BasisTransformer(str(payload["calibration"]["feature_set"])).fit(
         reference.commands
@@ -238,6 +227,18 @@ def _run_calibration(
         (0.0, 0.0, 0.0),
     )
     zero_history = [VelocityCommand(0.0, 0.0, 0.0, 0.1)]
+    bounds = pool.command_space.bounds
+    calibration_seed = np.asarray(
+        [
+            [bounds[0, 0], 0.0, 0.0],
+            [bounds[0, 1], 0.0, 0.0],
+            [0.0, bounds[1, 0], 0.0],
+            [0.0, bounds[1, 1], 0.0],
+            [0.0, 0.0, bounds[2, 0]],
+            [0.0, 0.0, bounds[2, 1]],
+        ],
+        dtype=np.float64,
+    )
     for trial in range(config.calibration_trials):
         desired = np.zeros((len(config.seeds), 3), dtype=np.float64)
         sources: list[str] = []
@@ -245,8 +246,8 @@ def _run_calibration(
             if method == "B1_dense":
                 desired[env_index] = dense_pool.commands[trial]
                 sources.append("dense_grid")
-            elif trial < len(_P7_CALIBRATION_SEED):
-                desired[env_index] = _P7_CALIBRATION_SEED[trial]
+            elif trial < len(calibration_seed):
+                desired[env_index] = calibration_seed[trial]
                 sources.append("seed_design")
             else:
                 candidates = planners[env_index].propose(

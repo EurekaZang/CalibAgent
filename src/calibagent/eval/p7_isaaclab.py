@@ -81,6 +81,15 @@ class P7BenchmarkConfig:
         active = int(self.calibration["active_trials"])
         if str(self.calibration["feature_set"]) != "m1_affine":
             raise ValueError("P7 affine navigation requires the frozen M1 affine model")
+        command_bounds = np.asarray(self.calibration["command_bounds"], dtype=np.float64)
+        if (
+            command_bounds.shape != (3, 2)
+            or np.any(command_bounds[:, 0] >= 0.0)
+            or np.any(command_bounds[:, 1] <= 0.0)
+        ):
+            raise ValueError("P7 command bounds must have shape (3, 2) and straddle zero")
+        if float(self.calibration["maximum_linear_norm"]) <= 0.0:
+            raise ValueError("P7 maximum linear norm must be positive")
         if active > 0.40 * dense:
             raise ValueError("P7 B8 calibration budget exceeds 40% of B1")
         if int(self.navigation["sample_rate_hz"]) % int(self.navigation["planner_rate_hz"]):

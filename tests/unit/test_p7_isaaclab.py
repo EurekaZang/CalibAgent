@@ -48,6 +48,7 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert payload["simulator_seed"] == 810241
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
+    assert payload["calibration"]["command_bounds"][0] == [-0.30, 0.30]
 
 
 def test_p7_gates_reject_no_raw_effect_and_dense_regression() -> None:
