@@ -85,6 +85,7 @@ def _physical_config(payload: dict[str, Any]) -> ScenarioConfig:
 def _map_environment(payload: dict[str, Any], device: str) -> tuple[Any, ScenarioConfig]:
     config = _physical_config(payload)
     env_cfg = _configure_environment(config, device)
+    env_cfg.sim.physx.enable_enhanced_determinism = bool(payload["enhanced_determinism"])
     env_cfg.scene.env_spacing = float(payload["navigation"]["environment_spacing_m"])
     for index, obstacle in enumerate(payload["obstacles"]):
         size = tuple(float(item) for item in obstacle["size"])
@@ -156,8 +157,11 @@ def _model_components(
         reference.commands[coupled <= envelope.max_coupled_load],
         command_space,
     )
-    planners = [IntegratedVariancePlanner(safe_pool, duplicate_distance=0.02) for _ in config.seeds]
     task_commands = np.asarray(payload["navigation"]["task_commands"], dtype=np.float64)
+    active_pool = CandidatePool(task_commands, command_space)
+    planners = [
+        IntegratedVariancePlanner(active_pool, duplicate_distance=0.02) for _ in config.seeds
+    ]
     return (
         models,
         planners,

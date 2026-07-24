@@ -87,6 +87,8 @@ class P7BenchmarkConfig:
             raise ValueError("P7 main runs require a frozen, fully covered protocol")
         if int(self.isaaclab["maximum_startup_attempts"]) not in {1, 2}:
             raise ValueError("P7 permits at most one startup-only retry")
+        if self.isaaclab.get("enhanced_determinism") is not True:
+            raise ValueError("P7 requires PhysX enhanced determinism")
         dense = int(self.calibration["dense_trials"])
         active = int(self.calibration["active_trials"])
         if str(self.calibration["feature_set"]) != "m1_affine":
@@ -104,6 +106,8 @@ class P7BenchmarkConfig:
             raise ValueError("P7 maximum linear norm must be positive")
         if active > 0.40 * dense:
             raise ValueError("P7 B8 calibration budget exceeds 40% of B1")
+        if str(self.calibration["active_candidate_source"]) != "task_distribution_support":
+            raise ValueError("P7 active candidates must use the frozen task support")
         if int(self.navigation["sample_rate_hz"]) % int(self.navigation["planner_rate_hz"]):
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:
@@ -118,6 +122,21 @@ class P7BenchmarkConfig:
             or np.any(confidence_weights < 0.0)
         ):
             raise ValueError("P7 inverse confidence weights must contain three nonnegative values")
+        task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)
+        if (
+            task_commands.ndim != 2
+            or task_commands.shape[1] != 3
+            or len(task_commands) < active - 6
+            or len(np.unique(task_commands, axis=0)) != len(task_commands)
+            or not np.all(np.isfinite(task_commands))
+            or np.any(task_commands < command_bounds[:, 0])
+            or np.any(task_commands > command_bounds[:, 1])
+            or np.any(
+                np.linalg.norm(task_commands[:, :2], axis=1)
+                > float(self.calibration["maximum_linear_norm"])
+            )
+        ):
+            raise ValueError("P7 task support must provide unique, finite, safe active candidates")
         recovery = dict(self.navigation["stall_recovery"])
         if (
             float(recovery["minimum_desired_speed_mps"]) <= 0.0
@@ -403,6 +422,7 @@ def _map_payload(
         "method": method,
         "seeds": [int(item) for item in config.vectorization["seeds"]],
         "simulator_seed": int(config.vectorization["simulator_seed"]) + index,
+        "enhanced_determinism": bool(config.isaaclab["enhanced_determinism"]),
         "calibration": config.calibration,
         "navigation": config.navigation,
         "safety": config.safety,

@@ -49,9 +49,11 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
     assert payload["simulator_seed"] == 810241
+    assert payload["enhanced_determinism"] is True
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
     assert payload["calibration"]["model_prior_gain"] == 1.00
+    assert payload["calibration"]["active_candidate_source"] == "task_distribution_support"
     assert payload["calibration"]["command_bounds"][0] == [-0.40, 0.40]
     assert payload["navigation"]["inverse_undertracking_confidence_weights"] == [
         0.0,
@@ -99,3 +101,11 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
     navigation["inverse_undertracking_confidence_weights"] = [0.0, -0.1]
     with pytest.raises(ValueError, match="three nonnegative"):
         replace(config, navigation=navigation).validate()
+    isaaclab = dict(config.isaaclab)
+    isaaclab["enhanced_determinism"] = False
+    with pytest.raises(ValueError, match="enhanced determinism"):
+        replace(config, isaaclab=isaaclab).validate()
+    calibration = dict(config.calibration)
+    calibration["active_candidate_source"] = "global_safe_pool"
+    with pytest.raises(ValueError, match="frozen task support"):
+        replace(config, calibration=calibration).validate()

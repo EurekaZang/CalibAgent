@@ -7,6 +7,7 @@ isaaclab:
   commit: 37ddf626871758333d6ed89cf64ad702aef127d0
   isaac_sim_version_prefix: "5.1.0"
   physics_backend: physx
+  enhanced_determinism: true
   maximum_startup_attempts: 2
 
 vectorization:
@@ -33,6 +34,7 @@ calibration:
   maximum_linear_norm: 0.45
   dense_trials: 30
   active_trials: 12
+  active_candidate_source: task_distribution_support
   dense_design_seed: 77149
   warmup_s: 0.50
   ramp_in_s: 0.30
