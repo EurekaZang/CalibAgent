@@ -12,28 +12,28 @@ isaaclab:
 
 vectorization:
   num_seeds: 20
-  simulator_seed: 900240
+  simulator_seed: 905240
   seeds:
-    - 7901
-    - 7902
-    - 7903
-    - 7904
-    - 7905
-    - 7906
-    - 7907
-    - 7908
-    - 7909
-    - 7910
-    - 7911
-    - 7912
-    - 7913
-    - 7914
-    - 7915
-    - 7916
-    - 7917
-    - 7918
-    - 7919
-    - 7920
+    - 7931
+    - 7932
+    - 7933
+    - 7934
+    - 7935
+    - 7936
+    - 7937
+    - 7938
+    - 7939
+    - 7940
+    - 7941
+    - 7942
+    - 7943
+    - 7944
+    - 7945
+    - 7946
+    - 7947
+    - 7948
+    - 7949
+    - 7950
 
 methods:
   - B0_raw
@@ -91,8 +91,6 @@ navigation:
     minimum_drop_per_planner_tick_m: 0.003
     hold_s: 0.30
     maximum_linear_command_norm: 0.28
-    persistent_after_emergency_attempts: 3
-    persistent_maximum_linear_command_norm: 0.25
   stall_recovery:
     minimum_desired_speed_mps: 0.10
     maximum_actual_speed_mps: 0.02
@@ -101,6 +99,8 @@ navigation:
     emergency_base_height_m: 0.16
     zero_command_s: 1.00
     emergency_zero_command_s: 0.50
+    reengagement_ramp_s: 2.00
+    reengagement_linear_accel_mps2: 0.25
     maximum_attempts: 3
     maximum_emergency_attempts: 30
   task_commands:

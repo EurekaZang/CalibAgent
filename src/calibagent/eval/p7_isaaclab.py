@@ -168,13 +168,6 @@ class P7BenchmarkConfig:
             <= float(self.navigation["cruise_speed_mps"])
             or float(height_rate_guard["maximum_linear_command_norm"])
             > float(self.calibration["maximum_linear_norm"])
-            or int(height_rate_guard["persistent_after_emergency_attempts"]) < 1
-            or int(height_rate_guard["persistent_after_emergency_attempts"])
-            >= int(self.navigation["stall_recovery"]["maximum_emergency_attempts"])
-            or float(height_rate_guard["persistent_maximum_linear_command_norm"])
-            <= float(self.navigation["cruise_speed_mps"])
-            or float(height_rate_guard["persistent_maximum_linear_command_norm"])
-            > float(height_rate_guard["maximum_linear_command_norm"])
         ):
             raise ValueError("P7 height-rate guard configuration is invalid")
         task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)
@@ -203,6 +196,11 @@ class P7BenchmarkConfig:
             or float(recovery["detection_s"]) <= 0.0
             or float(recovery["zero_command_s"]) <= 0.0
             or float(recovery["emergency_zero_command_s"]) <= 0.0
+            or float(recovery["reengagement_ramp_s"]) <= 0.0
+            or float(recovery["reengagement_ramp_s"]) >= float(self.navigation["timeout_s"])
+            or float(recovery["reengagement_linear_accel_mps2"]) <= 0.0
+            or float(recovery["reengagement_linear_accel_mps2"])
+            > float(self.navigation["maximum_linear_accel_mps2"])
             or int(recovery["maximum_attempts"]) < 1
             or int(recovery["maximum_emergency_attempts"]) < 1
         ):

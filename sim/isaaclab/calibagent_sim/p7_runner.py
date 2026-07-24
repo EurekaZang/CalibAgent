@@ -364,10 +364,17 @@ def _slew_limit(
     previous: np.ndarray,
     navigation: dict[str, Any],
     control_dt: float,
+    *,
+    maximum_linear_accel_mps2: float | None = None,
 ) -> np.ndarray:
     output = proposed.copy()
     delta = output[:2] - previous[:2]
-    limit = float(navigation["maximum_linear_accel_mps2"]) * control_dt
+    linear_accel = (
+        float(navigation["maximum_linear_accel_mps2"])
+        if maximum_linear_accel_mps2 is None
+        else float(maximum_linear_accel_mps2)
+    )
+    limit = linear_accel * control_dt
     norm = float(np.linalg.norm(delta))
     if norm > limit:
         output[:2] = previous[:2] + delta * (limit / norm)
@@ -502,8 +509,9 @@ def _run_navigation(
     height_guard_ticks = np.zeros(count, dtype=np.int64)
     height_guard_active = np.zeros(count, dtype=bool)
     height_guard_updates = np.zeros(count, dtype=np.int64)
-    height_guard_persistent = np.zeros(count, dtype=bool)
-    height_guard_persistent_activated = np.zeros(count, dtype=bool)
+    reengagement_ramp_active = np.zeros(count, dtype=bool)
+    reengagement_ramp_updates = np.zeros(count, dtype=np.int64)
+    reengagement_ramp_until_s = np.zeros(count, dtype=np.float64)
     feedback_resume_after_s = np.full(
         count,
         feedback_startup_delay_s,
@@ -537,7 +545,7 @@ def _run_navigation(
                         compensated[env_index] = 0.0
                         feedback_active[env_index] = False
                         height_guard_active[env_index] = False
-                        height_guard_persistent[env_index] = False
+                        reengagement_ramp_active[env_index] = False
                         height_guard_ticks[env_index] = 0
                         continue
                     while waypoint_index[env_index] < len(waypoints) - 1:
@@ -561,7 +569,7 @@ def _run_navigation(
                         compensated[env_index] = 0.0
                         feedback_active[env_index] = False
                         height_guard_active[env_index] = False
-                        height_guard_persistent[env_index] = False
+                        reengagement_ramp_active[env_index] = False
                         height_guard_ticks[env_index] = 0
                         continue
                     target = waypoints[waypoint_index[env_index]]
@@ -619,6 +627,10 @@ def _run_navigation(
                                 feedback_resume_after_s[env_index],
                                 step * dt + feedback_recovery_reengagement_delay_s,
                             )
+                            reengagement_ramp_until_s[env_index] = max(
+                                reengagement_ramp_until_s[env_index],
+                                step * dt + float(recovery["reengagement_ramp_s"]),
+                            )
                     elif method == "B0_raw":
                         proposed = desired[env_index]
                         inverse_target[env_index] = desired[env_index]
@@ -664,26 +676,18 @@ def _run_navigation(
                         )
                         proposed = solution.command
                         inverse_objective[env_index] = solution.objective
-                    persistent_guard = bool(
-                        emergency_recovery_attempts[env_index]
-                        >= int(height_rate_guard["persistent_after_emergency_attempts"])
-                    )
-                    height_guard_persistent[env_index] = persistent_guard
-                    height_guard_persistent_activated[env_index] |= persistent_guard
-                    guard_maximum_linear_norm = float(
-                        height_rate_guard[
-                            (
-                                "persistent_maximum_linear_command_norm"
-                                if persistent_guard
-                                else "maximum_linear_command_norm"
-                            )
-                        ]
-                    )
                     if recovery_active[env_index]:
                         compensated[env_index] = np.zeros(3, dtype=np.float64)
                         height_guard_active[env_index] = False
+                        reengagement_ramp_active[env_index] = False
                         height_guard_ticks[env_index] = 0
                     else:
+                        reengagement_ramp_active[env_index] = bool(
+                            step * dt < reengagement_ramp_until_s[env_index]
+                        )
+                        reengagement_ramp_updates[env_index] += int(
+                            reengagement_ramp_active[env_index]
+                        )
                         _, guard_now = height_rate_guarded_command(
                             proposed,
                             base_height_m=float(position[env_index, 2]),
@@ -692,16 +696,21 @@ def _run_navigation(
                             minimum_drop_m=float(
                                 height_rate_guard["minimum_drop_per_planner_tick_m"]
                             ),
-                            maximum_linear_norm=guard_maximum_linear_norm,
-                            force_active=bool(
-                                height_guard_ticks[env_index] > 0 or persistent_guard
+                            maximum_linear_norm=float(
+                                height_rate_guard["maximum_linear_command_norm"]
                             ),
+                            force_active=bool(height_guard_ticks[env_index] > 0),
                         )
                         slewed_proposed = _slew_limit(
                             proposed,
                             compensated[env_index],
                             navigation,
                             control_dt,
+                            maximum_linear_accel_mps2=(
+                                float(recovery["reengagement_linear_accel_mps2"])
+                                if reengagement_ramp_active[env_index]
+                                else None
+                            ),
                         )
                         compensated[env_index], _ = height_rate_guarded_command(
                             slewed_proposed,
@@ -711,7 +720,9 @@ def _run_navigation(
                             minimum_drop_m=float(
                                 height_rate_guard["minimum_drop_per_planner_tick_m"]
                             ),
-                            maximum_linear_norm=guard_maximum_linear_norm,
+                            maximum_linear_norm=float(
+                                height_rate_guard["maximum_linear_command_norm"]
+                            ),
                             force_active=guard_now,
                         )
                         if guard_now:
@@ -780,7 +791,9 @@ def _run_navigation(
                         "inverse_target_wz": inverse_target[env_index, 2],
                         "velocity_feedback_active": bool(feedback_active[env_index]),
                         "height_rate_guard_active": bool(height_guard_active[env_index]),
-                        "height_rate_guard_persistent": bool(height_guard_persistent[env_index]),
+                        "recovery_reengagement_ramp_active": bool(
+                            reengagement_ramp_active[env_index]
+                        ),
                         "compensated_vx": compensated[env_index, 0],
                         "compensated_vy": compensated[env_index, 1],
                         "compensated_wz": compensated[env_index, 2],
@@ -833,9 +846,7 @@ def _run_navigation(
             "emergency_recovery_attempts": int(emergency_recovery_attempts[index]),
             "velocity_feedback_updates": int(feedback_updates[index]),
             "height_rate_guard_updates": int(height_guard_updates[index]),
-            "height_rate_guard_persistent_activated": bool(
-                height_guard_persistent_activated[index]
-            ),
+            "recovery_reengagement_ramp_updates": int(reengagement_ramp_updates[index]),
             "serious_safety_event": bool(serious[index]),
         }
         for index, seed in enumerate(config.seeds)
@@ -923,8 +934,8 @@ def run_p7_navigation(
         "height_rate_guard_updates": int(
             sum(int(row["height_rate_guard_updates"]) for row in episode_rows)
         ),
-        "height_rate_guard_persistent_episodes": int(
-            sum(bool(row["height_rate_guard_persistent_activated"]) for row in episode_rows)
+        "recovery_reengagement_ramp_updates": int(
+            sum(int(row["recovery_reengagement_ramp_updates"]) for row in episode_rows)
         ),
         "valid_observation_ratio": float(np.mean(valid)) if valid else 1.0,
         "safety_events": int(safety_events),
