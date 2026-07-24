@@ -38,7 +38,7 @@ calibration:
   settle_s: 0.60
   measure_s: 0.70
   ramp_out_s: 0.50
-  model_prior_scale: 0.10
+  model_prior_scale: 0.50
 
 navigation:
   sample_rate_hz: 50
