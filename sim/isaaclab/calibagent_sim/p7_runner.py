@@ -425,6 +425,7 @@ def _run_navigation(
     recovery = dict(navigation["stall_recovery"])
     velocity_feedback = dict(navigation["velocity_feedback"])
     feedback_alpha = float(velocity_feedback["ema_alpha"])
+    feedback_startup_delay_s = float(velocity_feedback["startup_delay_s"])
     recovery_detection_ticks = max(1, round(float(recovery["detection_s"]) * planner_rate))
     recovery_zero_ticks = max(1, round(float(recovery["zero_command_s"]) * planner_rate))
     emergency_recovery_zero_ticks = max(
@@ -590,6 +591,22 @@ def _run_navigation(
                         inverse_target[env_index] = desired[env_index]
                         feedback_active[env_index] = False
                         inverse_objective[env_index] = np.nan
+                    elif step * dt < feedback_startup_delay_s:
+                        # Let the locomotion policy establish its gait before
+                        # closing the outer velocity loop.  The startup
+                        # velocity estimate begins at zero, so immediate
+                        # feedback would otherwise request the maximum
+                        # correction during the least stable transient.
+                        inverse_target[env_index] = desired[env_index]
+                        feedback_active[env_index] = False
+                        solution = compensators[env_index].solve(
+                            inverse_target[env_index],
+                            models[env_index],
+                            _robot_state(env_index, step * dt, arrays),
+                            compensated[env_index],
+                        )
+                        proposed = solution.command
+                        inverse_objective[env_index] = solution.objective
                     else:
                         inverse_target[env_index] = bounded_velocity_feedback_target(
                             desired[env_index],

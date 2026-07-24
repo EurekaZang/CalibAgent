@@ -144,6 +144,9 @@ class P7BenchmarkConfig:
             or not np.all(np.isfinite(maximum_correction))
             or np.any(maximum_correction < 0.0)
             or float(velocity_feedback["activation_threshold"]) < 0.0
+            or float(velocity_feedback["startup_delay_s"]) < 0.0
+            or float(velocity_feedback["startup_delay_s"])
+            >= float(self.navigation["timeout_s"])
         ):
             raise ValueError("P7 velocity feedback configuration is invalid")
         task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)
