@@ -96,6 +96,16 @@ class P7BenchmarkConfig:
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:
             raise ValueError("P7 goal radius must be positive")
+        recovery = dict(self.navigation["stall_recovery"])
+        if (
+            float(recovery["minimum_desired_speed_mps"]) <= 0.0
+            or float(recovery["maximum_actual_speed_mps"]) <= 0.0
+            or float(recovery["maximum_base_height_m"]) <= float(self.safety["min_base_height_m"])
+            or float(recovery["detection_s"]) <= 0.0
+            or float(recovery["zero_command_s"]) <= 0.0
+            or int(recovery["maximum_attempts"]) < 1
+        ):
+            raise ValueError("P7 stall recovery configuration is invalid")
         for map_config in self.maps:
             if str(map_config["checkpoint"]) not in self.checkpoints:
                 raise ValueError("P7 map uses an unknown checkpoint")

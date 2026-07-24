@@ -26,10 +26,10 @@ methods:
 calibration:
   feature_set: m1_affine
   command_bounds:
+    - [-0.40, 0.40]
     - [-0.30, 0.30]
-    - [-0.22, 0.22]
-    - [-0.45, 0.45]
-  maximum_linear_norm: 0.34
+    - [-0.70, 0.70]
+  maximum_linear_norm: 0.45
   dense_trials: 30
   active_trials: 12
   dense_design_seed: 77149
@@ -46,9 +46,9 @@ navigation:
   timeout_s: 60.0
   initial_stabilization_s: 0.50
   environment_spacing_m: 8.0
-  cruise_speed_mps: 0.16
-  maximum_lateral_speed_mps: 0.12
-  maximum_yaw_rate_rps: 0.20
+  cruise_speed_mps: 0.18
+  maximum_lateral_speed_mps: 0.14
+  maximum_yaw_rate_rps: 0.25
   position_gain: 0.80
   heading_gain: 0.50
   waypoint_radius_m: 0.25
@@ -58,6 +58,13 @@ navigation:
   maximum_angular_accel_rps2: 2.5
   inverse_regularization: 0.005
   inverse_risk_weight: 0.01
+  stall_recovery:
+    minimum_desired_speed_mps: 0.10
+    maximum_actual_speed_mps: 0.02
+    maximum_base_height_m: 0.20
+    detection_s: 0.30
+    zero_command_s: 1.00
+    maximum_attempts: 3
   task_commands:
     - [0.12, 0.00, 0.00]
     - [0.16, 0.00, 0.00]

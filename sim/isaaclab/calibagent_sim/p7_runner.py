@@ -417,6 +417,10 @@ def _run_navigation(
     footprint = float(navigation["collision_footprint_radius_m"])
     waypoint_radius = float(navigation["waypoint_radius_m"])
     goal_radius = float(navigation["goal_radius_m"])
+    recovery = dict(navigation["stall_recovery"])
+    recovery_detection_ticks = max(1, round(float(recovery["detection_s"]) * planner_rate))
+    recovery_zero_ticks = max(1, round(float(recovery["zero_command_s"]) * planner_rate))
+    maximum_recovery_attempts = int(recovery["maximum_attempts"])
     unwrapped = env.unwrapped
     env.reset()
     command_term = unwrapped.command_manager.get_term("base_velocity")
@@ -452,6 +456,10 @@ def _run_navigation(
     compensated = np.zeros((count, 3), dtype=np.float64)
     effective = np.zeros((count, 3), dtype=np.float64)
     inverse_objective = np.full(count, np.nan, dtype=np.float64)
+    stall_ticks = np.zeros(count, dtype=np.int64)
+    recovery_ticks = np.zeros(count, dtype=np.int64)
+    recovery_attempts = np.zeros(count, dtype=np.int64)
+    recovery_active = np.zeros(count, dtype=bool)
     trace_rows: list[dict[str, Any]] = []
     valid_flags: list[bool] = []
     arrays = _state_arrays(robot, origins)
@@ -468,7 +476,7 @@ def _run_navigation(
         previous_position = arrays[0][:, :2].copy()
         for step in range(max_steps):
             if step % decimation == 0:
-                position, _, _, _, _, yaw = arrays
+                position, control_velocity, _, _, _, yaw = arrays
                 for env_index in range(count):
                     if finished[env_index]:
                         desired[env_index] = 0.0
@@ -500,7 +508,28 @@ def _run_navigation(
                         target,
                         navigation,
                     )
-                    if method == "B0_raw":
+                    actual_speed = float(np.linalg.norm(control_velocity[env_index, :2]))
+                    stalled = bool(
+                        np.linalg.norm(desired[env_index, :2])
+                        >= float(recovery["minimum_desired_speed_mps"])
+                        and actual_speed <= float(recovery["maximum_actual_speed_mps"])
+                        and position[env_index, 2] <= float(recovery["maximum_base_height_m"])
+                    )
+                    stall_ticks[env_index] = stall_ticks[env_index] + 1 if stalled else 0
+                    if (
+                        recovery_ticks[env_index] == 0
+                        and stall_ticks[env_index] >= recovery_detection_ticks
+                        and recovery_attempts[env_index] < maximum_recovery_attempts
+                    ):
+                        recovery_ticks[env_index] = recovery_zero_ticks
+                        recovery_attempts[env_index] += 1
+                        stall_ticks[env_index] = 0
+                    recovery_active[env_index] = recovery_ticks[env_index] > 0
+                    if recovery_active[env_index]:
+                        proposed = np.zeros(3, dtype=np.float64)
+                        inverse_objective[env_index] = np.nan
+                        recovery_ticks[env_index] -= 1
+                    elif method == "B0_raw":
                         proposed = desired[env_index]
                         inverse_objective[env_index] = np.nan
                     else:
@@ -577,6 +606,8 @@ def _run_navigation(
                         "effective_vy": effective[env_index, 1],
                         "effective_wz": effective[env_index, 2],
                         "inverse_objective": inverse_objective[env_index],
+                        "stall_recovery_active": bool(recovery_active[env_index]),
+                        "stall_recovery_attempts": int(recovery_attempts[env_index]),
                         "pose_x": position[env_index, 0],
                         "pose_y": position[env_index, 1],
                         "pose_yaw": yaw[env_index],
@@ -612,6 +643,7 @@ def _run_navigation(
             "final_x": float(arrays[0][index, 0]),
             "final_y": float(arrays[0][index, 1]),
             "goal_distance_m": float(np.linalg.norm(waypoints[-1] - arrays[0][index, :2])),
+            "stall_recovery_attempts": int(recovery_attempts[index]),
             "serious_safety_event": bool(serious[index]),
         }
         for index, seed in enumerate(config.seeds)
@@ -684,6 +716,9 @@ def run_p7_navigation(
         "collision_rate": float(np.mean(collision)),
         "mean_completion_time_s": float(np.mean(completion)),
         "median_completion_time_s": float(np.median(completion)),
+        "stall_recovery_attempts": int(
+            sum(int(row["stall_recovery_attempts"]) for row in episode_rows)
+        ),
         "valid_observation_ratio": float(np.mean(valid)) if valid else 1.0,
         "safety_events": int(safety_events),
         "maximum_abort_latency_s": (
