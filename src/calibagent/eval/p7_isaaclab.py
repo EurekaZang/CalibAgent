@@ -77,6 +77,16 @@ class P7BenchmarkConfig:
             raise ValueError("P7 requires frozen B0/B1/B8 controls")
         if len(map_ids) != len(set(map_ids)) or len(map_ids) < 3:
             raise ValueError("P7 requires at least three unique maps")
+        if self.experiment_role not in {"pilot", "main"} or (
+            self.experiment_role == "main"
+            and (
+                not self.protocol_frozen_utc
+                or len(seeds) < int(self.publication_gates["minimum_seeds_per_map"])
+            )
+        ):
+            raise ValueError("P7 main runs require a frozen, fully covered protocol")
+        if int(self.isaaclab["maximum_startup_attempts"]) not in {1, 2}:
+            raise ValueError("P7 permits at most one startup-only retry")
         dense = int(self.calibration["dense_trials"])
         active = int(self.calibration["active_trials"])
         if str(self.calibration["feature_set"]) != "m1_affine":
@@ -449,7 +459,7 @@ def run_p7_suite(
                 ),
                 encoding="utf-8",
             )
-            command = [
+            command_prefix = [
                 str(isaaclab / "isaaclab.sh"),
                 "-p",
                 str(root / "sim" / "isaaclab" / "scripts" / "run_p7_navigation.py"),
@@ -460,17 +470,7 @@ def run_p7_suite(
                 "--output",
                 str(method_output),
                 "--headless",
-                "--kit_args=--portable-root=/tmp/calibagent_kit_p7",
             ]
-            (method_output / "launch_command.json").write_text(
-                json.dumps(command, indent=2),
-                encoding="utf-8",
-            )
-            result = _run(command, cwd=root, env=environment, check=False)
-            (method_output / "simulator.log").write_text(
-                result.stdout + result.stderr,
-                encoding="utf-8",
-            )
             required = (
                 "summary.json",
                 "episode_metrics.csv",
@@ -479,11 +479,56 @@ def run_p7_suite(
                 "map_geometry.json",
                 "scenario_config.json",
             )
-            missing = [name for name in required if not (method_output / name).is_file()]
-            if result.returncode != 0 or missing:
+            attempts: list[dict[str, Any]] = []
+            logs: list[str] = []
+            maximum_attempts = int(config.isaaclab["maximum_startup_attempts"])
+            returncode = -1
+            missing = list(required)
+            for attempt in range(1, maximum_attempts + 1):
+                command = [
+                    *command_prefix,
+                    (
+                        "--kit_args=--portable-root="
+                        f"/tmp/calibagent_kit_p7_{map_id}_{method}_{attempt}"
+                    ),
+                ]
+                result = _run(command, cwd=root, env=environment, check=False)
+                returncode = result.returncode
+                missing = [name for name in required if not (method_output / name).is_file()]
+                logs.append(
+                    f"===== STARTUP ATTEMPT {attempt} =====\n" + result.stdout + result.stderr
+                )
+                attempts.append(
+                    {
+                        "attempt": attempt,
+                        "command": command,
+                        "returncode": result.returncode,
+                        "missing_required_artifacts": missing,
+                    }
+                )
+                if result.returncode == 0 and not missing:
+                    break
+                # A retry is allowed only when the simulator died before
+                # producing any scientific artifact. Partial runs are evidence,
+                # not startup failures, and must fail closed.
+                if any((method_output / name).is_file() for name in required):
+                    break
+            (method_output / "launch_command.json").write_text(
+                json.dumps(attempts[0]["command"], indent=2),
+                encoding="utf-8",
+            )
+            (method_output / "launch_attempts.json").write_text(
+                json.dumps(attempts, indent=2, sort_keys=True),
+                encoding="utf-8",
+            )
+            (method_output / "simulator.log").write_text(
+                "\n".join(logs),
+                encoding="utf-8",
+            )
+            if returncode != 0 or missing:
                 raise RuntimeError(
                     f"P7 map {map_id}/{method} failed "
-                    f"(returncode={result.returncode}, missing={missing}); "
+                    f"(returncode={returncode}, missing={missing}); "
                     f"see {method_output / 'simulator.log'}"
                 )
         summaries.append(

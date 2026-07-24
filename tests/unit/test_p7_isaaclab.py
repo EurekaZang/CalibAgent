@@ -16,7 +16,7 @@ from calibagent.eval.p7_isaaclab import (
 def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     return {
         "map": map_config["id"],
-        "num_seeds": 20,
+        "num_seeds": 30,
         "same_planner": True,
         "b8_success_rate": 0.95,
         "b8_collision_rate": 0.0,
@@ -36,7 +36,7 @@ def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def test_p7_pilot_config_and_publication_gates() -> None:
+def test_p7_main_config_and_publication_gates() -> None:
     config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
 
@@ -44,9 +44,11 @@ def test_p7_pilot_config_and_publication_gates() -> None:
 
     assert result["verdict"] == "GO"
     assert all(result["gates"].values())
+    assert config.experiment_role == "main"
+    assert len(config.vectorization["seeds"]) == 30
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 810241
+    assert payload["simulator_seed"] == 830241
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
     assert payload["calibration"]["command_bounds"][0] == [-0.40, 0.40]
@@ -79,6 +81,10 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
         replace(config, calibration=calibration).validate()
     with pytest.raises(ValueError, match="B0/B1/B8"):
         replace(config, methods=("B0_raw", "B8_full")).validate()
+    isaaclab = dict(config.isaaclab)
+    isaaclab["maximum_startup_attempts"] = 3
+    with pytest.raises(ValueError, match="startup-only"):
+        replace(config, isaaclab=isaaclab).validate()
     calibration = dict(config.calibration)
     calibration["feature_set"] = "m2_affine_cross_hinge"
     with pytest.raises(ValueError, match="M1 affine"):
