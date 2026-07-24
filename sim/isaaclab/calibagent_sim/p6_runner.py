@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import gzip
 import json
 from collections import deque
 from pathlib import Path
@@ -51,6 +53,17 @@ _PASSIVE_RECOVERY = np.asarray(
     ],
     dtype=np.float64,
 )
+
+
+def _write_csv_gzip(path: Path, rows: list[dict[str, Any]]) -> None:
+    """Write high-rate trace evidence without discarding any samples."""
+
+    if not rows:
+        raise ValueError(f"refusing to write empty trace: {path}")
+    with gzip.open(path, "wt", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def _physical_config(
@@ -740,7 +753,7 @@ def run_p6_scenario(
     _write_csv(output / "recovery_metrics.csv", recovery_rows)
     _write_csv(output / "per_seed_metrics.csv", per_seed_rows)
     _write_csv(output / "recovery_curve.csv", curve_rows)
-    _write_csv(output / "pose_trace.csv", trace_rows)
+    _write_csv_gzip(output / "pose_trace.csv.gz", trace_rows)
     (output / "shift_events.json").write_text(
         json.dumps(
             {

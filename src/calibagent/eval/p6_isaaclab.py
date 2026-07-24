@@ -391,6 +391,7 @@ def run_p6_suite(
                 "--output",
                 str(method_output),
                 "--headless",
+                "--kit_args=--portable-root=/tmp/calibagent_kit_p6",
             ]
             (method_output / "launch_command.json").write_text(
                 json.dumps(command, indent=2),
@@ -407,7 +408,7 @@ def run_p6_suite(
                 "recovery_metrics.csv",
                 "per_seed_metrics.csv",
                 "recovery_curve.csv",
-                "pose_trace.csv",
+                "pose_trace.csv.gz",
                 "shift_events.json",
                 "scenario_config.json",
             )

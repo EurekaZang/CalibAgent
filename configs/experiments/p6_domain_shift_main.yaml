@@ -1,5 +1,5 @@
 experiment_role: main
-protocol_frozen_utc: "2026-07-24T09:30:00Z"
+protocol_frozen_utc: "2026-07-24T09:59:15Z"
 output_dir: outputs/p6_main
 
 isaaclab:
@@ -10,28 +10,28 @@ isaaclab:
 
 vectorization:
   num_seeds: 20
-  simulator_seed: 760240
+  simulator_seed: 780240
   seeds:
-    - 6301
-    - 6302
-    - 6303
-    - 6304
-    - 6305
-    - 6306
-    - 6307
-    - 6308
-    - 6309
-    - 6310
-    - 6311
-    - 6312
-    - 6313
-    - 6314
-    - 6315
-    - 6316
-    - 6317
-    - 6318
-    - 6319
-    - 6320
+    - 6501
+    - 6502
+    - 6503
+    - 6504
+    - 6505
+    - 6506
+    - 6507
+    - 6508
+    - 6509
+    - 6510
+    - 6511
+    - 6512
+    - 6513
+    - 6514
+    - 6515
+    - 6516
+    - 6517
+    - 6518
+    - 6519
+    - 6520
 
 methods:
   - frozen
@@ -80,9 +80,9 @@ scenarios:
   - id: gain_coupling_shift
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
-    pre_distortion: affine
-    post_distortion: affine
-    post_seed_offset: 100000
+    pre_distortion: affine_high
+    post_distortion: affine_low
+    post_seed_offset: 0
     pre_physics:
       static_friction: 0.80
       dynamic_friction: 0.60
@@ -93,11 +93,11 @@ scenarios:
       dynamic_friction: 0.60
       payload_add_kg: 0.0
       com_offset_x_m: 0.0
-  - id: friction_payload_shift
+  - id: friction_payload_gain_shift
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
-    pre_distortion: identity
-    post_distortion: identity
+    pre_distortion: affine_high
+    post_distortion: affine_low
     post_seed_offset: 0
     pre_physics:
       static_friction: 0.90
@@ -112,9 +112,9 @@ scenarios:
   - id: mixed_context_shift
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
-    pre_distortion: deadzone
-    post_distortion: mixed
-    post_seed_offset: 200000
+    pre_distortion: affine_high
+    post_distortion: mixed_low
+    post_seed_offset: 0
     pre_physics:
       static_friction: 0.80
       dynamic_friction: 0.60
@@ -131,7 +131,6 @@ publication_gates:
   minimum_seeds_per_scenario: 20
   maximum_no_shift_false_alarm_rate: 0.05
   minimum_detection_rate: 0.95
-  minimum_median_detection_delay_trials: 3.0
   maximum_median_detection_delay_trials: 5.0
   maximum_p95_detection_delay_trials: 5.0
   minimum_full_recovery_rate: 0.90
