@@ -119,20 +119,26 @@ def _model_components(
     list[BayesianBasisModel],
     list[IntegratedVariancePlanner],
     CandidatePool,
+    CandidatePool,
     HardSafetyFilter,
     TaskDistribution,
 ]:
     calibration = dict(payload["calibration"])
-    command_space = CommandSpace(
+    navigation = dict(payload["navigation"])
+    calibration_space = CommandSpace(
         np.asarray(calibration["command_bounds"], dtype=np.float64),
         max_linear_norm=float(calibration["maximum_linear_norm"]),
     )
-    reference = CandidatePool.generate(command_space, count=512, seed=77131)
-    transformer = BasisTransformer(str(payload["calibration"]["feature_set"])).fit(
-        reference.commands
+    inverse_space = CommandSpace(
+        np.asarray(navigation["inverse_command_bounds"], dtype=np.float64),
+        max_linear_norm=float(navigation["inverse_maximum_linear_norm"]),
     )
-    basis = transformer.transform(reference.commands)
-    identity_prior = np.linalg.lstsq(basis, reference.commands, rcond=None)[0].T
+    inverse_reference = CandidatePool.generate(inverse_space, count=512, seed=77131)
+    transformer = BasisTransformer(str(payload["calibration"]["feature_set"])).fit(
+        inverse_reference.commands
+    )
+    basis = transformer.transform(inverse_reference.commands)
+    identity_prior = np.linalg.lstsq(basis, inverse_reference.commands, rcond=None)[0].T
     models = [
         BayesianBasisModel(
             transformer,
@@ -148,19 +154,27 @@ def _model_components(
         max_base_height=config.safety_max_base_height_m,
         max_coupled_load=config.safety_max_coupled_load,
     )
-    linear_load = np.linalg.norm(reference.commands[:, :2], axis=1) / envelope.max_linear_norm
-    angular_scale = max(abs(bound) for bound in envelope.command_bounds[2])
-    coupled = linear_load + np.abs(reference.commands[:, 2]) / angular_scale
-    safe_pool = CandidatePool(
-        reference.commands[coupled <= envelope.max_coupled_load],
-        command_space,
-    )
-    planners = [IntegratedVariancePlanner(safe_pool, duplicate_distance=0.02) for _ in config.seeds]
+
+    def safe_pool(reference: CandidatePool) -> CandidatePool:
+        linear_load = np.linalg.norm(reference.commands[:, :2], axis=1) / envelope.max_linear_norm
+        angular_scale = max(abs(bound) for bound in envelope.command_bounds[2])
+        coupled = linear_load + np.abs(reference.commands[:, 2]) / angular_scale
+        return CandidatePool(
+            reference.commands[coupled <= envelope.max_coupled_load],
+            reference.command_space,
+        )
+
+    calibration_pool = safe_pool(CandidatePool.generate(calibration_space, count=512, seed=77137))
+    inverse_pool = safe_pool(inverse_reference)
+    planners = [
+        IntegratedVariancePlanner(calibration_pool, duplicate_distance=0.02) for _ in config.seeds
+    ]
     task_commands = np.asarray(payload["navigation"]["task_commands"], dtype=np.float64)
     return (
         models,
         planners,
-        safe_pool,
+        calibration_pool,
+        inverse_pool,
         HardSafetyFilter(envelope),
         TaskDistribution.uniform(task_commands),
     )
@@ -701,7 +715,14 @@ def run_p7_navigation(
     env_cfg, config = _map_environment(payload, device)
     env = gym.make(config.task, cfg=env_cfg)
     actor = load_actor(checkpoint, str(env.unwrapped.device))
-    models, planners, pool, safety_filter, task = _model_components(config, payload)
+    (
+        models,
+        planners,
+        calibration_pool,
+        inverse_pool,
+        safety_filter,
+        task,
+    ) = _model_components(config, payload)
     try:
         (
             calibration_rows,
@@ -715,7 +736,7 @@ def run_p7_navigation(
             config,
             models,
             planners,
-            pool,
+            calibration_pool,
             safety_filter,
             task,
         )
@@ -725,7 +746,7 @@ def run_p7_navigation(
             payload,
             config,
             models,
-            pool,
+            inverse_pool,
             safety_filter,
         )
     finally:

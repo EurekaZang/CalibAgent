@@ -90,6 +90,15 @@ class P7BenchmarkConfig:
             raise ValueError("P7 command bounds must have shape (3, 2) and straddle zero")
         if float(self.calibration["maximum_linear_norm"]) <= 0.0:
             raise ValueError("P7 maximum linear norm must be positive")
+        inverse_bounds = np.asarray(self.navigation["inverse_command_bounds"], dtype=np.float64)
+        if (
+            inverse_bounds.shape != (3, 2)
+            or np.any(inverse_bounds[:, 0] >= 0.0)
+            or np.any(inverse_bounds[:, 1] <= 0.0)
+        ):
+            raise ValueError("P7 inverse command bounds must have shape (3, 2) and straddle zero")
+        if float(self.navigation["inverse_maximum_linear_norm"]) <= 0.0:
+            raise ValueError("P7 inverse maximum linear norm must be positive")
         if active > 0.40 * dense:
             raise ValueError("P7 B8 calibration budget exceeds 40% of B1")
         if int(self.navigation["sample_rate_hz"]) % int(self.navigation["planner_rate_hz"]):
