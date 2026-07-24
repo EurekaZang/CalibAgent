@@ -53,12 +53,17 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
     assert payload["calibration"]["model_prior_gain"] == 1.00
-    assert payload["calibration"]["active_candidate_source"] == "task_distribution_support"
+    assert payload["calibration"]["active_candidate_source"] == "global_safe_pool"
     assert payload["calibration"]["command_bounds"][0] == [-0.40, 0.40]
     assert payload["navigation"]["inverse_undertracking_confidence_weights"] == [
-        0.0,
+        0.25,
         0.5,
         0.5,
+    ]
+    assert payload["navigation"]["inactive_axis_command_limits"] == [
+        0.08,
+        0.06,
+        0.12,
     ]
     assert payload["navigation"]["stall_recovery"]["maximum_attempts"] == 3
     assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 10
@@ -106,6 +111,10 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
     with pytest.raises(ValueError, match="enhanced determinism"):
         replace(config, isaaclab=isaaclab).validate()
     calibration = dict(config.calibration)
-    calibration["active_candidate_source"] = "global_safe_pool"
-    with pytest.raises(ValueError, match="frozen task support"):
+    calibration["active_candidate_source"] = "task_distribution_support"
+    with pytest.raises(ValueError, match="global safe pool"):
         replace(config, calibration=calibration).validate()
+    navigation = dict(config.navigation)
+    navigation["inactive_axis_command_limits"] = [0.08, 0.0, 0.12]
+    with pytest.raises(ValueError, match="three positive"):
+        replace(config, navigation=navigation).validate()

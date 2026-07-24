@@ -106,8 +106,8 @@ class P7BenchmarkConfig:
             raise ValueError("P7 maximum linear norm must be positive")
         if active > 0.40 * dense:
             raise ValueError("P7 B8 calibration budget exceeds 40% of B1")
-        if str(self.calibration["active_candidate_source"]) != "task_distribution_support":
-            raise ValueError("P7 active candidates must use the frozen task support")
+        if str(self.calibration["active_candidate_source"]) != "global_safe_pool":
+            raise ValueError("P7 active candidates must use the frozen global safe pool")
         if int(self.navigation["sample_rate_hz"]) % int(self.navigation["planner_rate_hz"]):
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:
@@ -122,6 +122,16 @@ class P7BenchmarkConfig:
             or np.any(confidence_weights < 0.0)
         ):
             raise ValueError("P7 inverse confidence weights must contain three nonnegative values")
+        inactive_limits = np.asarray(
+            self.navigation["inactive_axis_command_limits"],
+            dtype=np.float64,
+        )
+        if (
+            inactive_limits.shape != (3,)
+            or np.any(np.isnan(inactive_limits))
+            or np.any(inactive_limits <= 0.0)
+        ):
+            raise ValueError("P7 inactive-axis limits must contain three positive values")
         task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)
         if (
             task_commands.ndim != 2

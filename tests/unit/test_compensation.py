@@ -127,6 +127,32 @@ def test_robust_inverse_uses_lower_confidence_only_on_selected_axes() -> None:
     assert yaw_robust.predicted_velocity[2] >= yaw_nominal.predicted_velocity[2]
 
 
+def test_constrained_inverse_limits_commands_on_inactive_axes() -> None:
+    space = CommandSpace(
+        np.asarray([[-0.4, 0.4], [-0.3, 0.3], [-0.7, 0.7]]),
+        max_linear_norm=0.45,
+    )
+    pool = CandidatePool.generate(space, count=512, seed=89)
+    model = _identity_model(pool)
+    compensator = ConstrainedInverseCompensator(
+        pool,
+        HardSafetyFilter(),
+        risk_weight=0.0,
+        inactive_axis_command_limits=[0.08, 0.06, 0.12],
+    )
+    state = RobotState(0.0, (0.0, 0.0), 0.0, 0.0, 0.0, 0.4, (0.0, 0.0, 0.0))
+
+    result = compensator.solve(
+        np.asarray([0.25, 0.0, 0.0]),
+        model,
+        state,
+        np.zeros(3),
+    )
+
+    assert abs(result.command[1]) <= 0.06
+    assert abs(result.command[2]) <= 0.12
+
+
 def test_constrained_inverse_can_preserve_task_axis_signs() -> None:
     space = CommandSpace(
         np.asarray([[-0.4, 0.4], [-0.3, 0.3], [-0.7, 0.7]]),

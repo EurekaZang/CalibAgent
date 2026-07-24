@@ -158,10 +158,7 @@ def _model_components(
         command_space,
     )
     task_commands = np.asarray(payload["navigation"]["task_commands"], dtype=np.float64)
-    active_pool = CandidatePool(task_commands, command_space)
-    planners = [
-        IntegratedVariancePlanner(active_pool, duplicate_distance=0.02) for _ in config.seeds
-    ]
+    planners = [IntegratedVariancePlanner(safe_pool, duplicate_distance=0.02) for _ in config.seeds]
     return (
         models,
         planners,
@@ -449,6 +446,10 @@ def _run_navigation(
             risk_weight=float(navigation["inverse_risk_weight"]),
             undertracking_confidence_weights=np.asarray(
                 navigation["inverse_undertracking_confidence_weights"],
+                dtype=np.float64,
+            ),
+            inactive_axis_command_limits=np.asarray(
+                navigation["inactive_axis_command_limits"],
                 dtype=np.float64,
             ),
             duration_s=control_dt,

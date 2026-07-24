@@ -44,6 +44,11 @@ class ConstrainedInverseCompensator:
             0.0,
             0.0,
         ),
+        inactive_axis_command_limits: (NDArray[np.floating[Any]] | Sequence[float]) = (
+            np.inf,
+            np.inf,
+            np.inf,
+        ),
         duration_s: float = 0.10,
         enforce_axis_signs: bool = False,
         sign_threshold: float = 0.02,
@@ -52,12 +57,19 @@ class ConstrainedInverseCompensator:
             undertracking_confidence_weights,
             dtype=np.float64,
         )
+        inactive_limits = np.asarray(
+            inactive_axis_command_limits,
+            dtype=np.float64,
+        )
         if (
             regularization < 0.0
             or risk_weight < 0.0
             or confidence_weights.shape != (3,)
             or not np.all(np.isfinite(confidence_weights))
             or np.any(confidence_weights < 0.0)
+            or inactive_limits.shape != (3,)
+            or np.any(np.isnan(inactive_limits))
+            or np.any(inactive_limits <= 0.0)
             or duration_s <= 0.0
             or sign_threshold < 0.0
         ):
@@ -67,6 +79,7 @@ class ConstrainedInverseCompensator:
         self.regularization = float(regularization)
         self.risk_weight = float(risk_weight)
         self.undertracking_confidence_weights = confidence_weights.copy()
+        self.inactive_axis_command_limits = inactive_limits.copy()
         self.duration_s = float(duration_s)
         self.enforce_axis_signs = bool(enforce_axis_signs)
         self.sign_threshold = float(sign_threshold)
@@ -101,6 +114,14 @@ class ConstrainedInverseCompensator:
             + self.risk_weight * np.sum(variances, axis=1)
         )
         order = np.argsort(objective, kind="stable")
+        inactive_axes = ~active_axes
+        if np.any(inactive_axes):
+            dormant_consistent = np.all(
+                np.abs(commands[:, inactive_axes])
+                <= self.inactive_axis_command_limits[inactive_axes],
+                axis=1,
+            )
+            order = order[dormant_consistent[order]]
         if self.enforce_axis_signs and np.any(active_axes):
             consistent = np.all(
                 commands[:, active_axes] * desired[active_axes] >= 0.0,
