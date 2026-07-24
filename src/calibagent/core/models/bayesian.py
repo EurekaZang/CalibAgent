@@ -161,6 +161,23 @@ class BayesianBasisModel:
         clone.posterior_version += 1
         return clone
 
+    def inflate_posterior(self, factor: float) -> None:
+        """Inflate epistemic covariance while preserving the posterior mean.
+
+        This is the warm-start response to a confirmed context shift.  The
+        information form is rebuilt so subsequent Bayesian updates remain
+        coherent; merely multiplying the exposed covariance would not do so.
+        """
+
+        if not np.isfinite(factor) or factor <= 1.0:
+            raise ValueError("posterior inflation factor must be finite and > 1")
+        self._covariances *= float(factor)
+        self._precision = np.asarray(
+            [np.linalg.inv(covariance) for covariance in self._covariances]
+        )
+        self._eta = np.einsum("aij,aj->ai", self._precision, self._means)
+        self.posterior_version += 1
+
     def save_state(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         metadata = {

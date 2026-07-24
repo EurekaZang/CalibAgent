@@ -42,6 +42,7 @@ calibagent-real-replay = "calibagent.cli.real_replay:main"
 calibagent-p1-plan = "calibagent.cli.capture_plan:main"
 calibagent-p4-benchmark = "calibagent.cli.run_p4_benchmark:main"
 calibagent-p5-benchmark = "calibagent.cli.run_p5_isaaclab:main"
+calibagent-p6-benchmark = "calibagent.cli.run_p6_isaaclab:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
