@@ -122,6 +122,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
             AuditCheck("p1_real_data_evidence", False, missing),
             AuditCheck("p1_real_data_scale_coverage", False, missing),
             AuditCheck("p1_real_baseline_improvement", False, missing),
+            AuditCheck("p1_real_sampling_sensitivity", False, missing),
         ]
     payload = json.loads(path.read_text(encoding="utf-8"))
     real_criteria = criteria["real_data"]
@@ -196,6 +197,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
             authenticity,
             AuditCheck("p1_real_data_scale_coverage", False, "dataset artifact missing"),
             AuditCheck("p1_real_baseline_improvement", False, "dataset artifact missing"),
+            AuditCheck("p1_real_sampling_sensitivity", False, "dataset artifact missing"),
         ]
     observations = load_observations(dataset_path)
     valid = [observation for observation in observations if observation.valid]
@@ -321,7 +323,65 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
                 f"{fold_detail}"
             ),
         )
-    return [authenticity, scale, improvement]
+    sensitivity_required = bool(real_criteria.get("require_sampling_sensitivity", False))
+    sensitivity_path = path.parent / str(
+        artifacts.get("sampling_sensitivity", "missing")
+    )
+    if not sensitivity_required:
+        sensitivity_check = AuditCheck(
+            "p1_real_sampling_sensitivity", True, "not required by criteria"
+        )
+    elif not sensitivity_path.is_file():
+        sensitivity_check = AuditCheck(
+            "p1_real_sampling_sensitivity",
+            False,
+            "sampling sensitivity artifact missing",
+        )
+    elif file_sha256(sensitivity_path) != payload.get("sampling_sensitivity_sha256"):
+        sensitivity_check = AuditCheck(
+            "p1_real_sampling_sensitivity",
+            False,
+            "sampling sensitivity hash mismatch",
+        )
+    else:
+        sensitivity = json.loads(sensitivity_path.read_text(encoding="utf-8"))
+        decimations = sensitivity.get("decimations", [])
+        min_valid = min(
+            (int(item.get("valid_observations", 0)) for item in decimations),
+            default=0,
+        )
+        max_velocity_rmse = max(
+            (float(item.get("velocity_rmse_to_full", np.inf)) for item in decimations),
+            default=float("inf"),
+        )
+        min_raw_reduction = min(
+            (float(item.get("m1_vs_raw_reduction", -np.inf)) for item in decimations),
+            default=float("-inf"),
+        )
+        min_m0_reduction = min(
+            (float(item.get("m1_vs_m0_reduction", -np.inf)) for item in decimations),
+            default=float("-inf"),
+        )
+        sensitivity_passed = bool(
+            len(decimations) == 2
+            and min_valid >= int(real_criteria["min_valid_observations"])
+            and max_velocity_rmse <= float(real_criteria["max_decimated_velocity_rmse"])
+            and min_raw_reduction
+            >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
+            and min_m0_reduction
+            >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
+        )
+        sensitivity_check = AuditCheck(
+            "p1_real_sampling_sensitivity",
+            sensitivity_passed,
+            (
+                f"decimations={len(decimations)}, min_valid={min_valid}, "
+                f"max_velocity_rmse={max_velocity_rmse:.6f}, "
+                f"min_M1_vs_raw={min_raw_reduction:.6f}, "
+                f"min_M1_vs_M0={min_m0_reduction:.6f}"
+            ),
+        )
+    return [authenticity, scale, improvement, sensitivity_check]
 
 
 def _capture_design_check(workspace: Path, criteria: dict[str, Any]) -> AuditCheck:

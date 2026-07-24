@@ -83,6 +83,7 @@ def test_real_replay_builder_keeps_fixture_marked_synthetic(tmp_path) -> None:
     assert evidence["capture_plan_command_match"] == 1.0
     assert evidence["capture_plan_completion"] == 1.0
     assert (output / "observations.parquet").is_file()
+    assert (output / "sampling_sensitivity.json").is_file()
     frozen = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
     assert frozen["source_sha256"] == evidence["source_sha256"]
     checks = {

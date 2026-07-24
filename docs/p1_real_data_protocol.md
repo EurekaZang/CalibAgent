@@ -43,6 +43,7 @@ calibagent-real-replay path/to/go2_raw_trials.csv \
 The command copies the raw table and immutable source archive into the evidence
 bundle, traces every selected final trial back to its native attempt rows,
 processes every trial through `MeasurementPipeline`, performs leave-one-session-out
-baseline evaluation, verifies command-plan alignment, and records SHA-256 hashes. Using
+baseline evaluation, verifies command-plan alignment, runs even/odd half-rate
+sampling sensitivity checks, and records SHA-256 hashes. Using
 `--source-kind synthetic_fixture` is supported
 for integration tests but is rejected by the publication audit.

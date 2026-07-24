@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +17,7 @@ from calibagent.data.observations import save_observations
 from calibagent.eval.real_delivery import verify_real_delivery
 from calibagent.eval.replay import run_passive_replay_baseline
 from calibagent.interfaces.types import RawTrialData, RobotContext, TrialObservation
-from calibagent.measurement.pipeline import MeasurementPipeline
+from calibagent.measurement.pipeline import MeasurementConfig, MeasurementPipeline
 
 RAW_REQUIRED_COLUMNS = {
     "trial_id",
@@ -102,6 +103,96 @@ def capture_plan_alignment(raw: pd.DataFrame, plan: pd.DataFrame) -> tuple[float
     return match_ratio, min(completion, 1.0)
 
 
+def evaluate_sampling_sensitivity(
+    frame: pd.DataFrame,
+    full_observations: list[TrialObservation],
+    *,
+    budget: int,
+    seed: int,
+) -> dict[str, Any]:
+    """Check that conclusions survive two independent half-rate decimations."""
+
+    groups = list(frame.groupby(["session_id", "trial_id"], sort=True))
+    if len(groups) != len(full_observations):
+        raise ValueError("raw groups and full-rate observations are inconsistent")
+    full_velocity = np.vstack(
+        [observation.mean_velocity for observation in full_observations]
+    )
+    decimations: list[dict[str, Any]] = []
+    for offset in (0, 1):
+        pipeline = MeasurementPipeline(
+            MeasurementConfig(min_samples=15, max_timestamp_gap_s=0.15)
+        )
+        observations: list[TrialObservation] = []
+        rates: list[float] = []
+        for (_, _), group in groups:
+            ordered = group.sort_values("timestamp").iloc[offset::2]
+            timestamps = ordered["timestamp"].to_numpy(dtype=np.float64)
+            delta = np.diff(timestamps)
+            rates.append(float(1.0 / np.median(delta)))
+            raw = RawTrialData(
+                timestamps,
+                ordered[["cmd_vx", "cmd_vy", "cmd_wz"]].to_numpy(dtype=np.float64),
+                ordered[["pose_x", "pose_y", "pose_yaw"]].to_numpy(dtype=np.float64),
+                _context(ordered),
+                metadata={"decimation_offset": offset},
+                raw_ref=f"raw_trials.csv#decimation/{offset}",
+            )
+            observations.append(pipeline.process(raw))
+        decimated_velocity = np.vstack(
+            [observation.mean_velocity for observation in observations]
+        )
+        difference = decimated_velocity - full_velocity
+        with tempfile.TemporaryDirectory(prefix="calibagent_sampling_sensitivity_") as temp:
+            metrics = run_passive_replay_baseline(
+                observations,
+                Path(temp),
+                budget=budget,
+                seed=seed,
+            )
+        raw_rmse = float(
+            metrics.loc[metrics["model"] == "B0_raw", "validation_rmse"].iloc[0]
+        )
+        lhs_m0 = float(
+            metrics.loc[
+                (metrics["sampler"] == "lhs")
+                & (metrics["model"] == "M0_diagonal_affine"),
+                "validation_rmse",
+            ].iloc[0]
+        )
+        lhs_m1 = float(
+            metrics.loc[
+                (metrics["sampler"] == "lhs")
+                & (metrics["model"] == "M1_full_affine"),
+                "validation_rmse",
+            ].iloc[0]
+        )
+        decimations.append(
+            {
+                "offset": offset,
+                "median_hz": float(np.median(rates)),
+                "valid_observations": sum(
+                    int(observation.valid) for observation in observations
+                ),
+                "velocity_rmse_to_full": float(np.sqrt(np.mean(difference * difference))),
+                "velocity_axis_rmse_to_full": np.sqrt(
+                    np.mean(difference * difference, axis=0)
+                ).tolist(),
+                "raw_validation_rmse": raw_rmse,
+                "lhs_m0_validation_rmse": lhs_m0,
+                "lhs_m1_validation_rmse": lhs_m1,
+                "m1_vs_raw_reduction": 1.0 - lhs_m1 / raw_rmse,
+                "m1_vs_m0_reduction": 1.0 - lhs_m1 / lhs_m0,
+            }
+        )
+    return {
+        "schema_version": "1.0",
+        "method": "even_odd_half_rate_decimation",
+        "full_observations": len(full_observations),
+        "decimations": decimations,
+    }
+
+
 def build_real_replay_evidence(
     source: Path,
     output_dir: Path,
@@ -161,6 +252,17 @@ def build_real_replay_evidence(
         validation_fraction=validation_fraction,
         seed=seed,
     )
+    sensitivity = evaluate_sampling_sensitivity(
+        frame,
+        observations,
+        budget=budget,
+        seed=seed,
+    )
+    sensitivity_path = output_dir / "sampling_sensitivity.json"
+    sensitivity_path.write_text(
+        json.dumps(sensitivity, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
     sessions = sorted({observation.context.session_id for observation in valid})
     manifest_path = output_dir / "manifest.json"
     run_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -201,6 +303,7 @@ def build_real_replay_evidence(
         "delivery_verification_sha256": (
             file_sha256(verification_path) if verification_path is not None else None
         ),
+        "sampling_sensitivity_sha256": file_sha256(sensitivity_path),
         "protocol_limitations": (
             delivery_verification["limitations"] if delivery_verification is not None else []
         ),
@@ -215,6 +318,7 @@ def build_real_replay_evidence(
                 if verification_path is not None
                 else {}
             ),
+            "sampling_sensitivity": sensitivity_path.name,
         },
         "baseline_summary": metrics.to_dict(orient="records"),
     }
