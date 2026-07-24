@@ -1,5 +1,5 @@
 experiment_role: main
-protocol_frozen_utc: "2026-07-24T09:59:15Z"
+protocol_frozen_utc: "2026-07-24T10:22:31Z"
 output_dir: outputs/p6_main
 
 isaaclab:
@@ -10,28 +10,28 @@ isaaclab:
 
 vectorization:
   num_seeds: 20
-  simulator_seed: 780240
+  simulator_seed: 790240
   seeds:
-    - 6501
-    - 6502
-    - 6503
-    - 6504
-    - 6505
-    - 6506
-    - 6507
-    - 6508
-    - 6509
-    - 6510
-    - 6511
-    - 6512
-    - 6513
-    - 6514
-    - 6515
-    - 6516
-    - 6517
-    - 6518
-    - 6519
-    - 6520
+    - 6601
+    - 6602
+    - 6603
+    - 6604
+    - 6605
+    - 6606
+    - 6607
+    - 6608
+    - 6609
+    - 6610
+    - 6611
+    - 6612
+    - 6613
+    - 6614
+    - 6615
+    - 6616
+    - 6617
+    - 6618
+    - 6619
+    - 6620
 
 methods:
   - frozen
