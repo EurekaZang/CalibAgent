@@ -783,6 +783,29 @@ def run_p7_navigation(
     _write_csv(output / "calibration_metrics.csv", calibration_rows)
     _write_csv(output / "episode_metrics.csv", episode_rows)
     _write_csv_gzip(output / "nav_trace.csv.gz", trace_rows)
+    np.savez_compressed(
+        output / "posterior_state.npz",
+        seeds=np.asarray(config.seeds, dtype=np.int64),
+        means=np.stack([model.posterior_means for model in models]),
+        covariances=np.stack([model.posterior_covariances for model in models]),
+        posterior_versions=np.asarray(
+            [model.posterior_version for model in models],
+            dtype=np.int64,
+        ),
+        noise_variances=np.stack([model.noise_variance for model in models]),
+        feature_names=np.asarray(models[0].transformer.feature_names),
+    )
+    (output / "distortion_parameters.json").write_text(
+        json.dumps(
+            make_distortion_parameters(
+                str(payload["distortion"]),
+                config.seeds,
+            ).to_dict(),
+            indent=2,
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
     (output / "map_geometry.json").write_text(
         json.dumps(
             {

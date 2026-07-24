@@ -518,6 +518,8 @@ def run_p7_suite(
                 "episode_metrics.csv",
                 "calibration_metrics.csv",
                 "nav_trace.csv.gz",
+                "posterior_state.npz",
+                "distortion_parameters.json",
                 "map_geometry.json",
                 "scenario_config.json",
             )
