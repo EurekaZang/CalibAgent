@@ -46,10 +46,10 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert all(result["gates"].values())
     assert config.experiment_role == "pilot"
     assert len(config.vectorization["seeds"]) == 20
-    assert config.vectorization["seeds"] == list(range(7631, 7651))
+    assert config.vectorization["seeds"] == list(range(7661, 7681))
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 865241
+    assert payload["simulator_seed"] == 870241
     assert payload["enhanced_determinism"] is True
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
@@ -75,7 +75,9 @@ def test_p7_pilot_config_and_publication_gates() -> None:
         "recovery_reengagement_delay_s": 2.0,
     }
     assert payload["navigation"]["stall_recovery"]["maximum_attempts"] == 3
-    assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 10
+    assert payload["navigation"]["maximum_linear_accel_mps2"] == 0.5
+    assert payload["navigation"]["stall_recovery"]["emergency_base_height_m"] == 0.18
+    assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 30
 
 
 def test_p7_gates_reject_no_raw_effect_and_dense_regression() -> None:
@@ -133,6 +135,17 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
         "ema_alpha": 0.0,
     }
     with pytest.raises(ValueError, match="feedback configuration"):
+        replace(config, navigation=navigation).validate()
+    navigation = dict(config.navigation)
+    navigation["maximum_linear_accel_mps2"] = 0.0
+    with pytest.raises(ValueError, match="acceleration limits"):
+        replace(config, navigation=navigation).validate()
+    navigation = dict(config.navigation)
+    navigation["stall_recovery"] = {
+        **config.navigation["stall_recovery"],
+        "emergency_base_height_m": config.safety["min_base_height_m"] + 0.01,
+    }
+    with pytest.raises(ValueError, match="stall recovery configuration"):
         replace(config, navigation=navigation).validate()
     navigation = dict(config.navigation)
     navigation["velocity_feedback"] = {

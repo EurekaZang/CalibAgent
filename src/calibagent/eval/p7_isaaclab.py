@@ -112,6 +112,11 @@ class P7BenchmarkConfig:
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:
             raise ValueError("P7 goal radius must be positive")
+        if (
+            float(self.navigation["maximum_linear_accel_mps2"]) <= 0.0
+            or float(self.navigation["maximum_angular_accel_rps2"]) <= 0.0
+        ):
+            raise ValueError("P7 command acceleration limits must be positive")
         confidence_weights = np.asarray(
             self.navigation["inverse_undertracking_confidence_weights"],
             dtype=np.float64,
@@ -173,6 +178,8 @@ class P7BenchmarkConfig:
             or float(recovery["maximum_actual_speed_mps"]) <= 0.0
             or float(recovery["maximum_base_height_m"]) <= float(self.safety["min_base_height_m"])
             or float(recovery["emergency_base_height_m"]) <= float(self.safety["min_base_height_m"])
+            or float(recovery["emergency_base_height_m"])
+            < float(self.safety["min_base_height_m"]) + 0.02
             or float(recovery["emergency_base_height_m"])
             >= float(recovery["maximum_base_height_m"])
             or float(recovery["detection_s"]) <= 0.0
