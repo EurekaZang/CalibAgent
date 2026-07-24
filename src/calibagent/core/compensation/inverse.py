@@ -39,14 +39,23 @@ class ConstrainedInverseCompensator:
         regularization: float = 0.02,
         risk_weight: float = 0.05,
         duration_s: float = 0.10,
+        enforce_axis_signs: bool = False,
+        sign_threshold: float = 0.02,
     ) -> None:
-        if regularization < 0.0 or risk_weight < 0.0 or duration_s <= 0.0:
+        if (
+            regularization < 0.0
+            or risk_weight < 0.0
+            or duration_s <= 0.0
+            or sign_threshold < 0.0
+        ):
             raise ValueError("compensation costs/duration are invalid")
         self.candidate_pool = candidate_pool
         self.safety_filter = safety_filter
         self.regularization = float(regularization)
         self.risk_weight = float(risk_weight)
         self.duration_s = float(duration_s)
+        self.enforce_axis_signs = bool(enforce_axis_signs)
+        self.sign_threshold = float(sign_threshold)
 
     def solve(
         self,
@@ -69,6 +78,14 @@ class ConstrainedInverseCompensator:
             + self.risk_weight * np.sum(variances, axis=1)
         )
         order = np.argsort(objective, kind="stable")
+        if self.enforce_axis_signs:
+            active_axes = np.abs(desired) >= self.sign_threshold
+            if np.any(active_axes):
+                consistent = np.all(
+                    commands[:, active_axes] * desired[active_axes] >= 0.0,
+                    axis=1,
+                )
+                order = order[consistent[order]]
         previous_velocity = VelocityCommand.from_array(
             previous,
             duration_s=self.duration_s,

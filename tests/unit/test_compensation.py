@@ -82,3 +82,29 @@ def test_constrained_inverse_rejects_nonfinite_input() -> None:
             state,
             np.zeros(3),
         )
+
+
+def test_constrained_inverse_can_preserve_task_axis_signs() -> None:
+    space = CommandSpace(
+        np.asarray([[-0.4, 0.4], [-0.3, 0.3], [-0.7, 0.7]]),
+        max_linear_norm=0.45,
+    )
+    pool = CandidatePool.generate(space, count=256, seed=91)
+    transformer = BasisTransformer("m1_affine").fit(pool.commands)
+    features = transformer.transform(pool.commands)
+    inverse_identity = np.linalg.lstsq(features, -pool.commands, rcond=None)[0].T
+    model = BayesianBasisModel(transformer, prior_scale=0.01)
+    model.initialize(PriorState(mean=inverse_identity))
+    compensator = ConstrainedInverseCompensator(
+        pool,
+        HardSafetyFilter(),
+        regularization=0.0,
+        risk_weight=0.0,
+        enforce_axis_signs=True,
+    )
+    state = RobotState(0.0, (0.0, 0.0), 0.0, 0.0, 0.0, 0.4, (0.0, 0.0, 0.0))
+    desired = np.asarray([0.20, -0.10, 0.20])
+
+    result = compensator.solve(desired, model, state, np.zeros(3))
+
+    assert np.all(result.command * desired >= 0.0)

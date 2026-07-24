@@ -439,6 +439,7 @@ def _run_navigation(
             regularization=float(navigation["inverse_regularization"]),
             risk_weight=float(navigation["inverse_risk_weight"]),
             duration_s=control_dt,
+            enforce_axis_signs=True,
         )
         for _ in config.seeds
     ]
