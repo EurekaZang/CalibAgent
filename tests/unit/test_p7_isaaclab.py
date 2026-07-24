@@ -16,7 +16,7 @@ from calibagent.eval.p7_isaaclab import (
 def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     return {
         "map": map_config["id"],
-        "num_seeds": 10,
+        "num_seeds": 30,
         "same_planner": True,
         "b8_success_rate": 0.95,
         "b8_collision_rate": 0.0,
@@ -36,7 +36,7 @@ def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def test_p7_pilot_config_and_publication_gates() -> None:
+def test_p7_main_config_and_publication_gates() -> None:
     config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
 
@@ -44,12 +44,12 @@ def test_p7_pilot_config_and_publication_gates() -> None:
 
     assert result["verdict"] == "GO"
     assert all(result["gates"].values())
-    assert config.experiment_role == "pilot"
-    assert len(config.vectorization["seeds"]) == 10
-    assert config.vectorization["seeds"] == list(range(7201, 7211))
+    assert config.experiment_role == "main"
+    assert len(config.vectorization["seeds"]) == 30
+    assert config.vectorization["seeds"] == list(range(7501, 7531))
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 820241
+    assert payload["simulator_seed"] == 850241
     assert payload["enhanced_determinism"] is True
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
