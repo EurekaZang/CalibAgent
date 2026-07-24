@@ -1,0 +1,13 @@
+[
+  "/tmp/tmp.PTdyXP7qwU/IsaacLab-v2.3.2/isaaclab.sh",
+  "-p",
+  "/home/eureka/CalibAgent/sim/isaaclab/scripts/run_p6_scenario.py",
+  "--scenario-config",
+  "/home/eureka/CalibAgent/outputs/p6_main/scenarios/gain_coupling_shift/frozen/launch_config.json",
+  "--checkpoint",
+  "/home/eureka/CalibAgent/outputs/p5_cache/go2_flat_checkpoint.pt",
+  "--output",
+  "/home/eureka/CalibAgent/outputs/p6_main/scenarios/gain_coupling_shift/frozen",
+  "--headless",
+  "--kit_args=--portable-root=/tmp/calibagent_kit_p6"
+]

@@ -1,0 +1,397 @@
+{
+  "gates": {
+    "b8_near_dense": true,
+    "b8_over_raw": true,
+    "b8_task_success": true,
+    "calibration_budget": true,
+    "finite": true,
+    "map_identity": true,
+    "minimum_maps": true,
+    "safety": true,
+    "same_planner": true,
+    "seed_coverage": true,
+    "valid_observations": true
+  },
+  "map_count": 3,
+  "maps": [
+    {
+      "b0_collision_rate": 0.0,
+      "b0_mean_completion_time_s": 60.0,
+      "b0_minus_b8_collision_ci95": [
+        0.0,
+        0.0
+      ],
+      "b0_success_rate": 0.0,
+      "b1_collision_rate": 0.0,
+      "b1_mean_completion_time_s": 14.7,
+      "b1_minus_b8_collision_ci95": [
+        0.0,
+        0.0
+      ],
+      "b1_success_rate": 1.0,
+      "b8_collision_rate": 0.0,
+      "b8_mean_completion_time_s": 15.354999999999999,
+      "b8_minus_b0_success_ci95": [
+        1.0,
+        1.0
+      ],
+      "b8_minus_b1_success_ci95": [
+        0.0,
+        0.0
+      ],
+      "b8_success_rate": 1.0,
+      "b8_to_b1_calibration_budget_ratio": 0.4,
+      "b8_to_b1_completion_time_ratio_ci95": [
+        0.9964721940785768,
+        1.0936968097424675
+      ],
+      "b8_to_b1_mean_completion_time_ratio": 1.0445578231292516,
+      "b8_vs_b0_completion_time_improvement_ci95_s": [
+        43.911583333333326,
+        45.31504166666666
+      ],
+      "b8_vs_b0_completion_time_improvement_mean_s": 44.644999999999996,
+      "b8_vs_b0_completion_time_win_rate": 1.0,
+      "finite": true,
+      "map": "open_field",
+      "maximum_abort_latency_s": 0.0,
+      "method_summaries": {
+        "B0_raw": {
+          "calibration_trials": 0,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 0,
+          "finite": true,
+          "height_rate_guard_updates": 42,
+          "map": "open_field",
+          "maximum_abort_latency_s": 0.0,
+          "mean_completion_time_s": 60.0,
+          "median_completion_time_s": 60.0,
+          "method": "B0_raw",
+          "num_seeds": 60,
+          "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+          "regular_recovery_attempts": 180,
+          "safety_events": 0,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 180,
+          "success_rate": 0.0,
+          "valid_observation_ratio": 1.0,
+          "velocity_feedback_updates": 0
+        },
+        "B1_dense": {
+          "calibration_trials": 30,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 10,
+          "finite": true,
+          "height_rate_guard_updates": 2456,
+          "map": "open_field",
+          "maximum_abort_latency_s": 0.0,
+          "mean_completion_time_s": 14.7,
+          "median_completion_time_s": 14.75,
+          "method": "B1_dense",
+          "num_seeds": 60,
+          "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+          "regular_recovery_attempts": 13,
+          "safety_events": 0,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 23,
+          "success_rate": 1.0,
+          "valid_observation_ratio": 0.9998692810457517,
+          "velocity_feedback_updates": 7008
+        },
+        "B8_full": {
+          "calibration_trials": 12,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 22,
+          "finite": true,
+          "height_rate_guard_updates": 2639,
+          "map": "open_field",
+          "maximum_abort_latency_s": 0.0,
+          "mean_completion_time_s": 15.354999999999999,
+          "median_completion_time_s": 14.7,
+          "method": "B8_full",
+          "num_seeds": 60,
+          "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+          "regular_recovery_attempts": 6,
+          "safety_events": 0,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 28,
+          "success_rate": 1.0,
+          "valid_observation_ratio": 0.9998717537672331,
+          "velocity_feedback_updates": 7356
+        }
+      },
+      "methods": [
+        "B0_raw",
+        "B1_dense",
+        "B8_full"
+      ],
+      "minimum_valid_observation_ratio": 0.9998692810457517,
+      "num_seeds": 60,
+      "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+      "same_planner": true,
+      "schema_version": "1.0",
+      "serious_safety_events": 0
+    },
+    {
+      "b0_collision_rate": 0.0,
+      "b0_mean_completion_time_s": 60.0,
+      "b0_minus_b8_collision_ci95": [
+        0.0,
+        0.0
+      ],
+      "b0_success_rate": 0.0,
+      "b1_collision_rate": 0.0,
+      "b1_mean_completion_time_s": 20.098333333333336,
+      "b1_minus_b8_collision_ci95": [
+        0.0,
+        0.0
+      ],
+      "b1_success_rate": 1.0,
+      "b8_collision_rate": 0.0,
+      "b8_mean_completion_time_s": 20.31,
+      "b8_minus_b0_success_ci95": [
+        1.0,
+        1.0
+      ],
+      "b8_minus_b1_success_ci95": [
+        0.0,
+        0.0
+      ],
+      "b8_success_rate": 1.0,
+      "b8_to_b1_calibration_budget_ratio": 0.4,
+      "b8_to_b1_completion_time_ratio_ci95": [
+        0.9539205897059243,
+        1.071361764263565
+      ],
+      "b8_to_b1_mean_completion_time_ratio": 1.0105315531967822,
+      "b8_vs_b0_completion_time_improvement_ci95_s": [
+        38.690000000000005,
+        40.62166666666666
+      ],
+      "b8_vs_b0_completion_time_improvement_mean_s": 39.690000000000005,
+      "b8_vs_b0_completion_time_win_rate": 1.0,
+      "finite": true,
+      "map": "slalom",
+      "maximum_abort_latency_s": 0.0,
+      "method_summaries": {
+        "B0_raw": {
+          "calibration_trials": 0,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 165,
+          "finite": true,
+          "height_rate_guard_updates": 1361,
+          "map": "slalom",
+          "maximum_abort_latency_s": 0.0,
+          "mean_completion_time_s": 60.0,
+          "median_completion_time_s": 60.0,
+          "method": "B0_raw",
+          "num_seeds": 60,
+          "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+          "regular_recovery_attempts": 180,
+          "safety_events": 0,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 345,
+          "success_rate": 0.0,
+          "valid_observation_ratio": 1.0,
+          "velocity_feedback_updates": 0
+        },
+        "B1_dense": {
+          "calibration_trials": 30,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 101,
+          "finite": true,
+          "height_rate_guard_updates": 4001,
+          "map": "slalom",
+          "maximum_abort_latency_s": 0.0,
+          "mean_completion_time_s": 20.098333333333336,
+          "median_completion_time_s": 19.3,
+          "method": "B1_dense",
+          "num_seeds": 60,
+          "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+          "regular_recovery_attempts": 6,
+          "safety_events": 0,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 107,
+          "success_rate": 1.0,
+          "valid_observation_ratio": 0.9998389564377164,
+          "velocity_feedback_updates": 8878
+        },
+        "B8_full": {
+          "calibration_trials": 12,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 102,
+          "finite": true,
+          "height_rate_guard_updates": 4228,
+          "map": "slalom",
+          "maximum_abort_latency_s": 0.0,
+          "mean_completion_time_s": 20.31,
+          "median_completion_time_s": 19.6,
+          "method": "B8_full",
+          "num_seeds": 60,
+          "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+          "regular_recovery_attempts": 3,
+          "safety_events": 0,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 105,
+          "success_rate": 1.0,
+          "valid_observation_ratio": 0.9998377939983779,
+          "velocity_feedback_updates": 9026
+        }
+      },
+      "methods": [
+        "B0_raw",
+        "B1_dense",
+        "B8_full"
+      ],
+      "minimum_valid_observation_ratio": 0.9998377939983779,
+      "num_seeds": 60,
+      "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+      "same_planner": true,
+      "schema_version": "1.0",
+      "serious_safety_events": 0
+    },
+    {
+      "b0_collision_rate": 0.0,
+      "b0_mean_completion_time_s": 59.79666666666667,
+      "b0_minus_b8_collision_ci95": [
+        0.0,
+        0.0
+      ],
+      "b0_success_rate": 0.016666666666666666,
+      "b1_collision_rate": 0.0,
+      "b1_mean_completion_time_s": 16.006666666666668,
+      "b1_minus_b8_collision_ci95": [
+        0.0,
+        0.0
+      ],
+      "b1_success_rate": 1.0,
+      "b8_collision_rate": 0.0,
+      "b8_mean_completion_time_s": 15.848333333333334,
+      "b8_minus_b0_success_ci95": [
+        0.95,
+        1.0
+      ],
+      "b8_minus_b1_success_ci95": [
+        0.0,
+        0.0
+      ],
+      "b8_success_rate": 1.0,
+      "b8_to_b1_calibration_budget_ratio": 0.4,
+      "b8_to_b1_completion_time_ratio_ci95": [
+        0.869297863831902,
+        1.1236384161258848
+      ],
+      "b8_to_b1_mean_completion_time_ratio": 0.9901082882132445,
+      "b8_vs_b0_completion_time_improvement_ci95_s": [
+        42.486375,
+        45.268375000000006
+      ],
+      "b8_vs_b0_completion_time_improvement_mean_s": 43.94833333333333,
+      "b8_vs_b0_completion_time_win_rate": 1.0,
+      "finite": true,
+      "map": "narrow_corridor",
+      "maximum_abort_latency_s": 0.02,
+      "method_summaries": {
+        "B0_raw": {
+          "calibration_trials": 0,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 498,
+          "finite": true,
+          "height_rate_guard_updates": 2449,
+          "map": "narrow_corridor",
+          "maximum_abort_latency_s": 0.02,
+          "mean_completion_time_s": 59.79666666666667,
+          "median_completion_time_s": 60.0,
+          "method": "B0_raw",
+          "num_seeds": 60,
+          "planner_config_sha256": "f31d75b9f4f44dd1fcb6e32e517afe017930f583ec37cd48c8006b429010c740",
+          "regular_recovery_attempts": 176,
+          "safety_events": 1,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 674,
+          "success_rate": 0.016666666666666666,
+          "valid_observation_ratio": 0.9999944039038366,
+          "velocity_feedback_updates": 0
+        },
+        "B1_dense": {
+          "calibration_trials": 30,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 262,
+          "finite": true,
+          "height_rate_guard_updates": 2660,
+          "map": "narrow_corridor",
+          "maximum_abort_latency_s": 0.02,
+          "mean_completion_time_s": 16.006666666666668,
+          "median_completion_time_s": 13.45,
+          "method": "B1_dense",
+          "num_seeds": 60,
+          "planner_config_sha256": "f31d75b9f4f44dd1fcb6e32e517afe017930f583ec37cd48c8006b429010c740",
+          "regular_recovery_attempts": 11,
+          "safety_events": 1,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 273,
+          "success_rate": 1.0,
+          "valid_observation_ratio": 0.9997390606182256,
+          "velocity_feedback_updates": 4247
+        },
+        "B8_full": {
+          "calibration_trials": 12,
+          "collision_rate": 0.0,
+          "emergency_recovery_attempts": 233,
+          "finite": true,
+          "height_rate_guard_updates": 2648,
+          "map": "narrow_corridor",
+          "maximum_abort_latency_s": 0.02,
+          "mean_completion_time_s": 15.848333333333334,
+          "median_completion_time_s": 14.3,
+          "method": "B8_full",
+          "num_seeds": 60,
+          "planner_config_sha256": "f31d75b9f4f44dd1fcb6e32e517afe017930f583ec37cd48c8006b429010c740",
+          "regular_recovery_attempts": 14,
+          "safety_events": 2,
+          "schema_version": "1.0",
+          "serious_safety_events": 0,
+          "stall_recovery_attempts": 247,
+          "success_rate": 1.0,
+          "valid_observation_ratio": 0.9995856210504507,
+          "velocity_feedback_updates": 4358
+        }
+      },
+      "methods": [
+        "B0_raw",
+        "B1_dense",
+        "B8_full"
+      ],
+      "minimum_valid_observation_ratio": 0.9995856210504507,
+      "num_seeds": 60,
+      "planner_config_sha256": "f31d75b9f4f44dd1fcb6e32e517afe017930f583ec37cd48c8006b429010c740",
+      "same_planner": true,
+      "schema_version": "1.0",
+      "serious_safety_events": 0
+    }
+  ],
+  "maximum_b8_collision_rate": 0.0,
+  "maximum_b8_to_b1_mean_completion_time_ratio": 1.0445578231292516,
+  "maximum_b8_to_b1_time_ratio_ci95_upper": 1.1236384161258848,
+  "minimum_b8_success_rate": 1.0,
+  "minimum_b8_vs_b0_time_improvement_ci95_lower_s": 38.690000000000005,
+  "phase": "P7",
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "schema_version": "1.0",
+  "total_serious_safety_events": 0,
+  "verdict": "GO"
+}

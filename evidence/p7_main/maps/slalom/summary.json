@@ -1,0 +1,121 @@
+{
+  "b0_collision_rate": 0.0,
+  "b0_mean_completion_time_s": 60.0,
+  "b0_minus_b8_collision_ci95": [
+    0.0,
+    0.0
+  ],
+  "b0_success_rate": 0.0,
+  "b1_collision_rate": 0.0,
+  "b1_mean_completion_time_s": 20.098333333333336,
+  "b1_minus_b8_collision_ci95": [
+    0.0,
+    0.0
+  ],
+  "b1_success_rate": 1.0,
+  "b8_collision_rate": 0.0,
+  "b8_mean_completion_time_s": 20.31,
+  "b8_minus_b0_success_ci95": [
+    1.0,
+    1.0
+  ],
+  "b8_minus_b1_success_ci95": [
+    0.0,
+    0.0
+  ],
+  "b8_success_rate": 1.0,
+  "b8_to_b1_calibration_budget_ratio": 0.4,
+  "b8_to_b1_completion_time_ratio_ci95": [
+    0.9539205897059243,
+    1.071361764263565
+  ],
+  "b8_to_b1_mean_completion_time_ratio": 1.0105315531967822,
+  "b8_vs_b0_completion_time_improvement_ci95_s": [
+    38.690000000000005,
+    40.62166666666666
+  ],
+  "b8_vs_b0_completion_time_improvement_mean_s": 39.690000000000005,
+  "b8_vs_b0_completion_time_win_rate": 1.0,
+  "finite": true,
+  "map": "slalom",
+  "maximum_abort_latency_s": 0.0,
+  "method_summaries": {
+    "B0_raw": {
+      "calibration_trials": 0,
+      "collision_rate": 0.0,
+      "emergency_recovery_attempts": 165,
+      "finite": true,
+      "height_rate_guard_updates": 1361,
+      "map": "slalom",
+      "maximum_abort_latency_s": 0.0,
+      "mean_completion_time_s": 60.0,
+      "median_completion_time_s": 60.0,
+      "method": "B0_raw",
+      "num_seeds": 60,
+      "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+      "regular_recovery_attempts": 180,
+      "safety_events": 0,
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "stall_recovery_attempts": 345,
+      "success_rate": 0.0,
+      "valid_observation_ratio": 1.0,
+      "velocity_feedback_updates": 0
+    },
+    "B1_dense": {
+      "calibration_trials": 30,
+      "collision_rate": 0.0,
+      "emergency_recovery_attempts": 101,
+      "finite": true,
+      "height_rate_guard_updates": 4001,
+      "map": "slalom",
+      "maximum_abort_latency_s": 0.0,
+      "mean_completion_time_s": 20.098333333333336,
+      "median_completion_time_s": 19.3,
+      "method": "B1_dense",
+      "num_seeds": 60,
+      "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+      "regular_recovery_attempts": 6,
+      "safety_events": 0,
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "stall_recovery_attempts": 107,
+      "success_rate": 1.0,
+      "valid_observation_ratio": 0.9998389564377164,
+      "velocity_feedback_updates": 8878
+    },
+    "B8_full": {
+      "calibration_trials": 12,
+      "collision_rate": 0.0,
+      "emergency_recovery_attempts": 102,
+      "finite": true,
+      "height_rate_guard_updates": 4228,
+      "map": "slalom",
+      "maximum_abort_latency_s": 0.0,
+      "mean_completion_time_s": 20.31,
+      "median_completion_time_s": 19.6,
+      "method": "B8_full",
+      "num_seeds": 60,
+      "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+      "regular_recovery_attempts": 3,
+      "safety_events": 0,
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "stall_recovery_attempts": 105,
+      "success_rate": 1.0,
+      "valid_observation_ratio": 0.9998377939983779,
+      "velocity_feedback_updates": 9026
+    }
+  },
+  "methods": [
+    "B0_raw",
+    "B1_dense",
+    "B8_full"
+  ],
+  "minimum_valid_observation_ratio": 0.9998377939983779,
+  "num_seeds": 60,
+  "planner_config_sha256": "012576fc0506c90c377a44e1be0d8ab767852f5a376c847dde5a34ec7ecf08d9",
+  "same_planner": true,
+  "schema_version": "1.0",
+  "serious_safety_events": 0
+}

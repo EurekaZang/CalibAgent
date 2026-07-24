@@ -12,9 +12,18 @@
 | P5-ATTEMPT-2 | P5 | frozen at commit `4d38e1d` | development output only | **NO-GO:** effects passed, but rough-terrain calibration validity was 73.33% |
 | P5-LAUNCH-FAIL | P5 | commit `40666f8` | development log only | No scientific result; candidate request exhausted unique pool before artifact generation |
 | P5-MAIN | P5 | `configs/experiments/p5_isaaclab_main.yaml` | `evidence/p5_main/` | **PASS:** four scenarios × 20 independent paired seeds; all effect, validity, safety, runtime, and provenance gates pass |
+| P6-NO-GO-1 | P6 | commit `188cde3` | `outputs/p6_no_go_188cde3_consecutive_gate/` | **NO-GO:** physical scenario detection and full-win rates were 85% |
+| P6-PILOTS | P6 | commits `4224340`–`41d62bc` | `outputs/p6_pilot_*` | Development-only; bounded shift stimulus and evidence-window semantics |
+| P6-MAIN | P6 | `configs/experiments/p6_domain_shift_main.yaml` | `evidence/p6_main/` | **PASS:** 3 scenarios × 3 controls × 20 seeds; all detection, recovery, effect, budget, safety, and provenance gates pass |
+| P7-MAIN-30 | P7 | commit `6d6537a` | `outputs/p7_main_no_go_6d6537a_corridor_variance/` | **NO-GO:** corridor B8/B1 CI upper 1.2816 exceeded 1.25; all other gates passed |
+| P7-DEGRADED-PILOTS | P7 | commits `b01bdd7`, `1ef0cc9` | corresponding `outputs/p7_pilot_no_go_*` roots | **NO-GO:** persistent guard and recovery ramp reduced reliability; changes reverted |
+| P7-MAIN-60 | P7 | `configs/experiments/p7_navigation_main.yaml` | `evidence/p7_main/` | **PASS:** 3 maps × 3 methods × 60 new seeds; all task, raw-effect, near-dense, budget, safety, runtime, and provenance gates pass |
 
 P3 main seeds are disjoint from all pilot seeds. P1-REAL is genuine Go2
 LiDAR-odometry evidence and is not substituted with synthetic, retargeted, or
 simulator data. P5 main seeds 5301–5320 and simulator seed 740240+ are disjoint
 from the two completed development attempts. P5 is simulator evidence and is
-not labeled as real-robot online evidence.
+not labeled as real-robot online evidence. P6 main seeds 6601–6620 are disjoint
+from its pilots. P7 main seeds 8001–8060 are disjoint from the failed 30-seed
+main and all pilots; its controller matches the frozen `6d6537a` controller.
+P6/P7 are simulator evidence and are not labeled as P8 real-robot evidence.

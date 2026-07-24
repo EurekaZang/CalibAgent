@@ -35,9 +35,7 @@ def _summary(scenario: dict[str, Any]) -> dict[str, Any]:
 
 
 def test_frozen_p5_config_and_all_gates_pass() -> None:
-    config = P5BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p5_isaaclab_main.yaml")
-    )
+    config = P5BenchmarkConfig.from_yaml(Path("configs/experiments/p5_isaaclab_main.yaml"))
     summaries = [_summary(scenario) for scenario in config.scenarios]
 
     result = evaluate_p5_summaries(config, summaries)
@@ -49,9 +47,7 @@ def test_frozen_p5_config_and_all_gates_pass() -> None:
 
 
 def test_p5_requires_positive_paired_ci_and_exact_scenarios() -> None:
-    config = P5BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p5_isaaclab_main.yaml")
-    )
+    config = P5BenchmarkConfig.from_yaml(Path("configs/experiments/p5_isaaclab_main.yaml"))
     summaries = [_summary(scenario) for scenario in config.scenarios]
     summaries[0]["paired_absolute_improvement_ci95"] = [-0.001, 0.04]
     summaries.pop()
@@ -66,9 +62,7 @@ def test_p5_requires_positive_paired_ci_and_exact_scenarios() -> None:
 
 
 def test_p5_rejects_nonfinite_or_unsafe_scenario() -> None:
-    config = P5BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p5_isaaclab_main.yaml")
-    )
+    config = P5BenchmarkConfig.from_yaml(Path("configs/experiments/p5_isaaclab_main.yaml"))
     summaries = [_summary(scenario) for scenario in config.scenarios]
     summaries[2]["finite"] = False
     summaries[2]["serious_safety_events"] = 1
@@ -83,9 +77,7 @@ def test_p5_rejects_nonfinite_or_unsafe_scenario() -> None:
 def test_p5_payload_and_cached_checkpoint_are_deterministic(
     tmp_path: Path,
 ) -> None:
-    config = P5BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p5_isaaclab_main.yaml")
-    )
+    config = P5BenchmarkConfig.from_yaml(Path("configs/experiments/p5_isaaclab_main.yaml"))
     payload = _scenario_payload(config, config.scenarios[1], 3)
     content = b"published-policy"
     expected = hashlib.sha256(content).hexdigest()
@@ -111,9 +103,7 @@ def test_p5_payload_and_cached_checkpoint_are_deterministic(
 def test_p5_helpers_reject_invalid_inputs_and_hash_artifacts(
     tmp_path: Path,
 ) -> None:
-    config = P5BenchmarkConfig.from_yaml(
-        Path("configs/experiments/p5_isaaclab_main.yaml")
-    )
+    config = P5BenchmarkConfig.from_yaml(Path("configs/experiments/p5_isaaclab_main.yaml"))
     bad_vectorization = dict(config.vectorization)
     bad_vectorization["seeds"] = [5101, 5101]
     bad_vectorization["num_envs"] = 2
@@ -139,7 +129,32 @@ def test_p5_helpers_reject_invalid_inputs_and_hash_artifacts(
 
     isaaclab = tmp_path / "IsaacLab"
     (isaaclab / "_isaac_sim").mkdir(parents=True)
-    (isaaclab / "_isaac_sim" / "VERSION").write_text(
-        "5.1.0-release\n", encoding="utf-8"
-    )
+    (isaaclab / "_isaac_sim" / "VERSION").write_text("5.1.0-release\n", encoding="utf-8")
     assert _sim_version(isaaclab) == "5.1.0-release"
+
+
+def test_p5_config_rejects_invalid_runtime_contracts() -> None:
+    config = P5BenchmarkConfig.from_yaml(Path("configs/experiments/p5_isaaclab_main.yaml"))
+    vectorization = dict(config.vectorization)
+    vectorization["num_envs"] = 1
+    with pytest.raises(ValueError, match="num_envs"):
+        replace(config, vectorization=vectorization).validate()
+    duplicate_scenarios = (config.scenarios[0], config.scenarios[0])
+    with pytest.raises(ValueError, match="scenario ids"):
+        replace(config, scenarios=duplicate_scenarios).validate()
+    unknown = dict(config.scenarios[0])
+    unknown["checkpoint"] = "missing"
+    with pytest.raises(ValueError, match="unknown checkpoint"):
+        replace(config, scenarios=(unknown,)).validate()
+    invalid_tier = dict(config.scenarios[0])
+    invalid_tier["tier"] = "C"
+    with pytest.raises(ValueError, match="Tier A or Tier B"):
+        replace(config, scenarios=(invalid_tier,)).validate()
+    safety = dict(config.safety)
+    safety["min_base_height_m"] = safety["max_base_height_m"]
+    with pytest.raises(ValueError, match="inverted"):
+        replace(config, safety=safety).validate()
+    model = dict(config.model)
+    model["prior_scale"] = 0.0
+    with pytest.raises(ValueError, match="model configuration"):
+        replace(config, model=model).validate()

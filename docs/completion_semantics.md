@@ -38,8 +38,10 @@ Governance tests require README/report claims to agree with this verdict.
 | P3 | L3 for frozen synthetic claim | Main seeds, primary effect, strong baselines, ablation and dense gap pass |
 | P4 | L3 for frozen safety/stopping claim | 60 frozen stopping runs, 300 hazard injections, 160 runtime faults, and state-machine terminal traces pass |
 | P5 | L3 for frozen simulation claim | Four pinned Isaac Lab Go2 scenarios, 20 paired seeds each, positive paired CIs, physical variation, pose traces, and safety response pass |
+| P6 | L3 for frozen simulated shift claim | Three in-place shift scenarios, frozen/passive/full controls, 20 seeds each, detection/recovery/effect/safety gates pass |
+| P7 | L3 for frozen simulated navigation claim | Three fixed-planner maps, B0/B1/B8 controls, 60 seeds each, success/collision/effect/noninferiority gates pass |
 
-Overall ICRA readiness is **GO** for the frozen P0–P5 claim set. The live audit
-recomputes 29/29 gates from frozen evidence. Real-robot online execution of the
-active planner and P6 sim-to-real/domain-shift validation remain explicitly
-outside that claim.
+Overall ICRA readiness is **GO** for the frozen P0–P7 claim set. The live audit
+recomputes 39/39 checks from frozen evidence. P6/P7 are pinned Isaac
+Lab/PhysX results, not hardware results. P8 real-robot online execution of the
+active planner remains explicitly outside this claim.

@@ -1,0 +1,121 @@
+{
+  "b0_collision_rate": 0.0,
+  "b0_mean_completion_time_s": 60.0,
+  "b0_minus_b8_collision_ci95": [
+    0.0,
+    0.0
+  ],
+  "b0_success_rate": 0.0,
+  "b1_collision_rate": 0.0,
+  "b1_mean_completion_time_s": 14.7,
+  "b1_minus_b8_collision_ci95": [
+    0.0,
+    0.0
+  ],
+  "b1_success_rate": 1.0,
+  "b8_collision_rate": 0.0,
+  "b8_mean_completion_time_s": 15.354999999999999,
+  "b8_minus_b0_success_ci95": [
+    1.0,
+    1.0
+  ],
+  "b8_minus_b1_success_ci95": [
+    0.0,
+    0.0
+  ],
+  "b8_success_rate": 1.0,
+  "b8_to_b1_calibration_budget_ratio": 0.4,
+  "b8_to_b1_completion_time_ratio_ci95": [
+    0.9964721940785768,
+    1.0936968097424675
+  ],
+  "b8_to_b1_mean_completion_time_ratio": 1.0445578231292516,
+  "b8_vs_b0_completion_time_improvement_ci95_s": [
+    43.911583333333326,
+    45.31504166666666
+  ],
+  "b8_vs_b0_completion_time_improvement_mean_s": 44.644999999999996,
+  "b8_vs_b0_completion_time_win_rate": 1.0,
+  "finite": true,
+  "map": "open_field",
+  "maximum_abort_latency_s": 0.0,
+  "method_summaries": {
+    "B0_raw": {
+      "calibration_trials": 0,
+      "collision_rate": 0.0,
+      "emergency_recovery_attempts": 0,
+      "finite": true,
+      "height_rate_guard_updates": 42,
+      "map": "open_field",
+      "maximum_abort_latency_s": 0.0,
+      "mean_completion_time_s": 60.0,
+      "median_completion_time_s": 60.0,
+      "method": "B0_raw",
+      "num_seeds": 60,
+      "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+      "regular_recovery_attempts": 180,
+      "safety_events": 0,
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "stall_recovery_attempts": 180,
+      "success_rate": 0.0,
+      "valid_observation_ratio": 1.0,
+      "velocity_feedback_updates": 0
+    },
+    "B1_dense": {
+      "calibration_trials": 30,
+      "collision_rate": 0.0,
+      "emergency_recovery_attempts": 10,
+      "finite": true,
+      "height_rate_guard_updates": 2456,
+      "map": "open_field",
+      "maximum_abort_latency_s": 0.0,
+      "mean_completion_time_s": 14.7,
+      "median_completion_time_s": 14.75,
+      "method": "B1_dense",
+      "num_seeds": 60,
+      "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+      "regular_recovery_attempts": 13,
+      "safety_events": 0,
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "stall_recovery_attempts": 23,
+      "success_rate": 1.0,
+      "valid_observation_ratio": 0.9998692810457517,
+      "velocity_feedback_updates": 7008
+    },
+    "B8_full": {
+      "calibration_trials": 12,
+      "collision_rate": 0.0,
+      "emergency_recovery_attempts": 22,
+      "finite": true,
+      "height_rate_guard_updates": 2639,
+      "map": "open_field",
+      "maximum_abort_latency_s": 0.0,
+      "mean_completion_time_s": 15.354999999999999,
+      "median_completion_time_s": 14.7,
+      "method": "B8_full",
+      "num_seeds": 60,
+      "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+      "regular_recovery_attempts": 6,
+      "safety_events": 0,
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "stall_recovery_attempts": 28,
+      "success_rate": 1.0,
+      "valid_observation_ratio": 0.9998717537672331,
+      "velocity_feedback_updates": 7356
+    }
+  },
+  "methods": [
+    "B0_raw",
+    "B1_dense",
+    "B8_full"
+  ],
+  "minimum_valid_observation_ratio": 0.9998692810457517,
+  "num_seeds": 60,
+  "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+  "same_planner": true,
+  "schema_version": "1.0",
+  "serious_safety_events": 0
+}

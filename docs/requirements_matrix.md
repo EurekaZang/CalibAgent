@@ -1,8 +1,8 @@
-# P0-P5 evidence matrix
+# P0-P7 evidence matrix
 
 | Phase / requirement | Software evidence | Phase/publication evidence | Status |
 |---|---|---|---|
-| P0 package, interfaces, backend seams | 96 tests, 85.56% branch-aware coverage, strict typing and lint pass | ADRs and fail-closed external-runtime seams | PASS |
+| P0 package, interfaces, backend seams | 126 tests, 85.77% branch-aware coverage, strict typing and lint pass | ADRs and fail-closed external-runtime seams | PASS |
 | P0 immutable provenance | Git commit, manifest and source-archive checks | P1 real evidence resolves to `100fe68`; existing P1 synthetic/P3 manifests resolve to `461d30b` | PASS |
 | P0 environment/CI | Exact analysis/dev locks; actions pinned by SHA | Reproduction commands and artifact hashes frozen | PASS |
 | P1 raw-to-observation processing | SE(2) dynamic-turn, empty input, gap and replay tests | 101-sample replay vertical slice passes | PASS for software path |
@@ -21,9 +21,15 @@
 | P5 Tier-A/Tier-B coverage | Vectorized distortion library and deterministic physical event configuration | 2 Tier-A + 2 Tier-B scenarios, 20 paired seeds/scenario, 4/4 finite pose traces | PASS |
 | P5 calibration effect | M2 identity-structured BLR, active IVR, fixed 8-command holdout, paired bootstrap | Worst RMSE reduction 9.30%; worst 95% CI lower bound 0.00981; win rate 100% in all scenarios | PASS |
 | P5 safety under physics | P4 envelope prefilters and post-checks candidates; 50 Hz runtime monitor | 17 timely aborts, maximum response 20 ms, 0 simulator terminations/serious events | PASS |
+| P6 pinned simulated shift runtime | Frozen Isaac/PhysX/policy/config locks; in-place material/mass/COM event audit | 116/116 artifacts hash-valid; three shift identities and all event deltas match | PASS |
+| P6 detection and recovery | Bounded-evidence detector, posterior inflation, frozen/passive/full controls | 3 scenarios × 3 methods × 20 seeds; detection/recovery 100%; p95 delays 4.0/7.1 trials | PASS |
+| P6 adaptation effect and safety | Seed-paired 4,000-sample bootstrap; full compressed trace audit | Worst effect CI lower 0.04454; 228 timely envelope aborts across controls, max 20 ms, 0 serious events | PASS |
+| P7 fixed-planner navigation | Planner hash, enhanced determinism, B0/B1/B8 isolation and serialized posteriors | 3 maps × 3 methods × 60 seeds = 540 episodes; all launches single-attempt | PASS |
+| P7 downstream task effect | Seed-paired success/collision/time and 4,000-sample bootstrap recomputation | B8 success 100%, collision 0%; worst B8-vs-B0 CI lower 38.69 s | PASS |
+| P7 near-dense and budget | B1=30 trials, B8=12; identical planner and policy | B8/B1 mean ratio ≤1.0446, worst CI upper 1.1236, budget ratio 0.40 | PASS |
 
 ## Current authoritative verdict
 
-`calibagent-audit --workspace . --require-ready` returns **GO** with 29/29
+`calibagent-audit --workspace . --require-ready` returns **GO** with 39/39
 checks passing. This verdict applies to the frozen claim boundary stated in
-`README.md`; it does not promote P6–P8 or real-robot online P3–P5 claims.
+`README.md`; it does not promote P8 or real-robot online P3–P7 claims.

@@ -12,6 +12,12 @@ def test_current_publication_verdict_is_go_and_claims_match() -> None:
     report = audit_publication_readiness(WORKSPACE)
     assert report.verdict == "GO"
     assert all(check.passed for check in report.checks)
+    assert {check.check_id for check in report.checks} >= {
+        "p6_recomputed_adaptation_statistics",
+        "p6_trace_shift_and_safety",
+        "p7_recomputed_navigation_statistics",
+        "p7_trace_posterior_launch_and_safety",
+    }
     readme = (WORKSPACE / "README.md").read_text(encoding="utf-8").lower()
     assert "icra readiness: go" in readme
     assert "does **not** claim that" in readme

@@ -1,18 +1,21 @@
-"""Independent evidence gates for P0-P5 publication-readiness claims."""
+"""Independent evidence gates for P0-P7 publication-readiness claims."""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import warnings
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
 import yaml
+from numpy.typing import NDArray
 from scipy import stats
 
 from calibagent.backends.replay import OfflineReplayBackend
@@ -22,6 +25,8 @@ from calibagent.eval.p5_isaaclab import (
     P5BenchmarkConfig,
     evaluate_p5_summaries,
 )
+from calibagent.eval.p6_isaaclab import P6BenchmarkConfig, evaluate_p6_summaries
+from calibagent.eval.p7_isaaclab import P7BenchmarkConfig, evaluate_p7_summaries
 from calibagent.eval.real_replay import file_sha256
 from calibagent.eval.synthetic import SyntheticDistortion, make_observation
 from calibagent.interfaces.types import TrialPolicy
@@ -61,23 +66,32 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 def _git_check(workspace: Path) -> AuditCheck:
-    result = subprocess.run(
+    revision = subprocess.run(
         ["git", "rev-parse", "HEAD"],
         cwd=workspace,
         capture_output=True,
         text=True,
         check=False,
     )
-    if result.returncode != 0:
+    if revision.returncode != 0:
         return AuditCheck("p0_versioned_commit", False, "workspace is not a Git worktree")
-    return AuditCheck("p0_versioned_commit", True, result.stdout.strip())
+    status = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=normal"],
+        cwd=workspace,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    clean = status.returncode == 0 and not status.stdout.strip()
+    return AuditCheck(
+        "p0_versioned_commit",
+        clean,
+        f"HEAD resolves; worktree_clean={clean}",
+    )
 
 
 def _manifest_check(workspace: Path, criteria: dict[str, Any]) -> AuditCheck:
-    paths = [
-        workspace / str(relative)
-        for relative in criteria["required_versioned_manifests"]
-    ]
+    paths = [workspace / str(relative) for relative in criteria["required_versioned_manifests"]]
     missing = [str(path.relative_to(workspace)) for path in paths if not path.is_file()]
     if missing:
         return AuditCheck("p0_versioned_manifests", False, f"missing manifests: {missing}")
@@ -155,9 +169,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
     delivery_required = bool(real_criteria.get("require_delivery_verification", False))
     delivery_verified = bool(payload.get("delivery_verified", False))
     traceability = float(payload.get("native_traceability_ratio") or 0.0)
-    verification_path = path.parent / str(
-        artifacts.get("delivery_verification", "missing")
-    )
+    verification_path = path.parent / str(artifacts.get("delivery_verification", "missing"))
     archive_path = path.parent / str(artifacts.get("source_archive", "missing"))
     delivery_hashes_valid = bool(
         verification_path.is_file()
@@ -258,9 +270,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
         fold_detail = ""
         fold_passed = True
         if bool(real_criteria.get("require_all_session_folds", False)):
-            fold_metrics_path = path.parent / str(
-                artifacts.get("fold_metrics", "missing")
-            )
+            fold_metrics_path = path.parent / str(artifacts.get("fold_metrics", "missing"))
             if not fold_metrics_path.is_file():
                 fold_passed = False
                 fold_detail = ", fold_metrics=missing"
@@ -299,12 +309,10 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
                 fold_passed = bool(
                     enough_folds
                     and np.all(
-                        fold_raw_reduction
-                        >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
+                        fold_raw_reduction >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
                     )
                     and np.all(
-                        fold_m0_reduction
-                        >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
+                        fold_m0_reduction >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
                     )
                 )
                 fold_detail = (
@@ -329,9 +337,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
             ),
         )
     sensitivity_required = bool(real_criteria.get("require_sampling_sensitivity", False))
-    sensitivity_path = path.parent / str(
-        artifacts.get("sampling_sensitivity", "missing")
-    )
+    sensitivity_path = path.parent / str(artifacts.get("sampling_sensitivity", "missing"))
     if not sensitivity_required:
         sensitivity_check = AuditCheck(
             "p1_real_sampling_sensitivity", True, "not required by criteria"
@@ -371,10 +377,8 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
             len(decimations) == 2
             and min_valid >= int(real_criteria["min_valid_observations"])
             and max_velocity_rmse <= float(real_criteria["max_decimated_velocity_rmse"])
-            and min_raw_reduction
-            >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
-            and min_m0_reduction
-            >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
+            and min_raw_reduction >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
+            and min_m0_reduction >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
         )
         sensitivity_check = AuditCheck(
             "p1_real_sampling_sensitivity",
@@ -422,9 +426,7 @@ def _capture_design_check(workspace: Path, criteria: dict[str, Any]) -> AuditChe
     )
 
 
-def _replay_vertical_slice_check(
-    workspace: Path, criteria: dict[str, Any]
-) -> AuditCheck:
+def _replay_vertical_slice_check(workspace: Path, criteria: dict[str, Any]) -> AuditCheck:
     dataset = workspace / str(criteria["p1_vertical_slice_dataset"])
     if not dataset.is_file():
         return AuditCheck("p1_replay_measurement_vertical_slice", False, "baseline dataset missing")
@@ -620,6 +622,29 @@ def _commit_exists(workspace: Path, commit: str) -> bool:
     return result.returncode == 0
 
 
+def _paths_are_versioned(workspace: Path, paths: list[Path]) -> bool:
+    relative = [str(path.relative_to(workspace)) for path in paths]
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", *relative],
+        cwd=workspace,
+        capture_output=True,
+        check=False,
+    )
+    if tracked.returncode != 0:
+        return False
+    unstaged = subprocess.run(
+        ["git", "diff", "--quiet", "--", *relative],
+        cwd=workspace,
+        check=False,
+    )
+    staged = subprocess.run(
+        ["git", "diff", "--cached", "--quiet", "--", *relative],
+        cwd=workspace,
+        check=False,
+    )
+    return unstaged.returncode == 0 and staged.returncode == 0
+
+
 def _phase_manifest_check(
     workspace: Path,
     manifest_path: Path,
@@ -632,30 +657,37 @@ def _phase_manifest_check(
     evidence_root = manifest_path.parent
     artifact_records = payload.get("artifacts", {})
     artifact_hashes = []
+    artifact_paths = []
     for record in artifact_records.values():
         path = evidence_root / str(record.get("path", "missing"))
+        artifact_paths.append(path)
         artifact_hashes.append(
             path.is_file() and file_sha256(path) == str(record.get("sha256", ""))
         )
     config_path = workspace / str(payload.get("config_path", "missing"))
     config_valid = bool(
-        config_path.is_file()
-        and file_sha256(config_path) == payload.get("config_sha256")
+        config_path.is_file() and file_sha256(config_path) == payload.get("config_sha256")
     )
     source_valid = True
+    source_paths: list[Path] = []
     if "source_trace" in payload:
         source = workspace / str(payload["source_trace"])
+        source_paths.append(source)
         source_valid = bool(
-            source.is_file()
-            and file_sha256(source) == payload.get("source_trace_sha256")
+            source.is_file() and file_sha256(source) == payload.get("source_trace_sha256")
         )
     commit = str(payload.get("git_commit", ""))
+    versioned = _paths_are_versioned(
+        workspace,
+        [manifest_path, config_path, *source_paths, *artifact_paths],
+    )
     passed = bool(
         payload.get("phase") == phase
         and artifact_records
         and all(artifact_hashes)
         and config_valid
         and source_valid
+        and versioned
         and _commit_exists(workspace, commit)
     )
     return AuditCheck(
@@ -663,7 +695,8 @@ def _phase_manifest_check(
         passed,
         (
             f"artifacts={sum(artifact_hashes)}/{len(artifact_hashes)}, "
-            f"config={config_valid}, source={source_valid}, commit={commit[:12]}"
+            f"config={config_valid}, source={source_valid}, versioned={versioned}, "
+            f"commit={commit[:12]}"
         ),
     )
 
@@ -689,9 +722,7 @@ def _p4_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
         for family in config["expected_families"]
         for seed in config["expected_seeds"]
     }
-    actual_stop_keys = set(
-        stop[["family", "seed"]].itertuples(index=False, name=None)
-    )
+    actual_stop_keys = set(stop[["family", "seed"]].itertuples(index=False, name=None))
     premature_rate = float(stop["premature"].astype(bool).mean())
     median_extra = float(stop["extra_trials"].median())
     p95_extra = float(stop["extra_trials"].quantile(0.95))
@@ -726,8 +757,7 @@ def _p4_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
         and expected_reason == 1.0
         and false_rejection <= float(gates["maximum_safe_false_rejection_rate"])
         and runtime["detected"].astype(bool).all()
-        and maximum_latency
-        <= float(config["fault_injection"]["maximum_abort_latency_s"])
+        and maximum_latency <= float(config["fault_injection"]["maximum_abort_latency_s"])
         and serious <= int(gates["maximum_serious_events"])
         and np.isclose(rejection, summary["hazard_rejection_rate"])
         and np.isclose(false_rejection, summary["safe_false_rejection_rate"])
@@ -768,9 +798,7 @@ def _p5_recompute_scenario(
     config: P5BenchmarkConfig,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     metrics = pd.read_csv(scenario_dir / "trial_metrics.csv")
-    launch = json.loads(
-        (scenario_dir / "launch_config.json").read_text(encoding="utf-8")
-    )
+    launch = json.loads((scenario_dir / "launch_config.json").read_text(encoding="utf-8"))
     calibration = metrics[metrics["phase"] == "calibration"].copy()
     validation = metrics[metrics["phase"] == "validation"].copy()
     calibration_valid = calibration["valid"].astype(bool)
@@ -787,9 +815,7 @@ def _p5_recompute_scenario(
     command = valid_validation[command_columns].to_numpy(dtype=np.float64)
     measured = valid_validation[measured_columns].to_numpy(dtype=np.float64)
     predicted = valid_validation[predicted_columns].to_numpy(dtype=np.float64)
-    predicted_std = valid_validation[predicted_std_columns].to_numpy(
-        dtype=np.float64
-    )
+    predicted_std = valid_validation[predicted_std_columns].to_numpy(dtype=np.float64)
     raw_rmse = float(np.sqrt(np.mean((command - measured) ** 2)))
     calibrated_rmse = float(np.sqrt(np.mean((predicted - measured) ** 2)))
     nonzero = np.linalg.norm(command, axis=1) > 0.05
@@ -802,9 +828,7 @@ def _p5_recompute_scenario(
         seed_measured = seed_rows[measured_columns].to_numpy(dtype=np.float64)
         seed_predicted = seed_rows[predicted_columns].to_numpy(dtype=np.float64)
         seed_raw = float(np.sqrt(np.mean((seed_command - seed_measured) ** 2)))
-        seed_calibrated = float(
-            np.sqrt(np.mean((seed_predicted - seed_measured) ** 2))
-        )
+        seed_calibrated = float(np.sqrt(np.mean((seed_predicted - seed_measured) ** 2)))
         improvements.append(seed_raw - seed_calibrated)
     improvement_array = np.asarray(improvements, dtype=np.float64)
     bootstrap_rng = np.random.default_rng(int(launch["simulator_seed"]) + 191)
@@ -818,9 +842,7 @@ def _p5_recompute_scenario(
     )
     safety_text = metrics["safety_events"].fillna("").astype(str)
     safety_aborts = int((safety_text != "").sum())
-    simulator_terminations = int(
-        safety_text.str.contains("SIM_TERMINATION", regex=False).sum()
-    )
+    simulator_terminations = int(safety_text.str.contains("SIM_TERMINATION", regex=False).sum())
     recomputed = {
         "scenario": str(scenario["id"]),
         "tier": str(scenario["tier"]),
@@ -855,9 +877,7 @@ def _p5_recompute_scenario(
         ),
     }
     expected_seeds = {int(seed) for seed in config.vectorization["seeds"]}
-    expected_calibration = len(expected_seeds) * int(
-        config.trial["calibration_trials"]
-    )
+    expected_calibration = len(expected_seeds) * int(config.trial["calibration_trials"])
     expected_validation = len(expected_seeds) * 8
     launch_consistent = bool(
         set(int(seed) for seed in launch["seeds"]) == expected_seeds
@@ -901,8 +921,7 @@ def _p5_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
         and str(runtime.get("isaac_sim_version", "")).startswith(
             str(config.isaaclab["isaac_sim_version_prefix"])
         )
-        and config.isaaclab["physics_backend"]
-        == section["required_physics_backend"]
+        and config.isaaclab["physics_backend"] == section["required_physics_backend"]
         and all(
             checkpoints.get(alias, {}).get("sha256") == specification["sha256"]
             for alias, specification in config.checkpoints.items()
@@ -934,9 +953,7 @@ def _p5_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
         )
         recomputed.append(values)
         details.append(detail)
-        frozen = json.loads(
-            (scenario_dir / "summary.json").read_text(encoding="utf-8")
-        )
+        frozen = json.loads((scenario_dir / "summary.json").read_text(encoding="utf-8"))
         scalar_keys = [
             "valid_calibration_ratio",
             "valid_validation_ratio",
@@ -956,8 +973,7 @@ def _p5_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
                 frozen["paired_absolute_improvement_ci95"],
             )
             and values["safety_aborts"] == frozen["safety_aborts"]
-            and values["serious_safety_events"]
-            == frozen["serious_safety_events"]
+            and values["serious_safety_events"] == frozen["serious_safety_events"]
             and values["finite"] == frozen["finite"]
         )
         per_seed = pd.read_csv(scenario_dir / "per_seed_metrics.csv")
@@ -1003,12 +1019,8 @@ def _p5_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
         ]
         trace_complete.append(
             len(trace) == expected_trace_rows
-            and not trace.duplicated(
-                ["seed", "phase", "trial", "sample"]
-            ).any()
-            and np.all(
-                np.isfinite(trace[finite_trace_columns].to_numpy(dtype=float))
-            )
+            and not trace.duplicated(["seed", "phase", "trial", "sample"]).any()
+            and np.all(np.isfinite(trace[finite_trace_columns].to_numpy(dtype=float)))
         )
         scenario_response = True
         for _, group in trace.groupby(
@@ -1027,20 +1039,13 @@ def _p5_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
                     np.linalg.norm(next_effective) <= 1e-12
                 )
         abort_responses.append(scenario_response)
-        simulator_log = (scenario_dir / "simulator.log").read_text(
-            encoding="utf-8"
-        )
+        simulator_log = (scenario_dir / "simulator.log").read_text(encoding="utf-8")
         physical_events.append(
-            bool(
-                float(scenario["com_offset_x_m"]) == 0.0
-                or "base_com" in simulator_log
-            )
+            bool(float(scenario["com_offset_x_m"]) == 0.0 or "base_com" in simulator_log)
         )
 
     aggregate = evaluate_p5_summaries(config, recomputed)
-    frozen_aggregate = json.loads(
-        (evidence / "summary.json").read_text(encoding="utf-8")
-    )
+    frozen_aggregate = json.loads((evidence / "summary.json").read_text(encoding="utf-8"))
     expected_ids = {str(item["id"]) for item in config.scenarios}
     actual_ids = {str(item["scenario"]) for item in recomputed}
     coverage_passed = bool(
@@ -1106,10 +1111,952 @@ def _p5_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
     ]
 
 
+def _strict_bool_array(series: pd.Series) -> NDArray[np.bool_]:
+    serialized = series.astype(str)
+    if not set(serialized.unique()) <= {"True", "False"}:
+        raise ValueError(f"invalid serialized booleans: {sorted(serialized.unique())}")
+    return serialized.eq("True").to_numpy(dtype=bool)
+
+
+def _strict_bool(value: Any) -> bool:
+    if isinstance(value, (bool, np.bool_)):
+        return bool(value)
+    if str(value) not in {"True", "False"}:
+        raise ValueError(f"invalid serialized boolean: {value!r}")
+    return str(value) == "True"
+
+
+def _as_float(value: object) -> float:
+    return float(cast(Any, value))
+
+
+def _bootstrap_mean_interval(values: NDArray[np.float64], seed: int) -> list[float]:
+    rng = np.random.default_rng(seed)
+    samples = np.mean(
+        rng.choice(values, size=(4000, len(values)), replace=True),
+        axis=1,
+    )
+    return [
+        float(np.quantile(samples, 0.025)),
+        float(np.quantile(samples, 0.975)),
+    ]
+
+
+def _trace_table_check(
+    path: Path,
+    *,
+    key_columns: list[str],
+    identity: dict[str, str],
+    finite_columns: list[str],
+    expected_seeds: set[int],
+    expected_rows: int | None = None,
+) -> tuple[bool, int]:
+    required = [
+        *key_columns,
+        *identity,
+        *finite_columns,
+        "seed",
+        "serious_safety_event",
+    ]
+    columns = pd.read_csv(path, nrows=0).columns
+    has_serious_column = "serious_safety_event" in columns
+    if not has_serious_column:
+        required.remove("serious_safety_event")
+        required.append("aborted")
+        required.append("abort_reason")
+    seen: set[tuple[Any, ...]] = set()
+    observed_seeds: set[int] = set()
+    per_seed: dict[int, int] = {}
+    rows = 0
+    passed = True
+    dtype: Any = {"abort_reason": "string"} if not has_serious_column else None
+    for chunk in pd.read_csv(
+        path,
+        usecols=list(dict.fromkeys(required)),
+        chunksize=50_000,
+        dtype=dtype,
+    ):
+        rows += len(chunk)
+        keys = list(chunk[key_columns].itertuples(index=False, name=None))
+        passed = passed and len(keys) == len(set(keys)) and not any(key in seen for key in keys)
+        seen.update(keys)
+        seeds = chunk["seed"].astype(int)
+        observed_seeds.update(seeds.unique())
+        for seed, count in seeds.value_counts().items():
+            per_seed[int(seed)] = per_seed.get(int(seed), 0) + int(count)
+        passed = passed and bool(
+            np.all(np.isfinite(chunk[finite_columns].to_numpy(dtype=np.float64)))
+        )
+        for column, expected in identity.items():
+            passed = passed and set(chunk[column].astype(str).unique()) == {expected}
+        if "serious_safety_event" in chunk:
+            passed = passed and not bool(np.any(_strict_bool_array(chunk["serious_safety_event"])))
+        else:
+            reasons = chunk["abort_reason"].fillna("").astype(str)
+            passed = passed and not bool(reasons.str.contains("SIM_TERMINATION").any())
+    counts = set(per_seed.values())
+    passed = bool(
+        passed
+        and rows > 0
+        and observed_seeds == expected_seeds
+        and len(counts) == 1
+        and (expected_rows is None or rows == expected_rows)
+    )
+    return passed, rows
+
+
+def _p6_abort_response_check(
+    path: Path,
+    expected_aborts: int,
+    minimum_base_height: float,
+    maximum_base_height: float,
+) -> bool:
+    trace = pd.read_csv(
+        path,
+        usecols=[
+            "seed",
+            "phase",
+            "trial",
+            "sample",
+            "effective_vx",
+            "effective_vy",
+            "effective_wz",
+            "base_height",
+            "aborted",
+            "abort_reason",
+        ],
+        dtype={"abort_reason": "string"},
+    )
+    abort_groups = 0
+    response_passed = True
+    for _, seed_trace in trace.groupby("seed", sort=False):
+        seed_trace = seed_trace.reset_index(drop=True)
+        for _, group in seed_trace.groupby(["phase", "trial"], sort=False):
+            aborted = _strict_bool_array(group["aborted"])
+            if not np.any(aborted):
+                continue
+            abort_groups += 1
+            first_label = group.index[int(np.flatnonzero(aborted)[0])]
+            if first_label + 1 >= len(seed_trace):
+                response_passed = False
+                continue
+            next_row = seed_trace.iloc[first_label + 1]
+            if first_label + 1 in group.index:
+                next_effective = next_row[
+                    ["effective_vx", "effective_vy", "effective_wz"]
+                ].to_numpy(dtype=float)
+                response_passed = response_passed and bool(np.linalg.norm(next_effective) <= 1e-12)
+            else:
+                # An abort on the final ramp-out sample is right-censored by
+                # the trial boundary. The next trial must begin from a reset,
+                # inside-envelope base state.
+                response_passed = response_passed and bool(
+                    int(next_row["sample"]) == 0
+                    and minimum_base_height <= float(next_row["base_height"]) <= maximum_base_height
+                )
+    reasons = trace["abort_reason"].fillna("").astype(str)
+    return bool(
+        response_passed
+        and abort_groups == expected_aborts
+        and not reasons.str.contains("SIM_TERMINATION").any()
+    )
+
+
+def _p6_recompute_scenario(
+    scenario_dir: Path,
+    scenario: dict[str, Any],
+    config: P6BenchmarkConfig,
+    simulator_seed: int,
+) -> tuple[dict[str, Any], bool]:
+    expected_seeds = {int(seed) for seed in config.vectorization["seeds"]}
+    indexed: dict[tuple[str, int], pd.Series] = {}
+    summaries: dict[str, dict[str, Any]] = {}
+    method_matches = []
+    for method in config.methods:
+        method_dir = scenario_dir / method
+        rows = pd.read_csv(method_dir / "per_seed_metrics.csv")
+        frozen = json.loads((method_dir / "summary.json").read_text(encoding="utf-8"))
+        summaries[method] = frozen
+        false_alarm = _strict_bool_array(rows["false_alarm"])
+        detected = _strict_bool_array(rows["detected"])
+        recovered = _strict_bool_array(rows["recovered"])
+        detected_delays = rows.loc[detected, "detection_delay_trials"].to_numpy(dtype=float)
+        recovered_trials = rows.loc[recovered, "recovery_trials"].to_numpy(dtype=float)
+        recomputed = {
+            "no_shift_false_alarm_rate": float(np.mean(false_alarm)),
+            "detection_rate": float(np.mean(detected)),
+            "median_detection_delay_trials": float(np.median(detected_delays)),
+            "p95_detection_delay_trials": float(np.quantile(detected_delays, 0.95)),
+            "recovery_rate": float(np.mean(recovered)),
+            "median_recovery_trials": float(np.median(recovered_trials)),
+            "p95_recovery_trials": float(np.quantile(recovered_trials, 0.95)),
+            "recovery_to_dense_budget_ratio": (
+                int(config.trial["recovery_budget_trials"])
+                / int(config.trial["dense_budget_trials"])
+            ),
+        }
+        scalar_match = all(np.isclose(recomputed[key], float(frozen[key])) for key in recomputed)
+        keys_complete = bool(
+            len(rows) == len(expected_seeds)
+            and set(rows["seed"].astype(int)) == expected_seeds
+            and set(rows["method"].astype(str)) == {method}
+            and set(rows["scenario"].astype(str)) == {str(scenario["id"])}
+            and not rows.duplicated(["seed"]).any()
+            and np.all(
+                np.isfinite(
+                    rows[
+                        [
+                            "detection_delay_trials",
+                            "pre_shift_rmse",
+                            "initial_shifted_rmse",
+                            "target_rmse",
+                            "recovery_trials",
+                            "final_rmse",
+                        ]
+                    ].to_numpy(dtype=float)
+                )
+            )
+        )
+        method_matches.append(
+            scalar_match
+            and keys_complete
+            and int(frozen["num_seeds"]) == len(expected_seeds)
+            and bool(frozen["finite"])
+        )
+        for _, row in rows.iterrows():
+            indexed[(method, int(row["seed"]))] = row
+
+    seeds = sorted(expected_seeds)
+    improvements = np.asarray(
+        [
+            float(indexed[("frozen", seed)]["final_rmse"])
+            - float(indexed[("full", seed)]["final_rmse"])
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    full_rows = [indexed[("full", seed)] for seed in seeds]
+    full_recovered = [
+        float(row["recovery_trials"]) for row in full_rows if _strict_bool(row["recovered"])
+    ]
+    recomputed_summary = {
+        "schema_version": "1.0",
+        "scenario": str(scenario["id"]),
+        "num_seeds": len(seeds),
+        "methods": list(config.methods),
+        "no_shift_false_alarm_rate": float(
+            np.mean([_strict_bool(indexed[("full", seed)]["false_alarm"]) for seed in seeds])
+        ),
+        "detection_rate": float(
+            np.mean([_strict_bool(indexed[("full", seed)]["detected"]) for seed in seeds])
+        ),
+        "median_detection_delay_trials": float(
+            np.median(
+                [
+                    float(indexed[("full", seed)]["detection_delay_trials"])
+                    for seed in seeds
+                    if _strict_bool(indexed[("full", seed)]["detected"])
+                ]
+            )
+        ),
+        "p95_detection_delay_trials": float(
+            np.quantile(
+                [
+                    float(indexed[("full", seed)]["detection_delay_trials"])
+                    for seed in seeds
+                    if _strict_bool(indexed[("full", seed)]["detected"])
+                ],
+                0.95,
+            )
+        ),
+        "full_recovery_rate": float(
+            np.mean([_strict_bool(indexed[("full", seed)]["recovered"]) for seed in seeds])
+        ),
+        "median_full_recovery_trials": float(np.median(full_recovered)),
+        "p95_full_recovery_trials": float(np.quantile(full_recovered, 0.95)),
+        "recovery_to_dense_budget_ratio": (
+            int(config.trial["recovery_budget_trials"]) / int(config.trial["dense_budget_trials"])
+        ),
+        "full_vs_frozen_final_improvement_mean": float(np.mean(improvements)),
+        "full_vs_frozen_final_improvement_ci95": _bootstrap_mean_interval(
+            improvements,
+            simulator_seed + 311,
+        ),
+        "full_vs_frozen_win_rate": float(np.mean(improvements > 0.0)),
+        "valid_observation_ratio": min(
+            float(item["valid_observation_ratio"]) for item in summaries.values()
+        ),
+        "safety_aborts": sum(int(item["safety_aborts"]) for item in summaries.values()),
+        "maximum_abort_latency_s": max(
+            float(item["maximum_abort_latency_s"]) for item in summaries.values()
+        ),
+        "serious_safety_events": sum(
+            int(item["serious_safety_events"]) for item in summaries.values()
+        ),
+        "finite": bool(
+            np.all(np.isfinite(improvements))
+            and all(bool(item["finite"]) for item in summaries.values())
+        ),
+        "method_summaries": summaries,
+    }
+    frozen = json.loads((scenario_dir / "summary.json").read_text(encoding="utf-8"))
+    scalar_keys = [
+        "no_shift_false_alarm_rate",
+        "detection_rate",
+        "median_detection_delay_trials",
+        "p95_detection_delay_trials",
+        "full_recovery_rate",
+        "median_full_recovery_trials",
+        "p95_full_recovery_trials",
+        "recovery_to_dense_budget_ratio",
+        "full_vs_frozen_final_improvement_mean",
+        "full_vs_frozen_win_rate",
+        "valid_observation_ratio",
+        "maximum_abort_latency_s",
+    ]
+    summary_matches = bool(
+        all(method_matches)
+        and all(
+            np.isclose(_as_float(recomputed_summary[key]), float(frozen[key]))
+            for key in scalar_keys
+        )
+        and np.allclose(
+            np.asarray(
+                recomputed_summary["full_vs_frozen_final_improvement_ci95"],
+                dtype=float,
+            ),
+            np.asarray(frozen["full_vs_frozen_final_improvement_ci95"], dtype=float),
+        )
+        and recomputed_summary["safety_aborts"] == frozen["safety_aborts"]
+        and recomputed_summary["serious_safety_events"] == frozen["serious_safety_events"]
+        and recomputed_summary["finite"] == frozen["finite"]
+    )
+    return recomputed_summary, summary_matches
+
+
+def _p6_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
+    section = dict(criteria["p6"])
+    evidence = workspace / str(section["evidence"])
+    manifest_path = workspace / str(section["manifest"])
+    manifest_check = _phase_manifest_check(workspace, manifest_path, "P6")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    config = P6BenchmarkConfig.from_yaml(workspace / str(section["config"]))
+    runtime = manifest.get("runtime", {})
+    checkpoints = manifest.get("checkpoints", {})
+    runtime_passed = bool(
+        manifest.get("backend") == section["required_backend"]
+        and runtime.get("isaaclab_commit") == config.isaaclab["commit"]
+        and str(runtime.get("isaac_sim_version", "")).startswith(
+            str(config.isaaclab["isaac_sim_version_prefix"])
+        )
+        and config.isaaclab["physics_backend"] == section["required_physics_backend"]
+        and all(
+            checkpoints.get(alias, {}).get("sha256") == specification["sha256"]
+            for alias, specification in config.checkpoints.items()
+        )
+    )
+    runtime_check = AuditCheck(
+        "p6_pinned_isaac_runtime",
+        runtime_passed,
+        (
+            f"IsaacLab={str(runtime.get('isaaclab_commit', ''))[:12]}, "
+            f"IsaacSim={runtime.get('isaac_sim_version')}, "
+            f"GPU={runtime.get('gpu_and_driver')}"
+        ),
+    )
+
+    recomputed = []
+    summary_matches = []
+    coverage = []
+    traces = []
+    shift_events = []
+    expected_seeds = {int(seed) for seed in config.vectorization["seeds"]}
+    profile_samples = sum(
+        [
+            max(1, round(float(config.trial["warmup_s"]) * 50.0)),
+            max(1, round(float(config.trial["ramp_in_s"]) * 50.0)),
+            max(1, round(float(config.trial["settle_s"]) * 50.0)),
+            max(30, round(float(config.trial["measure_s"]) * 50.0)),
+            max(1, round(float(config.trial["ramp_out_s"]) * 50.0)),
+        ]
+    )
+    trial_count = (
+        int(config.trial["pre_calibration_trials"])
+        + int(config.trial["pre_monitor_trials"])
+        + int(config.trial["shift_monitor_trials"])
+        + 2 * int(config.trial["recovery_budget_trials"])
+    )
+    expected_trace_rows = len(expected_seeds) * profile_samples * trial_count
+    for index, scenario in enumerate(config.scenarios):
+        scenario_dir = evidence / "scenarios" / str(scenario["id"])
+        values, matches = _p6_recompute_scenario(
+            scenario_dir,
+            scenario,
+            config,
+            int(config.vectorization["simulator_seed"]) + index,
+        )
+        recomputed.append(values)
+        summary_matches.append(matches)
+        scenario_coverage = True
+        scenario_traces = True
+        for method in config.methods:
+            method_dir = scenario_dir / method
+            launch = json.loads((method_dir / "launch_config.json").read_text(encoding="utf-8"))
+            scenario_coverage = bool(
+                scenario_coverage
+                and set(int(seed) for seed in launch["seeds"]) == expected_seeds
+                and launch["methods"] == [method]
+                and launch["id"] == scenario["id"]
+                and launch["trial"] == config.trial
+                and launch["detector"] == config.detector
+                and launch["adaptation"] == config.adaptation
+                and launch["safety"] == config.safety
+                and int(launch["simulator_seed"])
+                == int(config.vectorization["simulator_seed"]) + index
+            )
+            trace_passed, _ = _trace_table_check(
+                method_dir / "pose_trace.csv.gz",
+                key_columns=["seed", "phase", "trial", "sample"],
+                identity={"scenario": str(scenario["id"]), "method": method},
+                finite_columns=[
+                    "timestamp_s",
+                    "effective_vx",
+                    "effective_vy",
+                    "effective_wz",
+                    "pose_x",
+                    "pose_y",
+                    "pose_yaw",
+                    "base_height",
+                    "roll",
+                    "pitch",
+                    "velocity_vx",
+                    "velocity_vy",
+                    "velocity_wz",
+                ],
+                expected_seeds=expected_seeds,
+                expected_rows=expected_trace_rows,
+            )
+            method_summary = json.loads((method_dir / "summary.json").read_text(encoding="utf-8"))
+            abort_response = _p6_abort_response_check(
+                method_dir / "pose_trace.csv.gz",
+                int(method_summary["safety_aborts"]),
+                float(config.safety["min_base_height_m"]),
+                float(config.safety["max_base_height_m"]),
+            )
+            scenario_traces = scenario_traces and trace_passed and abort_response
+        coverage.append(scenario_coverage)
+        traces.append(scenario_traces)
+        event = json.loads(
+            (scenario_dir / "full" / "shift_events.json").read_text(encoding="utf-8")
+        )
+        applied = event["applied_event"]
+        expected_payload_delta = float(scenario["post_physics"]["payload_add_kg"]) - float(
+            scenario["pre_physics"]["payload_add_kg"]
+        )
+        expected_com_delta = float(scenario["post_physics"]["com_offset_x_m"]) - float(
+            scenario["pre_physics"]["com_offset_x_m"]
+        )
+        shift_events.append(
+            bool(
+                event["pre_physics"] == scenario["pre_physics"]
+                and event["post_physics"] == scenario["post_physics"]
+                and applied["event"] == "in_place_material_mass_com_shift"
+                and int(applied["num_envs"]) == len(expected_seeds)
+                and np.isclose(applied["payload_delta_kg"], expected_payload_delta)
+                and np.isclose(applied["com_delta_x_m"], expected_com_delta)
+            )
+        )
+
+    aggregate = evaluate_p6_summaries(config, recomputed)
+    frozen_aggregate = json.loads((evidence / "summary.json").read_text(encoding="utf-8"))
+    coverage_passed = bool(
+        all(coverage)
+        and len(recomputed) == len(config.scenarios)
+        and all(int(item["num_seeds"]) == len(expected_seeds) for item in recomputed)
+        and set(config.methods) == {"frozen", "passive", "full"}
+    )
+    coverage_check = AuditCheck(
+        "p6_domain_shift_coverage",
+        coverage_passed,
+        (
+            f"scenarios={len(recomputed)}/{len(config.scenarios)}, "
+            f"methods=3, seeds_per_scenario={len(expected_seeds)}"
+        ),
+    )
+    metric_passed = bool(
+        all(summary_matches)
+        and aggregate["verdict"] == "GO"
+        and frozen_aggregate.get("verdict") == "GO"
+        and aggregate["gates"] == frozen_aggregate.get("gates")
+        and all(bool(value) for value in aggregate["gates"].values())
+    )
+    metric_check = AuditCheck(
+        "p6_recomputed_adaptation_statistics",
+        metric_passed,
+        (
+            f"min_detection={aggregate['minimum_detection_rate']:.3f}, "
+            f"max_detection_p95={aggregate['maximum_p95_detection_delay_trials']:.2f}, "
+            f"min_recovery={aggregate['minimum_full_recovery_rate']:.3f}, "
+            f"max_recovery_p95={aggregate['maximum_p95_full_recovery_trials']:.2f}"
+        ),
+    )
+    trace_check = AuditCheck(
+        "p6_trace_shift_and_safety",
+        bool(all(traces) and all(shift_events) and aggregate["total_serious_safety_events"] == 0),
+        (
+            f"finite_unique_traces={sum(traces)}/{len(traces)}, "
+            f"physical_shift_events={sum(shift_events)}/{len(shift_events)}, "
+            f"serious={aggregate['total_serious_safety_events']}"
+        ),
+    )
+    return [
+        manifest_check,
+        runtime_check,
+        coverage_check,
+        metric_check,
+        trace_check,
+    ]
+
+
+def _bootstrap_index_interval(
+    count: int,
+    seed: int,
+    statistic: Callable[[NDArray[np.int64]], float],
+) -> list[float]:
+    rng = np.random.default_rng(seed)
+    values = np.empty(4000, dtype=np.float64)
+    for index in range(len(values)):
+        sample = rng.integers(0, count, size=count)
+        values[index] = float(statistic(sample))
+    return [
+        float(np.quantile(values, 0.025)),
+        float(np.quantile(values, 0.975)),
+    ]
+
+
+def _p7_recompute_map(
+    map_dir: Path,
+    map_config: dict[str, Any],
+    config: P7BenchmarkConfig,
+    simulator_seed: int,
+) -> tuple[dict[str, Any], bool]:
+    expected_seeds = {int(seed) for seed in config.vectorization["seeds"]}
+    indexed: dict[tuple[str, int], pd.Series] = {}
+    summaries: dict[str, dict[str, Any]] = {}
+    method_matches = []
+    for method in config.methods:
+        method_dir = map_dir / method
+        rows = pd.read_csv(method_dir / "episode_metrics.csv")
+        frozen = json.loads((method_dir / "summary.json").read_text(encoding="utf-8"))
+        summaries[method] = frozen
+        success = _strict_bool_array(rows["success"])
+        collision = _strict_bool_array(rows["collision"])
+        serious = _strict_bool_array(rows["serious_safety_event"])
+        completion = rows["completion_time_s"].to_numpy(dtype=np.float64)
+        payload = json.loads((method_dir / "scenario_config.json").read_text(encoding="utf-8"))
+        planner_payload = {
+            "navigation": payload["navigation"],
+            "waypoints": payload["waypoints"],
+            "obstacles": payload["obstacles"],
+        }
+        planner_hash = hashlib.sha256(
+            json.dumps(planner_payload, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        recomputed = {
+            "success_rate": float(np.mean(success)),
+            "collision_rate": float(np.mean(collision)),
+            "mean_completion_time_s": float(np.mean(completion)),
+            "median_completion_time_s": float(np.median(completion)),
+            "stall_recovery_attempts": int(rows["stall_recovery_attempts"].sum()),
+            "regular_recovery_attempts": int(rows["regular_recovery_attempts"].sum()),
+            "emergency_recovery_attempts": int(rows["emergency_recovery_attempts"].sum()),
+            "velocity_feedback_updates": int(rows["velocity_feedback_updates"].sum()),
+            "height_rate_guard_updates": int(rows["height_rate_guard_updates"].sum()),
+            "serious_safety_events": int(np.sum(serious)),
+        }
+        scalar_match = all(
+            np.isclose(float(value), float(frozen[key])) for key, value in recomputed.items()
+        )
+        keys_complete = bool(
+            len(rows) == len(expected_seeds)
+            and set(rows["seed"].astype(int)) == expected_seeds
+            and set(rows["method"].astype(str)) == {method}
+            and set(rows["map"].astype(str)) == {str(map_config["id"])}
+            and not rows.duplicated(["seed"]).any()
+            and np.all(np.isfinite(completion))
+        )
+        expected_trials = (
+            int(config.calibration["dense_trials"])
+            if method == "B1_dense"
+            else int(config.calibration["active_trials"])
+            if method == "B8_full"
+            else 0
+        )
+        method_matches.append(
+            scalar_match
+            and keys_complete
+            and int(frozen["num_seeds"]) == len(expected_seeds)
+            and int(frozen["calibration_trials"]) == expected_trials
+            and frozen["planner_config_sha256"] == planner_hash
+            and bool(frozen["finite"])
+        )
+        for _, row in rows.iterrows():
+            indexed[(method, int(row["seed"]))] = row
+
+    seeds = sorted(expected_seeds)
+
+    def array(method: str, field: str) -> NDArray[np.float64]:
+        return np.asarray(
+            [float(indexed[(method, seed)][field]) for seed in seeds],
+            dtype=np.float64,
+        )
+
+    def binary(method: str, field: str) -> NDArray[np.float64]:
+        return np.asarray(
+            [float(_strict_bool(indexed[(method, seed)][field])) for seed in seeds],
+            dtype=np.float64,
+        )
+
+    b0_time = array("B0_raw", "completion_time_s")
+    b1_time = array("B1_dense", "completion_time_s")
+    b8_time = array("B8_full", "completion_time_s")
+    b0_success = binary("B0_raw", "success")
+    b1_success = binary("B1_dense", "success")
+    b8_success = binary("B8_full", "success")
+    b0_collision = binary("B0_raw", "collision")
+    b1_collision = binary("B1_dense", "collision")
+    b8_collision = binary("B8_full", "collision")
+    count = len(seeds)
+    time_improvement = b0_time - b8_time
+
+    def difference_interval(
+        left: NDArray[np.float64],
+        right: NDArray[np.float64],
+        offset: int,
+    ) -> list[float]:
+        return _bootstrap_index_interval(
+            count,
+            simulator_seed + offset,
+            lambda sample: float(np.mean(left[sample] - right[sample])),
+        )
+
+    planner_hashes = {str(summary["planner_config_sha256"]) for summary in summaries.values()}
+    recomputed_summary = {
+        "schema_version": "1.0",
+        "map": str(map_config["id"]),
+        "num_seeds": count,
+        "methods": list(config.methods),
+        "planner_config_sha256": next(iter(planner_hashes)) if len(planner_hashes) == 1 else "",
+        "same_planner": len(planner_hashes) == 1,
+        "b0_success_rate": float(np.mean(b0_success)),
+        "b1_success_rate": float(np.mean(b1_success)),
+        "b8_success_rate": float(np.mean(b8_success)),
+        "b0_collision_rate": float(np.mean(b0_collision)),
+        "b1_collision_rate": float(np.mean(b1_collision)),
+        "b8_collision_rate": float(np.mean(b8_collision)),
+        "b0_mean_completion_time_s": float(np.mean(b0_time)),
+        "b1_mean_completion_time_s": float(np.mean(b1_time)),
+        "b8_mean_completion_time_s": float(np.mean(b8_time)),
+        "b8_to_b1_mean_completion_time_ratio": float(
+            np.mean(b8_time) / max(float(np.mean(b1_time)), 1e-12)
+        ),
+        "b8_vs_b0_completion_time_improvement_mean_s": float(np.mean(time_improvement)),
+        "b8_vs_b0_completion_time_improvement_ci95_s": _bootstrap_index_interval(
+            count,
+            simulator_seed + 703,
+            lambda sample: np.mean(time_improvement[sample]),
+        ),
+        "b8_vs_b0_completion_time_win_rate": float(np.mean(time_improvement > 0.0)),
+        "b8_minus_b0_success_ci95": difference_interval(b8_success, b0_success, 709),
+        "b0_minus_b8_collision_ci95": difference_interval(b0_collision, b8_collision, 719),
+        "b8_minus_b1_success_ci95": difference_interval(b8_success, b1_success, 727),
+        "b1_minus_b8_collision_ci95": difference_interval(b1_collision, b8_collision, 733),
+        "b8_to_b1_completion_time_ratio_ci95": _bootstrap_index_interval(
+            count,
+            simulator_seed + 701,
+            lambda sample: np.mean(b8_time[sample]) / max(float(np.mean(b1_time[sample])), 1e-12),
+        ),
+        "b8_to_b1_calibration_budget_ratio": (
+            float(summaries["B8_full"]["calibration_trials"])
+            / float(summaries["B1_dense"]["calibration_trials"])
+        ),
+        "minimum_valid_observation_ratio": min(
+            float(item["valid_observation_ratio"]) for item in summaries.values()
+        ),
+        "serious_safety_events": sum(
+            int(item["serious_safety_events"]) for item in summaries.values()
+        ),
+        "maximum_abort_latency_s": max(
+            float(item["maximum_abort_latency_s"]) for item in summaries.values()
+        ),
+        "finite": bool(
+            all(bool(item["finite"]) for item in summaries.values())
+            and np.all(np.isfinite(np.concatenate([b0_time, b1_time, b8_time])))
+        ),
+        "method_summaries": summaries,
+    }
+    frozen = json.loads((map_dir / "summary.json").read_text(encoding="utf-8"))
+    scalar_keys = [
+        "b0_success_rate",
+        "b1_success_rate",
+        "b8_success_rate",
+        "b0_collision_rate",
+        "b1_collision_rate",
+        "b8_collision_rate",
+        "b0_mean_completion_time_s",
+        "b1_mean_completion_time_s",
+        "b8_mean_completion_time_s",
+        "b8_to_b1_mean_completion_time_ratio",
+        "b8_vs_b0_completion_time_improvement_mean_s",
+        "b8_vs_b0_completion_time_win_rate",
+        "b8_to_b1_calibration_budget_ratio",
+        "minimum_valid_observation_ratio",
+        "maximum_abort_latency_s",
+    ]
+    interval_keys = [
+        "b8_vs_b0_completion_time_improvement_ci95_s",
+        "b8_minus_b0_success_ci95",
+        "b0_minus_b8_collision_ci95",
+        "b8_minus_b1_success_ci95",
+        "b1_minus_b8_collision_ci95",
+        "b8_to_b1_completion_time_ratio_ci95",
+    ]
+    summary_matches = bool(
+        all(method_matches)
+        and all(
+            np.isclose(_as_float(recomputed_summary[key]), float(frozen[key]))
+            for key in scalar_keys
+        )
+        and all(
+            np.allclose(
+                np.asarray(recomputed_summary[key], dtype=float),
+                np.asarray(frozen[key], dtype=float),
+            )
+            for key in interval_keys
+        )
+        and recomputed_summary["same_planner"] == frozen["same_planner"]
+        and recomputed_summary["serious_safety_events"] == frozen["serious_safety_events"]
+        and recomputed_summary["finite"] == frozen["finite"]
+    )
+    return recomputed_summary, summary_matches
+
+
+def _p7_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
+    section = dict(criteria["p7"])
+    evidence = workspace / str(section["evidence"])
+    manifest_path = workspace / str(section["manifest"])
+    manifest_check = _phase_manifest_check(workspace, manifest_path, "P7")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    config = P7BenchmarkConfig.from_yaml(workspace / str(section["config"]))
+    runtime = manifest.get("runtime", {})
+    checkpoints = manifest.get("checkpoints", {})
+    runtime_passed = bool(
+        manifest.get("backend") == section["required_backend"]
+        and runtime.get("isaaclab_commit") == config.isaaclab["commit"]
+        and str(runtime.get("isaac_sim_version", "")).startswith(
+            str(config.isaaclab["isaac_sim_version_prefix"])
+        )
+        and config.isaaclab["physics_backend"] == section["required_physics_backend"]
+        and config.isaaclab["enhanced_determinism"] is True
+        and all(
+            checkpoints.get(alias, {}).get("sha256") == specification["sha256"]
+            for alias, specification in config.checkpoints.items()
+        )
+    )
+    runtime_check = AuditCheck(
+        "p7_pinned_deterministic_isaac_runtime",
+        runtime_passed,
+        (
+            f"IsaacLab={str(runtime.get('isaaclab_commit', ''))[:12]}, "
+            f"IsaacSim={runtime.get('isaac_sim_version')}, "
+            f"enhanced_determinism={config.isaaclab['enhanced_determinism']}"
+        ),
+    )
+
+    recomputed = []
+    summary_matches = []
+    coverage = []
+    traces = []
+    launch_and_posterior = []
+    expected_seeds = {int(seed) for seed in config.vectorization["seeds"]}
+    expected_calibration_rows = {
+        "B0_raw": len(expected_seeds),
+        "B1_dense": len(expected_seeds) * int(config.calibration["dense_trials"]),
+        "B8_full": len(expected_seeds) * int(config.calibration["active_trials"]),
+    }
+    for index, map_config in enumerate(config.maps):
+        map_dir = evidence / "maps" / str(map_config["id"])
+        values, matches = _p7_recompute_map(
+            map_dir,
+            map_config,
+            config,
+            int(config.vectorization["simulator_seed"]) + index,
+        )
+        recomputed.append(values)
+        summary_matches.append(matches)
+        map_coverage = True
+        map_traces = True
+        map_auxiliary = True
+        for method in config.methods:
+            method_dir = map_dir / method
+            launch = json.loads((method_dir / "launch_config.json").read_text(encoding="utf-8"))
+            calibration = pd.read_csv(method_dir / "calibration_metrics.csv")
+            map_coverage = bool(
+                map_coverage
+                and set(int(seed) for seed in launch["seeds"]) == expected_seeds
+                and launch["method"] == method
+                and launch["id"] == map_config["id"]
+                and launch["navigation"] == config.navigation
+                and launch["calibration"] == config.calibration
+                and launch["safety"] == config.safety
+                and int(launch["simulator_seed"])
+                == int(config.vectorization["simulator_seed"]) + index
+                and len(calibration) == expected_calibration_rows[method]
+                and set(calibration["seed"].astype(int)) == expected_seeds
+                and set(calibration["method"].astype(str)) == {method}
+                and not calibration.duplicated(["seed", "trial"]).any()
+                and float(np.mean(_strict_bool_array(calibration["valid"])))
+                >= float(config.publication_gates["minimum_valid_observation_ratio"])
+                and not calibration["safety_events"]
+                .fillna("")
+                .astype(str)
+                .str.contains("SIM_TERMINATION")
+                .any()
+                and np.all(
+                    np.isfinite(
+                        calibration[
+                            [
+                                "cmd_vx",
+                                "cmd_vy",
+                                "cmd_wz",
+                                "measured_vx",
+                                "measured_vy",
+                                "measured_wz",
+                            ]
+                        ].to_numpy(dtype=float)
+                    )
+                )
+            )
+            trace_passed, _ = _trace_table_check(
+                method_dir / "nav_trace.csv.gz",
+                key_columns=["seed", "sample"],
+                identity={"map": str(map_config["id"]), "method": method},
+                finite_columns=[
+                    "timestamp_s",
+                    "target_x",
+                    "target_y",
+                    "desired_vx",
+                    "desired_vy",
+                    "desired_wz",
+                    "compensated_vx",
+                    "compensated_vy",
+                    "compensated_wz",
+                    "effective_vx",
+                    "effective_vy",
+                    "effective_wz",
+                    "pose_x",
+                    "pose_y",
+                    "pose_yaw",
+                    "base_height",
+                    "roll",
+                    "pitch",
+                    "velocity_vx",
+                    "velocity_vy",
+                    "velocity_wz",
+                ],
+                expected_seeds=expected_seeds,
+            )
+            map_traces = map_traces and trace_passed
+            attempts = json.loads((method_dir / "launch_attempts.json").read_text(encoding="utf-8"))
+            posterior_valid = True
+            with np.load(method_dir / "posterior_state.npz", allow_pickle=False) as posterior:
+                posterior_valid = bool(
+                    set(posterior.files)
+                    == {
+                        "seeds",
+                        "means",
+                        "covariances",
+                        "posterior_versions",
+                        "noise_variances",
+                        "feature_names",
+                    }
+                    and set(posterior["seeds"].astype(int)) == expected_seeds
+                    and np.all(np.isfinite(posterior["means"]))
+                    and np.all(np.isfinite(posterior["covariances"]))
+                    and np.all(np.isfinite(posterior["noise_variances"]))
+                )
+            map_auxiliary = bool(
+                map_auxiliary
+                and len(attempts) == 1
+                and int(attempts[0]["returncode"]) == 0
+                and not attempts[0]["missing_required_artifacts"]
+                and posterior_valid
+            )
+        coverage.append(map_coverage)
+        traces.append(map_traces)
+        launch_and_posterior.append(map_auxiliary)
+
+    aggregate = evaluate_p7_summaries(config, recomputed)
+    frozen_aggregate = json.loads((evidence / "summary.json").read_text(encoding="utf-8"))
+    coverage_passed = bool(
+        all(coverage)
+        and len(recomputed) == len(config.maps)
+        and all(int(item["num_seeds"]) == len(expected_seeds) for item in recomputed)
+        and set(config.methods) == {"B0_raw", "B1_dense", "B8_full"}
+    )
+    coverage_check = AuditCheck(
+        "p7_navigation_map_and_seed_coverage",
+        coverage_passed,
+        (
+            f"maps={len(recomputed)}/{len(config.maps)}, methods=3, "
+            f"seeds_per_map={len(expected_seeds)}, episode_records="
+            f"{len(recomputed) * len(config.methods) * len(expected_seeds)}"
+        ),
+    )
+    metric_passed = bool(
+        all(summary_matches)
+        and aggregate["verdict"] == "GO"
+        and frozen_aggregate.get("verdict") == "GO"
+        and aggregate["gates"] == frozen_aggregate.get("gates")
+        and all(bool(value) for value in aggregate["gates"].values())
+    )
+    metric_check = AuditCheck(
+        "p7_recomputed_navigation_statistics",
+        metric_passed,
+        (
+            f"min_B8_success={aggregate['minimum_b8_success_rate']:.3f}, "
+            f"max_B8_collision={aggregate['maximum_b8_collision_rate']:.3f}, "
+            f"min_B8-vs-B0_CI={aggregate['minimum_b8_vs_b0_time_improvement_ci95_lower_s']:.3f}s, "
+            f"max_B8/B1_CI_upper={aggregate['maximum_b8_to_b1_time_ratio_ci95_upper']:.3f}"
+        ),
+    )
+    trace_check = AuditCheck(
+        "p7_trace_posterior_launch_and_safety",
+        bool(
+            all(traces)
+            and all(launch_and_posterior)
+            and aggregate["total_serious_safety_events"] == 0
+        ),
+        (
+            f"finite_unique_traces={sum(traces)}/{len(traces)}, "
+            f"single_launch_and_finite_posterior="
+            f"{sum(launch_and_posterior)}/{len(launch_and_posterior)}, "
+            f"serious={aggregate['total_serious_safety_events']}"
+        ),
+    )
+    return [
+        manifest_check,
+        runtime_check,
+        coverage_check,
+        metric_check,
+        trace_check,
+    ]
+
+
 @lru_cache(maxsize=4)
 def audit_publication_readiness(workspace: Path) -> PublicationReadinessReport:
     root = workspace.resolve()
-    criteria = _load_yaml(root / "configs/audit/icra_p0_p5.yaml")
+    criteria = _load_yaml(root / "configs/audit/icra_p0_p7.yaml")
     pilot_config = _load_yaml(root / str(criteria["p3_main_config"]))
     metrics_path = root / str(criteria["p3_main_metrics"])
     if not metrics_path.is_file():
@@ -1128,6 +2075,8 @@ def audit_publication_readiness(workspace: Path) -> PublicationReadinessReport:
         *_p3_checks(metrics, pilot_config, criteria),
         *_p4_checks(root, criteria),
         *_p5_checks(root, criteria),
+        *_p6_checks(root, criteria),
+        *_p7_checks(root, criteria),
     ]
     verdict = "GO" if all(check.passed for check in checks) else "NO_GO"
     return PublicationReadinessReport(str(criteria["schema_version"]), verdict, tuple(checks))

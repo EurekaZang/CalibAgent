@@ -1,4 +1,4 @@
-"""Print the machine-verifiable P0-P5 publication-readiness verdict."""
+"""Print the machine-verifiable P0-P7 publication-readiness verdict."""
 
 from __future__ import annotations
 

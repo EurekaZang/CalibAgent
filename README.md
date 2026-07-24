@@ -2,17 +2,20 @@
 
 ![ICRA readiness](https://img.shields.io/badge/ICRA%20readiness-GO-1f883d)
 
-**ICRA readiness: GO for the frozen P0–P5 claim set.** The executable audit
-passes all 29 software, real-data, statistical, safety, simulator, provenance,
+**ICRA readiness: GO for the frozen P0–P7 claim set.** The executable audit
+passes all 39 software, real-data, statistical, safety, simulator, provenance,
 and reproducibility checks. P1 is supported by 183 traceable Unitree Go2
 trials; P4 by 60 stopping trajectories and 460 fault/runtime cases; P5 by four
-pinned Isaac Lab scenarios with 20 paired seeds each.
+pinned Isaac Lab scenarios with 20 paired seeds each; P6 by three domain-shift
+scenarios with three controls and 20 seeds each; and P7 by three navigation
+maps, three methods, and 60 seeds per map.
 
 CalibAgent is a simulator-agnostic reference implementation of safe,
 uncertainty-aware active calibration for the mapping from quadruped velocity
 commands `(vx, vy, wz)` to measured body velocity.
 
-This repository implements the P0–P5 engineering prototype defined by
+This repository implements the frozen P0–P7 engineering and evaluation stack
+derived from
 `CalibAgent_工程实现与仿真实验计划_v0.1.docx`:
 
 - frozen interfaces, manifests, architecture decisions, CI, and backend seams;
@@ -26,10 +29,14 @@ This repository implements the P0–P5 engineering prototype defined by
 - a vectorized Isaac Lab/PhysX Go2 closed loop with Tier-A command distortion,
   Tier-B friction/payload/COM/terrain variation, fixed published policies, and
   paired bootstrap statistics.
+- an online shift detector with frozen/passive/full controls, bounded posterior
+  inflation and active recovery under in-place gain/friction/payload/COM shifts;
+- a fixed-planner navigation evaluation comparing raw B0, dense B1, and
+  budgeted active B8 calibration on open, slalom, and corridor maps.
 
-ROS 2 online execution, sim-to-real domain shift, and real-robot online active
-calibration remain later phases (P6–P8). Their boundaries are not promoted by
-the P0–P5 verdict.
+Real-robot online active calibration remains P8. P6 and P7 establish
+domain-shift recovery and downstream navigation only in the pinned simulator;
+they are not promoted as sim-to-real or real-hardware results.
 
 ## Reproduce
 
@@ -53,12 +60,18 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/pytest -p pytest_cov --cov=calibagent
   --uncertainty-slice outputs/p3_main/uncertainty_slice.csv
 ```
 
-P5 additionally requires the pinned Isaac Lab/Isaac Sim runtime and official
+P5–P7 additionally require the pinned Isaac Lab/Isaac Sim runtime and official
 policy checkpoints:
 
 ```bash
 .venv/bin/python -m calibagent.cli.run_p5_isaaclab \
   --config configs/experiments/p5_isaaclab_main.yaml \
+  --isaaclab-root /path/to/IsaacLab-v2.3.2
+.venv/bin/python -m calibagent.cli.run_p6_isaaclab \
+  --config configs/experiments/p6_domain_shift_main.yaml \
+  --isaaclab-root /path/to/IsaacLab-v2.3.2
+.venv/bin/python -m calibagent.cli.run_p7_isaaclab \
+  --config configs/experiments/p7_navigation_main.yaml \
   --isaaclab-root /path/to/IsaacLab-v2.3.2
 ```
 
@@ -70,11 +83,13 @@ the evaluation protocol and its corrected statistical-unit warning.
 
 Software CI and publication readiness are separate gates. See
 [`docs/completion_semantics.md`](docs/completion_semantics.md) and the
-[`2026-07-24 P0–P5 ICRA audit`](docs/audits/icra_p0_p5_2026-07-24.md).
+[`2026-07-24 P0–P7 ICRA audit`](docs/audits/icra_p0_p7_2026-07-24.md).
 The corrected main result is in [`reports/p3_main_report.md`](reports/p3_main_report.md),
 the real Go2 result is in [`reports/p1_real_report.md`](reports/p1_real_report.md),
 the safety/stopping result is in [`reports/p4_main_report.md`](reports/p4_main_report.md),
 the simulator result is in [`reports/p5_main_report.md`](reports/p5_main_report.md),
+the shift result is in [`reports/p6_main_report.md`](reports/p6_main_report.md),
+the navigation result is in [`reports/p7_main_report.md`](reports/p7_main_report.md),
 and acquisition requirements are in
 [`docs/p1_real_data_protocol.md`](docs/p1_real_data_protocol.md).
 
@@ -84,10 +99,11 @@ The GO verdict is deliberately scoped. P1 demonstrates passive, offline
 full-affine calibration on real Go2/LiDAR-odometry trials. P3 demonstrates the
 active planner under the frozen synthetic benchmark. P4 demonstrates stopping
 and safety logic through frozen replay and fault injection. P5 demonstrates the
-active closed loop in pinned Isaac Lab simulation. It does **not** claim that
-P3–P5 have been executed online on a real Go2, that sim-to-real/domain-shift
-robustness is established, or that the simulator result replaces hardware
-validation.
+active closed loop in pinned Isaac Lab simulation. P6 demonstrates simulated
+in-place shift detection and recovery, and P7 demonstrates simulator navigation
+with a fixed planner. It does **not** claim that P3–P7 have been executed
+online on a real Go2, that sim-to-real robustness is established, or that the
+simulator results replace hardware validation.
 
 ## Quick API
 
@@ -108,7 +124,7 @@ candidate = IntegratedVariancePlanner().propose(model, task, history=[])[0]
 Dense-oracle evaluation points are never used to fit the model, tune the
 planner, or fit feature scaling. Development and final confirmation seeds are
 disjoint and recorded in manifests/reports. Regenerable outputs are
-intentionally gitignored. Frozen P3, P4, and P5 evidence is stored under
-`evidence/p3_main/`, `evidence/p4_main/`, and `evidence/p5_main/`. The
+intentionally gitignored. Frozen P3–P7 evidence is stored under the corresponding
+`evidence/p3_main/` through `evidence/p7_main/` roots. The
 self-contained P1 evidence bundle is under `evidence/p1_real/`; every frozen
 artifact is hash-checked by the live audit.

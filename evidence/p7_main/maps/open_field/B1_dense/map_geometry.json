@@ -1,0 +1,20 @@
+{
+  "collision_footprint_radius_m": 0.2,
+  "map": "open_field",
+  "obstacles": [],
+  "planner_config_sha256": "f2f2b03e610d31831a95d53b590073ca48bc53ac75d2c7118191e7e8825a82a1",
+  "waypoints": [
+    [
+      0.8,
+      0.0
+    ],
+    [
+      1.5,
+      0.0
+    ],
+    [
+      2.2,
+      0.0
+    ]
+  ]
+}

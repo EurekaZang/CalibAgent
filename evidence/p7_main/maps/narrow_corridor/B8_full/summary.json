@@ -1,0 +1,22 @@
+{
+  "calibration_trials": 12,
+  "collision_rate": 0.0,
+  "emergency_recovery_attempts": 233,
+  "finite": true,
+  "height_rate_guard_updates": 2648,
+  "map": "narrow_corridor",
+  "maximum_abort_latency_s": 0.02,
+  "mean_completion_time_s": 15.848333333333334,
+  "median_completion_time_s": 14.3,
+  "method": "B8_full",
+  "num_seeds": 60,
+  "planner_config_sha256": "f31d75b9f4f44dd1fcb6e32e517afe017930f583ec37cd48c8006b429010c740",
+  "regular_recovery_attempts": 14,
+  "safety_events": 2,
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "stall_recovery_attempts": 247,
+  "success_rate": 1.0,
+  "valid_observation_ratio": 0.9995856210504507,
+  "velocity_feedback_updates": 4358
+}

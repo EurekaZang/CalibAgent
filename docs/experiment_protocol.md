@@ -1,4 +1,4 @@
-# P1-P5 experiment protocol
+# P1-P7 experiment protocol
 
 ## Claims and frozen comparisons
 
@@ -90,3 +90,50 @@ rough-terrain coupled-command invalidity. The final safety-constrained protocol
 was frozen before the disjoint 5301–5320 confirmation. A later launcher failure
 generated no metrics and only corrected an impossible request for 128
 non-duplicate candidates; the same unseen confirmation seeds were rerun.
+
+## P6 simulated domain-shift protocol
+
+P6 uses the same pinned Isaac Lab/Isaac Sim/PhysX runtime and official flat Go2
+policy as P5. Each scenario executes frozen, passive-update, and full
+detection-plus-active-recovery controls on 20 paired seeds (6601–6620). The
+three predeclared shifts are gain/coupling, friction plus 3 kg payload plus
+3 cm COM, and a mixed gain/physics/context shift. Physics changes are applied
+in place rather than by relaunching the environment.
+
+The detector must reject isolated and two-sample outliers, latch from at least
+three positive observations in a five-trial window, and raise no pre-shift
+false alarms. Recovery receives 12 trials, exactly 40% of the 30-trial dense
+budget. Publication gates require detection and full recovery rates of at least
+95%/90%, p95 delays of at most 5/12 trials, a strictly positive paired
+full-versus-frozen 95% bootstrap CI, at least 90% full win rate, at least 80%
+valid observations, abort response within 40 ms, and zero serious events.
+
+All three methods share seeds, shift events, policy, commands used for monitoring,
+and safety limits. Four thousand seed-level bootstrap resamples are used for
+the paired final-RMSE effect. Development outputs are excluded from the frozen
+6601–6620 confirmation and retained in
+`reports/p6_development_audit.md`.
+
+## P7 simulated downstream-navigation protocol
+
+P7 holds the local waypoint planner, map geometry, locomotion policy, command
+limits, safety logic, and physics fixed across B0 raw, B1 dense, and B8 full.
+B1 uses 30 calibration trials; B8 uses 12 (40%). The independent confirmation
+uses seeds 8001–8060 on open-field, slalom, and narrow-corridor maps, for 540
+paired episode records. Isaac PhysX enhanced determinism is enabled, and every
+method/map launch must finish in one successful startup attempt with a finite
+serialized posterior and complete navigation trace.
+
+The primary downstream gates are B8 success at least 90%, collision at most
+5%, a positive B8-versus-B0 completion-time improvement CI and at least 90%
+win rate. B8 must also be noninferior to B1 in success/collision, have mean
+completion-time ratio at most 1.15 and bootstrap CI upper bound at most 1.25,
+retain at least 80% valid observations, respond to aborts within 40 ms, and
+produce zero serious events. Each interval uses 4,000 seed-level resamples.
+
+The first 30-seed main run passed every gate except the narrow-corridor B8/B1
+ratio CI (upper 1.2816 versus 1.25). The final 60-seed result is an independent,
+powered replication with new seeds. Its controller is byte-identical to the
+30-seed frozen controller, all effect/noninferiority/safety thresholds are
+unchanged, and failed intervening controller changes remain disclosed in
+`reports/p7_development_audit.md`.

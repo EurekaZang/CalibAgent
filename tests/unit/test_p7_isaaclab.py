@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import csv
+import json
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
@@ -8,7 +10,10 @@ import pytest
 
 from calibagent.eval.p7_isaaclab import (
     P7BenchmarkConfig,
+    _as_bool,
     _map_payload,
+    _paired_map_summary,
+    _write_rows,
     evaluate_p7_summaries,
 )
 
@@ -174,3 +179,108 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
     }
     with pytest.raises(ValueError, match="feedback configuration"):
         replace(config, navigation=navigation).validate()
+
+
+def _write_episode_rows(path: Path, rows: list[dict[str, Any]]) -> None:
+    with path.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def test_p7_map_aggregation_recomputes_paired_intervals(tmp_path: Path) -> None:
+    methods = ("B0_raw", "B1_dense", "B8_full")
+    completion = {
+        "B0_raw": [60.0, 60.0, 60.0],
+        "B1_dense": [20.0, 21.0, 22.0],
+        "B8_full": [21.0, 21.0, 21.0],
+    }
+    for method in methods:
+        method_dir = tmp_path / method
+        method_dir.mkdir()
+        summary = {
+            "planner_config_sha256": "same-planner",
+            "calibration_trials": 30 if method == "B1_dense" else 12,
+            "valid_observation_ratio": 0.99,
+            "serious_safety_events": 0,
+            "maximum_abort_latency_s": 0.0,
+            "finite": True,
+        }
+        (method_dir / "summary.json").write_text(
+            json.dumps(summary),
+            encoding="utf-8",
+        )
+        rows = [
+            {
+                "map": "map",
+                "seed": seed,
+                "method": method,
+                "success": "True" if method != "B0_raw" else "False",
+                "collision": "False",
+                "completion_time_s": completion[method][index],
+            }
+            for index, seed in enumerate((1, 2, 3))
+        ]
+        _write_episode_rows(method_dir / "episode_metrics.csv", rows)
+
+    result = _paired_map_summary({"id": "map"}, tmp_path, 300)
+
+    assert result["num_seeds"] == 3
+    assert result["same_planner"] is True
+    assert result["b8_success_rate"] == 1.0
+    assert result["b8_collision_rate"] == 0.0
+    assert result["b8_vs_b0_completion_time_improvement_ci95_s"][0] > 0.0
+    assert result["b8_to_b1_calibration_budget_ratio"] == 0.4
+    assert len(list(csv.DictReader((tmp_path / "episode_metrics.csv").open()))) == 9
+
+
+def test_p7_csv_helpers_fail_closed_on_invalid_values(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="empty P7 aggregate"):
+        _write_rows(tmp_path / "empty.csv", [])
+    with pytest.raises(ValueError, match="serialized boolean"):
+        _as_bool("not-a-boolean")
+
+
+def test_p7_config_rejects_invalid_map_and_planner_contracts() -> None:
+    config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
+    vectorization = dict(config.vectorization)
+    vectorization["seeds"] = []
+    vectorization["num_seeds"] = 0
+    with pytest.raises(ValueError, match="non-empty"):
+        replace(config, vectorization=vectorization).validate()
+    vectorization = dict(config.vectorization)
+    vectorization["seeds"] = [8001] * 60
+    with pytest.raises(ValueError, match="unique"):
+        replace(config, vectorization=vectorization).validate()
+    with pytest.raises(ValueError, match="three unique maps"):
+        replace(config, maps=config.maps[:2]).validate()
+    with pytest.raises(ValueError, match="frozen"):
+        replace(config, protocol_frozen_utc="").validate()
+    calibration = dict(config.calibration)
+    calibration["command_bounds"] = [[0.0, 1.0]] * 3
+    with pytest.raises(ValueError, match="straddle zero"):
+        replace(config, calibration=calibration).validate()
+    calibration = dict(config.calibration)
+    calibration["maximum_linear_norm"] = 0.0
+    with pytest.raises(ValueError, match="linear norm"):
+        replace(config, calibration=calibration).validate()
+    navigation = dict(config.navigation)
+    navigation["sample_rate_hz"] = 51
+    with pytest.raises(ValueError, match="divide"):
+        replace(config, navigation=navigation).validate()
+    navigation = dict(config.navigation)
+    navigation["goal_radius_m"] = 0.0
+    with pytest.raises(ValueError, match="goal radius"):
+        replace(config, navigation=navigation).validate()
+    navigation = dict(config.navigation)
+    navigation["task_commands"] = [[0.1, 0.0, 0.0]]
+    with pytest.raises(ValueError, match="task support"):
+        replace(config, navigation=navigation).validate()
+    map_config = dict(config.maps[0])
+    map_config["waypoints"] = []
+    with pytest.raises(ValueError, match="waypoints"):
+        replace(config, maps=(map_config, *config.maps[1:])).validate()
+    map_config = dict(config.maps[1])
+    map_config["obstacles"] = [{"center": [0.0, 0.0], "size": [-1.0, 1.0, 1.0]}]
+    with pytest.raises(ValueError, match="obstacle sizes"):
+        replace(config, maps=(config.maps[0], map_config, config.maps[2])).validate()

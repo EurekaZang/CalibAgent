@@ -1,0 +1,19 @@
+{
+  "detection_rate": 1.0,
+  "finite": true,
+  "maximum_abort_latency_s": 0.02,
+  "median_detection_delay_trials": 2.0,
+  "median_recovery_trials": 5.0,
+  "method": "full",
+  "no_shift_false_alarm_rate": 0.0,
+  "num_seeds": 20,
+  "p95_detection_delay_trials": 2.150000000000002,
+  "p95_recovery_trials": 6.0,
+  "recovery_rate": 1.0,
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 81,
+  "scenario": "friction_payload_gain_shift",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 0.9088888888888889
+}
