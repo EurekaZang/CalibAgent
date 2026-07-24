@@ -53,7 +53,7 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert payload["calibration"]["feature_set"] == "m1_affine"
     assert payload["calibration"]["model_prior_gain"] == 1.00
     assert payload["calibration"]["command_bounds"][0] == [-0.40, 0.40]
-    assert payload["navigation"]["inverse_undertracking_confidence_weight"] == 0.50
+    assert payload["navigation"]["inverse_undertracking_confidence_weight"] == 0.25
     assert payload["navigation"]["stall_recovery"]["maximum_attempts"] == 3
     assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 10
 
