@@ -168,6 +168,13 @@ class P7BenchmarkConfig:
             <= float(self.navigation["cruise_speed_mps"])
             or float(height_rate_guard["maximum_linear_command_norm"])
             > float(self.calibration["maximum_linear_norm"])
+            or int(height_rate_guard["persistent_after_emergency_attempts"]) < 1
+            or int(height_rate_guard["persistent_after_emergency_attempts"])
+            >= int(self.navigation["stall_recovery"]["maximum_emergency_attempts"])
+            or float(height_rate_guard["persistent_maximum_linear_command_norm"])
+            <= float(self.navigation["cruise_speed_mps"])
+            or float(height_rate_guard["persistent_maximum_linear_command_norm"])
+            > float(height_rate_guard["maximum_linear_command_norm"])
         ):
             raise ValueError("P7 height-rate guard configuration is invalid")
         task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)

@@ -36,7 +36,7 @@ def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def test_p7_main_config_and_publication_gates() -> None:
+def test_p7_pilot_config_and_publication_gates() -> None:
     config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
 
@@ -44,12 +44,12 @@ def test_p7_main_config_and_publication_gates() -> None:
 
     assert result["verdict"] == "GO"
     assert all(result["gates"].values())
-    assert config.experiment_role == "main"
-    assert len(config.vectorization["seeds"]) == 30
-    assert config.vectorization["seeds"] == list(range(7801, 7831))
+    assert config.experiment_role == "pilot"
+    assert len(config.vectorization["seeds"]) == 20
+    assert config.vectorization["seeds"] == list(range(7901, 7921))
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 890241
+    assert payload["simulator_seed"] == 900241
     assert payload["enhanced_determinism"] is True
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
@@ -81,6 +81,8 @@ def test_p7_main_config_and_publication_gates() -> None:
         "minimum_drop_per_planner_tick_m": 0.003,
         "hold_s": 0.3,
         "maximum_linear_command_norm": 0.28,
+        "persistent_after_emergency_attempts": 3,
+        "persistent_maximum_linear_command_norm": 0.25,
     }
     assert payload["navigation"]["stall_recovery"]["emergency_base_height_m"] == 0.16
     assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 30
@@ -157,6 +159,15 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
     navigation["height_rate_guard"] = {
         **config.navigation["height_rate_guard"],
         "maximum_linear_command_norm": config.navigation["cruise_speed_mps"],
+    }
+    with pytest.raises(ValueError, match="height-rate guard"):
+        replace(config, navigation=navigation).validate()
+    navigation = dict(config.navigation)
+    navigation["height_rate_guard"] = {
+        **config.navigation["height_rate_guard"],
+        "persistent_after_emergency_attempts": config.navigation["stall_recovery"][
+            "maximum_emergency_attempts"
+        ],
     }
     with pytest.raises(ValueError, match="height-rate guard"):
         replace(config, navigation=navigation).validate()
