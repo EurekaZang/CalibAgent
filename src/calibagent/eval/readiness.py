@@ -1,4 +1,4 @@
-"""Independent evidence gates for P0-P3 publication-readiness claims."""
+"""Independent evidence gates for P0-P5 publication-readiness claims."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import json
 import subprocess
 import warnings
 from dataclasses import asdict, dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,10 @@ from scipy import stats
 from calibagent.backends.replay import OfflineReplayBackend
 from calibagent.data.observations import load_observations
 from calibagent.eval.capture_plan import CapturePlanConfig, generate_capture_plan
+from calibagent.eval.p5_isaaclab import (
+    P5BenchmarkConfig,
+    evaluate_p5_summaries,
+)
 from calibagent.eval.real_replay import file_sha256
 from calibagent.eval.synthetic import SyntheticDistortion, make_observation
 from calibagent.interfaces.types import TrialPolicy
@@ -603,9 +608,508 @@ def _p3_checks(
     ]
 
 
+def _commit_exists(workspace: Path, commit: str) -> bool:
+    if not commit:
+        return False
+    result = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=workspace,
+        capture_output=True,
+        check=False,
+    )
+    return result.returncode == 0
+
+
+def _phase_manifest_check(
+    workspace: Path,
+    manifest_path: Path,
+    phase: str,
+) -> AuditCheck:
+    check_id = f"{phase.lower()}_manifest_integrity"
+    if not manifest_path.is_file():
+        return AuditCheck(check_id, False, f"missing {manifest_path}")
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    evidence_root = manifest_path.parent
+    artifact_records = payload.get("artifacts", {})
+    artifact_hashes = []
+    for record in artifact_records.values():
+        path = evidence_root / str(record.get("path", "missing"))
+        artifact_hashes.append(
+            path.is_file() and file_sha256(path) == str(record.get("sha256", ""))
+        )
+    config_path = workspace / str(payload.get("config_path", "missing"))
+    config_valid = bool(
+        config_path.is_file()
+        and file_sha256(config_path) == payload.get("config_sha256")
+    )
+    source_valid = True
+    if "source_trace" in payload:
+        source = workspace / str(payload["source_trace"])
+        source_valid = bool(
+            source.is_file()
+            and file_sha256(source) == payload.get("source_trace_sha256")
+        )
+    commit = str(payload.get("git_commit", ""))
+    passed = bool(
+        payload.get("phase") == phase
+        and artifact_records
+        and all(artifact_hashes)
+        and config_valid
+        and source_valid
+        and _commit_exists(workspace, commit)
+    )
+    return AuditCheck(
+        check_id,
+        passed,
+        (
+            f"artifacts={sum(artifact_hashes)}/{len(artifact_hashes)}, "
+            f"config={config_valid}, source={source_valid}, commit={commit[:12]}"
+        ),
+    )
+
+
+def _p4_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
+    section = dict(criteria["p4"])
+    evidence = workspace / str(section["evidence"])
+    manifest_check = _phase_manifest_check(
+        workspace,
+        workspace / str(section["manifest"]),
+        "P4",
+    )
+    config = _load_yaml(workspace / str(section["config"]))
+    gates = config["publication_gates"]
+    stop = pd.read_csv(evidence / "stop_results.csv")
+    faults = pd.read_csv(evidence / "fault_injection.csv")
+    runtime = pd.read_csv(evidence / "runtime_faults.csv")
+    state_trace = pd.read_csv(evidence / "state_machine_trace.csv")
+    summary = json.loads((evidence / "summary.json").read_text(encoding="utf-8"))
+
+    expected_stop_keys = {
+        (str(family), int(seed))
+        for family in config["expected_families"]
+        for seed in config["expected_seeds"]
+    }
+    actual_stop_keys = set(
+        stop[["family", "seed"]].itertuples(index=False, name=None)
+    )
+    premature_rate = float(stop["premature"].astype(bool).mean())
+    median_extra = float(stop["extra_trials"].median())
+    p95_extra = float(stop["extra_trials"].quantile(0.95))
+    stopping_passed = bool(
+        actual_stop_keys == expected_stop_keys
+        and not stop.duplicated(["family", "seed"]).any()
+        and premature_rate < float(gates["maximum_premature_stop_rate"])
+        and median_extra <= float(gates["maximum_median_extra_trials"])
+        and p95_extra <= float(gates["maximum_p95_extra_trials"])
+        and np.isclose(premature_rate, summary["premature_stop_rate"])
+        and np.isclose(median_extra, summary["median_extra_trials"])
+        and np.isclose(p95_extra, summary["p95_extra_trials"])
+    )
+    stopping_check = AuditCheck(
+        "p4_validation_gated_stopping",
+        stopping_passed,
+        (
+            f"runs={len(stop)}/{len(expected_stop_keys)}, premature={premature_rate:.4f}, "
+            f"median_extra={median_extra:.2f}, p95_extra={p95_extra:.2f}"
+        ),
+    )
+
+    hazards = faults[faults["hazard"].astype(bool)]
+    safe = faults[~faults["hazard"].astype(bool)]
+    rejection = float((~hazards["accepted"].astype(bool)).mean())
+    expected_reason = float(hazards["expected_reason_present"].astype(bool).mean())
+    false_rejection = float((~safe["accepted"].astype(bool)).mean())
+    maximum_latency = float(runtime["abort_latency_s"].max())
+    serious = int(runtime["serious_event"].astype(bool).sum())
+    safety_passed = bool(
+        rejection >= float(gates["minimum_hazard_rejection_rate"])
+        and expected_reason == 1.0
+        and false_rejection <= float(gates["maximum_safe_false_rejection_rate"])
+        and runtime["detected"].astype(bool).all()
+        and maximum_latency
+        <= float(config["fault_injection"]["maximum_abort_latency_s"])
+        and serious <= int(gates["maximum_serious_events"])
+        and np.isclose(rejection, summary["hazard_rejection_rate"])
+        and np.isclose(false_rejection, summary["safe_false_rejection_rate"])
+    )
+    safety_check = AuditCheck(
+        "p4_fault_injection_and_abort",
+        safety_passed,
+        (
+            f"hazards={len(hazards)}, rejected={rejection:.4f}, "
+            f"safe_false_rejection={false_rejection:.4f}, "
+            f"max_abort_latency={maximum_latency:.3f}s, serious={serious}"
+        ),
+    )
+
+    terminal = (
+        state_trace.sort_values("index")
+        .groupby("run_id", sort=True)
+        .tail(1)
+        .set_index("run_id")["target"]
+        .to_dict()
+    )
+    state_passed = bool(
+        terminal == {"fault": "abort", "happy": "done"}
+        and summary.get("verdict") == "GO"
+        and all(bool(value) for value in summary.get("gates", {}).values())
+    )
+    state_check = AuditCheck(
+        "p4_runtime_state_machine",
+        state_passed,
+        f"terminal={terminal}, frozen_verdict={summary.get('verdict')}",
+    )
+    return [manifest_check, stopping_check, safety_check, state_check]
+
+
+def _p5_recompute_scenario(
+    scenario_dir: Path,
+    scenario: dict[str, Any],
+    config: P5BenchmarkConfig,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    metrics = pd.read_csv(scenario_dir / "trial_metrics.csv")
+    launch = json.loads(
+        (scenario_dir / "launch_config.json").read_text(encoding="utf-8")
+    )
+    calibration = metrics[metrics["phase"] == "calibration"].copy()
+    validation = metrics[metrics["phase"] == "validation"].copy()
+    calibration_valid = calibration["valid"].astype(bool)
+    validation_valid = validation["valid"].astype(bool)
+    valid_validation = validation[validation_valid].copy()
+    command_columns = ["cmd_vx", "cmd_vy", "cmd_wz"]
+    measured_columns = ["measured_vx", "measured_vy", "measured_wz"]
+    predicted_columns = ["predicted_vx", "predicted_vy", "predicted_wz"]
+    predicted_std_columns = [
+        "predicted_std_vx",
+        "predicted_std_vy",
+        "predicted_std_wz",
+    ]
+    command = valid_validation[command_columns].to_numpy(dtype=np.float64)
+    measured = valid_validation[measured_columns].to_numpy(dtype=np.float64)
+    predicted = valid_validation[predicted_columns].to_numpy(dtype=np.float64)
+    predicted_std = valid_validation[predicted_std_columns].to_numpy(
+        dtype=np.float64
+    )
+    raw_rmse = float(np.sqrt(np.mean((command - measured) ** 2)))
+    calibrated_rmse = float(np.sqrt(np.mean((predicted - measured) ** 2)))
+    nonzero = np.linalg.norm(command, axis=1) > 0.05
+    actual_motion = np.linalg.norm(measured, axis=1) > 0.03
+
+    improvements = []
+    for seed in launch["seeds"]:
+        seed_rows = valid_validation[valid_validation["seed"] == int(seed)]
+        seed_command = seed_rows[command_columns].to_numpy(dtype=np.float64)
+        seed_measured = seed_rows[measured_columns].to_numpy(dtype=np.float64)
+        seed_predicted = seed_rows[predicted_columns].to_numpy(dtype=np.float64)
+        seed_raw = float(np.sqrt(np.mean((seed_command - seed_measured) ** 2)))
+        seed_calibrated = float(
+            np.sqrt(np.mean((seed_predicted - seed_measured) ** 2))
+        )
+        improvements.append(seed_raw - seed_calibrated)
+    improvement_array = np.asarray(improvements, dtype=np.float64)
+    bootstrap_rng = np.random.default_rng(int(launch["simulator_seed"]) + 191)
+    bootstrap = np.mean(
+        bootstrap_rng.choice(
+            improvement_array,
+            size=(2000, len(improvement_array)),
+            replace=True,
+        ),
+        axis=1,
+    )
+    safety_text = metrics["safety_events"].fillna("").astype(str)
+    safety_aborts = int((safety_text != "").sum())
+    simulator_terminations = int(
+        safety_text.str.contains("SIM_TERMINATION", regex=False).sum()
+    )
+    recomputed = {
+        "scenario": str(scenario["id"]),
+        "tier": str(scenario["tier"]),
+        "num_envs": len(launch["seeds"]),
+        "valid_calibration_ratio": float(calibration_valid.mean()),
+        "valid_validation_ratio": float(validation_valid.mean()),
+        "actual_motion_ratio": float(np.mean(actual_motion[nonzero])),
+        "raw_rmse": raw_rmse,
+        "calibrated_rmse": calibrated_rmse,
+        "calibrated_vs_raw_reduction": 1.0 - calibrated_rmse / raw_rmse,
+        "paired_absolute_improvement_mean": float(np.mean(improvement_array)),
+        "paired_absolute_improvement_ci95": [
+            float(np.quantile(bootstrap, 0.025)),
+            float(np.quantile(bootstrap, 0.975)),
+        ],
+        "calibrated_win_rate": float(np.mean(improvement_array > 0.0)),
+        "predictive_coverage_95": float(
+            np.mean(np.abs(measured - predicted) <= 1.96 * predicted_std)
+        ),
+        "safety_aborts": safety_aborts,
+        "maximum_abort_latency_s": (
+            1.0 / float(launch["sample_rate_hz"]) if safety_aborts else 0.0
+        ),
+        "simulator_terminations": simulator_terminations,
+        "serious_safety_events": simulator_terminations,
+        "finite": bool(
+            np.all(np.isfinite(command))
+            and np.all(np.isfinite(measured))
+            and np.all(np.isfinite(predicted))
+            and np.all(np.isfinite(predicted_std))
+            and np.all(np.isfinite(improvement_array))
+        ),
+    }
+    expected_seeds = {int(seed) for seed in config.vectorization["seeds"]}
+    expected_calibration = len(expected_seeds) * int(
+        config.trial["calibration_trials"]
+    )
+    expected_validation = len(expected_seeds) * 8
+    launch_consistent = bool(
+        set(int(seed) for seed in launch["seeds"]) == expected_seeds
+        and launch["scenario_id"] == scenario["id"]
+        and launch["tier"] == scenario["tier"]
+        and launch["task"] == scenario["task"]
+        and launch["distortion"] == scenario["distortion"]
+        and np.isclose(
+            launch["safety_max_coupled_load"],
+            config.safety["max_coupled_load"],
+        )
+        and np.isclose(launch["model_prior_scale"], config.model["prior_scale"])
+    )
+    keys_unique = bool(
+        not metrics.duplicated(["seed", "phase", "trial"]).any()
+        and set(metrics["seed"].astype(int)) == expected_seeds
+    )
+    detail = {
+        "rows_complete": len(calibration) == expected_calibration
+        and len(validation) == expected_validation,
+        "keys_unique": keys_unique,
+        "launch_consistent": launch_consistent,
+    }
+    return recomputed, detail
+
+
+def _p5_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
+    section = dict(criteria["p5"])
+    evidence = workspace / str(section["evidence"])
+    manifest_path = workspace / str(section["manifest"])
+    manifest_check = _phase_manifest_check(workspace, manifest_path, "P5")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    config_path = workspace / str(section["config"])
+    config = P5BenchmarkConfig.from_yaml(config_path)
+
+    runtime = manifest.get("runtime", {})
+    checkpoints = manifest.get("checkpoints", {})
+    runtime_passed = bool(
+        manifest.get("backend") == section["required_backend"]
+        and runtime.get("isaaclab_commit") == config.isaaclab["commit"]
+        and str(runtime.get("isaac_sim_version", "")).startswith(
+            str(config.isaaclab["isaac_sim_version_prefix"])
+        )
+        and config.isaaclab["physics_backend"]
+        == section["required_physics_backend"]
+        and all(
+            checkpoints.get(alias, {}).get("sha256") == specification["sha256"]
+            for alias, specification in config.checkpoints.items()
+        )
+    )
+    runtime_check = AuditCheck(
+        "p5_pinned_isaac_runtime",
+        runtime_passed,
+        (
+            f"IsaacLab={str(runtime.get('isaaclab_commit', ''))[:12]}, "
+            f"IsaacSim={runtime.get('isaac_sim_version')}, "
+            f"GPU={runtime.get('gpu_and_driver')}"
+        ),
+    )
+
+    recomputed = []
+    details = []
+    summary_matches = []
+    per_seed_matches = []
+    trace_complete = []
+    abort_responses = []
+    physical_events = []
+    for scenario in config.scenarios:
+        scenario_dir = evidence / "scenarios" / str(scenario["id"])
+        values, detail = _p5_recompute_scenario(
+            scenario_dir,
+            scenario,
+            config,
+        )
+        recomputed.append(values)
+        details.append(detail)
+        frozen = json.loads(
+            (scenario_dir / "summary.json").read_text(encoding="utf-8")
+        )
+        scalar_keys = [
+            "valid_calibration_ratio",
+            "valid_validation_ratio",
+            "actual_motion_ratio",
+            "raw_rmse",
+            "calibrated_rmse",
+            "calibrated_vs_raw_reduction",
+            "paired_absolute_improvement_mean",
+            "calibrated_win_rate",
+            "predictive_coverage_95",
+            "maximum_abort_latency_s",
+        ]
+        summary_matches.append(
+            all(np.isclose(values[key], frozen[key]) for key in scalar_keys)
+            and np.allclose(
+                values["paired_absolute_improvement_ci95"],
+                frozen["paired_absolute_improvement_ci95"],
+            )
+            and values["safety_aborts"] == frozen["safety_aborts"]
+            and values["serious_safety_events"]
+            == frozen["serious_safety_events"]
+            and values["finite"] == frozen["finite"]
+        )
+        per_seed = pd.read_csv(scenario_dir / "per_seed_metrics.csv")
+        per_seed_matches.append(
+            len(per_seed) == len(config.vectorization["seeds"])
+            and set(per_seed["seed"].astype(int))
+            == set(int(seed) for seed in config.vectorization["seeds"])
+            and np.isclose(
+                float(per_seed["absolute_improvement"].mean()),
+                values["paired_absolute_improvement_mean"],
+            )
+        )
+
+        trace = pd.read_csv(scenario_dir / "pose_trace.csv")
+        profile_samples = sum(
+            [
+                max(1, round(float(config.trial["warmup_s"]) * 50.0)),
+                max(1, round(float(config.trial["ramp_in_s"]) * 50.0)),
+                max(1, round(float(config.trial["settle_s"]) * 50.0)),
+                max(30, round(float(config.trial["measure_s"]) * 50.0)),
+                max(1, round(float(config.trial["ramp_out_s"]) * 50.0)),
+            ]
+        )
+        expected_trace_rows = (
+            len(config.vectorization["seeds"])
+            * (int(config.trial["calibration_trials"]) + 8)
+            * profile_samples
+        )
+        finite_trace_columns = [
+            "timestamp_s",
+            "effective_vx",
+            "effective_vy",
+            "effective_wz",
+            "pose_x",
+            "pose_y",
+            "pose_yaw",
+            "base_height",
+            "roll",
+            "pitch",
+            "velocity_vx",
+            "velocity_vy",
+            "velocity_wz",
+        ]
+        trace_complete.append(
+            len(trace) == expected_trace_rows
+            and not trace.duplicated(
+                ["seed", "phase", "trial", "sample"]
+            ).any()
+            and np.all(
+                np.isfinite(trace[finite_trace_columns].to_numpy(dtype=float))
+            )
+        )
+        scenario_response = True
+        for _, group in trace.groupby(
+            ["seed", "phase", "trial"],
+            sort=False,
+        ):
+            aborted = group["aborted"].astype(bool).to_numpy()
+            if not np.any(aborted):
+                continue
+            first = int(np.flatnonzero(aborted)[0])
+            if first + 1 < len(group):
+                next_effective = group.iloc[first + 1][
+                    ["effective_vx", "effective_vy", "effective_wz"]
+                ].to_numpy(dtype=float)
+                scenario_response = scenario_response and bool(
+                    np.linalg.norm(next_effective) <= 1e-12
+                )
+        abort_responses.append(scenario_response)
+        simulator_log = (scenario_dir / "simulator.log").read_text(
+            encoding="utf-8"
+        )
+        physical_events.append(
+            bool(
+                float(scenario["com_offset_x_m"]) == 0.0
+                or "base_com" in simulator_log
+            )
+        )
+
+    aggregate = evaluate_p5_summaries(config, recomputed)
+    frozen_aggregate = json.loads(
+        (evidence / "summary.json").read_text(encoding="utf-8")
+    )
+    expected_ids = {str(item["id"]) for item in config.scenarios}
+    actual_ids = {str(item["scenario"]) for item in recomputed}
+    coverage_passed = bool(
+        expected_ids == actual_ids
+        and len([item for item in recomputed if item["tier"] == "A"]) >= 2
+        and len([item for item in recomputed if item["tier"] == "B"]) >= 2
+        and all(detail["rows_complete"] for detail in details)
+        and all(detail["keys_unique"] for detail in details)
+        and all(detail["launch_consistent"] for detail in details)
+        and all(per_seed_matches)
+    )
+    coverage_check = AuditCheck(
+        "p5_vectorized_scenario_coverage",
+        coverage_passed,
+        (
+            f"scenarios={len(actual_ids)}/4, seeds_per_scenario="
+            f"{aggregate['seeds_per_scenario']}, rows_and_keys={coverage_passed}"
+        ),
+    )
+    metric_passed = bool(
+        all(summary_matches)
+        and aggregate["verdict"] == "GO"
+        and frozen_aggregate.get("verdict") == "GO"
+        and all(bool(value) for value in aggregate["gates"].values())
+    )
+    metric_check = AuditCheck(
+        "p5_recomputed_calibration_statistics",
+        metric_passed,
+        (
+            f"min_reduction={aggregate['minimum_calibrated_vs_raw_reduction']:.6f}, "
+            f"min_CI_lower={aggregate['minimum_paired_improvement_ci95_lower']:.6f}, "
+            f"summaries_match={all(summary_matches)}"
+        ),
+    )
+    trace_check = AuditCheck(
+        "p5_pose_trace_completeness",
+        all(trace_complete),
+        f"complete_finite_unique={sum(trace_complete)}/{len(trace_complete)}",
+    )
+    safety_passed = bool(
+        all(abort_responses)
+        and all(physical_events)
+        and aggregate["gates"]["safety_abort_latency"]
+        and aggregate["gates"]["serious_safety_events"]
+    )
+    safety_check = AuditCheck(
+        "p5_physical_variation_and_safety",
+        safety_passed,
+        (
+            f"COM_events={sum(physical_events)}/{len(physical_events)}, "
+            f"abort_zero_next_cycle={sum(abort_responses)}/{len(abort_responses)}, "
+            f"max_latency={aggregate['maximum_abort_latency_s']:.3f}s, "
+            f"serious={aggregate['total_serious_safety_events']}"
+        ),
+    )
+    return [
+        manifest_check,
+        runtime_check,
+        coverage_check,
+        metric_check,
+        trace_check,
+        safety_check,
+    ]
+
+
+@lru_cache(maxsize=4)
 def audit_publication_readiness(workspace: Path) -> PublicationReadinessReport:
     root = workspace.resolve()
-    criteria = _load_yaml(root / "configs/audit/icra_p0_p3.yaml")
+    criteria = _load_yaml(root / "configs/audit/icra_p0_p5.yaml")
     pilot_config = _load_yaml(root / str(criteria["p3_main_config"]))
     metrics_path = root / str(criteria["p3_main_metrics"])
     if not metrics_path.is_file():
@@ -622,6 +1126,8 @@ def audit_publication_readiness(workspace: Path) -> PublicationReadinessReport:
         _coverage_check(metrics, criteria["uncertainty"]),
         _stratified_coverage_check(metrics, criteria["uncertainty"]),
         *_p3_checks(metrics, pilot_config, criteria),
+        *_p4_checks(root, criteria),
+        *_p5_checks(root, criteria),
     ]
     verdict = "GO" if all(check.passed for check in checks) else "NO_GO"
     return PublicationReadinessReport(str(criteria["schema_version"]), verdict, tuple(checks))

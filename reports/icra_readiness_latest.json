@@ -1,26 +1,151 @@
 {
   "checks": [
-    {"check_id": "p0_versioned_commit", "passed": true},
-    {"check_id": "p0_versioned_manifests", "passed": true},
-    {"check_id": "p0_reproducible_environment", "passed": true},
-    {"check_id": "p1_frozen_capture_design", "passed": true},
-    {"check_id": "p1_real_data_evidence", "passed": true},
-    {"check_id": "p1_real_data_scale_coverage", "passed": true},
-    {"check_id": "p1_real_baseline_improvement", "passed": true},
-    {"check_id": "p1_real_sampling_sensitivity", "passed": true},
-    {"check_id": "p1_replay_measurement_vertical_slice", "passed": true},
-    {"check_id": "p2_synthetic_noise_contract", "passed": true},
-    {"check_id": "p2_synthetic_coverage", "passed": true},
-    {"check_id": "p2_stratified_synthetic_coverage", "passed": true},
-    {"check_id": "p3_required_baselines", "passed": true},
-    {"check_id": "p3_main_artifact_completeness", "passed": true},
-    {"check_id": "p3_main_seed_count", "passed": true},
-    {"check_id": "p3_primary_independent_significance", "passed": true},
-    {"check_id": "p3_target_effect_size", "passed": true},
-    {"check_id": "p3_task_weight_ablation", "passed": true},
-    {"check_id": "p3_dense_oracle_gap", "passed": true}
+    {
+      "check_id": "p0_versioned_commit",
+      "evidence": "ceec54cfc5ff34482b1c724c2afa0687bbea4589",
+      "passed": true
+    },
+    {
+      "check_id": "p0_versioned_manifests",
+      "evidence": "recorded commits: ['461d30ba0e785bd82b7a1e8713d602a6e61a0c03', '461d30ba0e785bd82b7a1e8713d602a6e61a0c03', '0df7a25808a492ace563b68a8cf3e6c84daba269', 'ceec54cfc5ff34482b1c724c2afa0687bbea4589']",
+      "passed": true
+    },
+    {
+      "check_id": "p0_reproducible_environment",
+      "evidence": "actions_pinned=True, lockfiles=True",
+      "passed": true
+    },
+    {
+      "check_id": "p1_frozen_capture_design",
+      "evidence": "sessions=3, planned=183/183, signed_axes=True, max_linear_norm=0.65",
+      "passed": true
+    },
+    {
+      "check_id": "p1_real_data_evidence",
+      "evidence": "backend='offline_replay', synthetic=False, robot='unitree_go2', reference='lidar_odometry', hashes=True, plan=True, delivery=True, traceability=1.000, commit=100fe68378a7",
+      "passed": true
+    },
+    {
+      "check_id": "p1_real_data_scale_coverage",
+      "evidence": "valid=183, sessions=3, axis_coverage=True, required_valid=150",
+      "passed": true
+    },
+    {
+      "check_id": "p1_real_baseline_improvement",
+      "evidence": "M1_vs_raw=0.544495, M1_vs_M0=0.340693, required=0.05/0.05, folds=3, fold_min_raw=0.515492, fold_min_M0=0.300818",
+      "passed": true
+    },
+    {
+      "check_id": "p1_real_sampling_sensitivity",
+      "evidence": "decimations=2, min_valid=183, max_velocity_rmse=0.004966, min_M1_vs_raw=0.543015, min_M1_vs_M0=0.339190",
+      "passed": true
+    },
+    {
+      "check_id": "p1_replay_measurement_vertical_slice",
+      "evidence": "samples=101, reconstructed=True, quality=",
+      "passed": true
+    },
+    {
+      "check_id": "p2_synthetic_noise_contract",
+      "evidence": "generative=[0.0006250000000000001, 0.00032399999999999996, 0.0012250000000000002], update=[0.000625, 0.000324, 0.001225]",
+      "passed": true
+    },
+    {
+      "check_id": "p2_synthetic_coverage",
+      "evidence": "mean=0.941397, target=[0.90, 0.98]",
+      "passed": true
+    },
+    {
+      "check_id": "p2_stratified_synthetic_coverage",
+      "evidence": "family_means=[affine=0.951181, deadzone=0.927034, heteroscedastic=0.945976], target=[0.90, 0.98]",
+      "passed": true
+    },
+    {
+      "check_id": "p3_required_baselines",
+      "evidence": "missing=[]",
+      "passed": true
+    },
+    {
+      "check_id": "p3_main_artifact_completeness",
+      "evidence": "rows=420/420, keys_complete=True, unique=True, finite=True",
+      "passed": true
+    },
+    {
+      "check_id": "p3_main_seed_count",
+      "evidence": "observed=20, required=20",
+      "passed": true
+    },
+    {
+      "check_id": "p3_primary_independent_significance",
+      "evidence": "unit=seed, n=20, p=0.00000095, alpha=0.050",
+      "passed": true
+    },
+    {
+      "check_id": "p3_target_effect_size",
+      "evidence": "observed=0.395248, required=0.30",
+      "passed": true
+    },
+    {
+      "check_id": "p3_task_weight_ablation",
+      "evidence": "unit=seed, n=20, p=0.00000095, reduction=0.272727, required=0.10",
+      "passed": true
+    },
+    {
+      "check_id": "p3_dense_oracle_gap",
+      "evidence": "observed=0.069010, maximum=0.10",
+      "passed": true
+    },
+    {
+      "check_id": "p4_manifest_integrity",
+      "evidence": "artifacts=6/6, config=True, source=True, commit=0df7a25808a4",
+      "passed": true
+    },
+    {
+      "check_id": "p4_validation_gated_stopping",
+      "evidence": "runs=60/60, premature=0.0000, median_extra=2.00, p95_extra=2.00",
+      "passed": true
+    },
+    {
+      "check_id": "p4_fault_injection_and_abort",
+      "evidence": "hazards=300, rejected=1.0000, safe_false_rejection=0.0000, max_abort_latency=0.000s, serious=0",
+      "passed": true
+    },
+    {
+      "check_id": "p4_runtime_state_machine",
+      "evidence": "terminal={'fault': 'abort', 'happy': 'done'}, frozen_verdict=GO",
+      "passed": true
+    },
+    {
+      "check_id": "p5_manifest_integrity",
+      "evidence": "artifacts=38/38, config=True, source=True, commit=ceec54cfc5ff",
+      "passed": true
+    },
+    {
+      "check_id": "p5_pinned_isaac_runtime",
+      "evidence": "IsaacLab=37ddf6268717, IsaacSim=5.1.0-rc.19+release.26219.9c81211b.gl, GPU=NVIDIA GeForce RTX 5090, 580.173.02",
+      "passed": true
+    },
+    {
+      "check_id": "p5_vectorized_scenario_coverage",
+      "evidence": "scenarios=4/4, seeds_per_scenario=20, rows_and_keys=True",
+      "passed": true
+    },
+    {
+      "check_id": "p5_recomputed_calibration_statistics",
+      "evidence": "min_reduction=0.093006, min_CI_lower=0.009814, summaries_match=True",
+      "passed": true
+    },
+    {
+      "check_id": "p5_pose_trace_completeness",
+      "evidence": "complete_finite_unique=4/4",
+      "passed": true
+    },
+    {
+      "check_id": "p5_physical_variation_and_safety",
+      "evidence": "COM_events=4/4, abort_zero_next_cycle=4/4, max_latency=0.020s, serious=0",
+      "passed": true
+    }
   ],
-  "evidence_commit": "100fe68378a7966d0fb6b0d686cf9a247c604f19",
   "schema_version": "1.0",
   "verdict": "GO"
 }

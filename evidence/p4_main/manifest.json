@@ -1,0 +1,36 @@
+{
+  "artifacts": {
+    "fault_injection": {
+      "path": "fault_injection.csv",
+      "sha256": "efe6425113664075cc7dc471e48f45c6349bd639152a6b3b54c9a2c86d4f0125"
+    },
+    "resolved_config": {
+      "path": "resolved_config.json",
+      "sha256": "5889409044ff71bbe5e6bec4801dfbd35c109a7505cab0d62356071d7671b5b4"
+    },
+    "runtime_faults": {
+      "path": "runtime_faults.csv",
+      "sha256": "4e2fa18bf35711edf63f495817619bb45b5a583c043029b55b7202afa335bfec"
+    },
+    "state_machine_trace": {
+      "path": "state_machine_trace.csv",
+      "sha256": "c5feb474d9b9c8264645ba692c09fad3d950a53f94df4f296a7112e60d260180"
+    },
+    "stop_results": {
+      "path": "stop_results.csv",
+      "sha256": "264a106f4202c9ca3159e16c91fcef50a6eceecb29cc464ac2574670c279e031"
+    },
+    "summary": {
+      "path": "summary.json",
+      "sha256": "476fe7cf597b85099c9e4fc99964a6828c00ae727856c09b3f83104159f66648"
+    }
+  },
+  "backend": "frozen_p3_replay_and_fault_injection",
+  "config_path": "configs/experiments/p4_safety_stop_main.yaml",
+  "config_sha256": "84e764e2fb6939bbfeecc93e5cc727742d39ba692b3ee71ab8121e0b58ad84ab",
+  "git_commit": "0df7a25808a492ace563b68a8cf3e6c84daba269",
+  "phase": "P4",
+  "schema_version": "1.0",
+  "source_trace": "evidence/p3_main/trial_trace.csv",
+  "source_trace_sha256": "d344209ee299dfff3ba8cf768e4b45a6f45a3f0887d1208373229bfadc593bb0"
+}

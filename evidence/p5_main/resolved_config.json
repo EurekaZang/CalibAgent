@@ -1,0 +1,130 @@
+{
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    },
+    "rough": {
+      "sha256": "f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Rough-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "experiment_role": "main",
+  "isaaclab": {
+    "commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaac_sim_version_prefix": "5.1.0",
+    "physics_backend": "physx",
+    "tag": "v2.3.2"
+  },
+  "model": {
+    "feature_set": "m2_affine_cross_hinge",
+    "prior_mean": "identity_projection",
+    "prior_scale": 0.01
+  },
+  "output_dir": "outputs/p5_main",
+  "protocol_frozen_utc": "2026-07-24T07:47:00Z",
+  "publication_gates": {
+    "maximum_abort_latency_s": 0.04,
+    "maximum_nonfinite_rows": 0,
+    "maximum_serious_safety_events": 0,
+    "minimum_actual_motion_ratio": 0.85,
+    "minimum_calibrated_vs_raw_rmse_reduction": 0.05,
+    "minimum_paired_improvement_ci95_lower": 0.0,
+    "minimum_scenarios": 4,
+    "minimum_seeds_per_scenario": 20,
+    "minimum_tier_a_scenarios": 2,
+    "minimum_tier_b_scenarios": 2,
+    "minimum_valid_calibration_ratio": 0.85,
+    "minimum_valid_validation_ratio": 0.8
+  },
+  "safety": {
+    "max_base_height_m": 0.65,
+    "max_coupled_load": 0.8,
+    "min_base_height_m": 0.15
+  },
+  "scenarios": [
+    {
+      "checkpoint": "flat",
+      "com_offset_x_m": 0.0,
+      "distortion": "affine",
+      "dynamic_friction": 0.6,
+      "id": "tier_a_affine",
+      "payload_add_kg": 0.0,
+      "static_friction": 0.8,
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "terrain": "flat",
+      "tier": "A"
+    },
+    {
+      "checkpoint": "flat",
+      "com_offset_x_m": 0.0,
+      "distortion": "deadzone",
+      "dynamic_friction": 0.6,
+      "id": "tier_a_deadzone",
+      "payload_add_kg": 0.0,
+      "static_friction": 0.8,
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "terrain": "flat",
+      "tier": "A"
+    },
+    {
+      "checkpoint": "flat",
+      "com_offset_x_m": 0.02,
+      "distortion": "identity",
+      "dynamic_friction": 0.35,
+      "id": "tier_b_friction_payload",
+      "payload_add_kg": 2.0,
+      "static_friction": 0.45,
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "terrain": "flat_low_friction",
+      "tier": "B"
+    },
+    {
+      "checkpoint": "rough",
+      "com_offset_x_m": 0.01,
+      "distortion": "identity",
+      "dynamic_friction": 0.6,
+      "id": "tier_b_rough",
+      "payload_add_kg": 1.0,
+      "static_friction": 0.8,
+      "task": "Isaac-Velocity-Rough-Unitree-Go2-Play-v0",
+      "terrain": "rough",
+      "tier": "B"
+    }
+  ],
+  "trial": {
+    "calibration_trials": 12,
+    "measure_s": 1.0,
+    "ramp_in_s": 0.4,
+    "ramp_out_s": 1.0,
+    "sample_rate_hz": 50.0,
+    "settle_s": 0.8,
+    "warmup_s": 1.0
+  },
+  "vectorization": {
+    "num_envs": 20,
+    "seeds": [
+      5301,
+      5302,
+      5303,
+      5304,
+      5305,
+      5306,
+      5307,
+      5308,
+      5309,
+      5310,
+      5311,
+      5312,
+      5313,
+      5314,
+      5315,
+      5316,
+      5317,
+      5318,
+      5319,
+      5320
+    ],
+    "simulator_seed": 740240
+  }
+}

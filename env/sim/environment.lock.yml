@@ -1,9 +1,12 @@
 name: calibagent-sim
-channels: [conda-forge]
-dependencies:
-  - python=3.10
-  - pip
-  - pip:
-      - -e ../.. 
-# Isaac Lab is intentionally pinned by env/isaaclab_commit.txt after P5 integration.
-
+runtime:
+  isaac_lab_tag: v2.3.2
+  isaac_lab_commit: 37ddf626871758333d6ed89cf64ad702aef127d0
+  isaac_sim_version: 5.1.0-rc.19+release.26219.9c81211b.gl
+  python_version: 3.11.13
+  physics_backend: physx
+  gpu: NVIDIA GeForce RTX 5090
+  driver: 580.173.02
+policies:
+  go2_flat_sha256: 47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439
+  go2_rough_sha256: f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2

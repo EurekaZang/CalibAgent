@@ -1,0 +1,179 @@
+{
+  "artifacts": {
+    "resolved_config.json": {
+      "path": "resolved_config.json",
+      "sha256": "94e9d8b3cbb1aa9a6eed40bd6e55738c778cde66a4c655b0cd92f0d427d138bb"
+    },
+    "scenarios/tier_a_affine/distortion_parameters.json": {
+      "path": "scenarios/tier_a_affine/distortion_parameters.json",
+      "sha256": "ae10d18dd9b1c01ba9131653b12d06a5c1b08628ed491452f4c877156542c0c3"
+    },
+    "scenarios/tier_a_affine/launch_command.json": {
+      "path": "scenarios/tier_a_affine/launch_command.json",
+      "sha256": "dcce55314edf2ed0d3c0fbbc126906c5bc615dfc187912b7e515e8f41005ec66"
+    },
+    "scenarios/tier_a_affine/launch_config.json": {
+      "path": "scenarios/tier_a_affine/launch_config.json",
+      "sha256": "e431dc0412cc4ec4afb32763c86446a7a96078a111b7bba8532c5e6fc85934f2"
+    },
+    "scenarios/tier_a_affine/per_seed_metrics.csv": {
+      "path": "scenarios/tier_a_affine/per_seed_metrics.csv",
+      "sha256": "d1c22a00abb6d699112026929959dabd167665bfab1b00b20858a9a9b330cd43"
+    },
+    "scenarios/tier_a_affine/pose_trace.csv": {
+      "path": "scenarios/tier_a_affine/pose_trace.csv",
+      "sha256": "1634e3897dcc8a236c6921b947d28e13b1ae2f37aaacc52663c883768019e857"
+    },
+    "scenarios/tier_a_affine/scenario_config.json": {
+      "path": "scenarios/tier_a_affine/scenario_config.json",
+      "sha256": "e431dc0412cc4ec4afb32763c86446a7a96078a111b7bba8532c5e6fc85934f2"
+    },
+    "scenarios/tier_a_affine/simulator.log": {
+      "path": "scenarios/tier_a_affine/simulator.log",
+      "sha256": "7daf218e385f5574ef3052ffd71b2f29d4319984a77c243967b54ddb73d99f3b"
+    },
+    "scenarios/tier_a_affine/summary.json": {
+      "path": "scenarios/tier_a_affine/summary.json",
+      "sha256": "49727059dd460f656048dbe74939d55fdd8fad0de8d7e7a75f6ad31df27c5260"
+    },
+    "scenarios/tier_a_affine/trial_metrics.csv": {
+      "path": "scenarios/tier_a_affine/trial_metrics.csv",
+      "sha256": "127c888ae0c19cd6322f33b655e9cfeea9820fc22ef06ba11f51cbdce29c5e00"
+    },
+    "scenarios/tier_a_deadzone/distortion_parameters.json": {
+      "path": "scenarios/tier_a_deadzone/distortion_parameters.json",
+      "sha256": "bf25ba263a32ef211651abff26e48e975052a20a5af568ea2036e649ec65810b"
+    },
+    "scenarios/tier_a_deadzone/launch_command.json": {
+      "path": "scenarios/tier_a_deadzone/launch_command.json",
+      "sha256": "4b4092ecb83739e9f0c2dc556b3595a9bfea189c2546aea5e33b00eff7c5ad07"
+    },
+    "scenarios/tier_a_deadzone/launch_config.json": {
+      "path": "scenarios/tier_a_deadzone/launch_config.json",
+      "sha256": "c6dd44de322f30fef23eb62268e2190538e5e8f80f3c67f85af056ce3e2e245e"
+    },
+    "scenarios/tier_a_deadzone/per_seed_metrics.csv": {
+      "path": "scenarios/tier_a_deadzone/per_seed_metrics.csv",
+      "sha256": "482d976646c204b3fa89458cea1270147afa2a461a2265dc538428b944f19d23"
+    },
+    "scenarios/tier_a_deadzone/pose_trace.csv": {
+      "path": "scenarios/tier_a_deadzone/pose_trace.csv",
+      "sha256": "f3eec338319759b732ab7b1a91dd3e07ac982ae474699b117bf4f6a8929a10e3"
+    },
+    "scenarios/tier_a_deadzone/scenario_config.json": {
+      "path": "scenarios/tier_a_deadzone/scenario_config.json",
+      "sha256": "c6dd44de322f30fef23eb62268e2190538e5e8f80f3c67f85af056ce3e2e245e"
+    },
+    "scenarios/tier_a_deadzone/simulator.log": {
+      "path": "scenarios/tier_a_deadzone/simulator.log",
+      "sha256": "e96ba72a2dc09e08f8fd281e71f8ddfc939b9a8c90eaec251dc3767b76a392e6"
+    },
+    "scenarios/tier_a_deadzone/summary.json": {
+      "path": "scenarios/tier_a_deadzone/summary.json",
+      "sha256": "358d325246a980cc2683b7cdf8b346ff462d06f8ae399972b87e361622a7ee1c"
+    },
+    "scenarios/tier_a_deadzone/trial_metrics.csv": {
+      "path": "scenarios/tier_a_deadzone/trial_metrics.csv",
+      "sha256": "c0f265cc4268c0f2489fa92caf56bb548eff219b23c8f3659bbaf4ea3e18a98d"
+    },
+    "scenarios/tier_b_friction_payload/distortion_parameters.json": {
+      "path": "scenarios/tier_b_friction_payload/distortion_parameters.json",
+      "sha256": "9c1934ecb417dcd19d47d057246419657027f389f26a9980dde760233db869d3"
+    },
+    "scenarios/tier_b_friction_payload/launch_command.json": {
+      "path": "scenarios/tier_b_friction_payload/launch_command.json",
+      "sha256": "70b31d222020419498f6f6916b9a0c53cecc5aaf56b60684a9bc7b5d99e1165d"
+    },
+    "scenarios/tier_b_friction_payload/launch_config.json": {
+      "path": "scenarios/tier_b_friction_payload/launch_config.json",
+      "sha256": "f46fc409affd68965e861ceae09b9298e11d0a30cb17168b5b72ba7dbec2245e"
+    },
+    "scenarios/tier_b_friction_payload/per_seed_metrics.csv": {
+      "path": "scenarios/tier_b_friction_payload/per_seed_metrics.csv",
+      "sha256": "fbe501560bfdeac4be085ce604dac34c1a406f1b9756011ba30aa6c0744a385b"
+    },
+    "scenarios/tier_b_friction_payload/pose_trace.csv": {
+      "path": "scenarios/tier_b_friction_payload/pose_trace.csv",
+      "sha256": "240c8a0671c69589ea7785856e2ccc0bfb2b930d32d5bc6d8738ab99983185fb"
+    },
+    "scenarios/tier_b_friction_payload/scenario_config.json": {
+      "path": "scenarios/tier_b_friction_payload/scenario_config.json",
+      "sha256": "f46fc409affd68965e861ceae09b9298e11d0a30cb17168b5b72ba7dbec2245e"
+    },
+    "scenarios/tier_b_friction_payload/simulator.log": {
+      "path": "scenarios/tier_b_friction_payload/simulator.log",
+      "sha256": "65745a0d2f8ab917ca2459e3d8cb588b37cefa333057e4646553944b6331000a"
+    },
+    "scenarios/tier_b_friction_payload/summary.json": {
+      "path": "scenarios/tier_b_friction_payload/summary.json",
+      "sha256": "ab2fde438a29a4af0de1ed3cff96b83301256d151734e072bf110849aef7b6b4"
+    },
+    "scenarios/tier_b_friction_payload/trial_metrics.csv": {
+      "path": "scenarios/tier_b_friction_payload/trial_metrics.csv",
+      "sha256": "f890a50ac38ad253f415c8d5bb57e9a9cd0580b4a384ec3af6d8ee394318c599"
+    },
+    "scenarios/tier_b_rough/distortion_parameters.json": {
+      "path": "scenarios/tier_b_rough/distortion_parameters.json",
+      "sha256": "9c1934ecb417dcd19d47d057246419657027f389f26a9980dde760233db869d3"
+    },
+    "scenarios/tier_b_rough/launch_command.json": {
+      "path": "scenarios/tier_b_rough/launch_command.json",
+      "sha256": "cdaf4df54c88040091c3dae80862a2fdddb59cbeee7c60b205c7ce23c73c0c1e"
+    },
+    "scenarios/tier_b_rough/launch_config.json": {
+      "path": "scenarios/tier_b_rough/launch_config.json",
+      "sha256": "879a7c3036f7b7eb3b29facf46323f320179edd875d7df6a9facc966ac686ce8"
+    },
+    "scenarios/tier_b_rough/per_seed_metrics.csv": {
+      "path": "scenarios/tier_b_rough/per_seed_metrics.csv",
+      "sha256": "c8a2f580e6d390c2d1b12425585c08b05d7322bc85658c17e5330b457212c7c1"
+    },
+    "scenarios/tier_b_rough/pose_trace.csv": {
+      "path": "scenarios/tier_b_rough/pose_trace.csv",
+      "sha256": "f70677998045e51a617652ed0e86f7177d97c8f81e472ea2e25427033587dae3"
+    },
+    "scenarios/tier_b_rough/scenario_config.json": {
+      "path": "scenarios/tier_b_rough/scenario_config.json",
+      "sha256": "879a7c3036f7b7eb3b29facf46323f320179edd875d7df6a9facc966ac686ce8"
+    },
+    "scenarios/tier_b_rough/simulator.log": {
+      "path": "scenarios/tier_b_rough/simulator.log",
+      "sha256": "45dec62f7d5467db1232dd8a922095f8e12e9e06da7c32da0d50748a1e2e0b83"
+    },
+    "scenarios/tier_b_rough/summary.json": {
+      "path": "scenarios/tier_b_rough/summary.json",
+      "sha256": "570d54dab706a4cc014c58c4d33fd1ffc87c50a078a6d35a18c0e1eaf6e98e96"
+    },
+    "scenarios/tier_b_rough/trial_metrics.csv": {
+      "path": "scenarios/tier_b_rough/trial_metrics.csv",
+      "sha256": "d8386cd1b89257ab6dc4e417ee109e99d2d7a29e29dbfb77e932c148aa041cd6"
+    },
+    "summary.json": {
+      "path": "summary.json",
+      "sha256": "988f702a064c1eda80fe579f5b69452270ffffec9a6d95eb2e4b86fb67b84b46"
+    }
+  },
+  "backend": "isaaclab_physx_go2_vectorized",
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    },
+    "rough": {
+      "sha256": "f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Rough-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "config_path": "configs/experiments/p5_isaaclab_main.yaml",
+  "config_sha256": "de097d023ef3ec2d83ef994968e66636f23e4bf2628552fa269a11cfbceab714",
+  "git_commit": "ceec54cfc5ff34482b1c724c2afa0687bbea4589",
+  "phase": "P5",
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "schema_version": "1.0"
+}

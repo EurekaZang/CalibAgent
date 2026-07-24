@@ -1,0 +1,62 @@
+schema_version: "1.0"
+
+# Machine-verifiable gates for the complete P0-P5 ICRA claim set. P6 domain
+# shift and P7 real online calibration remain explicitly out of scope.
+statistics:
+  alpha: 0.05
+  independent_unit: seed
+  min_main_seeds_per_family: 20
+  min_relative_trials_reduction: 0.30
+  min_task_ablation_reduction: 0.10
+  max_dense_oracle_rmse_gap: 0.10
+  primary_baseline: lhs
+
+required_p3_methods:
+  - active
+  - lhs
+  - random
+  - sobol
+  - d_opt
+  - active_no_task
+  - dense
+
+uncertainty:
+  coverage_95_min: 0.90
+  coverage_95_max: 0.98
+
+required_real_data_manifest: evidence/p1_real/manifest.json
+required_capture_config: configs/experiments/p1_go2_capture.yaml
+required_versioned_manifests:
+  - evidence/p1_baseline/manifest.json
+  - evidence/p3_main/manifest.json
+  - evidence/p4_main/manifest.json
+  - evidence/p5_main/manifest.json
+p1_vertical_slice_dataset: evidence/p1_baseline/synthetic_dense.parquet
+real_data:
+  robot_model: unitree_go2
+  min_sessions: 3
+  min_valid_observations: 150
+  min_axis_command_magnitude: 0.10
+  min_m1_vs_raw_rmse_reduction: 0.05
+  min_m1_vs_m0_rmse_reduction: 0.05
+  require_all_session_folds: true
+  require_delivery_verification: true
+  require_sampling_sensitivity: true
+  max_decimated_velocity_rmse: 0.01
+  min_capture_plan_command_match: 0.99
+  min_capture_plan_completion: 0.82
+p3_main_config: configs/experiments/p3_synthetic_main.yaml
+p3_main_metrics: evidence/p3_main/metrics.csv
+
+p4:
+  config: configs/experiments/p4_safety_stop_main.yaml
+  evidence: evidence/p4_main
+  manifest: evidence/p4_main/manifest.json
+
+p5:
+  config: configs/experiments/p5_isaaclab_main.yaml
+  evidence: evidence/p5_main
+  manifest: evidence/p5_main/manifest.json
+  required_backend: isaaclab_physx_go2_vectorized
+  required_physics_backend: physx
+  required_robot: unitree_go2

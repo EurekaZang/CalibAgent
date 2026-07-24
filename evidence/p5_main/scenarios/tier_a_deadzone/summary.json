@@ -1,0 +1,29 @@
+{
+  "actual_motion_ratio": 0.95,
+  "calibrated_rmse": 0.1028197419359903,
+  "calibrated_vs_raw_reduction": 0.31700966989190527,
+  "calibrated_win_rate": 1.0,
+  "calibration_rows": 240,
+  "distortion": "deadzone",
+  "finite": true,
+  "maximum_abort_latency_s": 0.0,
+  "num_envs": 20,
+  "paired_absolute_improvement_ci95": [
+    0.04494502653089874,
+    0.05001766896128919
+  ],
+  "paired_absolute_improvement_mean": 0.04768868544522481,
+  "predictive_coverage_95": 0.8791666666666667,
+  "raw_rmse": 0.15054348122281225,
+  "safety_aborts": 0,
+  "scenario": "tier_a_deadzone",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "simulator_terminations": 0,
+  "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+  "terrain": "flat",
+  "tier": "A",
+  "valid_calibration_ratio": 0.9833333333333333,
+  "valid_validation_ratio": 1.0,
+  "validation_rows": 160
+}

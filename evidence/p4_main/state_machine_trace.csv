@@ -1,0 +1,12 @@
+run_id,index,source,target,event,reason
+happy,0,precheck,ramp_in,precheck_passed,
+happy,1,ramp_in,excite,ramp_reached,
+happy,2,excite,measure,settled,
+happy,3,measure,ramp_out,measurement_complete,
+happy,4,ramp_out,validate,ramped_out,
+happy,5,validate,update,observation_valid,
+happy,6,update,decide,model_updated,
+happy,7,decide,done,stop,
+fault,0,precheck,ramp_in,precheck_passed,
+fault,1,ramp_in,excite,ramp_reached,
+fault,2,excite,abort,safety_trigger,ROLL_LIMIT

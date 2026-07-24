@@ -1,0 +1,12 @@
+[
+  "/tmp/tmp.PTdyXP7qwU/IsaacLab-v2.3.2/isaaclab.sh",
+  "-p",
+  "/home/eureka/CalibAgent/sim/isaaclab/scripts/run_scenario.py",
+  "--scenario-config",
+  "/home/eureka/CalibAgent/outputs/p5_main/scenarios/tier_b_friction_payload/launch_config.json",
+  "--checkpoint",
+  "/home/eureka/CalibAgent/outputs/p5_cache/go2_flat_checkpoint.pt",
+  "--output",
+  "/home/eureka/CalibAgent/outputs/p5_main/scenarios/tier_b_friction_payload",
+  "--headless"
+]

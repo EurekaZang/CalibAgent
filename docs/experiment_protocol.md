@@ -1,4 +1,4 @@
-# P1-P3 experiment protocol
+# P1-P5 experiment protocol
 
 ## Claims and frozen comparisons
 
@@ -47,3 +47,46 @@ contains every algorithm parameter. Figures rebuild from CSV artifacts.
 
 The legacy `outputs/p3_pilot/paired_statistics.json` is retained only as a
 historical artifact and is invalid for publication inference.
+
+## P4 safety and stopping protocol
+
+P4 replays the 60 frozen active trajectories from P3 without refitting or
+selecting trajectories. Stopping requires the minimum trial/coverage gates,
+validation RMSE, uncertainty threshold, and two consecutive confirmations.
+The oracle target is the first trial satisfying the frozen validation and
+uncertainty gates. Publication thresholds are premature stopping below 5%,
+median extra trials at most 3, and p95 extra trials at most 4.
+
+Hard safety is evaluated separately through 20 replicates of 15 hazard
+families (300 cases), 20 safe controls, and 160 runtime fault cases. The
+planner cannot bypass the non-learned filter. State-machine happy/fault paths
+must terminate in `done`/`abort`; an invalid transition fails closed.
+
+## P5 Isaac Lab protocol
+
+P5 runs the official Unitree Go2 manager-based velocity tasks under Isaac Lab
+v2.3.2 commit `37ddf626871758333d6ed89cf64ad702aef127d0`, Isaac Sim 5.1,
+PhysX, and hash-pinned official flat/rough policy checkpoints. CalibAgent does
+not train the locomotion policy. It selects commands outside the task,
+applies the P4 safety envelope, processes root-pose measurements, updates an M2
+Bayesian model, and evaluates eight fixed held-out commands.
+
+The main design has 20 paired seeds (5301–5320), 12 calibration trials, and:
+
+- Tier A affine command distortion on flat terrain;
+- Tier A deadzone/saturation distortion on flat terrain;
+- Tier B low friction + 2 kg payload + 2 cm COM shift;
+- Tier B rough terrain + 1 kg payload + 1 cm COM shift.
+
+Each scenario must improve pooled RMSE by at least 5%, have a strictly positive
+paired-seed bootstrap 95% CI lower bound, retain at least 85% calibration and
+80% validation rows, show actual motion in at least 85% of valid held-out
+trials, contain no nonfinite values or serious event, and issue zero command
+within 40 ms of a safety abort.
+
+Two completed development attempts are not pooled with the main result. The
+first exposed weak-prior overfit; the second used independent seeds and exposed
+rough-terrain coupled-command invalidity. The final safety-constrained protocol
+was frozen before the disjoint 5301–5320 confirmation. A later launcher failure
+generated no metrics and only corrected an impossible request for 128
+non-duplicate candidates; the same unseen confirmation seeds were rerun.

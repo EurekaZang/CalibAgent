@@ -1,0 +1,26 @@
+{
+  "expected_reason_rate": 1.0,
+  "fault_cases": 300,
+  "gates": {
+    "abort_latency": true,
+    "expected_reason_coverage": true,
+    "hazard_rejection": true,
+    "median_extra_trials": true,
+    "p95_extra_trials": true,
+    "premature_stop": true,
+    "safe_false_rejection": true,
+    "serious_events": true,
+    "stop_all_runs_reached": true
+  },
+  "hazard_rejection_rate": 1.0,
+  "maximum_abort_latency_s": 0.0,
+  "median_extra_trials": 2.0,
+  "p95_extra_trials": 2.0,
+  "premature_stop_rate": 0.0,
+  "runtime_fault_cases": 160,
+  "safe_false_rejection_rate": 0.0,
+  "schema_version": "1.0",
+  "serious_events": 0,
+  "stop_runs": 60,
+  "verdict": "GO"
+}
