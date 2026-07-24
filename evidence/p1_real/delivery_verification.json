@@ -1,0 +1,38 @@
+{
+  "capture_plan_sha256": "7393222a654e488132be235cffef81d13776d5b6f93f2bb844fa7dc5401f821c",
+  "checksum_files_verified": 195,
+  "checksum_self_entries_ignored": 1,
+  "duration_s_median": 1.9500749111175537,
+  "duration_s_min": 1.749964714050293,
+  "ledger_attempts": 184,
+  "limitations": [
+    "reference sampling median 19.999 Hz is below the frozen 50.000 Hz target",
+    "checksums.sha256 contains an unverifiable self-entry; all other files verified",
+    "full rosbag was not recorded",
+    "session metadata contains 21 unknown values"
+  ],
+  "max_timestamp_gap_s": 0.07250261306762695,
+  "metadata_unknown_cells": 21,
+  "native_traceability_ratio": 1.0,
+  "native_trials_traced": 183,
+  "observed_median_hz": 19.99935152249168,
+  "planned_sample_rate_hz": 50.0,
+  "reference_frames": [
+    [
+      "map",
+      "base_link"
+    ]
+  ],
+  "sample_count_median": 40.0,
+  "sample_count_min": 36,
+  "schema_version": "1.0",
+  "selected_trials": 183,
+  "sessions": [
+    "go2-session-01",
+    "go2-session-02",
+    "go2-session-03"
+  ],
+  "source_csv_sha256": "961850368430ebd5e5af91f404caf59104e908c2e042a6d31810bf706e83f8fb",
+  "unselected_attempts": 1,
+  "verified": true
+}

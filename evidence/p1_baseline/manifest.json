@@ -1,0 +1,19 @@
+{
+  "artifacts": {
+    "metrics": "baseline_metrics.csv",
+    "split": "split.json"
+  },
+  "backend": "offline_replay",
+  "config_hash": "df59526c83c9231b",
+  "git_commit": "461d30ba0e785bd82b7a1e8713d602a6e61a0c03",
+  "isaaclab_commit": "UNSET-P5-NOT-INTEGRATED",
+  "model_id": "M0_M1",
+  "planner_id": "grid_random_lhs_sobol",
+  "random_seeds": {
+    "global": 1701,
+    "split": 1701
+  },
+  "run_id": "20260718_063622_seed1701_grid_random_lhs_sobol",
+  "schema_version": "1.0",
+  "stop_reason": null
+}

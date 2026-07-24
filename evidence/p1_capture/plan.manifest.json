@@ -1,0 +1,20 @@
+{
+  "axis_max": [
+    0.599270012174295,
+    0.29163212058078486,
+    0.7628510542223239
+  ],
+  "axis_min": [
+    -0.5879828805004753,
+    -0.2966751763988395,
+    -0.7896078394456126
+  ],
+  "config_hash": "54800f53e2bd597b",
+  "experiment_id": "p1_go2_real_capture",
+  "git_commit": "7833e4e3be9cd3f888afde50ee6b7000b0843c3f",
+  "plan_sha256": "7393222a654e488132be235cffef81d13776d5b6f93f2bb844fa7dc5401f821c",
+  "planned_trials": 183,
+  "schema_version": "1.0",
+  "sessions": 3,
+  "trials_per_session": 61
+}

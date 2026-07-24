@@ -1,0 +1,12 @@
+sampler,model,budget,validation_rmse
+raw_command,B0_raw,0,0.1524391753607021
+grid,M0_diagonal_affine,30,0.06083263327578938
+grid,M1_full_affine,30,0.027155055842060346
+random,M0_diagonal_affine,30,0.04838165251282921
+random,M1_full_affine,30,0.027959081624339476
+lhs,M0_diagonal_affine,30,0.04815545160046459
+lhs,M1_full_affine,30,0.02746507993026656
+sobol,M0_diagonal_affine,30,0.04904027874321931
+sobol,M1_full_affine,30,0.02736532302436483
+dense,M0_diagonal_affine,400,0.04861225023233817
+dense,M1_full_affine,400,0.0263756099519567

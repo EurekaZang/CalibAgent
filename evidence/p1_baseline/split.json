@@ -1,0 +1,9 @@
+{
+  "seed": 1701,
+  "training_rows": 400,
+  "validation_fraction": 0.2,
+  "validation_rows": 100,
+  "validation_sessions": [
+    "p1-session-2"
+  ]
+}

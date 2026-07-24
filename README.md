@@ -1,10 +1,11 @@
 # CalibAgent
 
-![ICRA readiness](https://img.shields.io/badge/ICRA%20readiness-NO--GO-b42318)
+![ICRA readiness](https://img.shields.io/badge/ICRA%20readiness-GO-1f883d)
 
-**ICRA readiness: NO-GO.** The code is a software-verified research prototype;
-P0, P2, and the frozen synthetic P3 claim pass the independent gates. The only
-remaining P0-P3 blocker is genuine P1 Unitree Go2 replay evidence.
+**ICRA readiness: GO for the frozen P0–P3 claim set.** The executable audit
+passes all 19 software, real-data, statistical, provenance, and reproducibility
+checks. P1 is supported by 183 traceable Unitree Go2 trials across three
+leave-one-session-out folds; P2 and P3 retain their frozen synthetic scope.
 
 CalibAgent is a simulator-agnostic reference implementation of safe,
 uncertainty-aware active calibration for the mapping from quadruped velocity
@@ -32,7 +33,7 @@ python -m venv .venv
   -r env/analysis/requirements-dev.lock.txt
 .venv/bin/pip install --no-deps -e .
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/pytest -p pytest_cov --cov=calibagent
-.venv/bin/python -m calibagent.cli.audit_readiness --workspace .
+.venv/bin/python -m calibagent.cli.audit_readiness --workspace . --require-ready
 .venv/bin/calibagent-p1-plan \
   --config configs/experiments/p1_go2_capture.yaml \
   --output outputs/p1_capture/plan.csv
@@ -52,9 +53,19 @@ the evaluation protocol and its corrected statistical-unit warning.
 
 Software CI and publication readiness are separate gates. See
 [`docs/completion_semantics.md`](docs/completion_semantics.md) and the
-[`2026-07-18 ICRA audit`](docs/audits/icra_p0_p3_2026-07-18.md).
+[`2026-07-24 ICRA audit`](docs/audits/icra_p0_p3_2026-07-24.md).
 The corrected main result is in [`reports/p3_main_report.md`](reports/p3_main_report.md),
-and real-data requirements are in [`docs/p1_real_data_protocol.md`](docs/p1_real_data_protocol.md).
+the real Go2 result is in [`reports/p1_real_report.md`](reports/p1_real_report.md),
+and acquisition requirements are in
+[`docs/p1_real_data_protocol.md`](docs/p1_real_data_protocol.md).
+
+## Claim boundary
+
+The GO verdict is deliberately scoped. P1 demonstrates passive, offline
+full-affine calibration on real Go2/LiDAR-odometry trials. P3 demonstrates the
+active planner under the frozen synthetic benchmark. It does **not** claim that
+P3 has been executed online on a real Go2; that stronger claim belongs to a
+later, separately audited phase.
 
 ## Quick API
 
@@ -75,4 +86,6 @@ candidate = IntegratedVariancePlanner().propose(model, task, history=[])[0]
 Dense-oracle evaluation points are never used to fit the model, tune the
 planner, or fit feature scaling. Pilot and main seeds are disjoint and recorded
 in every manifest. Raw outputs are intentionally gitignored; compact frozen
-P3 evidence is stored in `reports/` after verification.
+P3 evidence is stored in `reports/` after verification. The self-contained,
+versioned P1 evidence bundle is under `evidence/p1_real/`; its source archive
+and every derived artifact are hash-checked by the live audit.

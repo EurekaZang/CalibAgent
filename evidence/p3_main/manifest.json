@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "config": "resolved_config.json",
+    "dense_oracle": "dense_oracle_metrics.csv",
+    "metrics": "metrics.csv",
+    "planner_diagnostics": "planner_diagnostics.csv",
+    "posterior": "representative_posterior.npz",
+    "statistics": "paired_statistics.json",
+    "trials": "trial_trace.csv",
+    "uncertainty_slice": "uncertainty_slice.csv"
+  },
+  "backend": "synthetic",
+  "config_hash": "9da4a3b13ebd1474",
+  "git_commit": "461d30ba0e785bd82b7a1e8713d602a6e61a0c03",
+  "isaaclab_commit": "UNSET-P5-NOT-INTEGRATED",
+  "model_id": "M2_basis_blr",
+  "planner_id": "task_iv_reduction_v1",
+  "random_seeds": {
+    "evaluation": 23011,
+    "global": 31013,
+    "task": 11003
+  },
+  "run_id": "20260718_063727_seed31013_task_iv_reduction_v1",
+  "schema_version": "1.0",
+  "stop_reason": null
+}

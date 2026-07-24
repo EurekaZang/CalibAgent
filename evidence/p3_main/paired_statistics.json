@@ -1,0 +1,67 @@
+{
+  "active_vs_active_no_task": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 7.0,
+    "mean_trials_active": 18.66666666666667,
+    "mean_trials_baseline": 25.666666666666668,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      7.0,
+      7.0
+    ],
+    "relative_reduction": 0.2727272727272726,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "active_vs_d_opt": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 4.333333333333331,
+    "mean_trials_active": 18.66666666666667,
+    "mean_trials_baseline": 23.0,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      4.333333333333331,
+      4.333333333333331
+    ],
+    "relative_reduction": 0.1884057971014491,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "active_vs_lhs": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 12.2,
+    "mean_trials_active": 18.66666666666667,
+    "mean_trials_baseline": 30.866666666666667,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      10.732916666666664,
+      13.73333333333333
+    ],
+    "relative_reduction": 0.3952483801295895,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "active_vs_random": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 11.999999999999998,
+    "mean_trials_active": 18.66666666666667,
+    "mean_trials_baseline": 30.666666666666668,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      10.666666666666664,
+      13.366666666666665
+    ],
+    "relative_reduction": 0.3913043478260868,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "active_vs_sobol": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 7.049999999999999,
+    "mean_trials_active": 18.66666666666667,
+    "mean_trials_baseline": 25.71666666666667,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      6.3666666666666645,
+      7.749999999999998
+    ],
+    "relative_reduction": 0.27414128321451703,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  }
+}

@@ -38,7 +38,7 @@ test and seed bootstrap.
 
 ## Outputs
 
-`outputs/p3_main/trial_trace.csv` contains every sequential command and metric.
+`evidence/p3_main/trial_trace.csv` contains every sequential command and metric.
 `metrics.csv` has 420 unique family/method/seed rows. `paired_statistics.json`
 uses 20 independent seeds; it does not pool the 60 repeated family conditions.
 `dense_oracle_metrics.csv` records the 256-command performance ceiling.

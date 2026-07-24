@@ -1,0 +1,132 @@
+{
+  "artifacts": {
+    "capture_plan": "capture_plan.csv",
+    "dataset": "observations.parquet",
+    "delivery_verification": "delivery_verification.json",
+    "fold_metrics": "baseline_fold_metrics.csv",
+    "metrics": "baseline_metrics.csv",
+    "raw_source": "raw_trials.csv",
+    "sampling_sensitivity": "sampling_sensitivity.json",
+    "source_archive": "source_archive.zip",
+    "split": "split.json"
+  },
+  "backend": "offline_replay",
+  "baseline_summary": [
+    {
+      "budget": 0,
+      "folds": 3,
+      "model": "B0_raw",
+      "sampler": "raw_command",
+      "validation_rmse": 0.06605092041667299
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M0_diagonal_affine",
+      "sampler": "grid",
+      "validation_rmse": 0.04913783041250472
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M1_full_affine",
+      "sampler": "grid",
+      "validation_rmse": 0.039402761371960436
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M0_diagonal_affine",
+      "sampler": "random",
+      "validation_rmse": 0.04597513951643633
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M1_full_affine",
+      "sampler": "random",
+      "validation_rmse": 0.030358547625678425
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M0_diagonal_affine",
+      "sampler": "lhs",
+      "validation_rmse": 0.045633520122393835
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M1_full_affine",
+      "sampler": "lhs",
+      "validation_rmse": 0.030086507853532955
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M0_diagonal_affine",
+      "sampler": "sobol",
+      "validation_rmse": 0.04641123159789764
+    },
+    {
+      "budget": 30,
+      "folds": 3,
+      "model": "M1_full_affine",
+      "sampler": "sobol",
+      "validation_rmse": 0.030258074855970353
+    },
+    {
+      "budget": 122,
+      "folds": 3,
+      "model": "M0_diagonal_affine",
+      "sampler": "dense",
+      "validation_rmse": 0.04495124284465697
+    },
+    {
+      "budget": 122,
+      "folds": 3,
+      "model": "M1_full_affine",
+      "sampler": "dense",
+      "validation_rmse": 0.029115965116138138
+    }
+  ],
+  "capture_plan_command_match": 1.0,
+  "capture_plan_completion": 1.0,
+  "capture_plan_sha256": "7393222a654e488132be235cffef81d13776d5b6f93f2bb844fa7dc5401f821c",
+  "config_hash": "1aa1f2c90add6b0c",
+  "dataset_sha256": "4dbce9e13e68dd8f93fe4dbc1ad3dc42b16d0bfce9475c5201d3f1487e6e22b4",
+  "delivery_verification_sha256": "0a6b1f8ffc5659257876109d51fc10a0c949dbffd29a5e5d1dce4d57569069d3",
+  "delivery_verified": true,
+  "git_commit": "100fe68378a7966d0fb6b0d686cf9a247c604f19",
+  "isaaclab_commit": "UNSET-P5-NOT-INTEGRATED",
+  "model_id": "M0_M1",
+  "native_traceability_ratio": 1.0,
+  "planner_id": "grid_random_lhs_sobol",
+  "protocol_limitations": [
+    "reference sampling median 19.999 Hz is below the frozen 50.000 Hz target",
+    "checksums.sha256 contains an unverifiable self-entry; all other files verified",
+    "full rosbag was not recorded",
+    "session metadata contains 21 unknown values"
+  ],
+  "random_seeds": {
+    "global": 1701,
+    "split": 1701
+  },
+  "reference_sensor": "lidar_odometry",
+  "robot_model": "unitree_go2",
+  "run_id": "20260724_061835_seed1701_grid_random_lhs_sobol",
+  "sampling_sensitivity_sha256": "4c7e8a9d855d75c2d49a0fbbf5f68f678bf1549738bb0fca7794a794ac261de1",
+  "schema_version": "1.0",
+  "sessions": [
+    "go2-session-01",
+    "go2-session-02",
+    "go2-session-03"
+  ],
+  "source_archive_sha256": "273d3f5f367cccb9002edb26e5256c8b6a9de5b08b36913613595805b12b978b",
+  "source_kind": "real_robot",
+  "source_sha256": "961850368430ebd5e5af91f404caf59104e908c2e042a6d31810bf706e83f8fb",
+  "stop_reason": null,
+  "synthetic": false,
+  "total_observations": 183,
+  "valid_observations": 183
+}

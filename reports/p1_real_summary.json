@@ -1,0 +1,36 @@
+{
+  "audit_verdict": "GO",
+  "capture_plan_command_match": 1.0,
+  "capture_plan_completion": 1.0,
+  "capture_plan_sha256": "7393222a654e488132be235cffef81d13776d5b6f93f2bb844fa7dc5401f821c",
+  "delivery_verified": true,
+  "evidence_commit": "100fe68378a7966d0fb6b0d686cf9a247c604f19",
+  "fold_min_m1_vs_m0_reduction": 0.3008179037606432,
+  "fold_min_m1_vs_raw_reduction": 0.515491637946203,
+  "lhs_m0_validation_rmse": 0.045633520122393835,
+  "lhs_m1_validation_rmse": 0.030086507853532955,
+  "m1_vs_m0_reduction": 0.34069281149387964,
+  "m1_vs_raw_reduction": 0.5444952520913193,
+  "native_traceability_ratio": 1.0,
+  "protocol_limitations": [
+    "Reference sampling median was 19.999 Hz rather than the frozen 50 Hz target.",
+    "No full rosbag or external video was recorded.",
+    "Session metadata contains 21 unknown values.",
+    "The delivery checksum manifest contains one impossible self-entry; all other 195 files verify."
+  ],
+  "raw_command_validation_rmse": 0.06605092041667299,
+  "reference_sensor": "lidar_odometry",
+  "robot_model": "unitree_go2",
+  "sampling_sensitivity": {
+    "decimated_valid_observations_min": 183,
+    "max_velocity_rmse_to_full": 0.004966345504610019,
+    "min_m1_vs_m0_reduction": 0.33919029936600964,
+    "min_m1_vs_raw_reduction": 0.5430145664023057
+  },
+  "schema_version": "1.0",
+  "sessions": 3,
+  "source_archive_sha256": "273d3f5f367cccb9002edb26e5256c8b6a9de5b08b36913613595805b12b978b",
+  "source_csv_sha256": "961850368430ebd5e5af91f404caf59104e908c2e042a6d31810bf706e83f8fb",
+  "total_observations": 183,
+  "valid_observations": 183
+}

@@ -28,13 +28,14 @@ python -m calibagent.cli.audit_readiness --workspace . --require-ready
 The second command exits non-zero until every publication criterion passes.
 Governance tests require README/report claims to agree with this verdict.
 
-## Current status (2026-07-18)
+## Current status (2026-07-24)
 
 | Phase | Highest supported level | Status |
 |---|---|---|
 | P0 | L3 for P0 scope | Versioned provenance, pinned environment and source-linked manifests pass |
-| P1 | L1/L2 software path | End-to-end replay passes; genuine Go2 evidence remains absent |
+| P1 | L3 for passive real replay claim | 183 real Go2 trials, native traceability, LOSO improvement and sampling sensitivity pass |
 | P2 | L3 for frozen synthetic claim | Noise contract and overall/stratified coverage pass |
 | P3 | L3 for frozen synthetic claim | Main seeds, primary effect, strong baselines, ablation and dense gap pass |
 
-Overall ICRA readiness is **NO_GO**.
+Overall ICRA readiness is **GO** for the frozen P0–P3 claim set. Real-robot
+online validation of the P3 planner remains explicitly outside that claim.

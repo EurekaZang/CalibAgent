@@ -24,8 +24,12 @@ uncertainty:
   coverage_95_min: 0.90
   coverage_95_max: 0.98
 
-required_real_data_manifest: outputs/p1_real/manifest.json
+required_real_data_manifest: evidence/p1_real/manifest.json
 required_capture_config: configs/experiments/p1_go2_capture.yaml
+required_versioned_manifests:
+  - evidence/p1_baseline/manifest.json
+  - evidence/p3_main/manifest.json
+p1_vertical_slice_dataset: evidence/p1_baseline/synthetic_dense.parquet
 real_data:
   robot_model: unitree_go2
   min_sessions: 3
@@ -40,4 +44,4 @@ real_data:
   min_capture_plan_command_match: 0.99
   min_capture_plan_completion: 0.82
 p3_main_config: configs/experiments/p3_synthetic_main.yaml
-p3_main_metrics: outputs/p3_main/metrics.csv
+p3_main_metrics: evidence/p3_main/metrics.csv

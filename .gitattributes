@@ -1,0 +1,3 @@
+# Preserve the source byte stream and avoid line-ending normalization of the
+# hash-bound real-robot CSV.
+evidence/p1_real/raw_trials.csv binary

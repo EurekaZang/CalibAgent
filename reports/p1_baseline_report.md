@@ -27,7 +27,7 @@ methods were within 3.0-6.0% of the dense M1 RMSE.
 The validation session was never used for feature fitting, model fitting, or
 sampler selection. Invalid observations are excluded before the split is
 consumed. `split.json`, the run manifest, canonical input Parquet, and exact
-metrics remain under `outputs/p1_baseline/`; hashes are frozen in
+metrics remain under `evidence/p1_baseline/`; hashes are frozen in
 `reports/artifact_checksums.sha256`.
 
 ## Claim boundary

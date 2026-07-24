@@ -68,10 +68,10 @@ def _git_check(workspace: Path) -> AuditCheck:
     return AuditCheck("p0_versioned_commit", True, result.stdout.strip())
 
 
-def _manifest_check(workspace: Path) -> AuditCheck:
+def _manifest_check(workspace: Path, criteria: dict[str, Any]) -> AuditCheck:
     paths = [
-        workspace / "outputs/p1_baseline/manifest.json",
-        workspace / "outputs/p3_main/manifest.json",
+        workspace / str(relative)
+        for relative in criteria["required_versioned_manifests"]
     ]
     missing = [str(path.relative_to(workspace)) for path in paths if not path.is_file()]
     if missing:
@@ -417,8 +417,10 @@ def _capture_design_check(workspace: Path, criteria: dict[str, Any]) -> AuditChe
     )
 
 
-def _replay_vertical_slice_check(workspace: Path) -> AuditCheck:
-    dataset = workspace / "outputs/p1_baseline/synthetic_dense.parquet"
+def _replay_vertical_slice_check(
+    workspace: Path, criteria: dict[str, Any]
+) -> AuditCheck:
+    dataset = workspace / str(criteria["p1_vertical_slice_dataset"])
     if not dataset.is_file():
         return AuditCheck("p1_replay_measurement_vertical_slice", False, "baseline dataset missing")
     observations = load_observations(dataset)
@@ -611,11 +613,11 @@ def audit_publication_readiness(workspace: Path) -> PublicationReadinessReport:
     metrics = pd.read_csv(metrics_path)
     checks = [
         _git_check(root),
-        _manifest_check(root),
+        _manifest_check(root, criteria),
         _reproducible_environment_check(root),
         _capture_design_check(root, criteria),
         *_real_data_checks(root, criteria),
-        _replay_vertical_slice_check(root),
+        _replay_vertical_slice_check(root, criteria),
         _noise_contract_check(root),
         _coverage_check(metrics, criteria["uncertainty"]),
         _stratified_coverage_check(metrics, criteria["uncertainty"]),

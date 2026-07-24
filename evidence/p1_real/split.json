@@ -1,0 +1,27 @@
+{
+  "folds": [
+    {
+      "training_rows": 122,
+      "validation_rows": 61,
+      "validation_session": "go2-session-01"
+    },
+    {
+      "training_rows": 122,
+      "validation_rows": 61,
+      "validation_session": "go2-session-02"
+    },
+    {
+      "training_rows": 122,
+      "validation_rows": 61,
+      "validation_session": "go2-session-03"
+    }
+  ],
+  "independent_unit": "session_id",
+  "seed": 1701,
+  "sessions": [
+    "go2-session-01",
+    "go2-session-02",
+    "go2-session-03"
+  ],
+  "strategy": "leave_one_session_out"
+}

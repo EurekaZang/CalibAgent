@@ -1,0 +1,39 @@
+{
+  "decimations": [
+    {
+      "lhs_m0_validation_rmse": 0.04561136009187871,
+      "lhs_m1_validation_rmse": 0.030140429207823505,
+      "m1_vs_m0_reduction": 0.33919029936600964,
+      "m1_vs_raw_reduction": 0.5433187809209381,
+      "median_hz": 10.000760613116165,
+      "offset": 0,
+      "raw_validation_rmse": 0.0659988367128483,
+      "valid_observations": 183,
+      "velocity_axis_rmse_to_full": [
+        0.0009423244414657914,
+        0.0011324398915896253,
+        0.0014266675863610378
+      ],
+      "velocity_rmse_to_full": 0.0011840292596357247
+    },
+    {
+      "lhs_m0_validation_rmse": 0.04561719820563196,
+      "lhs_m1_validation_rmse": 0.030059292764398123,
+      "m1_vs_m0_reduction": 0.3410535073000831,
+      "m1_vs_raw_reduction": 0.5430145664023057,
+      "median_hz": 10.000951380634516,
+      "offset": 1,
+      "raw_validation_rmse": 0.06577735427528031,
+      "valid_observations": 183,
+      "velocity_axis_rmse_to_full": [
+        0.003573140469705333,
+        0.00411368319786665,
+        0.006656128059527099
+      ],
+      "velocity_rmse_to_full": 0.004966345504610019
+    }
+  ],
+  "full_observations": 183,
+  "method": "even_odd_half_rate_decimation",
+  "schema_version": "1.0"
+}
