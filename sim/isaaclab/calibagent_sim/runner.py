@@ -390,8 +390,33 @@ def run_scenario(
     distortion = CommandDistortion(parameters, seed=config.simulator_seed + 91)
 
     command_space = CommandSpace(_BOUNDS, max_linear_norm=0.45)
-    pool = CandidatePool.generate(command_space, count=128, seed=55131)
-    transformer = BasisTransformer("m2_affine_cross_hinge").fit(pool.commands)
+    reference_pool = CandidatePool.generate(
+        command_space,
+        count=128,
+        seed=55131,
+    )
+    planning_envelope = SafetyEnvelope(
+        min_base_height=config.safety_min_base_height_m,
+        max_base_height=config.safety_max_base_height_m,
+        max_coupled_load=config.safety_max_coupled_load,
+    )
+    linear_load = (
+        np.linalg.norm(reference_pool.commands[:, :2], axis=1)
+        / planning_envelope.max_linear_norm
+    )
+    angular_scale = max(abs(bound) for bound in planning_envelope.command_bounds[2])
+    coupled_load = (
+        linear_load + np.abs(reference_pool.commands[:, 2]) / angular_scale
+    )
+    pool = CandidatePool(
+        reference_pool.commands[
+            coupled_load <= planning_envelope.max_coupled_load
+        ],
+        command_space,
+    )
+    transformer = BasisTransformer("m2_affine_cross_hinge").fit(
+        reference_pool.commands
+    )
     # A velocity controller is expected to be approximately identity before
     # calibration.  Project that structural prior into the frozen standardized
     # basis without using any simulator outcome; M2 then learns only deviations.
@@ -440,7 +465,7 @@ def run_scenario(
                         models[env_index],
                         task,
                         history[env_index],
-                        k=128,
+                        k=min(12, len(pool.commands)),
                     )
                     decision = safe_filter.select_first_safe(
                         candidates,
