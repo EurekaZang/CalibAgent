@@ -63,6 +63,22 @@ def test_greedy_fantasy_batch_has_no_duplicates(candidate_pool, m2_transformer) 
     assert len(np.unique(commands, axis=0)) == 6
 
 
+def test_sequential_task_support_selection_remains_unique() -> None:
+    model, reference_pool = line_problem()
+    support = reference_pool.commands[[55, 60, 65, 70, 75, 80, 85]]
+    pool = CandidatePool(support, reference_pool.command_space)
+    task = TaskDistribution.uniform(support)
+    planner = IntegratedVariancePlanner(pool, duplicate_distance=0.02)
+    history: list[np.ndarray] = []
+
+    for _ in range(6):
+        command = planner.propose(model, task, history, k=1)[0].command.as_array()
+        history.append(command)
+
+    assert len(np.unique(np.vstack(history), axis=0)) == 6
+    assert all(any(np.array_equal(command, item) for item in support) for command in history)
+
+
 def test_information_scores_equal_direct_formula() -> None:
     candidate_features = np.asarray([[1.0, -1.0], [1.0, 0.5]])
     task_features = np.asarray([[1.0, 0.2], [1.0, 0.8]])

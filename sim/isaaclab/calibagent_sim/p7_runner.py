@@ -259,7 +259,7 @@ def _run_calibration(
                     models[env_index],
                     task,
                     histories[env_index],
-                    k=min(12, len(pool.commands)),
+                    k=1,
                 )
                 decision = safety_filter.select_first_safe(
                     candidates,
