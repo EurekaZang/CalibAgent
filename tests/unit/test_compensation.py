@@ -3,7 +3,10 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from calibagent.core.compensation import ConstrainedInverseCompensator
+from calibagent.core.compensation import (
+    ConstrainedInverseCompensator,
+    bounded_velocity_feedback_target,
+)
 from calibagent.core.models.bayesian import BayesianBasisModel
 from calibagent.core.models.features import BasisTransformer
 from calibagent.core.planning.candidates import CandidatePool, CommandSpace
@@ -22,6 +25,24 @@ def _identity_model(pool: CandidatePool) -> BayesianBasisModel:
     )
     model.initialize(PriorState(mean=identity))
     return model
+
+
+def test_bounded_velocity_feedback_is_active_bounded_and_sign_preserving() -> None:
+    target = bounded_velocity_feedback_target(
+        np.asarray([0.18, 0.0, -0.15]),
+        np.asarray([0.03, 0.20, 0.30]),
+        gain=1.0,
+        maximum_correction=[0.12, 0.08, 0.15],
+    )
+
+    np.testing.assert_allclose(target, [0.30, 0.0, -0.30])
+    overspeed_target = bounded_velocity_feedback_target(
+        np.asarray([0.10, 0.0, 0.0]),
+        np.asarray([0.50, 0.0, 0.0]),
+        gain=1.0,
+        maximum_correction=[0.20, 0.08, 0.15],
+    )
+    assert overspeed_target[0] == 0.0
 
 
 def test_constrained_inverse_selects_safe_near_identity_command() -> None:

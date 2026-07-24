@@ -132,6 +132,20 @@ class P7BenchmarkConfig:
             or np.any(inactive_limits <= 0.0)
         ):
             raise ValueError("P7 inactive-axis limits must contain three positive values")
+        velocity_feedback = dict(self.navigation["velocity_feedback"])
+        maximum_correction = np.asarray(
+            velocity_feedback["maximum_correction"],
+            dtype=np.float64,
+        )
+        if (
+            float(velocity_feedback["gain"]) < 0.0
+            or not 0.0 < float(velocity_feedback["ema_alpha"]) <= 1.0
+            or maximum_correction.shape != (3,)
+            or not np.all(np.isfinite(maximum_correction))
+            or np.any(maximum_correction < 0.0)
+            or float(velocity_feedback["activation_threshold"]) < 0.0
+        ):
+            raise ValueError("P7 velocity feedback configuration is invalid")
         task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)
         if (
             task_commands.ndim != 2

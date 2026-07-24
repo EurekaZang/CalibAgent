@@ -15,7 +15,10 @@ import numpy as np
 import torch
 from isaaclab.assets import AssetBaseCfg
 
-from calibagent.core.compensation import ConstrainedInverseCompensator
+from calibagent.core.compensation import (
+    ConstrainedInverseCompensator,
+    bounded_velocity_feedback_target,
+)
 from calibagent.core.models.bayesian import BayesianBasisModel
 from calibagent.core.models.features import BasisTransformer
 from calibagent.core.planning.candidates import CandidatePool, CommandSpace
@@ -420,6 +423,8 @@ def _run_navigation(
     waypoint_radius = float(navigation["waypoint_radius_m"])
     goal_radius = float(navigation["goal_radius_m"])
     recovery = dict(navigation["stall_recovery"])
+    velocity_feedback = dict(navigation["velocity_feedback"])
+    feedback_alpha = float(velocity_feedback["ema_alpha"])
     recovery_detection_ticks = max(1, round(float(recovery["detection_s"]) * planner_rate))
     recovery_zero_ticks = max(1, round(float(recovery["zero_command_s"]) * planner_rate))
     emergency_recovery_zero_ticks = max(
@@ -467,6 +472,8 @@ def _run_navigation(
     arrival_position = np.full((count, 2), np.nan, dtype=np.float64)
     path_length = np.zeros(count, dtype=np.float64)
     desired = np.zeros((count, 3), dtype=np.float64)
+    inverse_target = np.zeros((count, 3), dtype=np.float64)
+    filtered_velocity = np.zeros((count, 3), dtype=np.float64)
     compensated = np.zeros((count, 3), dtype=np.float64)
     effective = np.zeros((count, 3), dtype=np.float64)
     inverse_objective = np.full(count, np.nan, dtype=np.float64)
@@ -477,6 +484,8 @@ def _run_navigation(
     emergency_recovery_attempts = np.zeros(count, dtype=np.int64)
     recovery_active = np.zeros(count, dtype=bool)
     emergency_recovery_active = np.zeros(count, dtype=bool)
+    feedback_active = np.zeros(count, dtype=bool)
+    feedback_updates = np.zeros(count, dtype=np.int64)
     trace_rows: list[dict[str, Any]] = []
     valid_flags: list[bool] = []
     arrays = _state_arrays(robot, origins)
@@ -494,10 +503,15 @@ def _run_navigation(
         for step in range(max_steps):
             if step % decimation == 0:
                 position, control_velocity, _, _, _, yaw = arrays
+                filtered_velocity = (
+                    feedback_alpha * control_velocity + (1.0 - feedback_alpha) * filtered_velocity
+                )
                 for env_index in range(count):
                     if finished[env_index]:
                         desired[env_index] = 0.0
+                        inverse_target[env_index] = 0.0
                         compensated[env_index] = 0.0
+                        feedback_active[env_index] = False
                         continue
                     while waypoint_index[env_index] < len(waypoints) - 1:
                         distance = np.linalg.norm(
@@ -516,7 +530,9 @@ def _run_navigation(
                         arrival_time[env_index] = step * dt
                         arrival_position[env_index] = position[env_index, :2]
                         desired[env_index] = 0.0
+                        inverse_target[env_index] = 0.0
                         compensated[env_index] = 0.0
+                        feedback_active[env_index] = False
                         continue
                     target = waypoints[waypoint_index[env_index]]
                     desired[env_index] = _planner_command(
@@ -563,16 +579,34 @@ def _run_navigation(
                     recovery_active[env_index] = recovery_ticks[env_index] > 0
                     if recovery_active[env_index]:
                         proposed = np.zeros(3, dtype=np.float64)
+                        inverse_target[env_index] = desired[env_index]
+                        feedback_active[env_index] = False
                         inverse_objective[env_index] = np.nan
                         recovery_ticks[env_index] -= 1
                         if recovery_ticks[env_index] == 0:
                             emergency_recovery_active[env_index] = False
                     elif method == "B0_raw":
                         proposed = desired[env_index]
+                        inverse_target[env_index] = desired[env_index]
+                        feedback_active[env_index] = False
                         inverse_objective[env_index] = np.nan
                     else:
-                        solution = compensators[env_index].solve(
+                        inverse_target[env_index] = bounded_velocity_feedback_target(
                             desired[env_index],
+                            filtered_velocity[env_index],
+                            gain=float(velocity_feedback["gain"]),
+                            maximum_correction=np.asarray(
+                                velocity_feedback["maximum_correction"],
+                                dtype=np.float64,
+                            ),
+                            activation_threshold=float(velocity_feedback["activation_threshold"]),
+                        )
+                        feedback_active[env_index] = bool(
+                            np.linalg.norm(inverse_target[env_index] - desired[env_index]) > 1e-9
+                        )
+                        feedback_updates[env_index] += int(feedback_active[env_index])
+                        solution = compensators[env_index].solve(
+                            inverse_target[env_index],
                             models[env_index],
                             _robot_state(env_index, step * dt, arrays),
                             compensated[env_index],
@@ -641,6 +675,10 @@ def _run_navigation(
                         "desired_vx": desired[env_index, 0],
                         "desired_vy": desired[env_index, 1],
                         "desired_wz": desired[env_index, 2],
+                        "inverse_target_vx": inverse_target[env_index, 0],
+                        "inverse_target_vy": inverse_target[env_index, 1],
+                        "inverse_target_wz": inverse_target[env_index, 2],
+                        "velocity_feedback_active": bool(feedback_active[env_index]),
                         "compensated_vx": compensated[env_index, 0],
                         "compensated_vy": compensated[env_index, 1],
                         "compensated_wz": compensated[env_index, 2],
@@ -691,6 +729,7 @@ def _run_navigation(
             "stall_recovery_attempts": int(recovery_attempts[index]),
             "regular_recovery_attempts": int(regular_recovery_attempts[index]),
             "emergency_recovery_attempts": int(emergency_recovery_attempts[index]),
+            "velocity_feedback_updates": int(feedback_updates[index]),
             "serious_safety_event": bool(serious[index]),
         }
         for index, seed in enumerate(config.seeds)
@@ -771,6 +810,9 @@ def run_p7_navigation(
         ),
         "emergency_recovery_attempts": int(
             sum(int(row["emergency_recovery_attempts"]) for row in episode_rows)
+        ),
+        "velocity_feedback_updates": int(
+            sum(int(row["velocity_feedback_updates"]) for row in episode_rows)
         ),
         "valid_observation_ratio": float(np.mean(valid)) if valid else 1.0,
         "safety_events": int(safety_events),

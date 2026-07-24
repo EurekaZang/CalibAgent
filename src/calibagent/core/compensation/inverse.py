@@ -24,6 +24,40 @@ class CompensationResult:
     candidate_index: int
 
 
+def bounded_velocity_feedback_target(
+    desired_velocity: NDArray[np.floating[Any]],
+    measured_velocity: NDArray[np.floating[Any]],
+    *,
+    gain: float,
+    maximum_correction: NDArray[np.floating[Any]] | Sequence[float],
+    activation_threshold: float = 0.02,
+) -> NDArray[np.float64]:
+    """Return a task-sign-preserving target with bounded velocity feedback."""
+
+    desired = np.asarray(desired_velocity, dtype=np.float64)
+    measured = np.asarray(measured_velocity, dtype=np.float64)
+    limits = np.asarray(maximum_correction, dtype=np.float64)
+    if (
+        desired.shape != (3,)
+        or measured.shape != (3,)
+        or limits.shape != (3,)
+        or not np.all(np.isfinite(desired))
+        or not np.all(np.isfinite(measured))
+        or not np.all(np.isfinite(limits))
+        or gain < 0.0
+        or np.any(limits < 0.0)
+        or activation_threshold < 0.0
+    ):
+        raise ValueError("velocity feedback inputs are invalid")
+    active_axes = np.abs(desired) >= activation_threshold
+    correction = np.clip(float(gain) * (desired - measured), -limits, limits)
+    correction[~active_axes] = 0.0
+    target = desired + correction
+    reversed_axes = active_axes & (target * desired < 0.0)
+    target[reversed_axes] = 0.0
+    return np.asarray(target, dtype=np.float64)
+
+
 class ConstrainedInverseCompensator:
     """Select a safe command whose posterior prediction matches task velocity.
 
