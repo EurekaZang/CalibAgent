@@ -75,7 +75,7 @@ maps:
   - id: open_field
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
-    distortion: mixed_low
+    distortion: affine_low
     physics:
       static_friction: 0.80
       dynamic_friction: 0.60
@@ -89,7 +89,7 @@ maps:
   - id: slalom
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
-    distortion: mixed_low
+    distortion: affine_low
     physics:
       static_friction: 0.70
       dynamic_friction: 0.50
@@ -110,7 +110,7 @@ maps:
   - id: narrow_corridor
     task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
     checkpoint: flat
-    distortion: mixed_low
+    distortion: affine_low
     physics:
       static_friction: 0.60
       dynamic_friction: 0.45
