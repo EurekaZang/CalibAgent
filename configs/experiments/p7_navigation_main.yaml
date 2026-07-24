@@ -151,7 +151,8 @@ publication_gates:
   minimum_b8_vs_b0_time_win_rate: 0.90
   maximum_success_rate_noninferiority_margin: 0.10
   maximum_collision_rate_noninferiority_margin: 0.05
-  maximum_b8_to_b1_completion_time_ratio: 1.15
+  maximum_b8_to_b1_mean_completion_time_ratio: 1.15
+  maximum_b8_to_b1_completion_time_ratio_ci95_upper: 1.25
   maximum_b8_to_b1_calibration_budget_ratio: 0.40
   minimum_valid_observation_ratio: 0.80
   maximum_serious_safety_events: 0

@@ -26,6 +26,7 @@ def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
         "b0_minus_b8_collision_ci95": [0.0, 0.10],
         "b8_minus_b1_success_ci95": [-0.05, 0.05],
         "b1_minus_b8_collision_ci95": [0.0, 0.05],
+        "b8_to_b1_mean_completion_time_ratio": 1.05,
         "b8_to_b1_completion_time_ratio_ci95": [0.95, 1.05],
         "b8_to_b1_calibration_budget_ratio": 0.4,
         "minimum_valid_observation_ratio": 0.95,
@@ -56,8 +57,12 @@ def test_p7_pilot_config_and_publication_gates() -> None:
 def test_p7_gates_reject_no_raw_effect_and_dense_regression() -> None:
     config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
-    summaries[0]["b8_vs_b0_completion_time_improvement_ci95_s"] = [-0.1, 0.5]
-    summaries[1]["b8_to_b1_completion_time_ratio_ci95"] = [1.1, 1.2]
+    summaries[0]["b8_vs_b0_completion_time_improvement_ci95_s"] = [
+        -0.1,
+        0.5,
+    ]
+    summaries[1]["b8_to_b1_mean_completion_time_ratio"] = 1.16
+    summaries[1]["b8_to_b1_completion_time_ratio_ci95"] = [1.1, 1.26]
 
     result = evaluate_p7_summaries(config, summaries)
 

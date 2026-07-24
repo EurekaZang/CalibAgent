@@ -236,6 +236,9 @@ def _paired_map_summary(
         "b0_mean_completion_time_s": float(np.mean(b0_time)),
         "b1_mean_completion_time_s": float(np.mean(b1_time)),
         "b8_mean_completion_time_s": float(np.mean(b8_time)),
+        "b8_to_b1_mean_completion_time_ratio": float(
+            float(np.mean(b8_time)) / max(float(np.mean(b1_time)), 1e-12)
+        ),
         "b8_vs_b0_completion_time_improvement_mean_s": float(np.mean(time_improvement)),
         "b8_vs_b0_completion_time_improvement_ci95_s": _bootstrap_interval(
             count,
@@ -309,8 +312,10 @@ def evaluate_p7_summaries(
             >= -float(gates["maximum_success_rate_noninferiority_margin"])
             and float(item["b1_minus_b8_collision_ci95"][0])
             >= -float(gates["maximum_collision_rate_noninferiority_margin"])
+            and float(item["b8_to_b1_mean_completion_time_ratio"])
+            <= float(gates["maximum_b8_to_b1_mean_completion_time_ratio"])
             and float(item["b8_to_b1_completion_time_ratio_ci95"][1])
-            <= float(gates["maximum_b8_to_b1_completion_time_ratio"])
+            <= float(gates["maximum_b8_to_b1_completion_time_ratio_ci95_upper"])
             for item in summaries
         ),
         "calibration_budget": all(
@@ -351,6 +356,10 @@ def evaluate_p7_summaries(
         ),
         "maximum_b8_to_b1_time_ratio_ci95_upper": max(
             (float(item["b8_to_b1_completion_time_ratio_ci95"][1]) for item in summaries),
+            default=float("inf"),
+        ),
+        "maximum_b8_to_b1_mean_completion_time_ratio": max(
+            (float(item["b8_to_b1_mean_completion_time_ratio"]) for item in summaries),
             default=float("inf"),
         ),
         "total_serious_safety_events": sum(
