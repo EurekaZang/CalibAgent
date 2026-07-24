@@ -1,6 +1,6 @@
-experiment_role: pilot
-protocol_frozen_utc: ""
-output_dir: outputs/p7_pilot
+experiment_role: main
+protocol_frozen_utc: "2026-07-24T16:14:18Z"
+output_dir: outputs/p7_main
 
 isaaclab:
   tag: v2.3.2
@@ -11,29 +11,39 @@ isaaclab:
   maximum_startup_attempts: 2
 
 vectorization:
-  num_seeds: 20
-  simulator_seed: 880240
+  num_seeds: 30
+  simulator_seed: 890240
   seeds:
-    - 7721
-    - 7722
-    - 7723
-    - 7724
-    - 7725
-    - 7726
-    - 7727
-    - 7728
-    - 7729
-    - 7730
-    - 7731
-    - 7732
-    - 7733
-    - 7734
-    - 7735
-    - 7736
-    - 7737
-    - 7738
-    - 7739
-    - 7740
+    - 7801
+    - 7802
+    - 7803
+    - 7804
+    - 7805
+    - 7806
+    - 7807
+    - 7808
+    - 7809
+    - 7810
+    - 7811
+    - 7812
+    - 7813
+    - 7814
+    - 7815
+    - 7816
+    - 7817
+    - 7818
+    - 7819
+    - 7820
+    - 7821
+    - 7822
+    - 7823
+    - 7824
+    - 7825
+    - 7826
+    - 7827
+    - 7828
+    - 7829
+    - 7830
 
 methods:
   - B0_raw
@@ -177,7 +187,7 @@ maps:
 
 publication_gates:
   minimum_maps: 3
-  minimum_seeds_per_map: 20
+  minimum_seeds_per_map: 30
   minimum_b8_success_rate: 0.90
   maximum_b8_collision_rate: 0.05
   minimum_b8_vs_b0_time_improvement_ci95_lower_s: 0.0

@@ -36,7 +36,7 @@ def _summary(map_config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def test_p7_pilot_config_and_publication_gates() -> None:
+def test_p7_main_config_and_publication_gates() -> None:
     config = P7BenchmarkConfig.from_yaml(Path("configs/experiments/p7_navigation_main.yaml"))
     summaries = [_summary(item) for item in config.maps]
 
@@ -44,12 +44,12 @@ def test_p7_pilot_config_and_publication_gates() -> None:
 
     assert result["verdict"] == "GO"
     assert all(result["gates"].values())
-    assert config.experiment_role == "pilot"
-    assert len(config.vectorization["seeds"]) == 20
-    assert config.vectorization["seeds"] == list(range(7721, 7741))
+    assert config.experiment_role == "main"
+    assert len(config.vectorization["seeds"]) == 30
+    assert config.vectorization["seeds"] == list(range(7801, 7831))
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 880241
+    assert payload["simulator_seed"] == 890241
     assert payload["enhanced_determinism"] is True
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
