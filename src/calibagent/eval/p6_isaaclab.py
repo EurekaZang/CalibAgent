@@ -238,6 +238,7 @@ def run_p6_suite(
         root / "sim" / "isaaclab",
     ]
     environment = os.environ.copy()
+    environment.pop("VIRTUAL_ENV", None)
     environment["TERM"] = "xterm-256color"
     environment["PYTHONUNBUFFERED"] = "1"
     environment["PYTHONPATH"] = os.pathsep.join(str(path) for path in source_paths)

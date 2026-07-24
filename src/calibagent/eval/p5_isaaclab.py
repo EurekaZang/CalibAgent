@@ -373,6 +373,10 @@ def run_p5_suite(
         root / "sim" / "isaaclab",
     ]
     environment = os.environ.copy()
+    # ``uv run`` exports its analysis VIRTUAL_ENV.  Isaac Lab's launcher gives
+    # that environment precedence over the pinned Isaac Sim Python unless the
+    # variable is removed before crossing the external-runtime boundary.
+    environment.pop("VIRTUAL_ENV", None)
     environment["TERM"] = "xterm-256color"
     environment["PYTHONUNBUFFERED"] = "1"
     environment["PYTHONPATH"] = os.pathsep.join(str(path) for path in source_paths)
