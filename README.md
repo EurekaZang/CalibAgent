@@ -85,7 +85,7 @@ candidate = IntegratedVariancePlanner().propose(model, task, history=[])[0]
 
 Dense-oracle evaluation points are never used to fit the model, tune the
 planner, or fit feature scaling. Pilot and main seeds are disjoint and recorded
-in every manifest. Raw outputs are intentionally gitignored; compact frozen
-P3 evidence is stored in `reports/` after verification. The self-contained,
-versioned P1 evidence bundle is under `evidence/p1_real/`; its source archive
-and every derived artifact are hash-checked by the live audit.
+in every manifest. Regenerable outputs are intentionally gitignored; frozen P3
+evidence is stored under `evidence/p3_main/`. The self-contained, versioned P1
+evidence bundle is under `evidence/p1_real/`; its source archive and every
+derived artifact are hash-checked by the live audit.
