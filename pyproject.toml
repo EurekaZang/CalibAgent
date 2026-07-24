@@ -40,6 +40,7 @@ calibagent-replay = "calibagent.cli.replay_run:main"
 calibagent-audit = "calibagent.cli.audit_readiness:main"
 calibagent-real-replay = "calibagent.cli.real_replay:main"
 calibagent-p1-plan = "calibagent.cli.capture_plan:main"
+calibagent-p4-benchmark = "calibagent.cli.run_p4_benchmark:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
