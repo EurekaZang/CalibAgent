@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -38,15 +39,25 @@ class ConstrainedInverseCompensator:
         *,
         regularization: float = 0.02,
         risk_weight: float = 0.05,
-        undertracking_confidence_weight: float = 0.0,
+        undertracking_confidence_weights: (NDArray[np.floating[Any]] | Sequence[float]) = (
+            0.0,
+            0.0,
+            0.0,
+        ),
         duration_s: float = 0.10,
         enforce_axis_signs: bool = False,
         sign_threshold: float = 0.02,
     ) -> None:
+        confidence_weights = np.asarray(
+            undertracking_confidence_weights,
+            dtype=np.float64,
+        )
         if (
             regularization < 0.0
             or risk_weight < 0.0
-            or undertracking_confidence_weight < 0.0
+            or confidence_weights.shape != (3,)
+            or not np.all(np.isfinite(confidence_weights))
+            or np.any(confidence_weights < 0.0)
             or duration_s <= 0.0
             or sign_threshold < 0.0
         ):
@@ -55,7 +66,7 @@ class ConstrainedInverseCompensator:
         self.safety_filter = safety_filter
         self.regularization = float(regularization)
         self.risk_weight = float(risk_weight)
-        self.undertracking_confidence_weight = float(undertracking_confidence_weight)
+        self.undertracking_confidence_weights = confidence_weights.copy()
         self.duration_s = float(duration_s)
         self.enforce_axis_signs = bool(enforce_axis_signs)
         self.sign_threshold = float(sign_threshold)
@@ -77,11 +88,12 @@ class ConstrainedInverseCompensator:
         means, variances = model.predict_batch(commands)
         tracking_means = means.copy()
         active_axes = np.abs(desired) >= self.sign_threshold
-        if self.undertracking_confidence_weight > 0.0 and np.any(active_axes):
-            tracking_means[:, active_axes] -= (
-                np.sign(desired[active_axes])[None, :]
-                * self.undertracking_confidence_weight
-                * np.sqrt(variances[:, active_axes])
+        robust_axes = active_axes & (self.undertracking_confidence_weights > 0.0)
+        if np.any(robust_axes):
+            tracking_means[:, robust_axes] -= (
+                np.sign(desired[robust_axes])[None, :]
+                * self.undertracking_confidence_weights[robust_axes][None, :]
+                * np.sqrt(variances[:, robust_axes])
             )
         objective = (
             np.sum((tracking_means - desired[None, :]) ** 2, axis=1)

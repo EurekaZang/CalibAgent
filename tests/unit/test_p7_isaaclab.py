@@ -53,7 +53,11 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert payload["calibration"]["feature_set"] == "m1_affine"
     assert payload["calibration"]["model_prior_gain"] == 1.00
     assert payload["calibration"]["command_bounds"][0] == [-0.40, 0.40]
-    assert payload["navigation"]["inverse_undertracking_confidence_weight"] == 0.25
+    assert payload["navigation"]["inverse_undertracking_confidence_weights"] == [
+        0.0,
+        0.5,
+        0.5,
+    ]
     assert payload["navigation"]["stall_recovery"]["maximum_attempts"] == 3
     assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 10
 
@@ -91,3 +95,7 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
     calibration["feature_set"] = "m2_affine_cross_hinge"
     with pytest.raises(ValueError, match="M1 affine"):
         replace(config, calibration=calibration).validate()
+    navigation = dict(config.navigation)
+    navigation["inverse_undertracking_confidence_weights"] = [0.0, -0.1]
+    with pytest.raises(ValueError, match="three nonnegative"):
+        replace(config, navigation=navigation).validate()

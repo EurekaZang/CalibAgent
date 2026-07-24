@@ -84,7 +84,7 @@ def test_constrained_inverse_rejects_nonfinite_input() -> None:
         )
 
 
-def test_robust_inverse_uses_lower_confidence_tracking_velocity() -> None:
+def test_robust_inverse_uses_lower_confidence_only_on_selected_axes() -> None:
     space = CommandSpace(
         np.asarray([[-0.4, 0.4], [-0.3, 0.3], [-0.7, 0.7]]),
         max_linear_norm=0.45,
@@ -100,19 +100,31 @@ def test_robust_inverse_uses_lower_confidence_tracking_velocity() -> None:
         0.4,
         (0.0, 0.0, 0.0),
     )
-    nominal = ConstrainedInverseCompensator(
+    forward_nominal = ConstrainedInverseCompensator(
         pool,
         HardSafetyFilter(),
         risk_weight=0.0,
     ).solve(np.asarray([0.25, 0.0, 0.0]), model, state, np.zeros(3))
-    robust = ConstrainedInverseCompensator(
+    forward_robust = ConstrainedInverseCompensator(
         pool,
         HardSafetyFilter(),
         risk_weight=0.0,
-        undertracking_confidence_weight=1.0,
+        undertracking_confidence_weights=[0.0, 1.0, 1.0],
     ).solve(np.asarray([0.25, 0.0, 0.0]), model, state, np.zeros(3))
+    yaw_nominal = ConstrainedInverseCompensator(
+        pool,
+        HardSafetyFilter(),
+        risk_weight=0.0,
+    ).solve(np.asarray([0.0, 0.0, 0.25]), model, state, np.zeros(3))
+    yaw_robust = ConstrainedInverseCompensator(
+        pool,
+        HardSafetyFilter(),
+        risk_weight=0.0,
+        undertracking_confidence_weights=[0.0, 1.0, 1.0],
+    ).solve(np.asarray([0.0, 0.0, 0.25]), model, state, np.zeros(3))
 
-    assert robust.predicted_velocity[0] >= nominal.predicted_velocity[0]
+    assert forward_robust.candidate_index == forward_nominal.candidate_index
+    assert yaw_robust.predicted_velocity[2] >= yaw_nominal.predicted_velocity[2]
 
 
 def test_constrained_inverse_can_preserve_task_axis_signs() -> None:

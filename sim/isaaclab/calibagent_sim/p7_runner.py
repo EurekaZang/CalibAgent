@@ -443,8 +443,9 @@ def _run_navigation(
             safety_filter,
             regularization=float(navigation["inverse_regularization"]),
             risk_weight=float(navigation["inverse_risk_weight"]),
-            undertracking_confidence_weight=float(
-                navigation["inverse_undertracking_confidence_weight"]
+            undertracking_confidence_weights=np.asarray(
+                navigation["inverse_undertracking_confidence_weights"],
+                dtype=np.float64,
             ),
             duration_s=control_dt,
             enforce_axis_signs=True,
