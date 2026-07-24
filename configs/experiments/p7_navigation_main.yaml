@@ -62,7 +62,7 @@ navigation:
   maximum_angular_accel_rps2: 2.5
   inverse_regularization: 0.005
   inverse_risk_weight: 0.01
-  inverse_undertracking_confidence_weights: [0.50, 0.50, 0.50]
+  inverse_undertracking_confidence_weights: [1.00, 0.50, 0.50]
   inactive_axis_command_limits: [0.08, 0.06, 0.12]
   stall_recovery:
     minimum_desired_speed_mps: 0.10
