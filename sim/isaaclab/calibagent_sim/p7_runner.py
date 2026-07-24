@@ -420,7 +420,11 @@ def _run_navigation(
     recovery = dict(navigation["stall_recovery"])
     recovery_detection_ticks = max(1, round(float(recovery["detection_s"]) * planner_rate))
     recovery_zero_ticks = max(1, round(float(recovery["zero_command_s"]) * planner_rate))
+    emergency_recovery_zero_ticks = max(
+        1, round(float(recovery["emergency_zero_command_s"]) * planner_rate)
+    )
     maximum_recovery_attempts = int(recovery["maximum_attempts"])
+    maximum_emergency_recovery_attempts = int(recovery["maximum_emergency_attempts"])
     unwrapped = env.unwrapped
     env.reset()
     command_term = unwrapped.command_manager.get_term("base_velocity")
@@ -459,6 +463,7 @@ def _run_navigation(
     stall_ticks = np.zeros(count, dtype=np.int64)
     recovery_ticks = np.zeros(count, dtype=np.int64)
     recovery_attempts = np.zeros(count, dtype=np.int64)
+    regular_recovery_attempts = np.zeros(count, dtype=np.int64)
     emergency_recovery_attempts = np.zeros(count, dtype=np.int64)
     recovery_active = np.zeros(count, dtype=bool)
     emergency_recovery_active = np.zeros(count, dtype=bool)
@@ -521,17 +526,29 @@ def _run_navigation(
                     emergency_trigger = bool(
                         position[env_index, 2] <= float(recovery["emergency_base_height_m"])
                     )
-                    if (
-                        recovery_ticks[env_index] == 0
-                        and (
-                            stall_ticks[env_index] >= recovery_detection_ticks or emergency_trigger
-                        )
-                        and recovery_attempts[env_index] < maximum_recovery_attempts
+                    regular_trigger = stall_ticks[env_index] >= recovery_detection_ticks
+                    use_emergency_recovery = bool(
+                        emergency_trigger
+                        and emergency_recovery_attempts[env_index]
+                        < maximum_emergency_recovery_attempts
+                    )
+                    use_regular_recovery = bool(
+                        not use_emergency_recovery
+                        and regular_trigger
+                        and regular_recovery_attempts[env_index] < maximum_recovery_attempts
+                    )
+                    if recovery_ticks[env_index] == 0 and (
+                        use_emergency_recovery or use_regular_recovery
                     ):
-                        recovery_ticks[env_index] = recovery_zero_ticks
+                        recovery_ticks[env_index] = (
+                            emergency_recovery_zero_ticks
+                            if use_emergency_recovery
+                            else recovery_zero_ticks
+                        )
                         recovery_attempts[env_index] += 1
-                        emergency_recovery_active[env_index] = emergency_trigger
-                        emergency_recovery_attempts[env_index] += int(emergency_trigger)
+                        regular_recovery_attempts[env_index] += int(use_regular_recovery)
+                        emergency_recovery_active[env_index] = use_emergency_recovery
+                        emergency_recovery_attempts[env_index] += int(use_emergency_recovery)
                         stall_ticks[env_index] = 0
                     recovery_active[env_index] = recovery_ticks[env_index] > 0
                     if recovery_active[env_index]:
@@ -623,6 +640,7 @@ def _run_navigation(
                         "inverse_objective": inverse_objective[env_index],
                         "stall_recovery_active": bool(recovery_active[env_index]),
                         "stall_recovery_attempts": int(recovery_attempts[env_index]),
+                        "regular_recovery_attempts": int(regular_recovery_attempts[env_index]),
                         "emergency_recovery_active": bool(emergency_recovery_active[env_index]),
                         "emergency_recovery_attempts": int(emergency_recovery_attempts[env_index]),
                         "pose_x": position[env_index, 0],
@@ -661,6 +679,7 @@ def _run_navigation(
             "final_y": float(arrays[0][index, 1]),
             "goal_distance_m": float(np.linalg.norm(waypoints[-1] - arrays[0][index, :2])),
             "stall_recovery_attempts": int(recovery_attempts[index]),
+            "regular_recovery_attempts": int(regular_recovery_attempts[index]),
             "emergency_recovery_attempts": int(emergency_recovery_attempts[index]),
             "serious_safety_event": bool(serious[index]),
         }
@@ -736,6 +755,9 @@ def run_p7_navigation(
         "median_completion_time_s": float(np.median(completion)),
         "stall_recovery_attempts": int(
             sum(int(row["stall_recovery_attempts"]) for row in episode_rows)
+        ),
+        "regular_recovery_attempts": int(
+            sum(int(row["regular_recovery_attempts"]) for row in episode_rows)
         ),
         "emergency_recovery_attempts": int(
             sum(int(row["emergency_recovery_attempts"]) for row in episode_rows)

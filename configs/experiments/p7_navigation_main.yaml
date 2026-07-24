@@ -65,7 +65,9 @@ navigation:
     detection_s: 0.30
     emergency_base_height_m: 0.16
     zero_command_s: 1.00
+    emergency_zero_command_s: 0.50
     maximum_attempts: 3
+    maximum_emergency_attempts: 10
   task_commands:
     - [0.12, 0.00, 0.00]
     - [0.16, 0.00, 0.00]
