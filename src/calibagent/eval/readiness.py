@@ -146,6 +146,23 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
     plan_valid = plan_match >= float(
         real_criteria["min_capture_plan_command_match"]
     ) and plan_completion >= float(real_criteria["min_capture_plan_completion"])
+    delivery_required = bool(real_criteria.get("require_delivery_verification", False))
+    delivery_verified = bool(payload.get("delivery_verified", False))
+    traceability = float(payload.get("native_traceability_ratio") or 0.0)
+    verification_path = path.parent / str(
+        artifacts.get("delivery_verification", "missing")
+    )
+    archive_path = path.parent / str(artifacts.get("source_archive", "missing"))
+    delivery_hashes_valid = bool(
+        verification_path.is_file()
+        and file_sha256(verification_path) == payload.get("delivery_verification_sha256")
+        and archive_path.is_file()
+        and file_sha256(archive_path) == payload.get("source_archive_sha256")
+    )
+    delivery_valid = bool(
+        not delivery_required
+        or (delivery_verified and traceability == 1.0 and delivery_hashes_valid)
+    )
     commit = str(payload.get("git_commit", ""))
     commit_result = subprocess.run(
         ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
@@ -160,6 +177,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
         and reference_sensor not in {"", "onboard_state", "synthetic"}
         and hashes_valid
         and plan_valid
+        and delivery_valid
         and commit_result.returncode == 0
     )
     authenticity = AuditCheck(
@@ -168,6 +186,7 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
         (
             f"backend={backend!r}, synthetic={synthetic}, robot={robot_model!r}, "
             f"reference={reference_sensor!r}, hashes={hashes_valid}, plan={plan_valid}, "
+            f"delivery={delivery_valid}, traceability={traceability:.3f}, "
             f"commit={commit[:12]}"
         ),
     )
@@ -229,16 +248,77 @@ def _real_data_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCh
         )
         raw_reduction = 1.0 - lhs_m1 / raw_rmse
         m0_reduction = 1.0 - lhs_m1 / lhs_m0
+        fold_detail = ""
+        fold_passed = True
+        if bool(real_criteria.get("require_all_session_folds", False)):
+            fold_metrics_path = path.parent / str(
+                artifacts.get("fold_metrics", "missing")
+            )
+            if not fold_metrics_path.is_file():
+                fold_passed = False
+                fold_detail = ", fold_metrics=missing"
+            else:
+                fold_metrics = pd.read_csv(fold_metrics_path)
+                raw_folds = (
+                    fold_metrics.loc[
+                        fold_metrics["model"] == "B0_raw",
+                        ["validation_session", "validation_rmse"],
+                    ]
+                    .rename(columns={"validation_rmse": "raw_rmse"})
+                    .set_index("validation_session")
+                )
+                m0_folds = (
+                    fold_metrics.loc[
+                        (fold_metrics["sampler"] == "lhs")
+                        & (fold_metrics["model"] == "M0_diagonal_affine"),
+                        ["validation_session", "validation_rmse"],
+                    ]
+                    .rename(columns={"validation_rmse": "m0_rmse"})
+                    .set_index("validation_session")
+                )
+                m1_folds = (
+                    fold_metrics.loc[
+                        (fold_metrics["sampler"] == "lhs")
+                        & (fold_metrics["model"] == "M1_full_affine"),
+                        ["validation_session", "validation_rmse"],
+                    ]
+                    .rename(columns={"validation_rmse": "m1_rmse"})
+                    .set_index("validation_session")
+                )
+                folds = raw_folds.join(m0_folds, how="inner").join(m1_folds, how="inner")
+                fold_raw_reduction = 1.0 - folds["m1_rmse"] / folds["raw_rmse"]
+                fold_m0_reduction = 1.0 - folds["m1_rmse"] / folds["m0_rmse"]
+                enough_folds = len(folds) >= int(real_criteria["min_sessions"])
+                fold_passed = bool(
+                    enough_folds
+                    and np.all(
+                        fold_raw_reduction
+                        >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
+                    )
+                    and np.all(
+                        fold_m0_reduction
+                        >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
+                    )
+                )
+                fold_detail = (
+                    f", folds={len(folds)}, "
+                    f"fold_min_raw={float(fold_raw_reduction.min()):.6f}, "
+                    f"fold_min_M0={float(fold_m0_reduction.min()):.6f}"
+                    if len(folds)
+                    else ", folds=0"
+                )
         improvement = AuditCheck(
             "p1_real_baseline_improvement",
             (
                 raw_reduction >= float(real_criteria["min_m1_vs_raw_rmse_reduction"])
                 and m0_reduction >= float(real_criteria["min_m1_vs_m0_rmse_reduction"])
+                and fold_passed
             ),
             (
                 f"M1_vs_raw={raw_reduction:.6f}, M1_vs_M0={m0_reduction:.6f}, "
                 f"required={real_criteria['min_m1_vs_raw_rmse_reduction']:.2f}/"
                 f"{real_criteria['min_m1_vs_m0_rmse_reduction']:.2f}"
+                f"{fold_detail}"
             ),
         )
     return [authenticity, scale, improvement]

@@ -35,3 +35,11 @@ def test_passive_report_shows_coupling_advantage(tmp_path) -> None:
     m1 = metrics[(metrics["sampler"] == "lhs") & (metrics["model"] == "M1_full_affine")]
     assert float(m1["validation_rmse"].iloc[0]) < float(m0["validation_rmse"].iloc[0]) * 0.2
     assert (tmp_path / "manifest.json").is_file()
+    folds = np.genfromtxt(
+        tmp_path / "baseline_fold_metrics.csv",
+        delimiter=",",
+        names=True,
+        dtype=None,
+        encoding="utf-8",
+    )
+    assert len(set(folds["validation_session"])) == 5

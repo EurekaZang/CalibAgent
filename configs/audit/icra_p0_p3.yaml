@@ -33,6 +33,8 @@ real_data:
   min_axis_command_magnitude: 0.10
   min_m1_vs_raw_rmse_reduction: 0.05
   min_m1_vs_m0_rmse_reduction: 0.05
+  require_all_session_folds: true
+  require_delivery_verification: true
   min_capture_plan_command_match: 0.99
   min_capture_plan_completion: 0.82
 p3_main_config: configs/experiments/p3_synthetic_main.yaml

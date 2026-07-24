@@ -13,6 +13,7 @@ import pandas as pd
 
 from calibagent.data.manifest import current_git_commit
 from calibagent.data.observations import save_observations
+from calibagent.eval.real_delivery import verify_real_delivery
 from calibagent.eval.replay import run_passive_replay_baseline
 from calibagent.interfaces.types import RawTrialData, RobotContext, TrialObservation
 from calibagent.measurement.pipeline import MeasurementPipeline
@@ -109,6 +110,8 @@ def build_real_replay_evidence(
     robot_model: str,
     reference_sensor: str,
     capture_plan: Path | None = None,
+    delivery_root: Path | None = None,
+    source_archive: Path | None = None,
     budget: int = 30,
     validation_fraction: float = 0.2,
     seed: int = 1701,
@@ -117,7 +120,16 @@ def build_real_replay_evidence(
         raise ValueError("source_kind must be real_robot or synthetic_fixture")
     if source_kind == "real_robot" and capture_plan is None:
         raise ValueError("real_robot evidence requires the frozen capture plan")
+    if source_kind == "real_robot" and delivery_root is None:
+        raise ValueError("real_robot evidence requires the traceable delivery root")
+    if source_kind == "real_robot" and source_archive is None:
+        raise ValueError("real_robot evidence requires the immutable source archive")
     source = source.resolve()
+    delivery_verification: dict[str, Any] | None = None
+    if delivery_root is not None:
+        if capture_plan is None:
+            raise ValueError("delivery verification requires a capture plan")
+        delivery_verification = verify_real_delivery(delivery_root, source, capture_plan)
     output_dir.mkdir(parents=True, exist_ok=True)
     bundled_source = output_dir / "raw_trials.csv"
     if source != bundled_source.resolve():
@@ -126,12 +138,18 @@ def build_real_replay_evidence(
     plan_match: float | None = None
     plan_completion: float | None = None
     bundled_plan: Path | None = None
+    bundled_archive: Path | None = None
     if capture_plan is not None:
         capture_plan = capture_plan.resolve()
         bundled_plan = output_dir / "capture_plan.csv"
         if capture_plan != bundled_plan.resolve():
             shutil.copy2(capture_plan, bundled_plan)
         plan_match, plan_completion = capture_plan_alignment(frame, pd.read_csv(bundled_plan))
+    if source_archive is not None:
+        source_archive = source_archive.resolve()
+        bundled_archive = output_dir / "source_archive.zip"
+        if source_archive != bundled_archive.resolve():
+            shutil.copy2(source_archive, bundled_archive)
     observations = process_raw_trials(frame)
     valid = [observation for observation in observations if observation.valid]
     dataset = output_dir / "observations.parquet"
@@ -146,6 +164,13 @@ def build_real_replay_evidence(
     sessions = sorted({observation.context.session_id for observation in valid})
     manifest_path = output_dir / "manifest.json"
     run_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    verification_path: Path | None = None
+    if delivery_verification is not None:
+        verification_path = output_dir / "delivery_verification.json"
+        verification_path.write_text(
+            json.dumps(delivery_verification, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
     evidence: dict[str, Any] = {
         **run_manifest,
         "backend": "offline_replay",
@@ -162,11 +187,34 @@ def build_real_replay_evidence(
         "capture_plan_sha256": (file_sha256(bundled_plan) if bundled_plan is not None else None),
         "capture_plan_command_match": plan_match,
         "capture_plan_completion": plan_completion,
+        "delivery_verified": bool(
+            delivery_verification is not None and delivery_verification["verified"]
+        ),
+        "native_traceability_ratio": (
+            float(delivery_verification["native_traceability_ratio"])
+            if delivery_verification is not None
+            else None
+        ),
+        "source_archive_sha256": (
+            file_sha256(bundled_archive) if bundled_archive is not None else None
+        ),
+        "delivery_verification_sha256": (
+            file_sha256(verification_path) if verification_path is not None else None
+        ),
+        "protocol_limitations": (
+            delivery_verification["limitations"] if delivery_verification is not None else []
+        ),
         "artifacts": {
             **run_manifest["artifacts"],
             "raw_source": bundled_source.name,
             "dataset": dataset.name,
             **({"capture_plan": bundled_plan.name} if bundled_plan is not None else {}),
+            **({"source_archive": bundled_archive.name} if bundled_archive is not None else {}),
+            **(
+                {"delivery_verification": verification_path.name}
+                if verification_path is not None
+                else {}
+            ),
         },
         "baseline_summary": metrics.to_dict(orient="records"),
     }

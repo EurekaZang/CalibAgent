@@ -46,6 +46,47 @@ def test_se2_log_recovers_body_velocity_during_turn(context) -> None:
     np.testing.assert_allclose(result.mean_velocity, [vx, vy, wz], atol=1e-8)
 
 
+def test_fixed_horizon_steady_check_tolerates_reference_pose_noise(context) -> None:
+    rng = np.random.default_rng(20260724)
+    time = np.linspace(0.0, 2.0, 41)
+    vx, vy, wz = 0.35, -0.08, 0.55
+    yaw = wz * time
+    x = (vx * np.sin(yaw) + vy * (np.cos(yaw) - 1.0)) / wz
+    y = (vx * (1.0 - np.cos(yaw)) + vy * np.sin(yaw)) / wz
+    pose = np.column_stack(
+        [
+            x + rng.normal(0.0, 0.002, len(time)),
+            y + rng.normal(0.0, 0.002, len(time)),
+            yaw + rng.normal(0.0, 0.001, len(time)),
+        ]
+    )
+    command = np.repeat(np.asarray([[0.4, -0.1, 0.6]]), len(time), axis=0)
+
+    result = MeasurementPipeline().process(RawTrialData(time, command, pose, context))
+
+    assert result.valid
+    assert float(result.quality["steady_ratio"]) >= 0.65
+    np.testing.assert_allclose(result.mean_velocity, [vx, vy, wz], atol=0.02)
+
+
+def test_fixed_horizon_steady_check_rejects_accelerating_measurement(context) -> None:
+    time = np.linspace(0.0, 2.0, 41)
+    acceleration = 0.60
+    pose = np.column_stack(
+        [
+            0.5 * acceleration * time**2,
+            np.zeros_like(time),
+            np.zeros_like(time),
+        ]
+    )
+    command = np.repeat(np.asarray([[0.5, 0.0, 0.0]]), len(time), axis=0)
+
+    result = MeasurementPipeline().process(RawTrialData(time, command, pose, context))
+
+    assert not result.valid
+    assert "INSUFFICIENT_STEADY_RATIO" in str(result.quality["reason_codes"])
+
+
 def test_empty_raw_trial_has_explicit_validation_error(context) -> None:
     with pytest.raises(ValueError, match="at least one sample"):
         MeasurementPipeline().process(

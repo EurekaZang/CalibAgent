@@ -17,6 +17,8 @@ def main() -> None:
     parser.add_argument("--robot-model", default="unitree_go2")
     parser.add_argument("--reference-sensor", required=True)
     parser.add_argument("--capture-plan", type=Path)
+    parser.add_argument("--delivery-root", type=Path)
+    parser.add_argument("--source-archive", type=Path)
     parser.add_argument("--budget", type=int, default=30)
     parser.add_argument("--validation-fraction", type=float, default=0.2)
     parser.add_argument("--seed", type=int, default=1701)
@@ -28,6 +30,8 @@ def main() -> None:
         robot_model=arguments.robot_model,
         reference_sensor=arguments.reference_sensor,
         capture_plan=arguments.capture_plan,
+        delivery_root=arguments.delivery_root,
+        source_archive=arguments.source_archive,
         budget=arguments.budget,
         validation_fraction=arguments.validation_fraction,
         seed=arguments.seed,

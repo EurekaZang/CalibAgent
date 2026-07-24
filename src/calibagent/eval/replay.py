@@ -95,55 +95,127 @@ def run_passive_replay_baseline(
     validation_fraction: float = 0.2,
     seed: int = 1701,
 ) -> pd.DataFrame:
-    training, validation, validation_sessions = session_grouped_split(
-        observations, validation_fraction, seed
-    )
-    training_commands = np.vstack([observation.command.as_array() for observation in training])
-    validation_commands = np.vstack([observation.command.as_array() for observation in validation])
-    validation_targets = np.vstack([observation.mean_velocity for observation in validation])
-    weights = np.ones(len(validation))
-    rows: list[dict[str, Any]] = [
-        {
-            "sampler": "raw_command",
-            "model": "B0_raw",
-            "budget": 0,
-            "validation_rmse": task_weighted_rmse(validation_commands, validation_targets, weights),
-        }
-    ]
-    for sampler in ("grid", "random", "lhs", "sobol"):
-        indices = _selection_indices(sampler, training_commands, budget, seed)
-        selected = [training[int(index)] for index in indices]
+    del validation_fraction
+    valid = [observation for observation in observations if observation.valid]
+    sessions = sorted({observation.context.session_id for observation in valid})
+    if len(sessions) < 2:
+        raise ValueError("leave-one-session-out evaluation requires at least two session IDs")
+
+    fold_rows: list[dict[str, Any]] = []
+    fold_summary: list[dict[str, Any]] = []
+    for validation_session in sessions:
+        training = [
+            observation
+            for observation in valid
+            if observation.context.session_id != validation_session
+        ]
+        validation = [
+            observation
+            for observation in valid
+            if observation.context.session_id == validation_session
+        ]
+        if len(training) < max(4, budget) or not validation:
+            raise ValueError(
+                f"session fold {validation_session!r} does not contain enough observations"
+            )
+        training_commands = np.vstack(
+            [observation.command.as_array() for observation in training]
+        )
+        validation_commands = np.vstack(
+            [observation.command.as_array() for observation in validation]
+        )
+        validation_targets = np.vstack(
+            [observation.mean_velocity for observation in validation]
+        )
+        weights = np.ones(len(validation))
+        fold_rows.append(
+            {
+                "validation_session": validation_session,
+                "training_rows": len(training),
+                "validation_rows": len(validation),
+                "sampler": "raw_command",
+                "model": "B0_raw",
+                "budget": 0,
+                "validation_rmse": task_weighted_rmse(
+                    validation_commands, validation_targets, weights
+                ),
+            }
+        )
+        for sampler in ("grid", "random", "lhs", "sobol"):
+            indices = _selection_indices(sampler, training_commands, budget, seed)
+            selected = [training[int(index)] for index in indices]
+            for model_id in ("M0_diagonal_affine", "M1_full_affine"):
+                model = LeastSquaresVelocityModel(model_id).fit(selected)
+                prediction = np.vstack(
+                    [model.predict(command).mean for command in validation_commands]
+                )
+                fold_rows.append(
+                    {
+                        "validation_session": validation_session,
+                        "training_rows": len(training),
+                        "validation_rows": len(validation),
+                        "sampler": sampler,
+                        "model": model_id,
+                        "budget": budget,
+                        "validation_rmse": task_weighted_rmse(
+                            prediction, validation_targets, weights
+                        ),
+                    }
+                )
         for model_id in ("M0_diagonal_affine", "M1_full_affine"):
-            model = LeastSquaresVelocityModel(model_id).fit(selected)
-            prediction = np.vstack([model.predict(command).mean for command in validation_commands])
-            rows.append(
+            model = LeastSquaresVelocityModel(model_id).fit(training)
+            prediction = np.vstack(
+                [model.predict(command).mean for command in validation_commands]
+            )
+            fold_rows.append(
                 {
-                    "sampler": sampler,
+                    "validation_session": validation_session,
+                    "training_rows": len(training),
+                    "validation_rows": len(validation),
+                    "sampler": "dense",
                     "model": model_id,
-                    "budget": budget,
-                    "validation_rmse": task_weighted_rmse(prediction, validation_targets, weights),
+                    "budget": len(training),
+                    "validation_rmse": task_weighted_rmse(
+                        prediction, validation_targets, weights
+                    ),
                 }
             )
-    for model_id in ("M0_diagonal_affine", "M1_full_affine"):
-        model = LeastSquaresVelocityModel(model_id).fit(training)
-        prediction = np.vstack([model.predict(command).mean for command in validation_commands])
+        fold_summary.append(
+            {
+                "validation_session": validation_session,
+                "training_rows": len(training),
+                "validation_rows": len(validation),
+            }
+        )
+
+    fold_metrics = pd.DataFrame(fold_rows)
+    rows: list[dict[str, Any]] = []
+    for (sampler_name, model_name), group in fold_metrics.groupby(
+        ["sampler", "model"], sort=False
+    ):
+        validation_rows = group["validation_rows"].to_numpy(dtype=np.float64)
+        fold_rmse = group["validation_rmse"].to_numpy(dtype=np.float64)
         rows.append(
             {
-                "sampler": "dense",
-                "model": model_id,
-                "budget": len(training),
-                "validation_rmse": task_weighted_rmse(prediction, validation_targets, weights),
+                "sampler": str(sampler_name),
+                "model": str(model_name),
+                "budget": int(group["budget"].min()),
+                "validation_rmse": float(
+                    np.sqrt(np.average(fold_rmse * fold_rmse, weights=validation_rows))
+                ),
+                "folds": len(group),
             }
         )
     metrics = pd.DataFrame(rows)
     output_dir.mkdir(parents=True, exist_ok=True)
     metrics.to_csv(output_dir / "baseline_metrics.csv", index=False)
+    fold_metrics.to_csv(output_dir / "baseline_fold_metrics.csv", index=False)
     split = {
         "seed": seed,
-        "validation_fraction": validation_fraction,
-        "validation_sessions": validation_sessions,
-        "training_rows": len(training),
-        "validation_rows": len(validation),
+        "strategy": "leave_one_session_out",
+        "independent_unit": "session_id",
+        "sessions": sessions,
+        "folds": fold_summary,
     }
     (output_dir / "split.json").write_text(
         json.dumps(split, indent=2, sort_keys=True), encoding="utf-8"
@@ -159,7 +231,11 @@ def run_passive_replay_baseline(
     manifest = type(manifest)(
         **{
             **manifest.to_dict(),
-            "artifacts": {"metrics": "baseline_metrics.csv", "split": "split.json"},
+            "artifacts": {
+                "metrics": "baseline_metrics.csv",
+                "fold_metrics": "baseline_fold_metrics.csv",
+                "split": "split.json",
+            },
         }
     )
     manifest.save_json(output_dir / "manifest.json")

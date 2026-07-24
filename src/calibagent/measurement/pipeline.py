@@ -17,7 +17,9 @@ class MeasurementConfig:
     max_timestamp_gap_s: float = 0.10
     huber_delta: float = 1.5
     min_steady_ratio: float = 0.65
-    steady_acceleration_threshold: float = 0.25
+    steady_window_s: float = 0.30
+    steady_linear_velocity_tolerance: float = 0.10
+    steady_angular_velocity_tolerance: float = 0.15
 
 
 class MeasurementPipeline:
@@ -25,23 +27,28 @@ class MeasurementPipeline:
         self.config = config if config is not None else MeasurementConfig()
 
     @staticmethod
-    def _se2_body_twists(
-        time: NDArray[np.float64], pose: NDArray[np.float64]
+    def _se2_twists_between(
+        time: NDArray[np.float64],
+        pose: NDArray[np.float64],
+        start_indices: NDArray[np.int64],
+        end_indices: NDArray[np.int64],
     ) -> NDArray[np.float64]:
-        """Estimate constant body twists from one reference to every later pose.
+        """Estimate body twists between corresponding SE(2) pose pairs."""
 
-        Using the SE(2) logarithm avoids the chord/mean-yaw bias of fitting world
-        coordinates during a turn. Each row is an estimate over a different
-        horizon, rather than a noisy adjacent-pose difference.
-        """
-        if len(time) < 2:
+        if not len(start_indices):
             return np.empty((0, 3), dtype=np.float64)
-        elapsed = time[1:] - time[0]
         yaw = np.unwrap(pose[:, 2])
-        delta_yaw = yaw[1:] - yaw[0]
-        cosine = float(np.cos(yaw[0]))
-        sine = float(np.sin(yaw[0]))
-        displacement = pose[1:, :2] - pose[0, :2]
+        elapsed = time[end_indices] - time[start_indices]
+        positive = elapsed > 0.0
+        if not np.any(positive):
+            return np.empty((0, 3), dtype=np.float64)
+        start_indices = start_indices[positive]
+        end_indices = end_indices[positive]
+        elapsed = elapsed[positive]
+        delta_yaw = yaw[end_indices] - yaw[start_indices]
+        cosine = np.cos(yaw[start_indices])
+        sine = np.sin(yaw[start_indices])
+        displacement = pose[end_indices, :2] - pose[start_indices, :2]
         relative = np.column_stack(
             [
                 cosine * displacement[:, 0] + sine * displacement[:, 1],
@@ -61,6 +68,51 @@ class MeasurementPipeline:
             ]
         )
         return np.column_stack([body_displacement / elapsed[:, None], delta_yaw / elapsed])
+
+    @classmethod
+    def _se2_body_twists(
+        cls, time: NDArray[np.float64], pose: NDArray[np.float64]
+    ) -> NDArray[np.float64]:
+        """Estimate constant body twists from one reference to every later pose.
+
+        Using the SE(2) logarithm avoids the chord/mean-yaw bias of fitting world
+        coordinates during a turn. Each row is an estimate over a different
+        horizon, rather than a noisy adjacent-pose difference.
+        """
+        if len(time) < 2:
+            return np.empty((0, 3), dtype=np.float64)
+        return cls._se2_twists_between(
+            time,
+            pose,
+            np.zeros(len(time) - 1, dtype=np.int64),
+            np.arange(1, len(time), dtype=np.int64),
+        )
+
+    @classmethod
+    def _windowed_body_twists(
+        cls,
+        time: NDArray[np.float64],
+        pose: NDArray[np.float64],
+        window_s: float,
+    ) -> NDArray[np.float64]:
+        """Estimate local twists over a fixed horizon for steady-state checks.
+
+        Adjacent-pose acceleration is dominated by differentiated pose noise for
+        LiDAR odometry and motion capture. A fixed physical horizon makes this
+        check comparable across reference sample rates while still rejecting
+        ramps or other within-window velocity changes.
+        """
+        if len(time) < 2 or window_s <= 0.0 or np.any(np.diff(time) <= 0.0):
+            return np.empty((0, 3), dtype=np.float64)
+        start_indices = np.arange(len(time), dtype=np.int64)
+        end_indices = np.searchsorted(time, time + window_s, side="left").astype(np.int64)
+        usable = end_indices < len(time)
+        return cls._se2_twists_between(
+            time,
+            pose,
+            start_indices[usable],
+            end_indices[usable],
+        )
 
     def _robust_twist_mean(
         self, twists: NDArray[np.float64]
@@ -121,13 +173,31 @@ class MeasurementPipeline:
             covariance = np.atleast_2d(np.cov(segment_body, rowvar=False)) / max(
                 len(segment_body), 1
             )
-            acceleration = np.linalg.norm(np.diff(segment_body, axis=0), axis=1) / np.maximum(
-                dt[1:], 1e-9
-            )
-            steady_ratio = float(np.mean(acceleration < self.config.steady_acceleration_threshold))
         else:
             covariance = np.eye(3) * np.inf
+
+        steady_twists = self._windowed_body_twists(
+            t, pose, self.config.steady_window_s
+        )
+        if len(steady_twists):
+            steady_center = np.median(steady_twists, axis=0)
+            steady_scale = np.asarray(
+                [
+                    self.config.steady_linear_velocity_tolerance,
+                    self.config.steady_linear_velocity_tolerance,
+                    self.config.steady_angular_velocity_tolerance,
+                ],
+                dtype=np.float64,
+            )
+            normalized_deviation = np.linalg.norm(
+                (steady_twists - steady_center) / steady_scale,
+                axis=1,
+            )
+            steady_ratio = float(np.mean(normalized_deviation < 1.0))
+            steady_deviation_p95 = float(np.percentile(normalized_deviation, 95.0))
+        else:
             steady_ratio = 0.0
+            steady_deviation_p95 = float("inf")
         if steady_ratio < self.config.min_steady_ratio:
             reasons.append("INSUFFICIENT_STEADY_RATIO")
         outlier_ratio = float(1.0 - np.mean(twist_weights)) if twist_weights.size else 1.0
@@ -144,6 +214,8 @@ class MeasurementPipeline:
             "num_samples": float(len(t)),
             "drop_ratio": float(drop_ratio),
             "steady_ratio": steady_ratio,
+            "steady_window_s": self.config.steady_window_s,
+            "steady_deviation_p95": steady_deviation_p95,
             "outlier_ratio": outlier_ratio,
             "command_constant": command_constant,
         }

@@ -1,5 +1,8 @@
 # P1 real Go2 replay protocol
 
+The detailed Chinese handoff checklist for the hardware team is
+[`p1_go2_real_data_collection_handoff_zh.md`](p1_go2_real_data_collection_handoff_zh.md).
+
 P1 real evidence must originate from raw, timestamped Unitree Go2 trials. A
 fixture, simulator rollout, retargeted trajectory, or manually authored
 manifest is not real-robot evidence.
@@ -32,11 +35,14 @@ calibagent-real-replay path/to/go2_raw_trials.csv \
   --robot-model unitree_go2 \
   --reference-sensor lidar_odometry \
   --capture-plan outputs/p1_capture/plan.csv \
+  --delivery-root path/to/p1_go2_real_delivery \
+  --source-archive path/to/calibration.zip \
   --budget 30
 ```
 
-The command copies the raw table into the evidence bundle, processes every
-trial through `MeasurementPipeline`, performs a session-grouped baseline split,
-verifies command-plan alignment, and records SHA-256 hashes. Using
+The command copies the raw table and immutable source archive into the evidence
+bundle, traces every selected final trial back to its native attempt rows,
+processes every trial through `MeasurementPipeline`, performs leave-one-session-out
+baseline evaluation, verifies command-plan alignment, and records SHA-256 hashes. Using
 `--source-kind synthetic_fixture` is supported
 for integration tests but is rejected by the publication audit.
