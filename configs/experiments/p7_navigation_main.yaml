@@ -42,9 +42,9 @@ navigation:
   environment_spacing_m: 8.0
   cruise_speed_mps: 0.18
   maximum_lateral_speed_mps: 0.14
-  maximum_yaw_rate_rps: 0.40
+  maximum_yaw_rate_rps: 0.25
   position_gain: 0.80
-  heading_gain: 1.40
+  heading_gain: 0.50
   waypoint_radius_m: 0.25
   goal_radius_m: 0.25
   collision_footprint_radius_m: 0.20
@@ -56,10 +56,10 @@ navigation:
     - [0.12, 0.00, 0.00]
     - [0.16, 0.00, 0.00]
     - [0.18, 0.00, 0.00]
-    - [0.14, 0.08, 0.22]
-    - [0.14, -0.08, -0.22]
-    - [0.10, 0.10, 0.35]
-    - [0.10, -0.10, -0.35]
+    - [0.14, 0.08, 0.15]
+    - [0.14, -0.08, -0.15]
+    - [0.10, 0.10, 0.22]
+    - [0.10, -0.10, -0.22]
 
 safety:
   min_base_height_m: 0.15
