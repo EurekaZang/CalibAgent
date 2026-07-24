@@ -56,7 +56,7 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert payload["calibration"]["active_candidate_source"] == "global_safe_pool"
     assert payload["calibration"]["command_bounds"][0] == [-0.40, 0.40]
     assert payload["navigation"]["inverse_undertracking_confidence_weights"] == [
-        0.25,
+        0.5,
         0.5,
         0.5,
     ]
