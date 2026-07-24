@@ -556,8 +556,14 @@ def _run_navigation(
                     if hit:
                         collision[env_index] = True
                         finished[env_index] = True
-                    elif bool(done[env_index]) or not safety_decision.accepted:
+                    elif bool(done[env_index]):
                         serious[env_index] = True
+                        finished[env_index] = True
+                        safety_event_count += 1
+                    elif not safety_decision.accepted:
+                        # Match the P4/P6 severity contract: a hard-envelope
+                        # trigger that zeros the next command is a timely abort,
+                        # while simulator termination/fall is a serious event.
                         finished[env_index] = True
                         safety_event_count += 1
                 trace_rows.append(
