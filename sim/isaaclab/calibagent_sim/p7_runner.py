@@ -665,7 +665,7 @@ def _run_navigation(
                         height_guard_active[env_index] = False
                         height_guard_ticks[env_index] = 0
                     else:
-                        guarded_proposed, guard_now = height_rate_guarded_command(
+                        _, guard_now = height_rate_guarded_command(
                             proposed,
                             base_height_m=float(position[env_index, 2]),
                             previous_base_height_m=float(previous_planner_height[env_index]),
@@ -678,11 +678,24 @@ def _run_navigation(
                             ),
                             force_active=bool(height_guard_ticks[env_index] > 0),
                         )
-                        compensated[env_index] = _slew_limit(
-                            guarded_proposed,
+                        slewed_proposed = _slew_limit(
+                            proposed,
                             compensated[env_index],
                             navigation,
                             control_dt,
+                        )
+                        compensated[env_index], _ = height_rate_guarded_command(
+                            slewed_proposed,
+                            base_height_m=float(position[env_index, 2]),
+                            previous_base_height_m=float(previous_planner_height[env_index]),
+                            activation_height_m=float(height_rate_guard["activation_height_m"]),
+                            minimum_drop_m=float(
+                                height_rate_guard["minimum_drop_per_planner_tick_m"]
+                            ),
+                            maximum_linear_norm=float(
+                                height_rate_guard["maximum_linear_command_norm"]
+                            ),
+                            force_active=guard_now,
                         )
                         if guard_now:
                             if height_guard_ticks[env_index] == 0:

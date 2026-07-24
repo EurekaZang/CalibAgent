@@ -46,10 +46,10 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert all(result["gates"].values())
     assert config.experiment_role == "pilot"
     assert len(config.vectorization["seeds"]) == 20
-    assert config.vectorization["seeds"] == list(range(7691, 7711))
+    assert config.vectorization["seeds"] == list(range(7721, 7741))
     payload = _map_payload(config, config.maps[1], 1, "B8_full")
     assert payload["method"] == "B8_full"
-    assert payload["simulator_seed"] == 875241
+    assert payload["simulator_seed"] == 880241
     assert payload["enhanced_determinism"] is True
     assert payload["waypoints"] == config.maps[1]["waypoints"]
     assert payload["calibration"]["feature_set"] == "m1_affine"
@@ -79,8 +79,8 @@ def test_p7_pilot_config_and_publication_gates() -> None:
     assert payload["navigation"]["height_rate_guard"] == {
         "activation_height_m": 0.19,
         "minimum_drop_per_planner_tick_m": 0.003,
-        "hold_s": 0.5,
-        "maximum_linear_command_norm": 0.25,
+        "hold_s": 0.3,
+        "maximum_linear_command_norm": 0.28,
     }
     assert payload["navigation"]["stall_recovery"]["emergency_base_height_m"] == 0.16
     assert payload["navigation"]["stall_recovery"]["maximum_emergency_attempts"] == 30
