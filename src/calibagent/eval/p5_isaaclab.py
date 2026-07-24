@@ -174,6 +174,7 @@ def _scenario_payload(
         "safety_max_base_height_m": float(
             config.safety["max_base_height_m"]
         ),
+        "safety_max_coupled_load": float(config.safety["max_coupled_load"]),
         "model_prior_scale": float(config.model["prior_scale"]),
     }
 

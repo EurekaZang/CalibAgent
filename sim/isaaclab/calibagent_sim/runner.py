@@ -58,6 +58,7 @@ class ScenarioConfig:
     simulator_seed: int
     safety_min_base_height_m: float
     safety_max_base_height_m: float
+    safety_max_coupled_load: float
     model_prior_scale: float
 
 
@@ -252,6 +253,7 @@ def _execute_batch_trial(
         SafetyEnvelope(
             min_base_height=config.safety_min_base_height_m,
             max_base_height=config.safety_max_base_height_m,
+            max_coupled_load=config.safety_max_coupled_load,
         )
     )
     distortion.reset()
@@ -421,6 +423,7 @@ def run_scenario(
         SafetyEnvelope(
             min_base_height=config.safety_min_base_height_m,
             max_base_height=config.safety_max_base_height_m,
+            max_coupled_load=config.safety_max_coupled_load,
         )
     )
     zero_history = [VelocityCommand(0.0, 0.0, 0.0, 0.1)]
@@ -437,7 +440,7 @@ def run_scenario(
                         models[env_index],
                         task,
                         history[env_index],
-                        k=12,
+                        k=128,
                     )
                     decision = safe_filter.select_first_safe(
                         candidates,

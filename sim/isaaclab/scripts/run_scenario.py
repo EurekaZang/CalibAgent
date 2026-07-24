@@ -45,6 +45,7 @@ def main() -> None:
         simulator_seed=int(payload["simulator_seed"]),
         safety_min_base_height_m=float(payload["safety_min_base_height_m"]),
         safety_max_base_height_m=float(payload["safety_max_base_height_m"]),
+        safety_max_coupled_load=float(payload["safety_max_coupled_load"]),
         model_prior_scale=float(payload["model_prior_scale"]),
     )
     summary = run_scenario(config, args.checkpoint.resolve(), args.output.resolve(), args.device)
