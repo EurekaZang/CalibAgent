@@ -142,6 +142,8 @@ def test_p6_method_aggregation_recomputes_paired_effect(tmp_path: Path) -> None:
             "serious_safety_events": 0,
             "finite": True,
             "primary_recovery_horizon_trials": 5,
+            "validation_window_trials": 4,
+            "invalid_window_rmse_penalty": 0.25,
         }
         (method_dir / "summary.json").write_text(
             json.dumps(summary),

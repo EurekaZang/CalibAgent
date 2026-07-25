@@ -755,6 +755,10 @@ def run_p6_scenario(
                 trial_cfg["recovery_budget_trials"],
             )
         ),
+        "validation_window_trials": int(trial_cfg["validation_window"]),
+        "invalid_window_rmse_penalty": float(
+            payload["adaptation"].get("invalid_window_rmse_penalty", 1.0)
+        ),
         "valid_observation_ratio": float(np.mean(all_valid)),
         "safety_aborts": int(safety_aborts),
         "maximum_abort_latency_s": (1.0 / post_config.sample_rate_hz if safety_aborts else 0.0),

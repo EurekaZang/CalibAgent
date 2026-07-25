@@ -100,6 +100,13 @@ class P6BenchmarkConfig:
             raise ValueError("P6 primary recovery horizon must contain a complete window")
         if self.adaptation.get("stop_updates_after_recovery", False) not in {True, False}:
             raise ValueError("P6 stop_updates_after_recovery must be boolean")
+        invalid_penalty = float(
+            self.adaptation.get("invalid_window_rmse_penalty", 1.0)
+        )
+        if not np.isfinite(invalid_penalty) or invalid_penalty <= float(
+            self.adaptation["target_rmse_ceiling"]
+        ):
+            raise ValueError("P6 invalid-window penalty must exceed the recovery ceiling")
         for scenario in self.scenarios:
             if str(scenario["checkpoint"]) not in self.checkpoints:
                 raise ValueError("P6 scenario uses an unknown checkpoint")
@@ -332,10 +339,16 @@ def _aggregate_method_outputs(
         )
         for row in curves
     }
-    start_trial = min(
-        int(row["recovery_trial"])
-        for row in curves
-        if str(row["method"]) == "full" and np.isfinite(float(row["rolling_rmse"]))
+    start_trial = int(
+        summaries["full"].get(
+            "validation_window_trials",
+            min(
+                int(row["recovery_trial"])
+                for row in curves
+                if str(row["method"]) == "full"
+                and np.isfinite(float(row["rolling_rmse"]))
+            ),
+        )
     )
     primary_horizon = int(
         summaries["full"].get(
@@ -344,11 +357,17 @@ def _aggregate_method_outputs(
         )
     )
     primary_trials = tuple(range(start_trial, primary_horizon + 1))
+    invalid_window_penalty = float(
+        summaries["full"].get("invalid_window_rmse_penalty", 1.0)
+    )
     full_early = np.asarray(
         [
             np.mean(
                 [
-                    curve_indexed[("full", seed, trial)]
+                    curve_indexed.get(
+                        ("full", seed, trial),
+                        invalid_window_penalty,
+                    )
                     for trial in primary_trials
                 ]
             )
@@ -360,7 +379,10 @@ def _aggregate_method_outputs(
         [
             np.mean(
                 [
-                    curve_indexed[("passive", seed, trial)]
+                    curve_indexed.get(
+                        ("passive", seed, trial),
+                        invalid_window_penalty,
+                    )
                     for trial in primary_trials
                 ]
             )

@@ -45,6 +45,7 @@ adaptation:
   target_rmse_ceiling: 0.140
   model_prior_scale: 0.01
   stop_updates_after_recovery: true
+  invalid_window_rmse_penalty: 0.25
 
 safety:
   min_base_height_m: 0.15
