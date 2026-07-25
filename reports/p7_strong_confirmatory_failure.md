@@ -71,3 +71,10 @@ The failure mode changed from unsafe termination to excessive safe-stop
 dwell. The third setting therefore narrows the latch to 0.155/0.160 m, uses a
 three-sample projection toward 0.151 m, and restores planner emergency
 activation to 0.155 m. The hard safety limit remains unchanged.
+
+The third pilot improved loaded-arc B8 from 11/16 to 15/16 and reduced mean
+completion time from 48.06 s to 38.50 s. Its sole B8 failure on loaded-arc and
+sole B8 failure on dual-gate were timely height aborts. The fourth and final
+threshold pilot changes only the projection horizon from three to five 20 ms
+samples while retaining the short 0.155/0.160 m latch. If it fails, the next
+step is a control-structure revision rather than further threshold search.
