@@ -78,3 +78,11 @@ sole B8 failure on dual-gate were timely height aborts. The fourth and final
 threshold pilot changes only the projection horizon from three to five 20 ms
 samples while retaining the short 0.155/0.160 m latch. If it fails, the next
 step is a control-structure revision rather than further threshold search.
+
+The fourth pilot achieved 16/16 B8 success on asymmetric-corridor and
+loaded-arc, including zero B8 navigation aborts on loaded-arc, but retained one
+dual-gate B8 height abort. The fifth development run is a larger 32-seed
+factor-combination check on new development seeds: it combines the safe
+0.158 m activation identified by v2 with the efficient 0.160 m release and
+five-sample prediction identified by v4. No other controller or statistical
+setting changes. This is the final threshold-development run.
