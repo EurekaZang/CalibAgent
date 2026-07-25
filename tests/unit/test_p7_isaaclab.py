@@ -299,6 +299,7 @@ def test_p7_strong_aggregation_includes_budget_matched_controls(
                     "residual_vx": validation[method],
                     "residual_vy": validation[method],
                     "residual_wz": validation[method],
+                    "valid": "True",
                 }
                 for seed in (1, 2, 3)
             ],
@@ -324,6 +325,46 @@ def test_p7_strong_aggregation_includes_budget_matched_controls(
         > 0.0
     )
     assert result["b8_success_rate_ci95"][0] > 0.0
+
+
+def test_p7_confirmatory_contract_gates_exact_rates_and_matched_navigation() -> None:
+    config = P7BenchmarkConfig.from_yaml(
+        Path("configs/experiments/p7_navigation_strong_confirmatory.yaml")
+    )
+    summaries = []
+    for map_config in config.maps:
+        item = _summary(map_config)
+        item.update(
+            {
+                "num_seeds": 72,
+                "b8_success_rate": 1.0,
+                "b8_collision_rate": 0.0,
+                "b8_success_rate_ci95": [0.951, 1.0],
+                "b8_collision_rate_ci95": [0.0, 0.049],
+                "matched_baseline_comparisons": {
+                    method: {
+                        "calibration_trials": 12,
+                        "b8_minus_baseline_success_ci95": [0.0, 0.0],
+                        "baseline_minus_b8_collision_ci95": [0.0, 0.0],
+                        "b8_to_baseline_completion_time_ratio_ci95": [0.95, 1.10],
+                    }
+                    for method in (
+                        "B2_lhs",
+                        "B3_sobol",
+                        "B4_d_opt",
+                        "B5_active_no_task",
+                    )
+                },
+            }
+        )
+        summaries.append(item)
+
+    result = evaluate_p7_summaries(config, summaries)
+
+    assert result["verdict"] == "GO"
+    assert result["gates"]["b8_exact_rate_bounds"]
+    assert result["gates"]["matched_navigation_noninferiority"]
+    assert "task_weighted_validation_superiority" not in result["gates"]
 
 
 def test_p7_csv_helpers_fail_closed_on_invalid_values(tmp_path: Path) -> None:

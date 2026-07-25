@@ -102,6 +102,34 @@ def test_p6_strong_gates_require_active_over_passive_and_exact_rates() -> None:
     assert result["gates"]["active_terminal_noninferiority"]
 
 
+def test_p6_confirmatory_contract_uses_exact_rates_and_absolute_accuracy() -> None:
+    config = P6BenchmarkConfig.from_yaml(
+        Path("configs/experiments/p6_domain_shift_strong_confirmatory.yaml")
+    )
+    summaries = []
+    for scenario in config.scenarios:
+        item = _summary(scenario)
+        item.update(
+            {
+                "num_seeds": 72,
+                "no_shift_false_alarm_rate_ci95": [0.0, 0.049],
+                "detection_rate_ci95": [0.951, 1.0],
+                "full_recovery_rate_ci95": [0.951, 1.0],
+                "full_vs_passive_early_rmse_improvement_ci95": [0.005, 0.02],
+                "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 0.001,
+                "full_final_rmse_ci95": [0.10, 0.13],
+            }
+        )
+        summaries.append(item)
+
+    result = evaluate_p6_summaries(config, summaries)
+
+    assert result["verdict"] == "GO"
+    assert result["gates"]["rate_confidence_bounds"]
+    assert result["gates"]["active_terminal_accuracy"]
+    assert "active_terminal_noninferiority" not in result["gates"]
+
+
 def test_p6_config_rejects_budget_and_control_changes() -> None:
     config = P6BenchmarkConfig.from_yaml(Path("configs/experiments/p6_domain_shift_main.yaml"))
     trial = dict(config.trial)

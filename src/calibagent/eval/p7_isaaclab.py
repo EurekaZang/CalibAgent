@@ -380,6 +380,8 @@ def _paired_map_summary(
         _write_rows(map_output / "calibration_validation.csv", validation_rows)
         validation_frame: dict[tuple[str, int], list[float]] = {}
         for row in validation_rows:
+            if not _as_bool(row["valid"]):
+                continue
             key = (str(row["method"]), int(row["seed"]))
             squared = sum(
                 float(row[field]) ** 2
@@ -626,31 +628,35 @@ def evaluate_p7_summaries(
             for comparison in item["matched_baseline_comparisons"].values()
         )
         superiority_methods = tuple(
-            str(method) for method in gates["validation_superiority_methods"]
+            str(method)
+            for method in gates.get("validation_superiority_methods", [])
         )
         noninferiority_methods = tuple(
-            str(method) for method in gates["validation_noninferiority_methods"]
+            str(method)
+            for method in gates.get("validation_noninferiority_methods", [])
         )
-        checks["task_weighted_validation_superiority"] = all(
-            float(
-                item["matched_baseline_comparisons"][method][
-                    "b8_vs_baseline_validation_rmse_reduction_ci95"
-                ][0]
+        if superiority_methods:
+            checks["task_weighted_validation_superiority"] = all(
+                float(
+                    item["matched_baseline_comparisons"][method][
+                        "b8_vs_baseline_validation_rmse_reduction_ci95"
+                    ][0]
+                )
+                > float(gates["minimum_validation_rmse_reduction_ci95_lower"])
+                for item in summaries
+                for method in superiority_methods
             )
-            > float(gates["minimum_validation_rmse_reduction_ci95_lower"])
-            for item in summaries
-            for method in superiority_methods
-        )
-        checks["strong_validation_noninferiority"] = all(
-            float(
-                item["matched_baseline_comparisons"][method][
-                    "b8_vs_baseline_validation_rmse_reduction_ci95"
-                ][0]
+        if noninferiority_methods:
+            checks["strong_validation_noninferiority"] = all(
+                float(
+                    item["matched_baseline_comparisons"][method][
+                        "b8_vs_baseline_validation_rmse_reduction_ci95"
+                    ][0]
+                )
+                >= -float(gates["maximum_validation_rmse_noninferiority_margin"])
+                for item in summaries
+                for method in noninferiority_methods
             )
-            >= -float(gates["maximum_validation_rmse_noninferiority_margin"])
-            for item in summaries
-            for method in noninferiority_methods
-        )
     return {
         "schema_version": "1.0",
         "phase": "P7",

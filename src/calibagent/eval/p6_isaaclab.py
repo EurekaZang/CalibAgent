@@ -198,9 +198,16 @@ def evaluate_p6_summaries(
             <= float(gates["maximum_full_vs_passive_early_rmse_p"])
             for item in summaries
         )
+    if "maximum_full_minus_passive_final_rmse_ci95_upper" in gates:
         checks["active_terminal_noninferiority"] = all(
             float(item["full_minus_passive_final_rmse_ci95"][1])
             <= float(gates["maximum_full_minus_passive_final_rmse_ci95_upper"])
+            for item in summaries
+        )
+    if "maximum_full_final_rmse_ci95_upper" in gates:
+        checks["active_terminal_accuracy"] = all(
+            float(item["full_final_rmse_ci95"][1])
+            <= float(gates["maximum_full_final_rmse_ci95_upper"])
             for item in summaries
         )
     return {
@@ -392,6 +399,10 @@ def _aggregate_method_outputs(
     )
     early_improvements = passive_early - full_early
     full_rows = [indexed[("full", seed)] for seed in seeds]
+    full_final_rmse = np.asarray(
+        [float(row["final_rmse"]) for row in full_rows],
+        dtype=np.float64,
+    )
     full_recovered = [
         float(row["recovery_trials"]) for row in full_rows if _as_bool(row["recovered"])
     ]
@@ -470,6 +481,11 @@ def _aggregate_method_outputs(
         "full_minus_passive_final_rmse_ci95": _bootstrap_mean_ci(
             -passive_improvements,
             simulator_seed + 317,
+        ),
+        "full_final_rmse_mean": float(np.mean(full_final_rmse)),
+        "full_final_rmse_ci95": _bootstrap_mean_ci(
+            full_final_rmse,
+            simulator_seed + 319,
         ),
         "valid_observation_ratio": min(
             float(item["valid_observation_ratio"]) for item in summaries.values()
