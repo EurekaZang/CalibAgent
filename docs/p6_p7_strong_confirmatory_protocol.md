@@ -33,10 +33,26 @@ for the downstream navigation endpoint. Neither phase is real-robot evidence.
   confirmatory run is retained and registered; gates, methods and maps are not
   changed after looking at its outcomes.
 
-The frozen configs are:
+The initially frozen configs are:
 
 - `configs/experiments/p6_domain_shift_strong_confirmatory.yaml`
 - `configs/experiments/p7_navigation_strong_confirmatory.yaml`
+
+The first P7 strong confirmation completed as `NO_GO` and remains frozen under
+`evidence/p7_strong_confirmatory_failed/`. Its failure was traced to a
+planner-rate height guard that could not intercept fast drops between 10 Hz
+ticks. Five registered development pilots introduced and stress-tested a 50 Hz
+predictive zero-command interlock. The final 32-seed development pilot passed
+all gates on all three previously failed pressure maps.
+
+The prospective P7 replication is frozen separately as:
+
+- `configs/experiments/p7_navigation_strong_confirmatory_v2.yaml`
+
+It uses 72 new seeds (10501–10572), a new simulator seed, and six new map
+geometries/physics contexts. No first-confirmation or pilot record may be
+pooled with this replication. The same P7 endpoints, methods, 1.25 time-ratio
+margin, 0.05 success/collision margins and exact-rate bounds remain unchanged.
 
 ## P6 primary analysis
 

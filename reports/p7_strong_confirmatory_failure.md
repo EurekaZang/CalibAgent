@@ -86,3 +86,11 @@ factor-combination check on new development seeds: it combines the safe
 0.158 m activation identified by v2 with the efficient 0.160 m release and
 five-sample prediction identified by v4. No other controller or statistical
 setting changes. This is the final threshold-development run.
+
+The fifth pilot passed every registered development gate on all three maps
+with 32 new seeds per map. B8 completed 96/96 episodes with zero collisions
+and zero serious events. The largest B8/dense completion-time ratio CI upper
+bound was 1.028; all four matched-control time and paired success/collision
+noninferiority gates passed. This development result authorizes freezing a
+new, disjoint confirmatory replication, but is not itself publication
+confirmation.
