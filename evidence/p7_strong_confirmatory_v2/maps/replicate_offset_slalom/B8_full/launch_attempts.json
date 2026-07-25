@@ -1,0 +1,20 @@
+[
+  {
+    "attempt": 1,
+    "command": [
+      "/tmp/calibagent_isaaclab_37ddf/isaaclab.sh",
+      "-p",
+      "/home/eureka/CalibAgent/sim/isaaclab/scripts/run_p7_navigation.py",
+      "--scenario-config",
+      "/home/eureka/CalibAgent/outputs/p7_strong_confirmatory_v2/maps/replicate_offset_slalom/B8_full/launch_config.json",
+      "--checkpoint",
+      "/home/eureka/CalibAgent/outputs/p5_cache/go2_flat_checkpoint.pt",
+      "--output",
+      "/home/eureka/CalibAgent/outputs/p7_strong_confirmatory_v2/maps/replicate_offset_slalom/B8_full",
+      "--headless",
+      "--kit_args=--portable-root=/tmp/calibagent_kit_p7_replicate_offset_slalom_B8_full_1"
+    ],
+    "missing_required_artifacts": [],
+    "returncode": 0
+  }
+]

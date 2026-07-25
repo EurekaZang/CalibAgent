@@ -1,0 +1,13 @@
+[
+  "/tmp/calibagent_isaaclab_37ddf/isaaclab.sh",
+  "-p",
+  "/home/eureka/CalibAgent/sim/isaaclab/scripts/run_p7_navigation.py",
+  "--scenario-config",
+  "/home/eureka/CalibAgent/outputs/p7_strong_confirmatory_v2/maps/replicate_extended_lane/B0_raw/launch_config.json",
+  "--checkpoint",
+  "/home/eureka/CalibAgent/outputs/p5_cache/go2_flat_checkpoint.pt",
+  "--output",
+  "/home/eureka/CalibAgent/outputs/p7_strong_confirmatory_v2/maps/replicate_extended_lane/B0_raw",
+  "--headless",
+  "--kit_args=--portable-root=/tmp/calibagent_kit_p7_replicate_extended_lane_B0_raw_1"
+]

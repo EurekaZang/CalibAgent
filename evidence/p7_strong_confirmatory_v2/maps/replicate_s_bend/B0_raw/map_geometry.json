@@ -1,0 +1,28 @@
+{
+  "collision_footprint_radius_m": 0.2,
+  "map": "replicate_s_bend",
+  "obstacles": [],
+  "planner_config_sha256": "c005efbd704e1c0dce1cce1d55c27dccb5a580ad7a8701cfe811f89bc9c3de0b",
+  "waypoints": [
+    [
+      0.62,
+      -0.1
+    ],
+    [
+      1.22,
+      0.13
+    ],
+    [
+      1.84,
+      -0.12
+    ],
+    [
+      2.46,
+      0.11
+    ],
+    [
+      3.08,
+      0.0
+    ]
+  ]
+}

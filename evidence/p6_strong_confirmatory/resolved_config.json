@@ -1,0 +1,242 @@
+{
+  "adaptation": {
+    "invalid_window_rmse_penalty": 0.25,
+    "model_prior_scale": 0.01,
+    "posterior_inflation_factor": 8.0,
+    "stop_updates_after_recovery": true,
+    "target_rmse_ceiling": 0.14,
+    "target_rmse_floor": 0.075,
+    "target_rmse_multiplier": 1.3
+  },
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "detector": {
+    "alarm_threshold": 4.0,
+    "allowance": 0.5,
+    "evidence_window_trials": 5,
+    "minimum_dwell_trials": 3,
+    "minimum_positive_evidence": 3,
+    "reference_nis": 1.0
+  },
+  "experiment_role": "main",
+  "isaaclab": {
+    "commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaac_sim_version_prefix": "5.1.0",
+    "physics_backend": "physx",
+    "tag": "v2.3.2"
+  },
+  "methods": [
+    "frozen",
+    "passive",
+    "full"
+  ],
+  "output_dir": "outputs/p6_strong_confirmatory",
+  "protocol_frozen_utc": "2026-07-26T00:30:00Z",
+  "publication_gates": {
+    "maximum_abort_latency_s": 0.04,
+    "maximum_full_final_rmse_ci95_upper": 0.14,
+    "maximum_full_vs_passive_early_rmse_p": 0.01,
+    "maximum_median_detection_delay_trials": 5.0,
+    "maximum_median_recovery_trials": 10.0,
+    "maximum_no_shift_false_alarm_rate": 0.05,
+    "maximum_no_shift_false_alarm_rate_ci95_upper": 0.05,
+    "maximum_p95_detection_delay_trials": 5.0,
+    "maximum_p95_recovery_trials": 12.0,
+    "maximum_recovery_to_dense_budget_ratio": 0.4,
+    "maximum_serious_safety_events": 0,
+    "minimum_detection_rate": 0.95,
+    "minimum_detection_rate_ci95_lower": 0.9,
+    "minimum_full_recovery_rate": 0.95,
+    "minimum_full_recovery_rate_ci95_lower": 0.9,
+    "minimum_full_vs_frozen_improvement_ci95_lower": 0.0,
+    "minimum_full_vs_passive_early_rmse_improvement_ci95_lower": 0.0,
+    "minimum_full_win_rate": 0.9,
+    "minimum_scenarios": 4,
+    "minimum_seeds_per_scenario": 72,
+    "minimum_valid_observation_ratio": 0.85
+  },
+  "safety": {
+    "max_base_height_m": 0.65,
+    "max_coupled_load": 0.8,
+    "min_base_height_m": 0.15
+  },
+  "scenarios": [
+    {
+      "checkpoint": "flat",
+      "id": "confirm_gain_recoupling",
+      "post_distortion": "affine_low",
+      "post_physics": {
+        "com_offset_x_m": 0.0,
+        "dynamic_friction": 0.66,
+        "payload_add_kg": 0.0,
+        "static_friction": 0.84
+      },
+      "post_seed_offset": 200000,
+      "pre_distortion": "affine_high",
+      "pre_physics": {
+        "com_offset_x_m": 0.0,
+        "dynamic_friction": 0.66,
+        "payload_add_kg": 0.0,
+        "static_friction": 0.84
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0"
+    },
+    {
+      "checkpoint": "flat",
+      "id": "confirm_friction_payload",
+      "post_distortion": "affine_low",
+      "post_physics": {
+        "com_offset_x_m": 0.028,
+        "dynamic_friction": 0.22,
+        "payload_add_kg": 2.8,
+        "static_friction": 0.28
+      },
+      "post_seed_offset": 200000,
+      "pre_distortion": "affine_high",
+      "pre_physics": {
+        "com_offset_x_m": 0.0,
+        "dynamic_friction": 0.74,
+        "payload_add_kg": 0.0,
+        "static_friction": 0.92
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0"
+    },
+    {
+      "checkpoint": "flat",
+      "id": "confirm_mixed_context",
+      "post_distortion": "mixed_low",
+      "post_physics": {
+        "com_offset_x_m": -0.022,
+        "dynamic_friction": 0.31,
+        "payload_add_kg": 2.2,
+        "static_friction": 0.42
+      },
+      "post_seed_offset": 200000,
+      "pre_distortion": "affine_high",
+      "pre_physics": {
+        "com_offset_x_m": 0.0,
+        "dynamic_friction": 0.62,
+        "payload_add_kg": 0.0,
+        "static_friction": 0.8
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0"
+    },
+    {
+      "checkpoint": "flat",
+      "id": "confirm_payload_com_only",
+      "post_distortion": "affine_low",
+      "post_physics": {
+        "com_offset_x_m": -0.032,
+        "dynamic_friction": 0.55,
+        "payload_add_kg": 3.0,
+        "static_friction": 0.72
+      },
+      "post_seed_offset": 200000,
+      "pre_distortion": "affine_high",
+      "pre_physics": {
+        "com_offset_x_m": 0.0,
+        "dynamic_friction": 0.55,
+        "payload_add_kg": 0.0,
+        "static_friction": 0.72
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0"
+    }
+  ],
+  "trial": {
+    "dense_budget_trials": 30,
+    "measure_s": 0.7,
+    "pre_calibration_trials": 12,
+    "pre_monitor_trials": 4,
+    "primary_recovery_horizon_trials": 9,
+    "ramp_in_s": 0.3,
+    "ramp_out_s": 0.5,
+    "recovery_budget_trials": 12,
+    "sample_rate_hz": 50.0,
+    "settle_s": 0.6,
+    "shift_monitor_trials": 5,
+    "validation_window": 4,
+    "warmup_s": 0.5
+  },
+  "vectorization": {
+    "num_seeds": 72,
+    "seeds": [
+      10101,
+      10102,
+      10103,
+      10104,
+      10105,
+      10106,
+      10107,
+      10108,
+      10109,
+      10110,
+      10111,
+      10112,
+      10113,
+      10114,
+      10115,
+      10116,
+      10117,
+      10118,
+      10119,
+      10120,
+      10121,
+      10122,
+      10123,
+      10124,
+      10125,
+      10126,
+      10127,
+      10128,
+      10129,
+      10130,
+      10131,
+      10132,
+      10133,
+      10134,
+      10135,
+      10136,
+      10137,
+      10138,
+      10139,
+      10140,
+      10141,
+      10142,
+      10143,
+      10144,
+      10145,
+      10146,
+      10147,
+      10148,
+      10149,
+      10150,
+      10151,
+      10152,
+      10153,
+      10154,
+      10155,
+      10156,
+      10157,
+      10158,
+      10159,
+      10160,
+      10161,
+      10162,
+      10163,
+      10164,
+      10165,
+      10166,
+      10167,
+      10168,
+      10169,
+      10170,
+      10171,
+      10172
+    ],
+    "simulator_seed": 1260240
+  }
+}

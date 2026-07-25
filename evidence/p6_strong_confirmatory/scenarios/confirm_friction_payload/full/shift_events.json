@@ -1,0 +1,27 @@
+{
+  "applied_event": {
+    "base_body_id": 0,
+    "com_delta_x_m": 0.028,
+    "dynamic_friction": 0.22,
+    "event": "in_place_material_mass_com_shift",
+    "num_envs": 72,
+    "payload_delta_kg": 2.8,
+    "static_friction": 0.28
+  },
+  "event_after_pre_monitor_trial": 4,
+  "post_distortion": "affine_low",
+  "post_physics": {
+    "com_offset_x_m": 0.028,
+    "dynamic_friction": 0.22,
+    "payload_add_kg": 2.8,
+    "static_friction": 0.28
+  },
+  "post_seed_offset": 200000,
+  "pre_distortion": "affine_high",
+  "pre_physics": {
+    "com_offset_x_m": 0.0,
+    "dynamic_friction": 0.74,
+    "payload_add_kg": 0.0,
+    "static_friction": 0.92
+  }
+}

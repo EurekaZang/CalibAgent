@@ -21,6 +21,7 @@ from scipy import stats
 from calibagent.backends.replay import OfflineReplayBackend
 from calibagent.data.observations import load_observations
 from calibagent.eval.capture_plan import CapturePlanConfig, generate_capture_plan
+from calibagent.eval.metrics import clopper_pearson_interval
 from calibagent.eval.p5_isaaclab import (
     P5BenchmarkConfig,
     evaluate_p5_summaries,
@@ -649,6 +650,8 @@ def _phase_manifest_check(
     workspace: Path,
     manifest_path: Path,
     phase: str,
+    *,
+    require_versioned_artifacts: bool = True,
 ) -> AuditCheck:
     check_id = f"{phase.lower()}_manifest_integrity"
     if not manifest_path.is_file():
@@ -677,9 +680,13 @@ def _phase_manifest_check(
             source.is_file() and file_sha256(source) == payload.get("source_trace_sha256")
         )
     commit = str(payload.get("git_commit", ""))
-    versioned = _paths_are_versioned(
-        workspace,
-        [manifest_path, config_path, *source_paths, *artifact_paths],
+    versioned = (
+        _paths_are_versioned(
+            workspace,
+            [manifest_path, config_path, *source_paths, *artifact_paths],
+        )
+        if require_versioned_artifacts
+        else _paths_are_versioned(workspace, [config_path])
     )
     passed = bool(
         payload.get("phase") == phase
@@ -1142,6 +1149,16 @@ def _bootstrap_mean_interval(values: NDArray[np.float64], seed: int) -> list[flo
     ]
 
 
+def _paired_wilcoxon_less(
+    left: NDArray[np.float64],
+    right: NDArray[np.float64],
+) -> float:
+    difference = left - right
+    if np.allclose(difference, 0.0):
+        return 1.0
+    return float(stats.wilcoxon(left, right, alternative="less").pvalue)
+
+
 def _trace_table_check(
     path: Path,
     *,
@@ -1335,10 +1352,84 @@ def _p6_recompute_scenario(
         ],
         dtype=np.float64,
     )
+    passive_improvements = np.asarray(
+        [
+            float(indexed[("passive", seed)]["final_rmse"])
+            - float(indexed[("full", seed)]["final_rmse"])
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    curves = pd.read_csv(scenario_dir / "recovery_curve.csv")
+    curve_indexed = {
+        (
+            str(curve_row["method"]),
+            int(cast(Any, curve_row["seed"])),
+            int(cast(Any, curve_row["recovery_trial"])),
+        ): float(
+            cast(Any, curve_row["rolling_rmse"])
+        )
+        for _, curve_row in curves.iterrows()
+    }
+    full_summary = summaries["full"]
+    start_trial = int(
+        full_summary.get(
+            "validation_window_trials",
+            curves.loc[
+                (curves["method"] == "full") & np.isfinite(curves["rolling_rmse"]),
+                "recovery_trial",
+            ].min(),
+        )
+    )
+    primary_horizon = int(
+        full_summary.get(
+            "primary_recovery_horizon_trials",
+            curves["recovery_trial"].max(),
+        )
+    )
+    primary_trials = range(start_trial, primary_horizon + 1)
+    invalid_window_penalty = float(
+        full_summary.get("invalid_window_rmse_penalty", 1.0)
+    )
+    full_early = np.asarray(
+        [
+            np.mean(
+                [
+                    curve_indexed.get(("full", seed, trial), invalid_window_penalty)
+                    for trial in primary_trials
+                ]
+            )
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    passive_early = np.asarray(
+        [
+            np.mean(
+                [
+                    curve_indexed.get(
+                        ("passive", seed, trial),
+                        invalid_window_penalty,
+                    )
+                    for trial in primary_trials
+                ]
+            )
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    early_improvements = passive_early - full_early
     full_rows = [indexed[("full", seed)] for seed in seeds]
+    full_final_rmse = np.asarray(
+        [float(row["final_rmse"]) for row in full_rows],
+        dtype=np.float64,
+    )
     full_recovered = [
         float(row["recovery_trials"]) for row in full_rows if _strict_bool(row["recovered"])
     ]
+    false_alarm_count = sum(_strict_bool(row["false_alarm"]) for row in full_rows)
+    detection_count = sum(_strict_bool(row["detected"]) for row in full_rows)
+    recovery_count = sum(_strict_bool(row["recovered"]) for row in full_rows)
     recomputed_summary = {
         "schema_version": "1.0",
         "scenario": str(scenario["id"]),
@@ -1347,8 +1438,14 @@ def _p6_recompute_scenario(
         "no_shift_false_alarm_rate": float(
             np.mean([_strict_bool(indexed[("full", seed)]["false_alarm"]) for seed in seeds])
         ),
+        "no_shift_false_alarm_rate_ci95": list(
+            clopper_pearson_interval(false_alarm_count, len(seeds))
+        ),
         "detection_rate": float(
             np.mean([_strict_bool(indexed[("full", seed)]["detected"]) for seed in seeds])
+        ),
+        "detection_rate_ci95": list(
+            clopper_pearson_interval(detection_count, len(seeds))
         ),
         "median_detection_delay_trials": float(
             np.median(
@@ -1372,6 +1469,9 @@ def _p6_recompute_scenario(
         "full_recovery_rate": float(
             np.mean([_strict_bool(indexed[("full", seed)]["recovered"]) for seed in seeds])
         ),
+        "full_recovery_rate_ci95": list(
+            clopper_pearson_interval(recovery_count, len(seeds))
+        ),
         "median_full_recovery_trials": float(np.median(full_recovered)),
         "p95_full_recovery_trials": float(np.quantile(full_recovered, 0.95)),
         "recovery_to_dense_budget_ratio": (
@@ -1383,6 +1483,33 @@ def _p6_recompute_scenario(
             simulator_seed + 311,
         ),
         "full_vs_frozen_win_rate": float(np.mean(improvements > 0.0)),
+        "primary_recovery_horizon_trials": primary_horizon,
+        "full_vs_passive_early_rmse_improvement_mean": float(
+            np.mean(early_improvements)
+        ),
+        "full_vs_passive_early_rmse_improvement_ci95": _bootstrap_mean_interval(
+            early_improvements,
+            simulator_seed + 313,
+        ),
+        "full_vs_passive_early_rmse_win_rate": float(
+            np.mean(early_improvements > 0.0)
+        ),
+        "full_vs_passive_early_rmse_wilcoxon_one_sided_p": _paired_wilcoxon_less(
+            full_early,
+            passive_early,
+        ),
+        "full_minus_passive_final_rmse_mean": float(
+            np.mean(-passive_improvements)
+        ),
+        "full_minus_passive_final_rmse_ci95": _bootstrap_mean_interval(
+            -passive_improvements,
+            simulator_seed + 317,
+        ),
+        "full_final_rmse_mean": float(np.mean(full_final_rmse)),
+        "full_final_rmse_ci95": _bootstrap_mean_interval(
+            full_final_rmse,
+            simulator_seed + 319,
+        ),
         "valid_observation_ratio": min(
             float(item["valid_observation_ratio"]) for item in summaries.values()
         ),
@@ -1395,6 +1522,8 @@ def _p6_recompute_scenario(
         ),
         "finite": bool(
             np.all(np.isfinite(improvements))
+            and np.all(np.isfinite(early_improvements))
+            and np.all(np.isfinite(passive_improvements))
             and all(bool(item["finite"]) for item in summaries.values())
         ),
         "method_summaries": summaries,
@@ -1411,21 +1540,38 @@ def _p6_recompute_scenario(
         "recovery_to_dense_budget_ratio",
         "full_vs_frozen_final_improvement_mean",
         "full_vs_frozen_win_rate",
+        "primary_recovery_horizon_trials",
+        "full_vs_passive_early_rmse_improvement_mean",
+        "full_vs_passive_early_rmse_win_rate",
+        "full_vs_passive_early_rmse_wilcoxon_one_sided_p",
+        "full_minus_passive_final_rmse_mean",
+        "full_final_rmse_mean",
         "valid_observation_ratio",
         "maximum_abort_latency_s",
     ]
+    interval_keys = [
+        "no_shift_false_alarm_rate_ci95",
+        "detection_rate_ci95",
+        "full_recovery_rate_ci95",
+        "full_vs_frozen_final_improvement_ci95",
+        "full_vs_passive_early_rmse_improvement_ci95",
+        "full_minus_passive_final_rmse_ci95",
+        "full_final_rmse_ci95",
+    ]
+    scalar_keys = [key for key in scalar_keys if key in frozen]
+    interval_keys = [key for key in interval_keys if key in frozen]
     summary_matches = bool(
         all(method_matches)
         and all(
             np.isclose(_as_float(recomputed_summary[key]), float(frozen[key]))
             for key in scalar_keys
         )
-        and np.allclose(
-            np.asarray(
-                recomputed_summary["full_vs_frozen_final_improvement_ci95"],
-                dtype=float,
-            ),
-            np.asarray(frozen["full_vs_frozen_final_improvement_ci95"], dtype=float),
+        and all(
+            np.allclose(
+                np.asarray(recomputed_summary[key], dtype=float),
+                np.asarray(frozen[key], dtype=float),
+            )
+            for key in interval_keys
         )
         and recomputed_summary["safety_aborts"] == frozen["safety_aborts"]
         and recomputed_summary["serious_safety_events"] == frozen["serious_safety_events"]
@@ -1434,11 +1580,21 @@ def _p6_recompute_scenario(
     return recomputed_summary, summary_matches
 
 
-def _p6_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
+def _p6_checks(
+    workspace: Path,
+    criteria: dict[str, Any],
+    *,
+    require_versioned_artifacts: bool = True,
+) -> list[AuditCheck]:
     section = dict(criteria["p6"])
     evidence = workspace / str(section["evidence"])
     manifest_path = workspace / str(section["manifest"])
-    manifest_check = _phase_manifest_check(workspace, manifest_path, "P6")
+    manifest_check = _phase_manifest_check(
+        workspace,
+        manifest_path,
+        "P6",
+        require_versioned_artifacts=require_versioned_artifacts,
+    )
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     config = P6BenchmarkConfig.from_yaml(workspace / str(section["config"]))
     runtime = manifest.get("runtime", {})
@@ -1487,6 +1643,15 @@ def _p6_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
         + 2 * int(config.trial["recovery_budget_trials"])
     )
     expected_trace_rows = len(expected_seeds) * profile_samples * trial_count
+    trace_receipt: dict[str, Any] | None = None
+    source_manifest: dict[str, Any] | None = None
+    if "trace_receipt" in section:
+        trace_receipt = json.loads(
+            (workspace / str(section["trace_receipt"])).read_text(encoding="utf-8")
+        )
+        source_manifest = json.loads(
+            (workspace / str(section["source_manifest"])).read_text(encoding="utf-8")
+        )
     for index, scenario in enumerate(config.scenarios):
         scenario_dir = evidence / "scenarios" / str(scenario["id"])
         values, matches = _p6_recompute_scenario(
@@ -1514,35 +1679,58 @@ def _p6_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
                 and int(launch["simulator_seed"])
                 == int(config.vectorization["simulator_seed"]) + index
             )
-            trace_passed, _ = _trace_table_check(
-                method_dir / "pose_trace.csv.gz",
-                key_columns=["seed", "phase", "trial", "sample"],
-                identity={"scenario": str(scenario["id"]), "method": method},
-                finite_columns=[
-                    "timestamp_s",
-                    "effective_vx",
-                    "effective_vy",
-                    "effective_wz",
-                    "pose_x",
-                    "pose_y",
-                    "pose_yaw",
-                    "base_height",
-                    "roll",
-                    "pitch",
-                    "velocity_vx",
-                    "velocity_vy",
-                    "velocity_wz",
-                ],
-                expected_seeds=expected_seeds,
-                expected_rows=expected_trace_rows,
-            )
             method_summary = json.loads((method_dir / "summary.json").read_text(encoding="utf-8"))
-            abort_response = _p6_abort_response_check(
-                method_dir / "pose_trace.csv.gz",
-                int(method_summary["safety_aborts"]),
-                float(config.safety["min_base_height_m"]),
-                float(config.safety["max_base_height_m"]),
-            )
+            trace_path = method_dir / "pose_trace.csv.gz"
+            if trace_path.is_file():
+                trace_passed, _ = _trace_table_check(
+                    trace_path,
+                    key_columns=["seed", "phase", "trial", "sample"],
+                    identity={"scenario": str(scenario["id"]), "method": method},
+                    finite_columns=[
+                        "timestamp_s",
+                        "effective_vx",
+                        "effective_vy",
+                        "effective_wz",
+                        "pose_x",
+                        "pose_y",
+                        "pose_yaw",
+                        "base_height",
+                        "roll",
+                        "pitch",
+                        "velocity_vx",
+                        "velocity_vy",
+                        "velocity_wz",
+                    ],
+                    expected_seeds=expected_seeds,
+                    expected_rows=expected_trace_rows,
+                )
+                abort_response = _p6_abort_response_check(
+                    trace_path,
+                    int(method_summary["safety_aborts"]),
+                    float(config.safety["min_base_height_m"]),
+                    float(config.safety["max_base_height_m"]),
+                )
+            else:
+                relative_trace = (
+                    f"scenarios/{scenario['id']}/{method}/pose_trace.csv.gz"
+                )
+                receipt_record = (
+                    dict(trace_receipt.get("traces", {}).get(relative_trace, {}))
+                    if trace_receipt is not None
+                    else {}
+                )
+                source_record = (
+                    dict(source_manifest.get("artifacts", {}).get(relative_trace, {}))
+                    if source_manifest is not None
+                    else {}
+                )
+                trace_passed = bool(
+                    receipt_record.get("passed")
+                    and int(receipt_record.get("rows", -1)) == expected_trace_rows
+                    and receipt_record.get("sha256") == source_record.get("sha256")
+                    and source_record.get("path") == relative_trace
+                )
+                abort_response = bool(receipt_record.get("abort_response_passed"))
             scenario_traces = scenario_traces and trace_passed and abort_response
         coverage.append(scenario_coverage)
         traces.append(scenario_traces)
@@ -1688,9 +1876,9 @@ def _p7_recompute_map(
         expected_trials = (
             int(config.calibration["dense_trials"])
             if method == "B1_dense"
-            else int(config.calibration["active_trials"])
-            if method == "B8_full"
             else 0
+            if method == "B0_raw"
+            else int(config.calibration["active_trials"])
         )
         method_matches.append(
             scalar_match
@@ -1741,6 +1929,110 @@ def _p7_recompute_map(
         )
 
     planner_hashes = {str(summary["planner_config_sha256"]) for summary in summaries.values()}
+    matched_methods = (
+        "B2_lhs",
+        "B3_sobol",
+        "B4_d_opt",
+        "B5_active_no_task",
+    )
+    matched_comparisons: dict[str, dict[str, Any]] = {}
+    validation_rmse: dict[tuple[str, int], float] = {}
+    if all(method in config.methods for method in matched_methods):
+        validation_frame: dict[tuple[str, int], list[float]] = {}
+        for method in config.methods:
+            validation = pd.read_csv(map_dir / method / "calibration_validation.csv")
+            valid = _strict_bool_array(validation["valid"])
+            for _, validation_row in validation.loc[valid].iterrows():
+                key = (
+                    str(validation_row["method"]),
+                    int(cast(Any, validation_row["seed"])),
+                )
+                squared = sum(
+                    float(cast(Any, validation_row[field])) ** 2
+                    for field in ("residual_vx", "residual_vy", "residual_wz")
+                )
+                validation_frame.setdefault(key, []).append(squared / 3.0)
+        if any(
+            (method, seed) not in validation_frame
+            for method in config.methods
+            for seed in seeds
+        ):
+            raise ValueError("P7 calibration-validation coverage is incomplete")
+        validation_rmse = {
+            key: float(np.sqrt(np.mean(values)))
+            for key, values in validation_frame.items()
+        }
+        b8_validation = np.asarray(
+            [validation_rmse[("B8_full", seed)] for seed in seeds],
+            dtype=np.float64,
+        )
+        for offset, method in enumerate(matched_methods):
+            baseline_time = array(method, "completion_time_s")
+            baseline_success = binary(method, "success")
+            baseline_collision = binary(method, "collision")
+            baseline_validation = np.asarray(
+                [validation_rmse[(method, seed)] for seed in seeds],
+                dtype=np.float64,
+            )
+            validation_reduction = 1.0 - b8_validation / np.maximum(
+                baseline_validation,
+                1e-12,
+            )
+
+            def completion_ratio(
+                sample: NDArray[np.int64],
+                baseline: NDArray[np.float64] = baseline_time,
+            ) -> float:
+                return float(
+                    np.mean(b8_time[sample])
+                    / max(float(np.mean(baseline[sample])), 1e-12)
+                )
+
+            def validation_mean(
+                sample: NDArray[np.int64],
+                reduction: NDArray[np.float64] = validation_reduction,
+            ) -> float:
+                return float(np.mean(reduction[sample]))
+
+            matched_comparisons[method] = {
+                "calibration_trials": int(summaries[method]["calibration_trials"]),
+                "b8_minus_baseline_success_ci95": difference_interval(
+                    b8_success,
+                    baseline_success,
+                    811 + 20 * offset,
+                ),
+                "baseline_minus_b8_collision_ci95": difference_interval(
+                    baseline_collision,
+                    b8_collision,
+                    817 + 20 * offset,
+                ),
+                "b8_to_baseline_completion_time_ratio": float(
+                    np.mean(b8_time)
+                    / max(float(np.mean(baseline_time)), 1e-12)
+                ),
+                "b8_to_baseline_completion_time_ratio_ci95": (
+                    _bootstrap_index_interval(
+                        count,
+                        simulator_seed + 823 + 20 * offset,
+                        completion_ratio,
+                    )
+                ),
+                "b8_vs_baseline_validation_rmse_reduction_mean": float(
+                    np.mean(validation_reduction)
+                ),
+                "b8_vs_baseline_validation_rmse_reduction_ci95": (
+                    _bootstrap_index_interval(
+                        count,
+                        simulator_seed + 829 + 20 * offset,
+                        validation_mean,
+                    )
+                ),
+                "b8_vs_baseline_validation_rmse_win_rate": float(
+                    np.mean(validation_reduction > 0.0)
+                ),
+            }
+    success_count = int(np.sum(b8_success))
+    collision_count = int(np.sum(b8_collision))
     recomputed_summary = {
         "schema_version": "1.0",
         "map": str(map_config["id"]),
@@ -1751,9 +2043,15 @@ def _p7_recompute_map(
         "b0_success_rate": float(np.mean(b0_success)),
         "b1_success_rate": float(np.mean(b1_success)),
         "b8_success_rate": float(np.mean(b8_success)),
+        "b8_success_rate_ci95": list(
+            clopper_pearson_interval(success_count, count)
+        ),
         "b0_collision_rate": float(np.mean(b0_collision)),
         "b1_collision_rate": float(np.mean(b1_collision)),
         "b8_collision_rate": float(np.mean(b8_collision)),
+        "b8_collision_rate_ci95": list(
+            clopper_pearson_interval(collision_count, count)
+        ),
         "b0_mean_completion_time_s": float(np.mean(b0_time)),
         "b1_mean_completion_time_s": float(np.mean(b1_time)),
         "b8_mean_completion_time_s": float(np.mean(b8_time)),
@@ -1780,6 +2078,16 @@ def _p7_recompute_map(
             float(summaries["B8_full"]["calibration_trials"])
             / float(summaries["B1_dense"]["calibration_trials"])
         ),
+        "b8_calibration_validation_rmse": (
+            float(
+                np.mean(
+                    [validation_rmse[("B8_full", seed)] for seed in seeds]
+                )
+            )
+            if validation_rmse
+            else None
+        ),
+        "matched_baseline_comparisons": matched_comparisons,
         "minimum_valid_observation_ratio": min(
             float(item["valid_observation_ratio"]) for item in summaries.values()
         ),
@@ -1791,7 +2099,17 @@ def _p7_recompute_map(
         ),
         "finite": bool(
             all(bool(item["finite"]) for item in summaries.values())
-            and np.all(np.isfinite(np.concatenate([b0_time, b1_time, b8_time])))
+            and np.all(
+                np.isfinite(
+                    np.concatenate(
+                        [
+                            array(method, "completion_time_s")
+                            for method in config.methods
+                        ]
+                    )
+                )
+            )
+            and all(np.isfinite(value) for value in validation_rmse.values())
         ),
         "method_summaries": summaries,
     }
@@ -1814,6 +2132,8 @@ def _p7_recompute_map(
         "maximum_abort_latency_s",
     ]
     interval_keys = [
+        "b8_success_rate_ci95",
+        "b8_collision_rate_ci95",
         "b8_vs_b0_completion_time_improvement_ci95_s",
         "b8_minus_b0_success_ci95",
         "b0_minus_b8_collision_ci95",
@@ -1821,6 +2141,41 @@ def _p7_recompute_map(
         "b1_minus_b8_collision_ci95",
         "b8_to_b1_completion_time_ratio_ci95",
     ]
+    interval_keys = [key for key in interval_keys if key in frozen]
+    matched_match = True
+    frozen_matched = dict(frozen.get("matched_baseline_comparisons", {}))
+    if matched_comparisons:
+        matched_match = set(matched_comparisons) == set(frozen_matched)
+        for method, comparison in matched_comparisons.items():
+            frozen_comparison = dict(frozen_matched.get(method, {}))
+            matched_match = bool(
+                matched_match
+                and int(comparison["calibration_trials"])
+                == int(frozen_comparison.get("calibration_trials", -1))
+                and all(
+                    np.isclose(
+                        float(comparison[key]),
+                        float(frozen_comparison.get(key, np.nan)),
+                    )
+                    for key in (
+                        "b8_to_baseline_completion_time_ratio",
+                        "b8_vs_baseline_validation_rmse_reduction_mean",
+                        "b8_vs_baseline_validation_rmse_win_rate",
+                    )
+                )
+                and all(
+                    np.allclose(
+                        np.asarray(comparison[key], dtype=float),
+                        np.asarray(frozen_comparison.get(key, []), dtype=float),
+                    )
+                    for key in (
+                        "b8_minus_baseline_success_ci95",
+                        "baseline_minus_b8_collision_ci95",
+                        "b8_to_baseline_completion_time_ratio_ci95",
+                        "b8_vs_baseline_validation_rmse_reduction_ci95",
+                    )
+                )
+            )
     summary_matches = bool(
         all(method_matches)
         and all(
@@ -1837,15 +2192,26 @@ def _p7_recompute_map(
         and recomputed_summary["same_planner"] == frozen["same_planner"]
         and recomputed_summary["serious_safety_events"] == frozen["serious_safety_events"]
         and recomputed_summary["finite"] == frozen["finite"]
+        and matched_match
     )
     return recomputed_summary, summary_matches
 
 
-def _p7_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
+def _p7_checks(
+    workspace: Path,
+    criteria: dict[str, Any],
+    *,
+    require_versioned_artifacts: bool = True,
+) -> list[AuditCheck]:
     section = dict(criteria["p7"])
     evidence = workspace / str(section["evidence"])
     manifest_path = workspace / str(section["manifest"])
-    manifest_check = _phase_manifest_check(workspace, manifest_path, "P7")
+    manifest_check = _phase_manifest_check(
+        workspace,
+        manifest_path,
+        "P7",
+        require_versioned_artifacts=require_versioned_artifacts,
+    )
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     config = P7BenchmarkConfig.from_yaml(workspace / str(section["config"]))
     runtime = manifest.get("runtime", {})
@@ -1880,10 +2246,25 @@ def _p7_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
     launch_and_posterior = []
     expected_seeds = {int(seed) for seed in config.vectorization["seeds"]}
     expected_calibration_rows = {
-        "B0_raw": len(expected_seeds),
-        "B1_dense": len(expected_seeds) * int(config.calibration["dense_trials"]),
-        "B8_full": len(expected_seeds) * int(config.calibration["active_trials"]),
+        method: len(expected_seeds)
+        * (
+            int(config.calibration["dense_trials"])
+            if method == "B1_dense"
+            else 1
+            if method == "B0_raw"
+            else int(config.calibration["active_trials"])
+        )
+        for method in config.methods
     }
+    trace_receipt: dict[str, Any] | None = None
+    source_manifest: dict[str, Any] | None = None
+    if "trace_receipt" in section:
+        trace_receipt = json.loads(
+            (workspace / str(section["trace_receipt"])).read_text(encoding="utf-8")
+        )
+        source_manifest = json.loads(
+            (workspace / str(section["source_manifest"])).read_text(encoding="utf-8")
+        )
     for index, map_config in enumerate(config.maps):
         map_dir = evidence / "maps" / str(map_config["id"])
         values, matches = _p7_recompute_map(
@@ -1937,35 +2318,57 @@ def _p7_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
                     )
                 )
             )
-            trace_passed, _ = _trace_table_check(
-                method_dir / "nav_trace.csv.gz",
-                key_columns=["seed", "sample"],
-                identity={"map": str(map_config["id"]), "method": method},
-                finite_columns=[
-                    "timestamp_s",
-                    "target_x",
-                    "target_y",
-                    "desired_vx",
-                    "desired_vy",
-                    "desired_wz",
-                    "compensated_vx",
-                    "compensated_vy",
-                    "compensated_wz",
-                    "effective_vx",
-                    "effective_vy",
-                    "effective_wz",
-                    "pose_x",
-                    "pose_y",
-                    "pose_yaw",
-                    "base_height",
-                    "roll",
-                    "pitch",
-                    "velocity_vx",
-                    "velocity_vy",
-                    "velocity_wz",
-                ],
-                expected_seeds=expected_seeds,
-            )
+            trace_path = method_dir / "nav_trace.csv.gz"
+            if trace_path.is_file():
+                trace_passed, _ = _trace_table_check(
+                    trace_path,
+                    key_columns=["seed", "sample"],
+                    identity={"map": str(map_config["id"]), "method": method},
+                    finite_columns=[
+                        "timestamp_s",
+                        "target_x",
+                        "target_y",
+                        "desired_vx",
+                        "desired_vy",
+                        "desired_wz",
+                        "compensated_vx",
+                        "compensated_vy",
+                        "compensated_wz",
+                        "effective_vx",
+                        "effective_vy",
+                        "effective_wz",
+                        "pose_x",
+                        "pose_y",
+                        "pose_yaw",
+                        "base_height",
+                        "roll",
+                        "pitch",
+                        "velocity_vx",
+                        "velocity_vy",
+                        "velocity_wz",
+                    ],
+                    expected_seeds=expected_seeds,
+                )
+            else:
+                relative_trace = f"maps/{map_config['id']}/{method}/nav_trace.csv.gz"
+                receipt_record = (
+                    dict(trace_receipt.get("traces", {}).get(relative_trace, {}))
+                    if trace_receipt is not None
+                    else {}
+                )
+                source_record = (
+                    dict(source_manifest.get("artifacts", {}).get(relative_trace, {}))
+                    if source_manifest is not None
+                    else {}
+                )
+                trace_passed = bool(
+                    receipt_record.get("passed")
+                    and int(receipt_record.get("rows", 0)) > 0
+                    and set(int(seed) for seed in receipt_record.get("seeds", []))
+                    == expected_seeds
+                    and receipt_record.get("sha256") == source_record.get("sha256")
+                    and source_record.get("path") == relative_trace
+                )
             map_traces = map_traces and trace_passed
             attempts = json.loads((method_dir / "launch_attempts.json").read_text(encoding="utf-8"))
             posterior_valid = True
@@ -2002,13 +2405,13 @@ def _p7_checks(workspace: Path, criteria: dict[str, Any]) -> list[AuditCheck]:
         all(coverage)
         and len(recomputed) == len(config.maps)
         and all(int(item["num_seeds"]) == len(expected_seeds) for item in recomputed)
-        and set(config.methods) == {"B0_raw", "B1_dense", "B8_full"}
+        and {"B0_raw", "B1_dense", "B8_full"} <= set(config.methods)
     )
     coverage_check = AuditCheck(
         "p7_navigation_map_and_seed_coverage",
         coverage_passed,
         (
-            f"maps={len(recomputed)}/{len(config.maps)}, methods=3, "
+            f"maps={len(recomputed)}/{len(config.maps)}, methods={len(config.methods)}, "
             f"seeds_per_map={len(expected_seeds)}, episode_records="
             f"{len(recomputed) * len(config.methods) * len(expected_seeds)}"
         ),

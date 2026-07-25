@@ -1,0 +1,41 @@
+schema_version: "1.0"
+
+# The default audit is reproducible from the versioned compact evidence trees.
+# `--raw` additionally re-hashes and scans the full-resolution local outputs.
+p6:
+  config: configs/experiments/p6_domain_shift_strong_confirmatory.yaml
+  evidence: evidence/p6_strong_confirmatory
+  manifest: evidence/p6_strong_confirmatory/manifest.json
+  source_manifest: evidence/p6_strong_confirmatory/source_manifest.json
+  trace_receipt: evidence/p6_strong_confirmatory/trace_audit.json
+  required_backend: isaaclab_physx_go2_domain_shift
+  required_physics_backend: physx
+
+p6_raw:
+  config: configs/experiments/p6_domain_shift_strong_confirmatory.yaml
+  evidence: outputs/p6_strong_confirmatory
+  manifest: outputs/p6_strong_confirmatory/manifest.json
+  required_backend: isaaclab_physx_go2_domain_shift
+  required_physics_backend: physx
+
+p7:
+  config: configs/experiments/p7_navigation_strong_confirmatory_v2.yaml
+  evidence: evidence/p7_strong_confirmatory_v2
+  manifest: evidence/p7_strong_confirmatory_v2/manifest.json
+  source_manifest: evidence/p7_strong_confirmatory_v2/source_manifest.json
+  trace_receipt: evidence/p7_strong_confirmatory_v2/trace_audit.json
+  required_backend: isaaclab_physx_go2_fixed_planner_navigation
+  required_physics_backend: physx
+
+p7_raw:
+  config: configs/experiments/p7_navigation_strong_confirmatory_v2.yaml
+  evidence: outputs/p7_strong_confirmatory_v2
+  manifest: outputs/p7_strong_confirmatory_v2/manifest.json
+  required_backend: isaaclab_physx_go2_fixed_planner_navigation
+  required_physics_backend: physx
+
+p7_failed_confirmatory:
+  config: configs/experiments/p7_navigation_strong_confirmatory.yaml
+  evidence: evidence/p7_strong_confirmatory_failed
+  source_manifest: evidence/p7_strong_confirmatory_failed/source_manifest.json
+  expected_selected_artifacts: 20

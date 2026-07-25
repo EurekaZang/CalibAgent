@@ -1,0 +1,127 @@
+{
+  "detection_rate": 0.9861111111111112,
+  "detection_rate_ci95": [
+    0.9250286891460809,
+    0.9996484255947664
+  ],
+  "finite": true,
+  "full_final_rmse_ci95": [
+    0.10555118289494769,
+    0.1123385644256477
+  ],
+  "full_final_rmse_mean": 0.10897893055544332,
+  "full_minus_passive_final_rmse_ci95": [
+    0.007181235147825915,
+    0.011249158679675776
+  ],
+  "full_minus_passive_final_rmse_mean": 0.009145435272005294,
+  "full_recovery_rate": 1.0,
+  "full_recovery_rate_ci95": [
+    0.9500559162941453,
+    1.0
+  ],
+  "full_vs_frozen_final_improvement_ci95": [
+    0.01677475699196533,
+    0.02052679018306588
+  ],
+  "full_vs_frozen_final_improvement_mean": 0.018556128908246976,
+  "full_vs_frozen_win_rate": 0.9861111111111112,
+  "full_vs_passive_early_rmse_improvement_ci95": [
+    0.00825225806746365,
+    0.011936419185101679
+  ],
+  "full_vs_passive_early_rmse_improvement_mean": 0.010124309233074915,
+  "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 3.339890065627782e-12,
+  "full_vs_passive_early_rmse_win_rate": 0.9166666666666666,
+  "maximum_abort_latency_s": 0.02,
+  "median_detection_delay_trials": 2.0,
+  "median_full_recovery_trials": 4.0,
+  "method_summaries": {
+    "frozen": {
+      "detection_rate": 0.9861111111111112,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "frozen",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 72,
+      "p95_detection_delay_trials": 4.0,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9583333333333334,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 136,
+      "scenario": "confirm_payload_com_only",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9447530864197531,
+      "validation_window_trials": 4
+    },
+    "full": {
+      "detection_rate": 0.9861111111111112,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "full",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 72,
+      "p95_detection_delay_trials": 4.0,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 1.0,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 100,
+      "scenario": "confirm_payload_com_only",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9574074074074074,
+      "validation_window_trials": 4
+    },
+    "passive": {
+      "detection_rate": 0.9861111111111112,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "passive",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 72,
+      "p95_detection_delay_trials": 4.0,
+      "p95_recovery_trials": 6.900000000000006,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 1.0,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 103,
+      "scenario": "confirm_payload_com_only",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9564814814814815,
+      "validation_window_trials": 4
+    }
+  },
+  "methods": [
+    "frozen",
+    "passive",
+    "full"
+  ],
+  "no_shift_false_alarm_rate": 0.0,
+  "no_shift_false_alarm_rate_ci95": [
+    0.0,
+    0.04994408370585467
+  ],
+  "num_seeds": 72,
+  "p95_detection_delay_trials": 4.0,
+  "p95_full_recovery_trials": 6.0,
+  "primary_recovery_horizon_trials": 9,
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 339,
+  "scenario": "confirm_payload_com_only",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 0.9447530864197531
+}

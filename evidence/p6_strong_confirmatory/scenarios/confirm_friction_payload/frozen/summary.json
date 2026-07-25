@@ -1,0 +1,22 @@
+{
+  "detection_rate": 1.0,
+  "finite": true,
+  "invalid_window_rmse_penalty": 0.25,
+  "maximum_abort_latency_s": 0.02,
+  "median_detection_delay_trials": 2.0,
+  "median_recovery_trials": 6.0,
+  "method": "frozen",
+  "no_shift_false_alarm_rate": 0.0,
+  "num_seeds": 72,
+  "p95_detection_delay_trials": 2.0,
+  "p95_recovery_trials": 7.450000000000003,
+  "primary_recovery_horizon_trials": 9,
+  "recovery_rate": 1.0,
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 199,
+  "scenario": "confirm_friction_payload",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 0.9364197530864198,
+  "validation_window_trials": 4
+}

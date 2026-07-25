@@ -1,0 +1,655 @@
+{
+  "artifacts": {
+    "resolved_config.json": {
+      "path": "resolved_config.json",
+      "sha256": "b499f802429b6131ef2baf6a519777bb4b18958026b226456e12a31346ae5b36"
+    },
+    "scenarios/confirm_friction_payload/frozen/launch_command.json": {
+      "path": "scenarios/confirm_friction_payload/frozen/launch_command.json",
+      "sha256": "4817b992447051bc3b4d07ec01b155f6e91a38bd79ee67d997c054d1b02feec1"
+    },
+    "scenarios/confirm_friction_payload/frozen/launch_config.json": {
+      "path": "scenarios/confirm_friction_payload/frozen/launch_config.json",
+      "sha256": "d40d05e32460e572aa9cef90a509163a3c33f5038c689de5af3cad3b3b1d0ce0"
+    },
+    "scenarios/confirm_friction_payload/frozen/monitor_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/frozen/monitor_metrics.csv",
+      "sha256": "62bd1559fde8ab35ddc2fb6e850ca96b53252f3faa3a7efd5fa13285903fb42e"
+    },
+    "scenarios/confirm_friction_payload/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/frozen/per_seed_metrics.csv",
+      "sha256": "7c5211980467bd919f325d8778cd8360d45f06a60e67c87aafc0009c2ac7aa29"
+    },
+    "scenarios/confirm_friction_payload/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_friction_payload/frozen/pose_trace.csv.gz",
+      "sha256": "b1e0d78c6d9624487f5d5ed88b7fd04356a3bf6e108b07bb306d3a75cdd1aeea"
+    },
+    "scenarios/confirm_friction_payload/frozen/recovery_curve.csv": {
+      "path": "scenarios/confirm_friction_payload/frozen/recovery_curve.csv",
+      "sha256": "255b5ea5dfccee57c17a0a9368e359e1b8194457382c4dcd78ae0449001af82b"
+    },
+    "scenarios/confirm_friction_payload/frozen/recovery_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/frozen/recovery_metrics.csv",
+      "sha256": "db898f8815b2de1ba141f24271b1c351009a6817d2ebbba499f64fc1fecf8d47"
+    },
+    "scenarios/confirm_friction_payload/frozen/scenario_config.json": {
+      "path": "scenarios/confirm_friction_payload/frozen/scenario_config.json",
+      "sha256": "d40d05e32460e572aa9cef90a509163a3c33f5038c689de5af3cad3b3b1d0ce0"
+    },
+    "scenarios/confirm_friction_payload/frozen/shift_events.json": {
+      "path": "scenarios/confirm_friction_payload/frozen/shift_events.json",
+      "sha256": "4a5e85ca544d86e29fbbc9ffbc71c898b4b3c1816f812c9d64d370b0ec1bd163"
+    },
+    "scenarios/confirm_friction_payload/frozen/simulator.log": {
+      "path": "scenarios/confirm_friction_payload/frozen/simulator.log",
+      "sha256": "24fd0d19d670eab71ac53727d1878d62371556cc388fcf04b3d551b740a12534"
+    },
+    "scenarios/confirm_friction_payload/frozen/summary.json": {
+      "path": "scenarios/confirm_friction_payload/frozen/summary.json",
+      "sha256": "ad7a8345b3589a6a8a90dcc2bbdbbcbf02394709ad144911fe4710bd9d80d13b"
+    },
+    "scenarios/confirm_friction_payload/full/launch_command.json": {
+      "path": "scenarios/confirm_friction_payload/full/launch_command.json",
+      "sha256": "0a8a5429a98b1bdc1c296367f1170db480caee524d9368b60631f737594ab978"
+    },
+    "scenarios/confirm_friction_payload/full/launch_config.json": {
+      "path": "scenarios/confirm_friction_payload/full/launch_config.json",
+      "sha256": "c42f19f351716d5e3fe459119a16ea818db2fa5c95ec1e504c76b5ea960c6d48"
+    },
+    "scenarios/confirm_friction_payload/full/monitor_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/full/monitor_metrics.csv",
+      "sha256": "953bdc122e83675181e315cdb7b765d2743ffda8a9f7f7734b9b5840197432f1"
+    },
+    "scenarios/confirm_friction_payload/full/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/full/per_seed_metrics.csv",
+      "sha256": "7b3895932d4cd924ff72ca54076be180e22496fe27805e9c1274fec2228fbc2c"
+    },
+    "scenarios/confirm_friction_payload/full/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_friction_payload/full/pose_trace.csv.gz",
+      "sha256": "f75111da716581c001f201da8fc43ce8aa84b192aca445b14c5117bbab7e9702"
+    },
+    "scenarios/confirm_friction_payload/full/recovery_curve.csv": {
+      "path": "scenarios/confirm_friction_payload/full/recovery_curve.csv",
+      "sha256": "5ca7bbd4d9d90751581f14cdbfdae99f6ce54e57c2b7c0ff588b26a5124c10f9"
+    },
+    "scenarios/confirm_friction_payload/full/recovery_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/full/recovery_metrics.csv",
+      "sha256": "1fbe71cd8a7fd38baeb2457f47b06f5fd4e1c84c06786cd29b99197641fdd1c6"
+    },
+    "scenarios/confirm_friction_payload/full/scenario_config.json": {
+      "path": "scenarios/confirm_friction_payload/full/scenario_config.json",
+      "sha256": "c42f19f351716d5e3fe459119a16ea818db2fa5c95ec1e504c76b5ea960c6d48"
+    },
+    "scenarios/confirm_friction_payload/full/shift_events.json": {
+      "path": "scenarios/confirm_friction_payload/full/shift_events.json",
+      "sha256": "4a5e85ca544d86e29fbbc9ffbc71c898b4b3c1816f812c9d64d370b0ec1bd163"
+    },
+    "scenarios/confirm_friction_payload/full/simulator.log": {
+      "path": "scenarios/confirm_friction_payload/full/simulator.log",
+      "sha256": "932fb212e72855ccbe139cc0deaed65985e2972c38f51adde0dcf666748c02c7"
+    },
+    "scenarios/confirm_friction_payload/full/summary.json": {
+      "path": "scenarios/confirm_friction_payload/full/summary.json",
+      "sha256": "1fd1add45a86dcd103f34552b5ad066276f44b001980bcb10819ac04c76daeb2"
+    },
+    "scenarios/confirm_friction_payload/monitor_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/monitor_metrics.csv",
+      "sha256": "51059b4f55ce8b36fc4e14e150fc5862db454447a5e47775b541f007bafb4411"
+    },
+    "scenarios/confirm_friction_payload/paired_recovery_effects.csv": {
+      "path": "scenarios/confirm_friction_payload/paired_recovery_effects.csv",
+      "sha256": "58fbd9a1a3182d2bba6e3a99ae6f8c13cc8bd0658ccb5a756003568ff3daa134"
+    },
+    "scenarios/confirm_friction_payload/passive/launch_command.json": {
+      "path": "scenarios/confirm_friction_payload/passive/launch_command.json",
+      "sha256": "1fdb99d980eb5f3bf381e3713771ce66236936d5b6d03835979d8ed4d0a1817a"
+    },
+    "scenarios/confirm_friction_payload/passive/launch_config.json": {
+      "path": "scenarios/confirm_friction_payload/passive/launch_config.json",
+      "sha256": "7c5738f4ce8dab809b26e2e5bb81d77f6c0b3da08c04b7023b94b576146ba696"
+    },
+    "scenarios/confirm_friction_payload/passive/monitor_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/passive/monitor_metrics.csv",
+      "sha256": "075467b0a3aaa7239eb9928da5f80ee73ba1279edc7d4605d68f3db95c369adc"
+    },
+    "scenarios/confirm_friction_payload/passive/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/passive/per_seed_metrics.csv",
+      "sha256": "144747e421bbc443a0eb4870cc742f8454262c6d0c75e2b89a1c4f7f4dc557a6"
+    },
+    "scenarios/confirm_friction_payload/passive/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_friction_payload/passive/pose_trace.csv.gz",
+      "sha256": "f05023abae62a1874736f6a4d1da9b31cc23813e968f1124920986ae1dffd1ee"
+    },
+    "scenarios/confirm_friction_payload/passive/recovery_curve.csv": {
+      "path": "scenarios/confirm_friction_payload/passive/recovery_curve.csv",
+      "sha256": "ed341b5a7559e191022c846856d183b1840df7ef361712c83f99141472dd2589"
+    },
+    "scenarios/confirm_friction_payload/passive/recovery_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/passive/recovery_metrics.csv",
+      "sha256": "890649e93d595727c26881cc3d125587568164e63febd668f332c0f67052e2c4"
+    },
+    "scenarios/confirm_friction_payload/passive/scenario_config.json": {
+      "path": "scenarios/confirm_friction_payload/passive/scenario_config.json",
+      "sha256": "7c5738f4ce8dab809b26e2e5bb81d77f6c0b3da08c04b7023b94b576146ba696"
+    },
+    "scenarios/confirm_friction_payload/passive/shift_events.json": {
+      "path": "scenarios/confirm_friction_payload/passive/shift_events.json",
+      "sha256": "4a5e85ca544d86e29fbbc9ffbc71c898b4b3c1816f812c9d64d370b0ec1bd163"
+    },
+    "scenarios/confirm_friction_payload/passive/simulator.log": {
+      "path": "scenarios/confirm_friction_payload/passive/simulator.log",
+      "sha256": "a23e9caf6448c4078816ad8fe747cc60ec7df19b7ee6804c272244a8e40e2e84"
+    },
+    "scenarios/confirm_friction_payload/passive/summary.json": {
+      "path": "scenarios/confirm_friction_payload/passive/summary.json",
+      "sha256": "3d85e090f28c8196f45662ce468c64c5ab706719edea11c85f939b8e2c65f645"
+    },
+    "scenarios/confirm_friction_payload/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/per_seed_metrics.csv",
+      "sha256": "3acc41e0f642834cffc4bf6d73292c81d7d668de3f33a8d3b9f65d4c022f1cdb"
+    },
+    "scenarios/confirm_friction_payload/recovery_curve.csv": {
+      "path": "scenarios/confirm_friction_payload/recovery_curve.csv",
+      "sha256": "e594908d0f43b672817e85a45b9b8fa2150ac9f2e15b5f9bce2d34c634751887"
+    },
+    "scenarios/confirm_friction_payload/recovery_metrics.csv": {
+      "path": "scenarios/confirm_friction_payload/recovery_metrics.csv",
+      "sha256": "f4d34bbcdeeaa6b67fede584b247cc276d7b1a46860394b4fb6f73d0396600b6"
+    },
+    "scenarios/confirm_friction_payload/summary.json": {
+      "path": "scenarios/confirm_friction_payload/summary.json",
+      "sha256": "1521584996d0e3370e1b8bf42a8223ac3c55570f5d162c0a3ad768de8d2733f0"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/launch_command.json": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/launch_command.json",
+      "sha256": "88fadca6dc26cd69973b1a2f5b0a747cd931b600bff50117888df0e4b577cc40"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/launch_config.json": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/launch_config.json",
+      "sha256": "d87c5be30c82ef8c9a118a075353f2532d9f8e4ab81a1333f6243a7ca98d65d9"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/monitor_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/monitor_metrics.csv",
+      "sha256": "d5612c999417998a4da65bd79e0354b0bfc4e2a764fdd6fdec417c60a631ce74"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/per_seed_metrics.csv",
+      "sha256": "464ab56c23ae99fe0a13b27b8d53075b5360e5217efdea71e5be5c305b01a4fc"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/pose_trace.csv.gz",
+      "sha256": "94606e512f658d0116643105fec3862211f42a492e9ab5c64a162f18fb42edb7"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/recovery_curve.csv": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/recovery_curve.csv",
+      "sha256": "1553a356791b70c4182a9e76f9015ccd1cbf3ec01ae15444b60c2711fb0bba41"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/recovery_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/recovery_metrics.csv",
+      "sha256": "85a379f39cc512a2372979630247ffec3d4ae375b15b35cf7d9a0288851d9f98"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/scenario_config.json": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/scenario_config.json",
+      "sha256": "d87c5be30c82ef8c9a118a075353f2532d9f8e4ab81a1333f6243a7ca98d65d9"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/shift_events.json": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/shift_events.json",
+      "sha256": "87015a4de64e97ef48d0b02cab649c9343526dbaa3c2600096ec072327b569d4"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/simulator.log": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/simulator.log",
+      "sha256": "fc76a8286d92a301a8331d0b28cc04c96e588b5c46fcc6d27779f140760e74ed"
+    },
+    "scenarios/confirm_gain_recoupling/frozen/summary.json": {
+      "path": "scenarios/confirm_gain_recoupling/frozen/summary.json",
+      "sha256": "5391085aed8ecd1081c82d8c37b3631711a7afbec22677f78336856f3d4f24bc"
+    },
+    "scenarios/confirm_gain_recoupling/full/launch_command.json": {
+      "path": "scenarios/confirm_gain_recoupling/full/launch_command.json",
+      "sha256": "52de39164aa2ad504770e15e74d186e91e690bb40c00e482a5c7a2252ce58aec"
+    },
+    "scenarios/confirm_gain_recoupling/full/launch_config.json": {
+      "path": "scenarios/confirm_gain_recoupling/full/launch_config.json",
+      "sha256": "a3968270e5151fa2ef1193df5ce6381046ab7f196033d475290c70846b0ed6f1"
+    },
+    "scenarios/confirm_gain_recoupling/full/monitor_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/full/monitor_metrics.csv",
+      "sha256": "af87881463d59ac5fe2e67f7414783f66a5b40e2e3e50376ccb8b9ae7787e09d"
+    },
+    "scenarios/confirm_gain_recoupling/full/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/full/per_seed_metrics.csv",
+      "sha256": "b3289b24c33e7ad8264e7438b2904231ef20f091defe74e1954bec7a150a4c02"
+    },
+    "scenarios/confirm_gain_recoupling/full/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_gain_recoupling/full/pose_trace.csv.gz",
+      "sha256": "f93886a30e20b266f602f541d8efa381fc5361b520cc7550e972b010876deaf3"
+    },
+    "scenarios/confirm_gain_recoupling/full/recovery_curve.csv": {
+      "path": "scenarios/confirm_gain_recoupling/full/recovery_curve.csv",
+      "sha256": "54a6df973ac77c10129f5e93d97e57de515c04a6e26bba78758361a4fc8f8e26"
+    },
+    "scenarios/confirm_gain_recoupling/full/recovery_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/full/recovery_metrics.csv",
+      "sha256": "91cf029e20cda8e115195669964b3c3fd355fef3a77dbd91ce5808805af5042d"
+    },
+    "scenarios/confirm_gain_recoupling/full/scenario_config.json": {
+      "path": "scenarios/confirm_gain_recoupling/full/scenario_config.json",
+      "sha256": "a3968270e5151fa2ef1193df5ce6381046ab7f196033d475290c70846b0ed6f1"
+    },
+    "scenarios/confirm_gain_recoupling/full/shift_events.json": {
+      "path": "scenarios/confirm_gain_recoupling/full/shift_events.json",
+      "sha256": "87015a4de64e97ef48d0b02cab649c9343526dbaa3c2600096ec072327b569d4"
+    },
+    "scenarios/confirm_gain_recoupling/full/simulator.log": {
+      "path": "scenarios/confirm_gain_recoupling/full/simulator.log",
+      "sha256": "ef5490c7704597b1e94183dde68fb767e8c4097077b47f95fc2de23200164191"
+    },
+    "scenarios/confirm_gain_recoupling/full/summary.json": {
+      "path": "scenarios/confirm_gain_recoupling/full/summary.json",
+      "sha256": "773634c4f79cfb23df04af1c53aff4cd98e57198a7253325900f25f5d3948347"
+    },
+    "scenarios/confirm_gain_recoupling/monitor_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/monitor_metrics.csv",
+      "sha256": "bf81393f55f493ea6e5270bad49f7be380f1581062f44f9eeb673cfae556ba45"
+    },
+    "scenarios/confirm_gain_recoupling/paired_recovery_effects.csv": {
+      "path": "scenarios/confirm_gain_recoupling/paired_recovery_effects.csv",
+      "sha256": "d90bedb379fc2dc01b4a1c86629c6971bbaabd60f4b96dd2e6d4a4abe8704e89"
+    },
+    "scenarios/confirm_gain_recoupling/passive/launch_command.json": {
+      "path": "scenarios/confirm_gain_recoupling/passive/launch_command.json",
+      "sha256": "fbf06060e1b2c1fe002668b7c1be192e03e4e5591ad43c6ace428a7f2e8b04c2"
+    },
+    "scenarios/confirm_gain_recoupling/passive/launch_config.json": {
+      "path": "scenarios/confirm_gain_recoupling/passive/launch_config.json",
+      "sha256": "dc3c95cbb13906e60dfa6613cfb411d90e19053365cb974bfdeeb2ceb457b0ed"
+    },
+    "scenarios/confirm_gain_recoupling/passive/monitor_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/passive/monitor_metrics.csv",
+      "sha256": "34ceaa694b0620b69b3ef26cf5fd91d7a11914eaa63a33d374bf43f19e101fc9"
+    },
+    "scenarios/confirm_gain_recoupling/passive/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/passive/per_seed_metrics.csv",
+      "sha256": "8ff6e1157669808889e5863fbed2840bc00acf32b6d2ee30151d2432751918f7"
+    },
+    "scenarios/confirm_gain_recoupling/passive/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_gain_recoupling/passive/pose_trace.csv.gz",
+      "sha256": "395ab30a6774dbb262ad3a99eb67fa23eb1af786d44a23a9eb9c39b5217202e2"
+    },
+    "scenarios/confirm_gain_recoupling/passive/recovery_curve.csv": {
+      "path": "scenarios/confirm_gain_recoupling/passive/recovery_curve.csv",
+      "sha256": "b5d781e2aea2ff3ee43ad1c9ff66cda026e9f7d9f73dcde7ee05df4faa7ab8e1"
+    },
+    "scenarios/confirm_gain_recoupling/passive/recovery_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/passive/recovery_metrics.csv",
+      "sha256": "91581d141de23e8984d7d16d2eac078cf63d688c4f7cafaecb2309bb100e5ce9"
+    },
+    "scenarios/confirm_gain_recoupling/passive/scenario_config.json": {
+      "path": "scenarios/confirm_gain_recoupling/passive/scenario_config.json",
+      "sha256": "dc3c95cbb13906e60dfa6613cfb411d90e19053365cb974bfdeeb2ceb457b0ed"
+    },
+    "scenarios/confirm_gain_recoupling/passive/shift_events.json": {
+      "path": "scenarios/confirm_gain_recoupling/passive/shift_events.json",
+      "sha256": "87015a4de64e97ef48d0b02cab649c9343526dbaa3c2600096ec072327b569d4"
+    },
+    "scenarios/confirm_gain_recoupling/passive/simulator.log": {
+      "path": "scenarios/confirm_gain_recoupling/passive/simulator.log",
+      "sha256": "e37c1c1f7d56d0d5cca8772484b63c25a942745049c87d396f492adb9f4cc6a7"
+    },
+    "scenarios/confirm_gain_recoupling/passive/summary.json": {
+      "path": "scenarios/confirm_gain_recoupling/passive/summary.json",
+      "sha256": "5728327a9a5f4f4642b390437be0a9e5fdff055dd9e4a4ff8754b2465f9b987e"
+    },
+    "scenarios/confirm_gain_recoupling/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/per_seed_metrics.csv",
+      "sha256": "eefef8920e2d38c92904af6c764758800efe8262e988d4b72a4e618ceb9fbfeb"
+    },
+    "scenarios/confirm_gain_recoupling/recovery_curve.csv": {
+      "path": "scenarios/confirm_gain_recoupling/recovery_curve.csv",
+      "sha256": "a4cc53ccda5668068871939732fb51454330fc9de7f5a12bc05a2d4d8b21973e"
+    },
+    "scenarios/confirm_gain_recoupling/recovery_metrics.csv": {
+      "path": "scenarios/confirm_gain_recoupling/recovery_metrics.csv",
+      "sha256": "0fe24bff72b151240332636748cb3b1266a151983a3c5ef1375bd54808fc33c2"
+    },
+    "scenarios/confirm_gain_recoupling/summary.json": {
+      "path": "scenarios/confirm_gain_recoupling/summary.json",
+      "sha256": "a0f59f9bdf209ed05ad8807e622463ad14f237a577e35701c00a4b6c496a8f8a"
+    },
+    "scenarios/confirm_mixed_context/frozen/launch_command.json": {
+      "path": "scenarios/confirm_mixed_context/frozen/launch_command.json",
+      "sha256": "e38aa8c3f119e0f2bc7521dabd70a05cdbda2ea093e401d6a890ddbca3c13ae1"
+    },
+    "scenarios/confirm_mixed_context/frozen/launch_config.json": {
+      "path": "scenarios/confirm_mixed_context/frozen/launch_config.json",
+      "sha256": "38614668d8821b9b860c7828bb9a1209b7f2264a18824f596c91f931bf04b37f"
+    },
+    "scenarios/confirm_mixed_context/frozen/monitor_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/frozen/monitor_metrics.csv",
+      "sha256": "763194d6cbfe1dd83c7041be804332e52fd5c2cf69edbe580b425986fd5d470f"
+    },
+    "scenarios/confirm_mixed_context/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/frozen/per_seed_metrics.csv",
+      "sha256": "2dfa2e3cd283bb167ad9c8babc595ca9562bdd031332b596d58acce957b96daf"
+    },
+    "scenarios/confirm_mixed_context/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_mixed_context/frozen/pose_trace.csv.gz",
+      "sha256": "c02d8e386ccf7f6de425bd913095407da51935ebc82b43fa5ba32b0acd2ef026"
+    },
+    "scenarios/confirm_mixed_context/frozen/recovery_curve.csv": {
+      "path": "scenarios/confirm_mixed_context/frozen/recovery_curve.csv",
+      "sha256": "79c771792d7cd4cd0fcc0465fd1027679dca0010f60624c7575ce9a63df6cf69"
+    },
+    "scenarios/confirm_mixed_context/frozen/recovery_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/frozen/recovery_metrics.csv",
+      "sha256": "01304524296eb2dcab6064f1b376c019362e7721d4e8ea43df62ec62021dbaf7"
+    },
+    "scenarios/confirm_mixed_context/frozen/scenario_config.json": {
+      "path": "scenarios/confirm_mixed_context/frozen/scenario_config.json",
+      "sha256": "38614668d8821b9b860c7828bb9a1209b7f2264a18824f596c91f931bf04b37f"
+    },
+    "scenarios/confirm_mixed_context/frozen/shift_events.json": {
+      "path": "scenarios/confirm_mixed_context/frozen/shift_events.json",
+      "sha256": "cbf9dd79234b6915f88d5844fb97550db8971040faaefa442343e919a6ab3889"
+    },
+    "scenarios/confirm_mixed_context/frozen/simulator.log": {
+      "path": "scenarios/confirm_mixed_context/frozen/simulator.log",
+      "sha256": "2131b2ddd756eafcccc9a59e095110d6af7bf8912076f031920c7799f111a1cc"
+    },
+    "scenarios/confirm_mixed_context/frozen/summary.json": {
+      "path": "scenarios/confirm_mixed_context/frozen/summary.json",
+      "sha256": "2cb8d1c51a670af6b6bd92cd73afce549b56f90cf7456297d780bdf956f352ac"
+    },
+    "scenarios/confirm_mixed_context/full/launch_command.json": {
+      "path": "scenarios/confirm_mixed_context/full/launch_command.json",
+      "sha256": "2772de1a0c2941a491448994aa1f8b6a9b5afe5efe4b8f63f2cb7bc443bdb524"
+    },
+    "scenarios/confirm_mixed_context/full/launch_config.json": {
+      "path": "scenarios/confirm_mixed_context/full/launch_config.json",
+      "sha256": "aeb353e4560c62692fc2265163908b0f836dea10b2efa79ee3c7cfe1db402ffe"
+    },
+    "scenarios/confirm_mixed_context/full/monitor_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/full/monitor_metrics.csv",
+      "sha256": "d7747a8e582663aa80752d96457f09b0a4218275c2f06e27919fac84dab27c1e"
+    },
+    "scenarios/confirm_mixed_context/full/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/full/per_seed_metrics.csv",
+      "sha256": "aed76a3d4133edf177197a1315476481d87dc7b8df6b1a2e59c071b34733c416"
+    },
+    "scenarios/confirm_mixed_context/full/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_mixed_context/full/pose_trace.csv.gz",
+      "sha256": "1f6f47614eb6b30a6abbdd91381f98067bc18a55328973b71e4a635cbaa6a50b"
+    },
+    "scenarios/confirm_mixed_context/full/recovery_curve.csv": {
+      "path": "scenarios/confirm_mixed_context/full/recovery_curve.csv",
+      "sha256": "b776b79c5d461683f6f6bae02c726216b2858a09793a9414f4feb623cf30a09b"
+    },
+    "scenarios/confirm_mixed_context/full/recovery_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/full/recovery_metrics.csv",
+      "sha256": "94beac14a6fd7601accef1330b496d26ac41845f7da4c38197721f02ab7f1bc4"
+    },
+    "scenarios/confirm_mixed_context/full/scenario_config.json": {
+      "path": "scenarios/confirm_mixed_context/full/scenario_config.json",
+      "sha256": "aeb353e4560c62692fc2265163908b0f836dea10b2efa79ee3c7cfe1db402ffe"
+    },
+    "scenarios/confirm_mixed_context/full/shift_events.json": {
+      "path": "scenarios/confirm_mixed_context/full/shift_events.json",
+      "sha256": "cbf9dd79234b6915f88d5844fb97550db8971040faaefa442343e919a6ab3889"
+    },
+    "scenarios/confirm_mixed_context/full/simulator.log": {
+      "path": "scenarios/confirm_mixed_context/full/simulator.log",
+      "sha256": "da8adef3d52135625cc96b6918c774334c7affb26080d40b93f2709cb89b7c82"
+    },
+    "scenarios/confirm_mixed_context/full/summary.json": {
+      "path": "scenarios/confirm_mixed_context/full/summary.json",
+      "sha256": "41e803e1bfa30b079a16c1c7120ff997fdd15422ad089361315955e4bf3a6f88"
+    },
+    "scenarios/confirm_mixed_context/monitor_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/monitor_metrics.csv",
+      "sha256": "49b99c1924090a7c907242919c0e3bfe720ce097aed3878a85295b984fdeb653"
+    },
+    "scenarios/confirm_mixed_context/paired_recovery_effects.csv": {
+      "path": "scenarios/confirm_mixed_context/paired_recovery_effects.csv",
+      "sha256": "d5dd377476fc9be308d013daacecb579c4d82b1909c1611c849885d0e83e1bd7"
+    },
+    "scenarios/confirm_mixed_context/passive/launch_command.json": {
+      "path": "scenarios/confirm_mixed_context/passive/launch_command.json",
+      "sha256": "5e1097472046cf1f2e0acafaa96360344577833cc72dd244f06d94d464da8675"
+    },
+    "scenarios/confirm_mixed_context/passive/launch_config.json": {
+      "path": "scenarios/confirm_mixed_context/passive/launch_config.json",
+      "sha256": "5929c931c1455d7bcddfa773278dc4cb615830667b05db87b5ed99557f4fc4e3"
+    },
+    "scenarios/confirm_mixed_context/passive/monitor_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/passive/monitor_metrics.csv",
+      "sha256": "c9ea32bc2ef3dd71b1f92a0783693a5db8bea4fbbd5a9c96e633cbbc8de2fbc1"
+    },
+    "scenarios/confirm_mixed_context/passive/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/passive/per_seed_metrics.csv",
+      "sha256": "6c2175ab97eab1dfa61826d362469d1a0c5b3503ad81a0063b612266d10e2b44"
+    },
+    "scenarios/confirm_mixed_context/passive/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_mixed_context/passive/pose_trace.csv.gz",
+      "sha256": "e61324dd6f11885b1008e0d373afebcb24522bc578f62204379e824ebee4049c"
+    },
+    "scenarios/confirm_mixed_context/passive/recovery_curve.csv": {
+      "path": "scenarios/confirm_mixed_context/passive/recovery_curve.csv",
+      "sha256": "c4b5d448bffbf5ddae5827576768e444f03468bfba9b52e4d74a4d02d695c8e3"
+    },
+    "scenarios/confirm_mixed_context/passive/recovery_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/passive/recovery_metrics.csv",
+      "sha256": "ca44331c60f2cde418d4df3bc6165c8657f77a6583d9c9eb7bd935c3a18bc75f"
+    },
+    "scenarios/confirm_mixed_context/passive/scenario_config.json": {
+      "path": "scenarios/confirm_mixed_context/passive/scenario_config.json",
+      "sha256": "5929c931c1455d7bcddfa773278dc4cb615830667b05db87b5ed99557f4fc4e3"
+    },
+    "scenarios/confirm_mixed_context/passive/shift_events.json": {
+      "path": "scenarios/confirm_mixed_context/passive/shift_events.json",
+      "sha256": "cbf9dd79234b6915f88d5844fb97550db8971040faaefa442343e919a6ab3889"
+    },
+    "scenarios/confirm_mixed_context/passive/simulator.log": {
+      "path": "scenarios/confirm_mixed_context/passive/simulator.log",
+      "sha256": "65ae46523633d8faf7d9aef9820707660942b33f2585c4f636e64e52051cdf95"
+    },
+    "scenarios/confirm_mixed_context/passive/summary.json": {
+      "path": "scenarios/confirm_mixed_context/passive/summary.json",
+      "sha256": "cd1fa79c9d90fbeabe0e683d86a74b1966260bbf251aab458b2d0a1f2eea5b48"
+    },
+    "scenarios/confirm_mixed_context/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/per_seed_metrics.csv",
+      "sha256": "451a4c9a1d60e123a48d953af067491df2f2eb9a723f9ef42faec27e814aae2e"
+    },
+    "scenarios/confirm_mixed_context/recovery_curve.csv": {
+      "path": "scenarios/confirm_mixed_context/recovery_curve.csv",
+      "sha256": "fd218c322b7aa71d1d1624cec95e6283918bf3a531c81ab0ee54faa79f093dd0"
+    },
+    "scenarios/confirm_mixed_context/recovery_metrics.csv": {
+      "path": "scenarios/confirm_mixed_context/recovery_metrics.csv",
+      "sha256": "9eb640faccb12aafe94bd0766f92db4b6c2139844c3e8204f3294c1e4d5c119f"
+    },
+    "scenarios/confirm_mixed_context/summary.json": {
+      "path": "scenarios/confirm_mixed_context/summary.json",
+      "sha256": "9bffd8973d9a1ffb7061f416b611b0355a94a3b294923b3bafbabdc1bd083627"
+    },
+    "scenarios/confirm_payload_com_only/frozen/launch_command.json": {
+      "path": "scenarios/confirm_payload_com_only/frozen/launch_command.json",
+      "sha256": "f9b435fc946349aca5bb689e0959b9db546c8e7fcc5afa3cf8f801ecb6500215"
+    },
+    "scenarios/confirm_payload_com_only/frozen/launch_config.json": {
+      "path": "scenarios/confirm_payload_com_only/frozen/launch_config.json",
+      "sha256": "2f09042c8c0fafe0aa305bb6935ef53f27b77b66d3face7db37c9d96ec7ed965"
+    },
+    "scenarios/confirm_payload_com_only/frozen/monitor_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/frozen/monitor_metrics.csv",
+      "sha256": "5e5ac62ee6e3aaf32b85e387944e0e6d7cd77ddf4ef12e986178276154c9d7f1"
+    },
+    "scenarios/confirm_payload_com_only/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/frozen/per_seed_metrics.csv",
+      "sha256": "b8345d1534e214e43d5fa9cfae0821618dd7f6a9e358bdacc32617a05c106983"
+    },
+    "scenarios/confirm_payload_com_only/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_payload_com_only/frozen/pose_trace.csv.gz",
+      "sha256": "d31195cc4f64ed120d268920ad21d814fbe64ed71ebbc7195f72ee221b44268a"
+    },
+    "scenarios/confirm_payload_com_only/frozen/recovery_curve.csv": {
+      "path": "scenarios/confirm_payload_com_only/frozen/recovery_curve.csv",
+      "sha256": "9ef97117e91d95e46a203ce08bce4b3e4abfb708e0e2593b0e25af1b0a8fe857"
+    },
+    "scenarios/confirm_payload_com_only/frozen/recovery_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/frozen/recovery_metrics.csv",
+      "sha256": "cca9cb515a84551504868e9efdea7385387afcf2d92cf663d14e73e92c92a83c"
+    },
+    "scenarios/confirm_payload_com_only/frozen/scenario_config.json": {
+      "path": "scenarios/confirm_payload_com_only/frozen/scenario_config.json",
+      "sha256": "2f09042c8c0fafe0aa305bb6935ef53f27b77b66d3face7db37c9d96ec7ed965"
+    },
+    "scenarios/confirm_payload_com_only/frozen/shift_events.json": {
+      "path": "scenarios/confirm_payload_com_only/frozen/shift_events.json",
+      "sha256": "88a1c2c6dab4cb91eb6a5a3bf864c42b7ea5b1da81387ae681390e16bc255bea"
+    },
+    "scenarios/confirm_payload_com_only/frozen/simulator.log": {
+      "path": "scenarios/confirm_payload_com_only/frozen/simulator.log",
+      "sha256": "df7a258fe89374013843ed3a78cb3e2f3578391faad21e13e12713c0431f9850"
+    },
+    "scenarios/confirm_payload_com_only/frozen/summary.json": {
+      "path": "scenarios/confirm_payload_com_only/frozen/summary.json",
+      "sha256": "2331459d860d765f63cc6ead241b7c3d31c0a341f591d05eb67a15179dd0f467"
+    },
+    "scenarios/confirm_payload_com_only/full/launch_command.json": {
+      "path": "scenarios/confirm_payload_com_only/full/launch_command.json",
+      "sha256": "f7d0f0a76d430e1a703fbc2585a9ee9c61fae4aa15933f0c24b73d6f59125b1e"
+    },
+    "scenarios/confirm_payload_com_only/full/launch_config.json": {
+      "path": "scenarios/confirm_payload_com_only/full/launch_config.json",
+      "sha256": "97b9b5a526c41ffdb01e4fc3668fb6925827dbc6fed4dffd1ef1ae3ba488110b"
+    },
+    "scenarios/confirm_payload_com_only/full/monitor_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/full/monitor_metrics.csv",
+      "sha256": "f9dda2446af70c5471e3bcb9ed25484917789216f8cc4daef4aceaa69422d811"
+    },
+    "scenarios/confirm_payload_com_only/full/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/full/per_seed_metrics.csv",
+      "sha256": "6acd534d01a90555285bfa0256dfd00f406728d7a014a73e825d8160ee32b8bb"
+    },
+    "scenarios/confirm_payload_com_only/full/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_payload_com_only/full/pose_trace.csv.gz",
+      "sha256": "9b16cf06f441e0cf34d7270427a9863786fb054d93d6b89c1438aef9a5cba5d7"
+    },
+    "scenarios/confirm_payload_com_only/full/recovery_curve.csv": {
+      "path": "scenarios/confirm_payload_com_only/full/recovery_curve.csv",
+      "sha256": "ee3c951134e824b43cb60fada14694fcf313bdce0574fda668e6b91bac9b1a79"
+    },
+    "scenarios/confirm_payload_com_only/full/recovery_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/full/recovery_metrics.csv",
+      "sha256": "a39b389461e3150fe93776bf58c7aafe8830212199239c0653a6ceebe75832ff"
+    },
+    "scenarios/confirm_payload_com_only/full/scenario_config.json": {
+      "path": "scenarios/confirm_payload_com_only/full/scenario_config.json",
+      "sha256": "97b9b5a526c41ffdb01e4fc3668fb6925827dbc6fed4dffd1ef1ae3ba488110b"
+    },
+    "scenarios/confirm_payload_com_only/full/shift_events.json": {
+      "path": "scenarios/confirm_payload_com_only/full/shift_events.json",
+      "sha256": "88a1c2c6dab4cb91eb6a5a3bf864c42b7ea5b1da81387ae681390e16bc255bea"
+    },
+    "scenarios/confirm_payload_com_only/full/simulator.log": {
+      "path": "scenarios/confirm_payload_com_only/full/simulator.log",
+      "sha256": "4107b6dda90d93d48bac195bf285e2c843516cec09b7bd23e287131eb98ac9a1"
+    },
+    "scenarios/confirm_payload_com_only/full/summary.json": {
+      "path": "scenarios/confirm_payload_com_only/full/summary.json",
+      "sha256": "412c02a05bf2d98eccf1fbfc911fe158e0b9ec8bbc192bd7de512f62dc307457"
+    },
+    "scenarios/confirm_payload_com_only/monitor_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/monitor_metrics.csv",
+      "sha256": "fa7537dcf7072c9e3cd44d33a6b78014ace8eab1540b7f5ec1e385d9412b13ce"
+    },
+    "scenarios/confirm_payload_com_only/paired_recovery_effects.csv": {
+      "path": "scenarios/confirm_payload_com_only/paired_recovery_effects.csv",
+      "sha256": "ed46aab6b786baa156c534efde4fa2297055a6248cf33d690be1e2aceabd8ff2"
+    },
+    "scenarios/confirm_payload_com_only/passive/launch_command.json": {
+      "path": "scenarios/confirm_payload_com_only/passive/launch_command.json",
+      "sha256": "a29d1355ab5a4b3bda561278e3b7143392350ddb4fa1104df23d6ad992698777"
+    },
+    "scenarios/confirm_payload_com_only/passive/launch_config.json": {
+      "path": "scenarios/confirm_payload_com_only/passive/launch_config.json",
+      "sha256": "57b4f909c1172db76cf657691a5e66a335370caed3c618456df66ef667e2cecf"
+    },
+    "scenarios/confirm_payload_com_only/passive/monitor_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/passive/monitor_metrics.csv",
+      "sha256": "1a5f7670b40afa75c71f56f158b74f1b5fe99709ee56c569acdb739d230abf52"
+    },
+    "scenarios/confirm_payload_com_only/passive/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/passive/per_seed_metrics.csv",
+      "sha256": "3d5a99f13713b5795a271364afa25184c99d7920fd0fa6f7887ce8be0cf856de"
+    },
+    "scenarios/confirm_payload_com_only/passive/pose_trace.csv.gz": {
+      "path": "scenarios/confirm_payload_com_only/passive/pose_trace.csv.gz",
+      "sha256": "d7ce47727bec4168ec9e6e87c22ac554193d22d061d3fcbdc72747f73e50ad6e"
+    },
+    "scenarios/confirm_payload_com_only/passive/recovery_curve.csv": {
+      "path": "scenarios/confirm_payload_com_only/passive/recovery_curve.csv",
+      "sha256": "7c2f996d279311eb414c62295046cd9ec96e53e977b82093fab4cd443dc10c29"
+    },
+    "scenarios/confirm_payload_com_only/passive/recovery_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/passive/recovery_metrics.csv",
+      "sha256": "b688d3aeb6dd51ff54ec99e38bfc2857309c207acebc4cfe54f91bd449c8be8d"
+    },
+    "scenarios/confirm_payload_com_only/passive/scenario_config.json": {
+      "path": "scenarios/confirm_payload_com_only/passive/scenario_config.json",
+      "sha256": "57b4f909c1172db76cf657691a5e66a335370caed3c618456df66ef667e2cecf"
+    },
+    "scenarios/confirm_payload_com_only/passive/shift_events.json": {
+      "path": "scenarios/confirm_payload_com_only/passive/shift_events.json",
+      "sha256": "88a1c2c6dab4cb91eb6a5a3bf864c42b7ea5b1da81387ae681390e16bc255bea"
+    },
+    "scenarios/confirm_payload_com_only/passive/simulator.log": {
+      "path": "scenarios/confirm_payload_com_only/passive/simulator.log",
+      "sha256": "8f8cf9f0299d6bf0a15bd6b386d4f7e4c0db0c56b2217fadcd2b9521f090c4f8"
+    },
+    "scenarios/confirm_payload_com_only/passive/summary.json": {
+      "path": "scenarios/confirm_payload_com_only/passive/summary.json",
+      "sha256": "a1ad6d3acdf563fdc0118897a45fa5f7f21966c3537d7513e97311be20791a95"
+    },
+    "scenarios/confirm_payload_com_only/per_seed_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/per_seed_metrics.csv",
+      "sha256": "231e6703a4600c44918242dd71e082fe026eec87a4bcacf4a8d89325968a2512"
+    },
+    "scenarios/confirm_payload_com_only/recovery_curve.csv": {
+      "path": "scenarios/confirm_payload_com_only/recovery_curve.csv",
+      "sha256": "4efcb9ad84ec03b863cfb3f32ffc381f04d1dd4b3224c6b2322ac7500d4adcf9"
+    },
+    "scenarios/confirm_payload_com_only/recovery_metrics.csv": {
+      "path": "scenarios/confirm_payload_com_only/recovery_metrics.csv",
+      "sha256": "4d6d415af683a3ecffd8de1857cdec430e2613c5673fe26af0434bb08ef1ddeb"
+    },
+    "scenarios/confirm_payload_com_only/summary.json": {
+      "path": "scenarios/confirm_payload_com_only/summary.json",
+      "sha256": "d00d563ec0a48f0ba98dafd06a30f63bd8d0424e150bf12d5a095d91b2819503"
+    },
+    "summary.json": {
+      "path": "summary.json",
+      "sha256": "cc3588338cdf5ec99a2ff56243275c87d9566b153760f3f2a23c904585ee5702"
+    }
+  },
+  "backend": "isaaclab_physx_go2_domain_shift",
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "config_path": "configs/experiments/p6_domain_shift_strong_confirmatory.yaml",
+  "config_sha256": "a52bbdcf99d07878a3d8a0b2a7a69b11a09303f9d38a760d8ca1167b5dab50d2",
+  "git_commit": "8f3c256a592a6133ac6fe3f206b5ef901b37f417",
+  "phase": "P6",
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "schema_version": "1.0"
+}

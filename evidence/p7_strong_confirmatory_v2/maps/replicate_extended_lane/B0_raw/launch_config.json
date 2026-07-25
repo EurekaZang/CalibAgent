@@ -1,0 +1,315 @@
+{
+  "calibration": {
+    "active_candidate_source": "global_safe_pool",
+    "active_trials": 12,
+    "command_bounds": [
+      [
+        -0.4,
+        0.4
+      ],
+      [
+        -0.3,
+        0.3
+      ],
+      [
+        -0.7,
+        0.7
+      ]
+    ],
+    "dense_design_seed": 88149,
+    "dense_trials": 30,
+    "feature_set": "m1_affine",
+    "lhs_design_seed": 88151,
+    "maximum_linear_norm": 0.45,
+    "measure_s": 0.7,
+    "model_prior_gain": 1.0,
+    "model_prior_scale": 0.1,
+    "ramp_in_s": 0.3,
+    "ramp_out_s": 0.5,
+    "settle_s": 0.6,
+    "sobol_design_seed": 88159,
+    "validation_commands": [
+      [
+        0.13,
+        0.04,
+        0.08
+      ],
+      [
+        0.13,
+        -0.04,
+        -0.08
+      ],
+      [
+        0.1,
+        0.08,
+        0.16
+      ],
+      [
+        0.1,
+        -0.08,
+        -0.16
+      ],
+      [
+        0.16,
+        0.06,
+        0.14
+      ],
+      [
+        0.16,
+        -0.06,
+        -0.14
+      ],
+      [
+        0.09,
+        0.1,
+        0.21
+      ],
+      [
+        0.09,
+        -0.1,
+        -0.21
+      ]
+    ],
+    "warmup_s": 0.5
+  },
+  "checkpoint": "flat",
+  "distortion": "affine_low",
+  "enhanced_determinism": true,
+  "id": "replicate_extended_lane",
+  "method": "B0_raw",
+  "navigation": {
+    "collision_footprint_radius_m": 0.2,
+    "cruise_speed_mps": 0.18,
+    "environment_spacing_m": 8.0,
+    "goal_radius_m": 0.25,
+    "heading_gain": 0.5,
+    "height_rate_guard": {
+      "activation_height_m": 0.18,
+      "high_rate_interlock": {
+        "activation_height_m": 0.158,
+        "enabled": true,
+        "minimum_clearance_m": 0.001,
+        "prediction_steps": 5,
+        "release_height_m": 0.16
+      },
+      "hold_s": 0.4,
+      "maximum_linear_command_norm": 0.2,
+      "minimum_drop_per_planner_tick_m": 0.002
+    },
+    "inactive_axis_command_limits": [
+      0.08,
+      0.06,
+      0.12
+    ],
+    "initial_stabilization_s": 0.5,
+    "inverse_regularization": 0.005,
+    "inverse_risk_weight": 0.01,
+    "inverse_undertracking_confidence_weights": [
+      1.0,
+      0.5,
+      0.5
+    ],
+    "maximum_angular_accel_rps2": 2.5,
+    "maximum_lateral_speed_mps": 0.14,
+    "maximum_linear_accel_mps2": 1.0,
+    "maximum_yaw_rate_rps": 0.25,
+    "planner_rate_hz": 10,
+    "position_gain": 0.8,
+    "sample_rate_hz": 50,
+    "stall_recovery": {
+      "detection_s": 0.3,
+      "emergency_base_height_m": 0.155,
+      "emergency_zero_command_s": 0.5,
+      "maximum_actual_speed_mps": 0.02,
+      "maximum_attempts": 3,
+      "maximum_base_height_m": 0.2,
+      "maximum_emergency_attempts": 30,
+      "minimum_desired_speed_mps": 0.1,
+      "zero_command_s": 1.0
+    },
+    "task_commands": [
+      [
+        0.12,
+        0.0,
+        0.0
+      ],
+      [
+        0.16,
+        0.0,
+        0.0
+      ],
+      [
+        0.18,
+        0.0,
+        0.0
+      ],
+      [
+        0.14,
+        0.08,
+        0.15
+      ],
+      [
+        0.14,
+        -0.08,
+        -0.15
+      ],
+      [
+        0.1,
+        0.1,
+        0.22
+      ],
+      [
+        0.1,
+        -0.1,
+        -0.22
+      ]
+    ],
+    "timeout_s": 60.0,
+    "velocity_feedback": {
+      "activation_threshold": 0.02,
+      "ema_alpha": 0.25,
+      "gain": 1.0,
+      "maximum_correction": [
+        0.12,
+        0.08,
+        0.15
+      ],
+      "recovery_reengagement_delay_s": 0.5,
+      "startup_delay_s": 2.0
+    },
+    "waypoint_radius_m": 0.25
+  },
+  "obstacles": [
+    {
+      "center": [
+        1.76,
+        0.72
+      ],
+      "size": [
+        3.52,
+        0.2,
+        0.5
+      ]
+    },
+    {
+      "center": [
+        1.76,
+        -0.62
+      ],
+      "size": [
+        3.52,
+        0.2,
+        0.5
+      ]
+    }
+  ],
+  "physics": {
+    "com_offset_x_m": 0.018,
+    "dynamic_friction": 0.42,
+    "payload_add_kg": 1.8,
+    "static_friction": 0.58
+  },
+  "safety": {
+    "max_base_height_m": 0.65,
+    "max_coupled_load": 1.0,
+    "min_base_height_m": 0.15
+  },
+  "seeds": [
+    10501,
+    10502,
+    10503,
+    10504,
+    10505,
+    10506,
+    10507,
+    10508,
+    10509,
+    10510,
+    10511,
+    10512,
+    10513,
+    10514,
+    10515,
+    10516,
+    10517,
+    10518,
+    10519,
+    10520,
+    10521,
+    10522,
+    10523,
+    10524,
+    10525,
+    10526,
+    10527,
+    10528,
+    10529,
+    10530,
+    10531,
+    10532,
+    10533,
+    10534,
+    10535,
+    10536,
+    10537,
+    10538,
+    10539,
+    10540,
+    10541,
+    10542,
+    10543,
+    10544,
+    10545,
+    10546,
+    10547,
+    10548,
+    10549,
+    10550,
+    10551,
+    10552,
+    10553,
+    10554,
+    10555,
+    10556,
+    10557,
+    10558,
+    10559,
+    10560,
+    10561,
+    10562,
+    10563,
+    10564,
+    10565,
+    10566,
+    10567,
+    10568,
+    10569,
+    10570,
+    10571,
+    10572
+  ],
+  "simulator_seed": 1620245,
+  "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+  "waypoints": [
+    [
+      0.72,
+      0.05
+    ],
+    [
+      1.44,
+      0.07
+    ],
+    [
+      2.16,
+      0.03
+    ],
+    [
+      2.88,
+      0.06
+    ],
+    [
+      3.52,
+      0.0
+    ]
+  ]
+}

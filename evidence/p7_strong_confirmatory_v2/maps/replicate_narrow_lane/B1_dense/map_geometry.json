@@ -1,0 +1,51 @@
+{
+  "collision_footprint_radius_m": 0.2,
+  "map": "replicate_narrow_lane",
+  "obstacles": [
+    {
+      "center": [
+        1.68,
+        0.66
+      ],
+      "size": [
+        3.36,
+        0.2,
+        0.5
+      ]
+    },
+    {
+      "center": [
+        1.68,
+        -0.76
+      ],
+      "size": [
+        3.36,
+        0.2,
+        0.5
+      ]
+    }
+  ],
+  "planner_config_sha256": "090f6cc365ecf8886327542cb0cb2f3c8d6973f94014cdcb28665e4c27cf60d7",
+  "waypoints": [
+    [
+      0.68,
+      -0.07
+    ],
+    [
+      1.38,
+      -0.1
+    ],
+    [
+      2.08,
+      -0.08
+    ],
+    [
+      2.78,
+      -0.09
+    ],
+    [
+      3.36,
+      0.0
+    ]
+  ]
+}
