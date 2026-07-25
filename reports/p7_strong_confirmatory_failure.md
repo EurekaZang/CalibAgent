@@ -63,3 +63,11 @@ The second development setting is based on the observed working-height and
 per-sample drop distributions. It activates the absolute latch at 0.158 m,
 releases at 0.165 m, and otherwise relies on a five-sample projection toward a
 0.152 m protected height. The hard 0.150 m envelope is unchanged.
+
+That second pilot removed every navigation hard-envelope abort on the
+loaded-arc pressure map, but remained `NO_GO`: B8 completed 11/16 episodes,
+with 5,951 interlocked sample-environment steps and 274 emergency recoveries.
+The failure mode changed from unsafe termination to excessive safe-stop
+dwell. The third setting therefore narrows the latch to 0.155/0.160 m, uses a
+three-sample projection toward 0.151 m, and restores planner emergency
+activation to 0.155 m. The hard safety limit remains unchanged.
