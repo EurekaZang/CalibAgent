@@ -48,3 +48,18 @@ The corrective development hypothesis is therefore registered as:
 The failed confirmatory maps may be used only as development pressure tests.
 A positive publication claim requires a subsequently frozen run on new maps,
 physics contexts and seeds.
+
+## Development pilot log
+
+The first interlock pilot (`outputs/p7_navigation_interlock_pilot`) was stopped
+after B0 and B1 on the first pressure map. It eliminated hard-envelope aborts
+but latched for almost the entire episode: B1 success was 0/16 and the B1
+interlock was active for 47,127 sample-environment steps. Inspection of the
+original traces showed that the stable loaded Go2 base-height median is only
+0.170–0.175 m, so the initial 0.20/0.23 m activation/release thresholds were
+physically invalid. This pilot is a failed development result, not evidence.
+
+The second development setting is based on the observed working-height and
+per-sample drop distributions. It activates the absolute latch at 0.158 m,
+releases at 0.165 m, and otherwise relies on a five-sample projection toward a
+0.152 m protected height. The hard 0.150 m envelope is unchanged.
