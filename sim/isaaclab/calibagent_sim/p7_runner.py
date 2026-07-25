@@ -22,7 +22,9 @@ from calibagent.core.compensation import (
 from calibagent.core.models.bayesian import BayesianBasisModel
 from calibagent.core.models.features import BasisTransformer
 from calibagent.core.planning.candidates import CandidatePool, CommandSpace
+from calibagent.core.planning.d_optimal import DOptimalPlanner
 from calibagent.core.planning.ivr import IntegratedVariancePlanner
+from calibagent.core.planning.samplers import latin_hypercube, sobol
 from calibagent.core.planning.task import TaskDistribution
 from calibagent.core.safety import (
     HardSafetyFilter,
@@ -41,7 +43,15 @@ from calibagent_sim.runner import (
     _write_csv,
 )
 
-_METHODS = {"B0_raw", "B1_dense", "B8_full"}
+_METHODS = {
+    "B0_raw",
+    "B1_dense",
+    "B2_lhs",
+    "B3_sobol",
+    "B4_d_opt",
+    "B5_active_no_task",
+    "B8_full",
+}
 
 
 def _write_csv_gzip(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -71,9 +81,9 @@ def _physical_config(payload: dict[str, Any]) -> ScenarioConfig:
         calibration_trials=(
             int(calibration["dense_trials"])
             if payload["method"] == "B1_dense"
-            else int(calibration["active_trials"])
-            if payload["method"] == "B8_full"
             else 0
+            if payload["method"] == "B0_raw"
+            else int(calibration["active_trials"])
         ),
         warmup_s=float(calibration["warmup_s"]),
         ramp_in_s=float(calibration["ramp_in_s"]),
@@ -248,6 +258,37 @@ def _run_calibration(
         ],
         dtype=np.float64,
     )
+    no_task = TaskDistribution.uniform(pool.commands)
+    d_optimal = [
+        DOptimalPlanner(pool, duplicate_distance=0.02)
+        for _ in config.seeds
+    ]
+
+    def snapped_design(kind: str, seed: int) -> np.ndarray:
+        generator = latin_hypercube if kind == "lhs" else sobol
+        proposal = generator(
+            max(8 * config.calibration_trials, 128),
+            pool.command_space.bounds,
+            seed,
+        )
+        normalized_proposal = pool.command_space.normalized(proposal)
+        normalized_pool = pool.command_space.normalized(pool.commands)
+        selected: list[int] = []
+        for target in normalized_proposal:
+            distance = np.linalg.norm(normalized_pool - target, axis=1)
+            if selected:
+                distance[np.asarray(selected, dtype=np.int64)] = np.inf
+            index = int(np.argmin(distance))
+            if np.isfinite(distance[index]):
+                selected.append(index)
+            if len(selected) == config.calibration_trials:
+                break
+        if len(selected) != config.calibration_trials:
+            raise RuntimeError(f"insufficient safe {kind} P7 design points")
+        return pool.commands[np.asarray(selected, dtype=np.int64)]
+
+    lhs_design = snapped_design("lhs", int(calibration.get("lhs_design_seed", 77151)))
+    sobol_design = snapped_design("sobol", int(calibration.get("sobol_design_seed", 77159)))
     for trial in range(config.calibration_trials):
         desired = np.zeros((len(config.seeds), 3), dtype=np.float64)
         sources: list[str] = []
@@ -255,13 +296,37 @@ def _run_calibration(
             if method == "B1_dense":
                 desired[env_index] = dense_pool.commands[trial]
                 sources.append("dense_grid")
+            elif method == "B2_lhs":
+                desired[env_index] = lhs_design[trial]
+                sources.append("lhs_safe_snap")
+            elif method == "B3_sobol":
+                desired[env_index] = sobol_design[trial]
+                sources.append("sobol_safe_snap")
+            elif method == "B4_d_opt":
+                candidates = d_optimal[env_index].propose(
+                    models[env_index],
+                    histories[env_index],
+                    k=1,
+                )
+                decision = safety_filter.select_first_safe(
+                    candidates,
+                    neutral,
+                    zero_history,
+                )
+                if not decision.accepted or decision.command is None:
+                    raise RuntimeError(
+                        f"no safe P7 D-opt candidate for seed {config.seeds[env_index]}"
+                    )
+                desired[env_index] = decision.command.as_array()
+                sources.append("d_optimal")
             elif trial < len(calibration_seed):
                 desired[env_index] = calibration_seed[trial]
                 sources.append("seed_design")
             else:
+                active_task = no_task if method == "B5_active_no_task" else task
                 candidates = planners[env_index].propose(
                     models[env_index],
-                    task,
+                    active_task,
                     histories[env_index],
                     k=1,
                 )
@@ -275,7 +340,11 @@ def _run_calibration(
                         f"no safe P7 calibration candidate for seed {config.seeds[env_index]}"
                     )
                 desired[env_index] = decision.command.as_array()
-                sources.append("active_ivr")
+                sources.append(
+                    "active_ivr_no_task"
+                    if method == "B5_active_no_task"
+                    else "active_ivr_task"
+                )
         observations, _ = _execute_batch_trial(
             env,
             actor,
@@ -306,6 +375,74 @@ def _run_calibration(
                     "measured_vx": observation.mean_velocity[0],
                     "measured_vy": observation.mean_velocity[1],
                     "measured_wz": observation.mean_velocity[2],
+                    "valid": observation.valid,
+                    "safety_events": "|".join(observation.safety_events),
+                }
+            )
+    return rows, safety_events, serious_events, valid_flags
+
+
+def _run_calibration_validation(
+    env: Any,
+    actor: torch.nn.Module,
+    payload: dict[str, Any],
+    config: ScenarioConfig,
+    models: list[BayesianBasisModel],
+) -> tuple[list[dict[str, Any]], int, int, list[bool]]:
+    commands = np.asarray(
+        payload["calibration"].get("validation_commands", []),
+        dtype=np.float64,
+    )
+    if not len(commands):
+        return [], 0, 0, []
+    method = str(payload["method"])
+    distortion = CommandDistortion(
+        make_distortion_parameters(str(payload["distortion"]), config.seeds),
+        seed=config.simulator_seed + 141,
+    )
+    rows: list[dict[str, Any]] = []
+    safety_events = 0
+    serious_events = 0
+    valid_flags: list[bool] = []
+    for trial, command in enumerate(commands, start=1):
+        desired = np.tile(command, (len(config.seeds), 1))
+        predictions = [model.predict(command).mean for model in models]
+        observations, _ = _execute_batch_trial(
+            env,
+            actor,
+            desired,
+            distortion,
+            config,
+            trial,
+            "p7_calibration_validation",
+            [],
+        )
+        for env_index, observation in enumerate(observations):
+            prediction = predictions[env_index]
+            residual = prediction - observation.mean_velocity
+            valid_flags.append(observation.valid)
+            safety_events += int(bool(observation.safety_events))
+            serious_events += int(
+                "SIM_TERMINATION" in "|".join(observation.safety_events)
+            )
+            rows.append(
+                {
+                    "map": payload["id"],
+                    "seed": config.seeds[env_index],
+                    "method": method,
+                    "validation_trial": trial,
+                    "cmd_vx": command[0],
+                    "cmd_vy": command[1],
+                    "cmd_wz": command[2],
+                    "measured_vx": observation.mean_velocity[0],
+                    "measured_vy": observation.mean_velocity[1],
+                    "measured_wz": observation.mean_velocity[2],
+                    "predicted_vx": prediction[0],
+                    "predicted_vy": prediction[1],
+                    "predicted_wz": prediction[2],
+                    "residual_vx": residual[0],
+                    "residual_vy": residual[1],
+                    "residual_wz": residual[2],
                     "valid": observation.valid,
                     "safety_events": "|".join(observation.safety_events),
                 }
@@ -853,6 +990,18 @@ def run_p7_navigation(
             safety_filter,
             task,
         )
+        (
+            calibration_validation_rows,
+            validation_safety_events,
+            validation_serious_events,
+            validation_valid,
+        ) = _run_calibration_validation(
+            env,
+            actor,
+            payload,
+            config,
+            models,
+        )
         episode_rows, trace_rows, nav_safety_events, nav_valid = _run_navigation(
             env,
             actor,
@@ -864,15 +1013,31 @@ def run_p7_navigation(
         )
     finally:
         env.close()
-    serious_events = calibration_serious_events + sum(
+    serious_events = calibration_serious_events + validation_serious_events + sum(
         int(row["serious_safety_event"]) for row in episode_rows
     )
-    safety_events = calibration_safety_events + nav_safety_events
-    valid = calibration_valid + nav_valid
+    safety_events = (
+        calibration_safety_events
+        + validation_safety_events
+        + nav_safety_events
+    )
+    valid = calibration_valid + validation_valid + nav_valid
     success = np.asarray([bool(row["success"]) for row in episode_rows])
     collision = np.asarray([bool(row["collision"]) for row in episode_rows])
     completion = np.asarray(
         [float(row["completion_time_s"]) for row in episode_rows],
+        dtype=np.float64,
+    )
+    validation_residuals = np.asarray(
+        [
+            [
+                float(row["residual_vx"]),
+                float(row["residual_vy"]),
+                float(row["residual_wz"]),
+            ]
+            for row in calibration_validation_rows
+            if bool(row["valid"])
+        ],
         dtype=np.float64,
     )
     planner_hash = _planner_hash(payload)
@@ -887,6 +1052,12 @@ def run_p7_navigation(
         "collision_rate": float(np.mean(collision)),
         "mean_completion_time_s": float(np.mean(completion)),
         "median_completion_time_s": float(np.median(completion)),
+        "calibration_validation_rmse": (
+            float(np.sqrt(np.mean(validation_residuals**2)))
+            if len(validation_residuals)
+            else None
+        ),
+        "calibration_validation_observations": len(validation_residuals),
         "stall_recovery_attempts": int(
             sum(int(row["stall_recovery_attempts"]) for row in episode_rows)
         ),
@@ -911,6 +1082,11 @@ def run_p7_navigation(
         "finite": bool(np.all(np.isfinite(completion))),
     }
     _write_csv(output / "calibration_metrics.csv", calibration_rows)
+    if calibration_validation_rows:
+        _write_csv(
+            output / "calibration_validation.csv",
+            calibration_validation_rows,
+        )
     _write_csv(output / "episode_metrics.csv", episode_rows)
     _write_csv_gzip(output / "nav_trace.csv.gz", trace_rows)
     np.savez_compressed(

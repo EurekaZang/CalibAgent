@@ -1,8 +1,27 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
-from calibagent.eval.metrics import gaussian_nll, interval_coverage, task_weighted_rmse
+from calibagent.eval.metrics import (
+    clopper_pearson_interval,
+    gaussian_nll,
+    interval_coverage,
+    task_weighted_rmse,
+)
+
+
+def test_exact_binomial_interval_handles_boundary_rates() -> None:
+    zero_lower, zero_upper = clopper_pearson_interval(0, 72)
+    full_lower, full_upper = clopper_pearson_interval(72, 72)
+
+    assert zero_lower == 0.0
+    assert zero_upper < 0.05
+    assert full_lower > 0.95
+    assert full_upper == 1.0
+
+    with pytest.raises(ValueError, match="non-empty"):
+        clopper_pearson_interval(0, 0)
 
 
 def test_weighted_rmse_uses_task_weights() -> None:

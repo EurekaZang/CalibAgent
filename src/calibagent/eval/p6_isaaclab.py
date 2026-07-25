@@ -12,7 +12,9 @@ from typing import Any
 import numpy as np
 import yaml
 from numpy.typing import NDArray
+from scipy import stats
 
+from calibagent.eval.metrics import clopper_pearson_interval
 from calibagent.eval.p5_isaaclab import (
     _artifact_manifest,
     _checkpoint_path,
@@ -86,6 +88,18 @@ class P6BenchmarkConfig:
             raise ValueError("P6 detector must reject isolated/two-sample outliers")
         if evidence_window < minimum_evidence:
             raise ValueError("P6 detector evidence window is too short")
+        primary_horizon = int(
+            self.trial.get(
+                "primary_recovery_horizon_trials",
+                self.trial["recovery_budget_trials"],
+            )
+        )
+        if not int(self.trial["validation_window"]) <= primary_horizon <= int(
+            self.trial["recovery_budget_trials"]
+        ):
+            raise ValueError("P6 primary recovery horizon must contain a complete window")
+        if self.adaptation.get("stop_updates_after_recovery", False) not in {True, False}:
+            raise ValueError("P6 stop_updates_after_recovery must be boolean")
         for scenario in self.scenarios:
             if str(scenario["checkpoint"]) not in self.checkpoints:
                 raise ValueError("P6 scenario uses an unknown checkpoint")
@@ -159,6 +173,29 @@ def evaluate_p6_summaries(
         ),
         "finite": all(bool(item["finite"]) for item in summaries),
     }
+    if "minimum_detection_rate_ci95_lower" in gates:
+        checks["rate_confidence_bounds"] = all(
+            float(item["no_shift_false_alarm_rate_ci95"][1])
+            <= float(gates["maximum_no_shift_false_alarm_rate_ci95_upper"])
+            and float(item["detection_rate_ci95"][0])
+            >= float(gates["minimum_detection_rate_ci95_lower"])
+            and float(item["full_recovery_rate_ci95"][0])
+            >= float(gates["minimum_full_recovery_rate_ci95_lower"])
+            for item in summaries
+        )
+    if "minimum_full_vs_passive_early_rmse_improvement_ci95_lower" in gates:
+        checks["active_over_passive_early_recovery"] = all(
+            float(item["full_vs_passive_early_rmse_improvement_ci95"][0])
+            > float(gates["minimum_full_vs_passive_early_rmse_improvement_ci95_lower"])
+            and float(item["full_vs_passive_early_rmse_wilcoxon_one_sided_p"])
+            <= float(gates["maximum_full_vs_passive_early_rmse_p"])
+            for item in summaries
+        )
+        checks["active_terminal_noninferiority"] = all(
+            float(item["full_minus_passive_final_rmse_ci95"][1])
+            <= float(gates["maximum_full_minus_passive_final_rmse_ci95_upper"])
+            for item in summaries
+        )
     return {
         "schema_version": "1.0",
         "phase": "P6",
@@ -209,7 +246,7 @@ def _read_csv_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(stream))
 
 
-def _write_csv_rows(path: Path, rows: list[dict[str, str]]) -> None:
+def _write_csv_rows(path: Path, rows: list[dict[str, Any]]) -> None:
     if not rows:
         raise ValueError(f"refusing to write empty aggregate: {path}")
     with path.open("w", encoding="utf-8", newline="") as stream:
@@ -234,6 +271,15 @@ def _bootstrap_mean_ci(values: NDArray[np.float64], seed: int) -> list[float]:
         float(np.quantile(samples, 0.025)),
         float(np.quantile(samples, 0.975)),
     ]
+
+
+def _paired_wilcoxon_less(left: NDArray[np.float64], right: NDArray[np.float64]) -> float:
+    """Test the preregistered alternative ``left < right`` without warning noise."""
+
+    difference = left - right
+    if np.allclose(difference, 0.0):
+        return 1.0
+    return float(stats.wilcoxon(left, right, alternative="less").pvalue)
 
 
 def _aggregate_method_outputs(
@@ -271,21 +317,103 @@ def _aggregate_method_outputs(
         ],
         dtype=np.float64,
     )
+    passive_improvements = np.asarray(
+        [
+            float(indexed[("passive", seed)]["final_rmse"])
+            - float(indexed[("full", seed)]["final_rmse"])
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    curves = _read_csv_rows(scenario_output / "recovery_curve.csv")
+    curve_indexed = {
+        (str(row["method"]), int(row["seed"]), int(row["recovery_trial"])): float(
+            row["rolling_rmse"]
+        )
+        for row in curves
+    }
+    start_trial = min(
+        int(row["recovery_trial"])
+        for row in curves
+        if str(row["method"]) == "full" and np.isfinite(float(row["rolling_rmse"]))
+    )
+    primary_horizon = int(
+        summaries["full"].get(
+            "primary_recovery_horizon_trials",
+            max(int(row["recovery_trial"]) for row in curves),
+        )
+    )
+    primary_trials = tuple(range(start_trial, primary_horizon + 1))
+    full_early = np.asarray(
+        [
+            np.mean(
+                [
+                    curve_indexed[("full", seed, trial)]
+                    for trial in primary_trials
+                ]
+            )
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    passive_early = np.asarray(
+        [
+            np.mean(
+                [
+                    curve_indexed[("passive", seed, trial)]
+                    for trial in primary_trials
+                ]
+            )
+            for seed in seeds
+        ],
+        dtype=np.float64,
+    )
+    early_improvements = passive_early - full_early
     full_rows = [indexed[("full", seed)] for seed in seeds]
     full_recovered = [
         float(row["recovery_trials"]) for row in full_rows if _as_bool(row["recovered"])
     ]
     full_summary = summaries["full"]
+    false_alarm_count = sum(_as_bool(row["false_alarm"]) for row in full_rows)
+    detection_count = sum(_as_bool(row["detected"]) for row in full_rows)
+    recovery_count = sum(_as_bool(row["recovered"]) for row in full_rows)
+    paired_rows = [
+        {
+            "scenario": str(scenario["id"]),
+            "seed": seed,
+            "passive_early_mean_rmse": passive_early[index],
+            "full_early_mean_rmse": full_early[index],
+            "passive_minus_full_early_rmse": early_improvements[index],
+            "passive_final_rmse": float(indexed[("passive", seed)]["final_rmse"]),
+            "full_final_rmse": float(indexed[("full", seed)]["final_rmse"]),
+            "full_minus_passive_final_rmse": -passive_improvements[index],
+            "passive_recovery_trials": float(
+                indexed[("passive", seed)]["recovery_trials"]
+            ),
+            "full_recovery_trials": float(indexed[("full", seed)]["recovery_trials"]),
+        }
+        for index, seed in enumerate(seeds)
+    ]
+    _write_csv_rows(scenario_output / "paired_recovery_effects.csv", paired_rows)
     aggregate = {
         "schema_version": "1.0",
         "scenario": str(scenario["id"]),
         "num_seeds": len(seeds),
         "methods": list(methods),
         "no_shift_false_alarm_rate": float(full_summary["no_shift_false_alarm_rate"]),
+        "no_shift_false_alarm_rate_ci95": list(
+            clopper_pearson_interval(false_alarm_count, len(seeds))
+        ),
         "detection_rate": float(full_summary["detection_rate"]),
+        "detection_rate_ci95": list(
+            clopper_pearson_interval(detection_count, len(seeds))
+        ),
         "median_detection_delay_trials": float(full_summary["median_detection_delay_trials"]),
         "p95_detection_delay_trials": float(full_summary["p95_detection_delay_trials"]),
         "full_recovery_rate": float(np.mean([_as_bool(row["recovered"]) for row in full_rows])),
+        "full_recovery_rate_ci95": list(
+            clopper_pearson_interval(recovery_count, len(seeds))
+        ),
         "median_full_recovery_trials": (
             float(np.median(full_recovered)) if full_recovered else float("inf")
         ),
@@ -299,6 +427,28 @@ def _aggregate_method_outputs(
             simulator_seed + 311,
         ),
         "full_vs_frozen_win_rate": float(np.mean(improvements > 0.0)),
+        "primary_recovery_horizon_trials": primary_horizon,
+        "full_vs_passive_early_rmse_improvement_mean": float(
+            np.mean(early_improvements)
+        ),
+        "full_vs_passive_early_rmse_improvement_ci95": _bootstrap_mean_ci(
+            early_improvements,
+            simulator_seed + 313,
+        ),
+        "full_vs_passive_early_rmse_win_rate": float(
+            np.mean(early_improvements > 0.0)
+        ),
+        "full_vs_passive_early_rmse_wilcoxon_one_sided_p": _paired_wilcoxon_less(
+            full_early,
+            passive_early,
+        ),
+        "full_minus_passive_final_rmse_mean": float(
+            np.mean(-passive_improvements)
+        ),
+        "full_minus_passive_final_rmse_ci95": _bootstrap_mean_ci(
+            -passive_improvements,
+            simulator_seed + 317,
+        ),
         "valid_observation_ratio": min(
             float(item["valid_observation_ratio"]) for item in summaries.values()
         ),
@@ -311,6 +461,8 @@ def _aggregate_method_outputs(
         ),
         "finite": bool(
             np.all(np.isfinite(improvements))
+            and np.all(np.isfinite(early_improvements))
+            and np.all(np.isfinite(passive_improvements))
             and all(bool(item["finite"]) for item in summaries.values())
         ),
         "method_summaries": summaries,

@@ -75,6 +75,33 @@ def test_p6_allows_earlier_detection_after_three_sample_debounce() -> None:
     assert result["gates"]["detection_delay"]
 
 
+def test_p6_strong_gates_require_active_over_passive_and_exact_rates() -> None:
+    config = P6BenchmarkConfig.from_yaml(
+        Path("configs/experiments/p6_domain_shift_strong_pilot.yaml")
+    )
+    summaries = []
+    for scenario in config.scenarios:
+        item = _summary(scenario)
+        item.update(
+            {
+                "num_seeds": 8,
+                "no_shift_false_alarm_rate_ci95": [0.0, 0.20],
+                "detection_rate_ci95": [0.80, 1.0],
+                "full_recovery_rate_ci95": [0.80, 1.0],
+                "full_vs_passive_early_rmse_improvement_ci95": [0.01, 0.03],
+                "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 0.01,
+                "full_minus_passive_final_rmse_ci95": [-0.01, 0.01],
+            }
+        )
+        summaries.append(item)
+
+    result = evaluate_p6_summaries(config, summaries)
+
+    assert result["verdict"] == "GO"
+    assert result["gates"]["active_over_passive_early_recovery"]
+    assert result["gates"]["active_terminal_noninferiority"]
+
+
 def test_p6_config_rejects_budget_and_control_changes() -> None:
     config = P6BenchmarkConfig.from_yaml(Path("configs/experiments/p6_domain_shift_main.yaml"))
     trial = dict(config.trial)
@@ -114,6 +141,7 @@ def test_p6_method_aggregation_recomputes_paired_effect(tmp_path: Path) -> None:
             "maximum_abort_latency_s": 0.0,
             "serious_safety_events": 0,
             "finite": True,
+            "primary_recovery_horizon_trials": 5,
         }
         (method_dir / "summary.json").write_text(
             json.dumps(summary),
@@ -137,11 +165,26 @@ def test_p6_method_aggregation_recomputes_paired_effect(tmp_path: Path) -> None:
             for index, seed in enumerate((1, 2))
         ]
         _write_rows(method_dir / "per_seed_metrics.csv", per_seed)
-        for filename in ("monitor_metrics.csv", "recovery_metrics.csv", "recovery_curve.csv"):
+        for filename in ("monitor_metrics.csv", "recovery_metrics.csv"):
             _write_rows(
                 method_dir / filename,
                 [{"scenario": "shift", "seed": 1, "method": method}],
             )
+        _write_rows(
+            method_dir / "recovery_curve.csv",
+            [
+                {
+                    "scenario": "shift",
+                    "seed": seed,
+                    "method": method,
+                    "recovery_trial": trial,
+                    "rolling_rmse": final[method][index] + 0.02 * (5 - trial),
+                    "target_rmse": 0.2,
+                }
+                for index, seed in enumerate((1, 2))
+                for trial in (4, 5)
+            ],
+        )
 
     result = _aggregate_method_outputs(scenario, tmp_path, methods, 100)
 
@@ -149,6 +192,9 @@ def test_p6_method_aggregation_recomputes_paired_effect(tmp_path: Path) -> None:
     assert result["full_recovery_rate"] == 1.0
     assert result["full_vs_frozen_final_improvement_mean"] == pytest.approx(0.12)
     assert result["full_vs_frozen_final_improvement_ci95"][0] > 0.0
+    assert result["full_vs_passive_early_rmse_improvement_ci95"][0] > 0.0
+    assert result["full_minus_passive_final_rmse_ci95"][1] < 0.0
+    assert (tmp_path / "paired_recovery_effects.csv").is_file()
     assert len(list(csv.DictReader((tmp_path / "per_seed_metrics.csv").open()))) == 6
     assert json.loads((tmp_path / "summary.json").read_text())["finite"] is True
 

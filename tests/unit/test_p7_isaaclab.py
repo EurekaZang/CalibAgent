@@ -234,6 +234,98 @@ def test_p7_map_aggregation_recomputes_paired_intervals(tmp_path: Path) -> None:
     assert len(list(csv.DictReader((tmp_path / "episode_metrics.csv").open()))) == 9
 
 
+def test_p7_strong_aggregation_includes_budget_matched_controls(
+    tmp_path: Path,
+) -> None:
+    config = P7BenchmarkConfig.from_yaml(
+        Path("configs/experiments/p7_navigation_strong_pilot.yaml")
+    )
+    completion = {
+        "B0_raw": 60.0,
+        "B1_dense": 20.0,
+        "B2_lhs": 22.0,
+        "B3_sobol": 21.5,
+        "B4_d_opt": 20.5,
+        "B5_active_no_task": 21.0,
+        "B8_full": 20.5,
+    }
+    validation = {
+        "B0_raw": 0.30,
+        "B1_dense": 0.08,
+        "B2_lhs": 0.13,
+        "B3_sobol": 0.12,
+        "B4_d_opt": 0.10,
+        "B5_active_no_task": 0.14,
+        "B8_full": 0.09,
+    }
+    for method in config.methods:
+        method_dir = tmp_path / method
+        method_dir.mkdir()
+        trials = 30 if method == "B1_dense" else 0 if method == "B0_raw" else 12
+        (method_dir / "summary.json").write_text(
+            json.dumps(
+                {
+                    "planner_config_sha256": "same-planner",
+                    "calibration_trials": trials,
+                    "valid_observation_ratio": 0.99,
+                    "serious_safety_events": 0,
+                    "maximum_abort_latency_s": 0.0,
+                    "finite": True,
+                }
+            ),
+            encoding="utf-8",
+        )
+        _write_episode_rows(
+            method_dir / "episode_metrics.csv",
+            [
+                {
+                    "map": "map",
+                    "seed": seed,
+                    "method": method,
+                    "success": "False" if method == "B0_raw" else "True",
+                    "collision": "False",
+                    "completion_time_s": completion[method] + 0.1 * index,
+                }
+                for index, seed in enumerate((1, 2, 3))
+            ],
+        )
+        _write_episode_rows(
+            method_dir / "calibration_validation.csv",
+            [
+                {
+                    "map": "map",
+                    "seed": seed,
+                    "method": method,
+                    "residual_vx": validation[method],
+                    "residual_vy": validation[method],
+                    "residual_wz": validation[method],
+                }
+                for seed in (1, 2, 3)
+            ],
+        )
+
+    result = _paired_map_summary(
+        {"id": "map"},
+        tmp_path,
+        300,
+        config.methods,
+    )
+
+    assert set(result["matched_baseline_comparisons"]) == {
+        "B2_lhs",
+        "B3_sobol",
+        "B4_d_opt",
+        "B5_active_no_task",
+    }
+    assert (
+        result["matched_baseline_comparisons"]["B5_active_no_task"][
+            "b8_vs_baseline_validation_rmse_reduction_ci95"
+        ][0]
+        > 0.0
+    )
+    assert result["b8_success_rate_ci95"][0] > 0.0
+
+
 def test_p7_csv_helpers_fail_closed_on_invalid_values(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="empty P7 aggregate"):
         _write_rows(tmp_path / "empty.csv", [])

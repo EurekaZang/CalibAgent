@@ -6,9 +6,40 @@ from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
+from scipy.stats import beta
 
 from calibagent.core.models.bayesian import BayesianBasisModel
 from calibagent.core.planning.task import TaskDistribution
+
+
+def clopper_pearson_interval(
+    successes: int,
+    trials: int,
+    confidence: float = 0.95,
+) -> tuple[float, float]:
+    """Return the exact two-sided binomial confidence interval.
+
+    Publication gates use this interval instead of accepting a binary point
+    rate at face value.  The boundary cases are defined analytically so zero
+    failures and zero successes remain finite and machine-verifiable.
+    """
+
+    if trials < 1 or not 0 <= successes <= trials:
+        raise ValueError("successes/trials must define a non-empty binomial sample")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be in (0, 1)")
+    alpha = 1.0 - confidence
+    lower = (
+        0.0
+        if successes == 0
+        else float(beta.ppf(alpha / 2.0, successes, trials - successes + 1))
+    )
+    upper = (
+        1.0
+        if successes == trials
+        else float(beta.ppf(1.0 - alpha / 2.0, successes + 1, trials - successes))
+    )
+    return lower, upper
 
 
 def task_weighted_rmse(

@@ -14,6 +14,7 @@ import numpy as np
 import yaml
 from numpy.typing import NDArray
 
+from calibagent.eval.metrics import clopper_pearson_interval
 from calibagent.eval.p5_isaaclab import (
     _artifact_manifest,
     _checkpoint_path,
@@ -24,7 +25,19 @@ from calibagent.eval.p5_isaaclab import (
 )
 from calibagent.eval.real_replay import file_sha256
 
-_METHODS = ("B0_raw", "B1_dense", "B8_full")
+_LEGACY_METHODS = ("B0_raw", "B1_dense", "B8_full")
+_MATCHED_METHODS = (
+    "B2_lhs",
+    "B3_sobol",
+    "B4_d_opt",
+    "B5_active_no_task",
+)
+_STRONG_METHODS = (
+    "B0_raw",
+    "B1_dense",
+    *_MATCHED_METHODS,
+    "B8_full",
+)
 
 
 @dataclass(frozen=True)
@@ -73,12 +86,14 @@ class P7BenchmarkConfig:
             raise ValueError("P7 num_seeds must match a non-empty seed list")
         if len(seeds) != len(set(seeds)):
             raise ValueError("P7 seeds must be unique")
-        if self.methods != _METHODS:
-            raise ValueError("P7 requires frozen B0/B1/B8 controls")
+        if self.methods not in {_LEGACY_METHODS, _STRONG_METHODS}:
+            raise ValueError(
+                "P7 requires either frozen B0/B1/B8 controls or the complete strong controls"
+            )
         if len(map_ids) != len(set(map_ids)) or len(map_ids) < 3:
             raise ValueError("P7 requires at least three unique maps")
-        if self.experiment_role not in {"pilot", "main"} or (
-            self.experiment_role == "main"
+        if self.experiment_role not in {"pilot", "main", "confirmatory"} or (
+            self.experiment_role in {"main", "confirmatory"}
             and (
                 not self.protocol_frozen_utc
                 or len(seeds) < int(self.publication_gates["minimum_seeds_per_map"])
@@ -108,6 +123,28 @@ class P7BenchmarkConfig:
             raise ValueError("P7 B8 calibration budget exceeds 40% of B1")
         if str(self.calibration["active_candidate_source"]) != "global_safe_pool":
             raise ValueError("P7 active candidates must use the frozen global safe pool")
+        if self.methods == _STRONG_METHODS:
+            required_design_seeds = {"lhs_design_seed", "sobol_design_seed"}
+            if not required_design_seeds <= set(self.calibration):
+                raise ValueError("P7 strong controls require frozen LHS/Sobol design seeds")
+            validation_commands = np.asarray(
+                self.calibration.get("validation_commands", []),
+                dtype=np.float64,
+            )
+            if (
+                validation_commands.ndim != 2
+                or validation_commands.shape[1:] != (3,)
+                or len(validation_commands) < 6
+                or len(np.unique(validation_commands, axis=0)) != len(validation_commands)
+                or not np.all(np.isfinite(validation_commands))
+                or np.any(validation_commands < command_bounds[:, 0])
+                or np.any(validation_commands > command_bounds[:, 1])
+                or np.any(
+                    np.linalg.norm(validation_commands[:, :2], axis=1)
+                    > float(self.calibration["maximum_linear_norm"])
+                )
+            ):
+                raise ValueError("P7 strong controls require unique held-out validation commands")
         if int(self.navigation["sample_rate_hz"]) % int(self.navigation["planner_rate_hz"]):
             raise ValueError("P7 planner rate must divide the sample rate")
         if float(self.navigation["goal_radius_m"]) <= 0.0:
@@ -250,20 +287,21 @@ def _paired_map_summary(
     map_config: dict[str, Any],
     map_output: Path,
     simulator_seed: int,
+    methods: tuple[str, ...] = _LEGACY_METHODS,
 ) -> dict[str, Any]:
     method_summaries = {
         method: json.loads((map_output / method / "summary.json").read_text(encoding="utf-8"))
-        for method in _METHODS
+        for method in methods
     }
     rows = [
         row
-        for method in _METHODS
+        for method in methods
         for row in _read_rows(map_output / method / "episode_metrics.csv")
     ]
     _write_rows(map_output / "episode_metrics.csv", rows)
     indexed = {(str(row["method"]), int(row["seed"])): row for row in rows}
     seeds = sorted(int(row["seed"]) for row in rows if row["method"] == "B8_full")
-    if any((method, seed) not in indexed for method in _METHODS for seed in seeds):
+    if any((method, seed) not in indexed for method in methods for seed in seeds):
         raise ValueError("P7 paired method/seed coverage is incomplete")
 
     def array(method: str, field: str) -> NDArray[np.float64]:
@@ -289,6 +327,8 @@ def _paired_map_summary(
     b8_collision = binary("B8_full", "collision")
     count = len(seeds)
     time_improvement = b0_time - b8_time
+    success_count = int(np.sum(b8_success))
+    collision_count = int(np.sum(b8_collision))
     b8_to_b1_ratio = _bootstrap_interval(
         count,
         simulator_seed + 701,
@@ -306,22 +346,124 @@ def _paired_map_summary(
             lambda sample: float(np.mean(left[sample] - right[sample])),
         )
 
+    def ratio_statistic(
+        numerator: NDArray[np.float64],
+        denominator: NDArray[np.float64],
+    ) -> Callable[[NDArray[np.int64]], float]:
+        def statistic(sample: NDArray[np.int64]) -> float:
+            return float(
+                np.mean(numerator[sample])
+                / max(float(np.mean(denominator[sample])), 1e-12)
+            )
+
+        return statistic
+
+    def mean_statistic(
+        values: NDArray[np.float64],
+    ) -> Callable[[NDArray[np.int64]], float]:
+        def statistic(sample: NDArray[np.int64]) -> float:
+            return float(np.mean(values[sample]))
+
+        return statistic
+
     planner_hashes = {
         str(summary["planner_config_sha256"]) for summary in method_summaries.values()
     }
+    matched_comparisons: dict[str, dict[str, Any]] = {}
+    validation_rmse: dict[tuple[str, int], float] = {}
+    if methods == _STRONG_METHODS:
+        validation_rows = [
+            row
+            for method in methods
+            for row in _read_rows(map_output / method / "calibration_validation.csv")
+        ]
+        _write_rows(map_output / "calibration_validation.csv", validation_rows)
+        validation_frame: dict[tuple[str, int], list[float]] = {}
+        for row in validation_rows:
+            key = (str(row["method"]), int(row["seed"]))
+            squared = sum(
+                float(row[field]) ** 2
+                for field in ("residual_vx", "residual_vy", "residual_wz")
+            )
+            validation_frame.setdefault(key, []).append(squared / 3.0)
+        if any(
+            (method, seed) not in validation_frame
+            for method in methods
+            for seed in seeds
+        ):
+            raise ValueError("P7 calibration-validation coverage is incomplete")
+        validation_rmse = {
+            key: float(np.sqrt(np.mean(values)))
+            for key, values in validation_frame.items()
+        }
+        b8_validation = np.asarray(
+            [validation_rmse[("B8_full", seed)] for seed in seeds],
+            dtype=np.float64,
+        )
+        for offset, method in enumerate(_MATCHED_METHODS):
+            baseline_time = array(method, "completion_time_s")
+            baseline_success = binary(method, "success")
+            baseline_collision = binary(method, "collision")
+            baseline_validation = np.asarray(
+                [validation_rmse[(method, seed)] for seed in seeds],
+                dtype=np.float64,
+            )
+            validation_reduction = 1.0 - b8_validation / np.maximum(
+                baseline_validation,
+                1e-12,
+            )
+
+            matched_comparisons[method] = {
+                "calibration_trials": int(method_summaries[method]["calibration_trials"]),
+                "b8_minus_baseline_success_ci95": difference_interval(
+                    b8_success,
+                    baseline_success,
+                    811 + 20 * offset,
+                ),
+                "baseline_minus_b8_collision_ci95": difference_interval(
+                    baseline_collision,
+                    b8_collision,
+                    817 + 20 * offset,
+                ),
+                "b8_to_baseline_completion_time_ratio": float(
+                    np.mean(b8_time) / max(float(np.mean(baseline_time)), 1e-12)
+                ),
+                "b8_to_baseline_completion_time_ratio_ci95": _bootstrap_interval(
+                    count,
+                    simulator_seed + 823 + 20 * offset,
+                    ratio_statistic(b8_time, baseline_time),
+                ),
+                "b8_vs_baseline_validation_rmse_reduction_mean": float(
+                    np.mean(validation_reduction)
+                ),
+                "b8_vs_baseline_validation_rmse_reduction_ci95": _bootstrap_interval(
+                    count,
+                    simulator_seed + 829 + 20 * offset,
+                    mean_statistic(validation_reduction),
+                ),
+                "b8_vs_baseline_validation_rmse_win_rate": float(
+                    np.mean(validation_reduction > 0.0)
+                ),
+            }
     result = {
         "schema_version": "1.0",
         "map": str(map_config["id"]),
         "num_seeds": count,
-        "methods": list(_METHODS),
+        "methods": list(methods),
         "planner_config_sha256": next(iter(planner_hashes)) if len(planner_hashes) == 1 else "",
         "same_planner": len(planner_hashes) == 1,
         "b0_success_rate": float(np.mean(b0_success)),
         "b1_success_rate": float(np.mean(b1_success)),
         "b8_success_rate": float(np.mean(b8_success)),
+        "b8_success_rate_ci95": list(
+            clopper_pearson_interval(success_count, count)
+        ),
         "b0_collision_rate": float(np.mean(b0_collision)),
         "b1_collision_rate": float(np.mean(b1_collision)),
         "b8_collision_rate": float(np.mean(b8_collision)),
+        "b8_collision_rate_ci95": list(
+            clopper_pearson_interval(collision_count, count)
+        ),
         "b0_mean_completion_time_s": float(np.mean(b0_time)),
         "b1_mean_completion_time_s": float(np.mean(b1_time)),
         "b8_mean_completion_time_s": float(np.mean(b8_time)),
@@ -344,6 +486,16 @@ def _paired_map_summary(
             method_summaries["B8_full"]["calibration_trials"]
             / method_summaries["B1_dense"]["calibration_trials"]
         ),
+        "b8_calibration_validation_rmse": (
+            float(
+                np.mean(
+                    [validation_rmse[("B8_full", seed)] for seed in seeds]
+                )
+            )
+            if validation_rmse
+            else None
+        ),
+        "matched_baseline_comparisons": matched_comparisons,
         "minimum_valid_observation_ratio": min(
             float(item["valid_observation_ratio"]) for item in method_summaries.values()
         ),
@@ -355,7 +507,17 @@ def _paired_map_summary(
         ),
         "finite": bool(
             all(bool(item["finite"]) for item in method_summaries.values())
-            and np.all(np.isfinite(np.concatenate([b0_time, b1_time, b8_time])))
+            and np.all(
+                np.isfinite(
+                    np.concatenate(
+                        [
+                            array(method, "completion_time_s")
+                            for method in methods
+                        ]
+                    )
+                )
+            )
+            and all(np.isfinite(value) for value in validation_rmse.values())
         ),
         "method_summaries": method_summaries,
     }
@@ -428,6 +590,67 @@ def evaluate_p7_summaries(
         ),
         "finite": all(bool(item["finite"]) for item in summaries),
     }
+    if "minimum_b8_success_rate_ci95_lower" in gates:
+        checks["b8_exact_rate_bounds"] = all(
+            float(item["b8_success_rate_ci95"][0])
+            >= float(gates["minimum_b8_success_rate_ci95_lower"])
+            and float(item["b8_collision_rate_ci95"][1])
+            <= float(gates["maximum_b8_collision_rate_ci95_upper"])
+            for item in summaries
+        )
+    required_matched = tuple(
+        str(method) for method in gates.get("required_matched_baselines", [])
+    )
+    if required_matched:
+        checks["matched_baseline_coverage"] = (
+            config.methods == _STRONG_METHODS
+            and required_matched == _MATCHED_METHODS
+            and all(
+                set(item["matched_baseline_comparisons"]) == set(required_matched)
+                and all(
+                    int(item["matched_baseline_comparisons"][method]["calibration_trials"])
+                    == int(config.calibration["active_trials"])
+                    for method in required_matched
+                )
+                for item in summaries
+            )
+        )
+        checks["matched_navigation_noninferiority"] = all(
+            float(comparison["b8_minus_baseline_success_ci95"][0])
+            >= -float(gates["maximum_success_rate_noninferiority_margin"])
+            and float(comparison["baseline_minus_b8_collision_ci95"][0])
+            >= -float(gates["maximum_collision_rate_noninferiority_margin"])
+            and float(comparison["b8_to_baseline_completion_time_ratio_ci95"][1])
+            <= float(gates["maximum_b8_to_matched_time_ratio_ci95_upper"])
+            for item in summaries
+            for comparison in item["matched_baseline_comparisons"].values()
+        )
+        superiority_methods = tuple(
+            str(method) for method in gates["validation_superiority_methods"]
+        )
+        noninferiority_methods = tuple(
+            str(method) for method in gates["validation_noninferiority_methods"]
+        )
+        checks["task_weighted_validation_superiority"] = all(
+            float(
+                item["matched_baseline_comparisons"][method][
+                    "b8_vs_baseline_validation_rmse_reduction_ci95"
+                ][0]
+            )
+            > float(gates["minimum_validation_rmse_reduction_ci95_lower"])
+            for item in summaries
+            for method in superiority_methods
+        )
+        checks["strong_validation_noninferiority"] = all(
+            float(
+                item["matched_baseline_comparisons"][method][
+                    "b8_vs_baseline_validation_rmse_reduction_ci95"
+                ][0]
+            )
+            >= -float(gates["maximum_validation_rmse_noninferiority_margin"])
+            for item in summaries
+            for method in noninferiority_methods
+        )
     return {
         "schema_version": "1.0",
         "phase": "P7",
@@ -555,6 +778,11 @@ def run_p7_suite(
                 "summary.json",
                 "episode_metrics.csv",
                 "calibration_metrics.csv",
+                *(
+                    ("calibration_validation.csv",)
+                    if config.methods == _STRONG_METHODS
+                    else ()
+                ),
                 "nav_trace.csv.gz",
                 "posterior_state.npz",
                 "distortion_parameters.json",
@@ -614,11 +842,12 @@ def run_p7_suite(
                     f"see {method_output / 'simulator.log'}"
                 )
         summaries.append(
-            _paired_map_summary(
-                map_config,
-                map_output,
-                int(config.vectorization["simulator_seed"]) + index,
-            )
+                _paired_map_summary(
+                    map_config,
+                    map_output,
+                    int(config.vectorization["simulator_seed"]) + index,
+                    config.methods,
+                )
         )
     aggregate = evaluate_p7_summaries(config, summaries)
     aggregate["runtime"] = runtime

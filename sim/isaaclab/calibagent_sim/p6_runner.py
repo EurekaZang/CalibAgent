@@ -537,7 +537,15 @@ def run_p6_scenario(
             desired = np.zeros((len(slots), 3), dtype=np.float64)
             sources: list[str] = []
             for index, key in enumerate(slots):
-                if key[0] == "full" and detectors[key].latched:
+                stopped = bool(
+                    payload["adaptation"].get("stop_updates_after_recovery", False)
+                    and key[0] in {"passive", "full"}
+                    and recovered_at[key] is not None
+                )
+                if stopped:
+                    desired[index] = 0.0
+                    sources.append("stopped_after_recovery")
+                elif key[0] == "full" and detectors[key].latched:
                     candidates = planners[key].propose(
                         models[key],
                         task,
@@ -573,7 +581,16 @@ def run_p6_scenario(
             for index, (key, observation) in enumerate(zip(slots, observations, strict=True)):
                 all_valid.append(observation.valid)
                 histories[key].append(desired[index].copy())
-                if key[0] in {"passive", "full"} and detectors[key].latched and observation.valid:
+                update_enabled = not bool(
+                    payload["adaptation"].get("stop_updates_after_recovery", False)
+                    and recovered_at[key] is not None
+                )
+                if (
+                    key[0] in {"passive", "full"}
+                    and detectors[key].latched
+                    and observation.valid
+                    and update_enabled
+                ):
                     models[key].update(observation)
                 recovery_rows.append(
                     {
@@ -731,6 +748,12 @@ def run_p6_scenario(
         ),
         "recovery_to_dense_budget_ratio": (
             int(trial_cfg["recovery_budget_trials"]) / int(trial_cfg["dense_budget_trials"])
+        ),
+        "primary_recovery_horizon_trials": int(
+            trial_cfg.get(
+                "primary_recovery_horizon_trials",
+                trial_cfg["recovery_budget_trials"],
+            )
         ),
         "valid_observation_ratio": float(np.mean(all_valid)),
         "safety_aborts": int(safety_aborts),
