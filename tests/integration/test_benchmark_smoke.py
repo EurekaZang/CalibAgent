@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
+import pytest
+
+from calibagent.cli import build_figures as figures_cli
 from calibagent.cli.build_figures import (
-    build_p6_strong_figure,
-    build_p7_strong_figure,
     build_sample_efficiency_figure,
     build_uncertainty_heatmap,
 )
@@ -74,11 +76,28 @@ def test_benchmark_config_parses_task_distribution() -> None:
     assert config.task_scales == ((0.1, 0.1, 0.2),)
 
 
-def test_build_strong_confirmatory_figures(tmp_path) -> None:
+def test_build_strong_confirmatory_figures(
+    tmp_path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     workspace = Path(__file__).resolve().parents[2]
     p6 = tmp_path / "p6.png"
     p7 = tmp_path / "p7.png"
-    build_p6_strong_figure(workspace / "evidence/p6_strong_confirmatory", p6)
-    build_p7_strong_figure(workspace / "evidence/p7_strong_confirmatory_v2", p7)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "calibagent-figures",
+            "--p6-evidence",
+            str(workspace / "evidence/p6_strong_confirmatory"),
+            "--p6-output",
+            str(p6),
+            "--p7-evidence",
+            str(workspace / "evidence/p7_strong_confirmatory_v2"),
+            "--p7-output",
+            str(p7),
+        ],
+    )
+    figures_cli.main()
     assert p6.stat().st_size > 1000
     assert p7.stat().st_size > 1000

@@ -3,7 +3,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from calibagent.eval.strong_readiness import audit_strong_readiness
+import yaml
+
+from calibagent.eval.strong_readiness import (
+    audit_strong_readiness,
+    build_p6_trace_receipt,
+    build_p7_trace_receipt,
+)
 
 WORKSPACE = Path(__file__).resolve().parents[2]
 
@@ -46,3 +52,25 @@ def test_readme_keeps_simulator_claim_boundary() -> None:
     assert "strong p6/p7 simulator readiness: go" in readme
     assert "first strong p7 confirmation failed" in readme
     assert "real-robot online active calibration remains p8" in readme
+
+
+def test_full_resolution_trace_receipts_reproduce() -> None:
+    criteria = yaml.safe_load(
+        (
+            WORKSPACE / "configs/audit/icra_p6_p7_strong.yaml"
+        ).read_text(encoding="utf-8")
+    )
+    p6 = build_p6_trace_receipt(WORKSPACE, dict(criteria["p6_raw"]))
+    p7 = build_p7_trace_receipt(WORKSPACE, dict(criteria["p7_raw"]))
+    expected_p6 = json.loads(
+        (
+            WORKSPACE / "evidence/p6_strong_confirmatory/trace_audit.json"
+        ).read_text(encoding="utf-8")
+    )
+    expected_p7 = json.loads(
+        (
+            WORKSPACE / "evidence/p7_strong_confirmatory_v2/trace_audit.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert p6 == expected_p6
+    assert p7 == expected_p7
