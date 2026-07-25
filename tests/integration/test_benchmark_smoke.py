@@ -1,6 +1,13 @@
 from __future__ import annotations
 
-from calibagent.cli.build_figures import build_sample_efficiency_figure, build_uncertainty_heatmap
+from pathlib import Path
+
+from calibagent.cli.build_figures import (
+    build_p6_strong_figure,
+    build_p7_strong_figure,
+    build_sample_efficiency_figure,
+    build_uncertainty_heatmap,
+)
 from calibagent.eval.benchmark import BenchmarkConfig, run_suite
 
 
@@ -65,3 +72,13 @@ def test_benchmark_config_parses_task_distribution() -> None:
     )
     assert config.task_centers == ((0.2, 0.0, 0.0),)
     assert config.task_scales == ((0.1, 0.1, 0.2),)
+
+
+def test_build_strong_confirmatory_figures(tmp_path) -> None:
+    workspace = Path(__file__).resolve().parents[2]
+    p6 = tmp_path / "p6.png"
+    p7 = tmp_path / "p7.png"
+    build_p6_strong_figure(workspace / "evidence/p6_strong_confirmatory", p6)
+    build_p7_strong_figure(workspace / "evidence/p7_strong_confirmatory_v2", p7)
+    assert p6.stat().st_size > 1000
+    assert p7.stat().st_size > 1000

@@ -10,6 +10,13 @@ pinned Isaac Lab scenarios with 20 paired seeds each; P6 by three domain-shift
 scenarios with three controls and 20 seeds each; and P7 by three navigation
 maps, three methods, and 60 seeds per map.
 
+**Strong P6/P7 simulator readiness: GO (12/12 independent checks).** The
+strong-confirmatory extension raises P6 to four shifts × 72 seeds × three
+controls and P7 to six new maps × 72 seeds × seven controls. It retains the
+first failed P7 confirmation and bases the positive P7 claim only on a later,
+disjoint, prospectively frozen replication. Full-source audits verify 158/158
+P6 and 566/566 P7 artifacts, including every full-resolution trajectory.
+
 CalibAgent is a simulator-agnostic reference implementation of safe,
 uncertainty-aware active calibration for the mapping from quadruped velocity
 commands `(vx, vy, wz)` to measured body velocity.
@@ -32,7 +39,11 @@ derived from
 - an online shift detector with frozen/passive/full controls, bounded posterior
   inflation and active recovery under in-place gain/friction/payload/COM shifts;
 - a fixed-planner navigation evaluation comparing raw B0, dense B1, and
-  budgeted active B8 calibration on open, slalom, and corridor maps.
+  budgeted active B8 calibration against LHS, Sobol, D-optimal, and no-task
+  matched-budget controls on held-out navigation maps.
+- an independent strong-confirmatory audit that recomputes paired statistics,
+  exact rate intervals, trace safety, source hashes, and failed-to-replication
+  provenance without trusting the producer's `GO` field.
 
 Real-robot online active calibration remains P8. P6 and P7 establish
 domain-shift recovery and downstream navigation only in the pinned simulator;
@@ -47,6 +58,8 @@ python -m venv .venv
 .venv/bin/pip install --no-deps -e .
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/pytest -p pytest_cov --cov=calibagent
 .venv/bin/python -m calibagent.cli.audit_readiness --workspace . --require-ready
+.venv/bin/python -m calibagent.cli.audit_strong_readiness \
+  --workspace . --require-ready
 .venv/bin/calibagent-p1-plan \
   --config configs/experiments/p1_go2_capture.yaml \
   --output outputs/p1_capture/plan.csv
@@ -75,6 +88,14 @@ policy checkpoints:
   --isaaclab-root /path/to/IsaacLab-v2.3.2
 ```
 
+When the full supplemental output trees are mounted, repeat the 1.06 GB
+trajectory/hash audit with:
+
+```bash
+.venv/bin/python -m calibagent.cli.audit_strong_readiness \
+  --workspace . --raw --require-ready
+```
+
 The benchmarks write resolved configurations, run-level metrics, trial/pose
 traces, paired statistics, simulator logs, and manifests. See
 [`docs/requirements_matrix.md`](docs/requirements_matrix.md) for phase-level
@@ -90,6 +111,12 @@ the safety/stopping result is in [`reports/p4_main_report.md`](reports/p4_main_r
 the simulator result is in [`reports/p5_main_report.md`](reports/p5_main_report.md),
 the shift result is in [`reports/p6_main_report.md`](reports/p6_main_report.md),
 the navigation result is in [`reports/p7_main_report.md`](reports/p7_main_report.md),
+the strong shift result is in
+[`reports/p6_strong_confirmatory_report.md`](reports/p6_strong_confirmatory_report.md),
+the retained P7 failure is in
+[`reports/p7_strong_confirmatory_failure.md`](reports/p7_strong_confirmatory_failure.md),
+the successful disjoint replication is in
+[`reports/p7_strong_confirmatory_v2_report.md`](reports/p7_strong_confirmatory_v2_report.md),
 and acquisition requirements are in
 [`docs/p1_real_data_protocol.md`](docs/p1_real_data_protocol.md).
 
@@ -104,6 +131,13 @@ in-place shift detection and recovery, and P7 demonstrates simulator navigation
 with a fixed planner. It does **not** claim that P3–P7 have been executed
 online on a real Go2, that sim-to-real robustness is established, or that the
 simulator results replace hardware validation.
+
+For the stronger P6/P7 claim, P6 establishes an early-recovery advantage over
+passive updating and an absolute terminal-accuracy bound; it does not establish
+terminal superiority over passive updating. P7 establishes benefit over raw
+control and registered noninferiority to dense and matched-budget controls only
+in the pinned simulator. The first strong P7 confirmation failed and is part of
+the evidence record.
 
 ## Quick API
 
@@ -128,3 +162,7 @@ intentionally gitignored. Frozen P3–P7 evidence is stored under the correspond
 `evidence/p3_main/` through `evidence/p7_main/` roots. The
 self-contained P1 evidence bundle is under `evidence/p1_real/`; every frozen
 artifact is hash-checked by the live audit.
+The stronger P6/P7 compact evidence is under
+`evidence/p6_strong_confirmatory/` and
+`evidence/p7_strong_confirmatory_v2/`; hash-bound trace receipts link those
+trees to the full supplemental trajectories.

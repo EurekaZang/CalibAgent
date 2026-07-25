@@ -1,0 +1,66 @@
+{
+  "checks": [
+    {
+      "check_id": "p7_failed_confirmation_retained",
+      "evidence": "verdict=NO_GO, selected_hashes=20/20, commit=8f3c256a592a",
+      "passed": true
+    },
+    {
+      "check_id": "p7_prospective_disjoint_replication",
+      "evidence": "seed_overlap=0, map_overlap=0, failed_commit=8f3c256a592a, success_commit=2a25201e7e20, commit_ancestry=True",
+      "passed": true
+    },
+    {
+      "check_id": "p6_manifest_integrity",
+      "evidence": "artifacts=149/149, config=True, source=True, versioned=True, commit=8f3c256a592a",
+      "passed": true
+    },
+    {
+      "check_id": "p6_pinned_isaac_runtime",
+      "evidence": "IsaacLab=37ddf6268717, IsaacSim=5.1.0-rc.19+release.26219.9c81211b.gl, GPU=NVIDIA GeForce RTX 5090, 580.173.02",
+      "passed": true
+    },
+    {
+      "check_id": "p6_domain_shift_coverage",
+      "evidence": "scenarios=4/4, methods=3, seeds_per_scenario=72",
+      "passed": true
+    },
+    {
+      "check_id": "p6_recomputed_adaptation_statistics",
+      "evidence": "min_detection=0.986, max_detection_p95=4.00, min_recovery=1.000, max_recovery_p95=6.00",
+      "passed": true
+    },
+    {
+      "check_id": "p6_trace_shift_and_safety",
+      "evidence": "finite_unique_traces=4/4, physical_shift_events=4/4, serious=0",
+      "passed": true
+    },
+    {
+      "check_id": "p7_manifest_integrity",
+      "evidence": "artifacts=527/527, config=True, source=True, versioned=True, commit=2a25201e7e20",
+      "passed": true
+    },
+    {
+      "check_id": "p7_pinned_deterministic_isaac_runtime",
+      "evidence": "IsaacLab=37ddf6268717, IsaacSim=5.1.0-rc.19+release.26219.9c81211b.gl, enhanced_determinism=True",
+      "passed": true
+    },
+    {
+      "check_id": "p7_navigation_map_and_seed_coverage",
+      "evidence": "maps=6/6, methods=7, seeds_per_map=72, episode_records=3024",
+      "passed": true
+    },
+    {
+      "check_id": "p7_recomputed_navigation_statistics",
+      "evidence": "min_B8_success=0.972, max_B8_collision=0.000, min_B8-vs-B0_CI=23.453s, max_B8/B1_CI_upper=1.074",
+      "passed": true
+    },
+    {
+      "check_id": "p7_trace_posterior_launch_and_safety",
+      "evidence": "finite_unique_traces=6/6, single_launch_and_finite_posterior=6/6, serious=0",
+      "passed": true
+    }
+  ],
+  "schema_version": "1.0",
+  "verdict": "GO"
+}

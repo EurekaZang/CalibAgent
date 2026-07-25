@@ -114,6 +114,18 @@ the paired final-RMSE effect. Development outputs are excluded from the frozen
 6601–6620 confirmation and retained in
 `reports/p6_development_audit.md`.
 
+### P6 strong confirmation
+
+The stronger protocol uses four held-out shifts and 72 paired seeds
+(10101–10172) per shift with the same frozen/passive/full controls. Its primary
+adaptation endpoint is the paired difference between passive and full mean
+rolling RMSE over recovery trials 4–9. Missing rolling windows receive the
+frozen 0.25 penalty. Each shift must have a strictly positive 95% bootstrap CI
+lower bound and one-sided paired Wilcoxon p ≤ 0.01. Exact
+Clopper–Pearson bounds are added for false alarms, detection, and recovery;
+the full terminal RMSE CI upper bound must not exceed 0.14. Terminal
+full-versus-passive superiority is not a registered claim.
+
 ## P7 simulated downstream-navigation protocol
 
 P7 holds the local waypoint planner, map geometry, locomotion policy, command
@@ -137,3 +149,22 @@ powered replication with new seeds. Its controller is byte-identical to the
 30-seed frozen controller, all effect/noninferiority/safety thresholds are
 unchanged, and failed intervening controller changes remain disclosed in
 `reports/p7_development_audit.md`.
+
+### P7 strong confirmation and replication
+
+The strong protocol adds matched-budget LHS, Sobol, D-optimal, and
+active-without-task controls, for seven methods total. B2/B3/B4/B5/B8 each
+receive 12 trials; B1 receives 30. It uses six held-out maps and 72 paired
+seeds per map. Exact 95% success/collision bounds and paired bootstrap
+success, collision, and completion-time comparisons are primary. B8 must be
+noninferior to dense and every matched-budget control with the frozen 0.05
+rate margins and 1.25 time-ratio CI upper bound.
+
+The first frozen strong confirmation failed and remains the first
+confirmatory result. Trace diagnosis and five development-only interlock
+pilots preceded a newly frozen replication. The replication uses six new maps
+and seeds 10501–10572, disjoint from failed-confirmation seeds 10201–10272.
+Only the replication supports the positive strong claim; neither the failed
+run nor development pilots are pooled into its estimates. Held-out
+calibration-validation RMSE is diagnostic and cannot override a navigation
+endpoint.

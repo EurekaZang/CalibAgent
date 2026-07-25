@@ -27,9 +27,20 @@
 | P7 fixed-planner navigation | Planner hash, enhanced determinism, B0/B1/B8 isolation and serialized posteriors | 3 maps × 3 methods × 60 seeds = 540 episodes; all launches single-attempt | PASS |
 | P7 downstream task effect | Seed-paired success/collision/time and 4,000-sample bootstrap recomputation | B8 success 100%, collision 0%; worst B8-vs-B0 CI lower 38.69 s | PASS |
 | P7 near-dense and budget | B1=30 trials, B8=12; identical planner and policy | B8/B1 mean ratio ≤1.0446, worst CI upper 1.1236, budget ratio 0.40 | PASS |
+| P6 strong confirmation | Four held-out shifts, frozen/passive/full controls, exact rate intervals, early active-vs-passive endpoint | 4 × 72 paired seeds; early-effect CI lower bounds 0.00537–0.01536; detection lower bound ≥0.925; terminal CI upper ≤0.12564 | **PASS** |
+| P6 strong trace/provenance | Independent raw recomputation and hash-bound full-resolution trace scan | 158/158 source artifacts, 12/12 pose traces, max abort latency 20 ms, 0 serious events | **PASS** |
+| P7 first strong confirmation | Six maps, seven controls, 72 paired seeds; failure retained without pooling | B8 success fell to 50/72 on loaded arc; four primary gate groups failed | **NO-GO retained** |
+| P7 strong disjoint replication | Six new maps, seven controls, 72 new paired seeds; exact and paired-bootstrap inference | B8 success ≥70/72, collision 0/72, worst dense/matched time CI upper 1.074/1.090 | **PASS** |
+| P7 strong trace/provenance | Independent raw recomputation, one-launch/posterior checks and full trace scan | 566/566 source artifacts, 42/42 navigation traces, 3,024 episode records, 0 serious events | **PASS** |
 
 ## Current authoritative verdict
 
 `calibagent-audit --workspace . --require-ready` returns **GO** with 39/39
 checks passing. This verdict applies to the frozen claim boundary stated in
 `README.md`; it does not promote P8 or real-robot online P3–P7 claims.
+
+`calibagent-audit-strong --workspace . --require-ready` separately returns
+**GO** with 12/12 checks for the stronger P6/P7 simulator claim. With the
+supplemental output trees mounted, `--raw` repeats the full 1.06 GB
+trajectory/hash audit. This stronger verdict does not alter the real-hardware
+claim boundary.

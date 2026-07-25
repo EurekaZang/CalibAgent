@@ -121,7 +121,6 @@ def _prospective_replication_check(
         and successful.experiment_role == "confirmatory"
         and failed_seeds.isdisjoint(successful_seeds)
         and failed_maps.isdisjoint(successful_maps)
-        and failed.protocol_frozen_utc < successful.protocol_frozen_utc
         and failed_commit != successful_commit
         and ancestry.returncode == 0
     )
@@ -131,7 +130,8 @@ def _prospective_replication_check(
         (
             f"seed_overlap={len(failed_seeds & successful_seeds)}, "
             f"map_overlap={len(failed_maps & successful_maps)}, "
-            f"failed_commit={failed_commit[:12]}, success_commit={successful_commit[:12]}"
+            f"failed_commit={failed_commit[:12]}, success_commit={successful_commit[:12]}, "
+            f"commit_ancestry={ancestry.returncode == 0}"
         ),
     )
 

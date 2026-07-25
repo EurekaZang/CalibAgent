@@ -94,3 +94,17 @@ bound was 1.028; all four matched-control time and paired success/collision
 noninferiority gates passed. This development result authorizes freezing a
 new, disjoint confirmatory replication, but is not itself publication
 confirmation.
+
+## Prospective replication outcome
+
+Commit `2a25201` subsequently froze six new maps and 72 new seeds
+(10501–10572) before the replication was run. None of those maps or seeds
+overlap the failed confirmation. The replication passed all 14 registered gate
+groups: minimum B8 success was 70/72, all B8 collision counts were zero, the
+worst B8/dense completion-time ratio CI upper bound was 1.074, the worst
+matched-budget upper bound was 1.090, and serious events were zero.
+
+The failure above remains the first confirmatory result. The final positive
+claim is explicitly based on the later disjoint replication; development
+pilots are not pooled into either confirmatory estimate. See
+`reports/p7_strong_confirmatory_v2_report.md`.

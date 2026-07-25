@@ -18,6 +18,10 @@
 | P7-MAIN-30 | P7 | commit `6d6537a` | `outputs/p7_main_no_go_6d6537a_corridor_variance/` | **NO-GO:** corridor B8/B1 CI upper 1.2816 exceeded 1.25; all other gates passed |
 | P7-DEGRADED-PILOTS | P7 | commits `b01bdd7`, `1ef0cc9` | corresponding `outputs/p7_pilot_no_go_*` roots | **NO-GO:** persistent guard and recovery ramp reduced reliability; changes reverted |
 | P7-MAIN-60 | P7 | `configs/experiments/p7_navigation_main.yaml` | `evidence/p7_main/` | **PASS:** 3 maps × 3 methods × 60 new seeds; all task, raw-effect, near-dense, budget, safety, runtime, and provenance gates pass |
+| P6-STRONG-CONFIRM | P6 | `configs/experiments/p6_domain_shift_strong_confirmatory.yaml` | `evidence/p6_strong_confirmatory/` | **PASS:** 4 shifts × 3 controls × 72 paired seeds; active-over-passive early recovery, exact rate, terminal accuracy, safety, and provenance gates pass |
+| P7-STRONG-CONFIRM-1 | P7 | `configs/experiments/p7_navigation_strong_confirmatory.yaml` | `evidence/p7_strong_confirmatory_failed/` | **NO-GO retained:** B8 success and raw/dense/matched navigation gate groups failed |
+| P7-INTERLOCK-PILOTS | P7 | commits `70df308`–`e5f4cab` | development outputs only | Development-only: five registered settings diagnosed and corrected the high-rate base-height blind interval |
+| P7-STRONG-CONFIRM-2 | P7 | `configs/experiments/p7_navigation_strong_confirmatory_v2.yaml` | `evidence/p7_strong_confirmatory_v2/` | **PASS:** 6 new maps × 7 controls × 72 new paired seeds; all 14 registered gate groups pass |
 
 P3 main seeds are disjoint from all pilot seeds. P1-REAL is genuine Go2
 LiDAR-odometry evidence and is not substituted with synthetic, retargeted, or
@@ -27,3 +31,8 @@ not labeled as real-robot online evidence. P6 main seeds 6601–6620 are disjoin
 from its pilots. P7 main seeds 8001–8060 are disjoint from the failed 30-seed
 main and all pilots; its controller matches the frozen `6d6537a` controller.
 P6/P7 are simulator evidence and are not labeled as P8 real-robot evidence.
+P6 strong seeds 10101–10172 are disjoint from prior P6 development/main seeds.
+P7 strong replication seeds 10501–10572 and all six replication maps are
+disjoint from the failed confirmation. Git commit ancestry records failure,
+controller correction, development pilots, protocol freeze, and replication;
+no development result is pooled into the confirmatory estimates.
