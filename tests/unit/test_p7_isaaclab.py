@@ -166,6 +166,19 @@ def test_p7_config_rejects_budget_and_method_changes() -> None:
     with pytest.raises(ValueError, match="height-rate guard"):
         replace(config, navigation=navigation).validate()
     navigation = dict(config.navigation)
+    navigation["height_rate_guard"] = {
+        **config.navigation["height_rate_guard"],
+        "high_rate_interlock": {
+            "enabled": True,
+            "activation_height_m": config.safety["min_base_height_m"],
+            "release_height_m": 0.23,
+            "minimum_clearance_m": 0.01,
+            "prediction_steps": 5,
+        },
+    }
+    with pytest.raises(ValueError, match="high-rate height interlock"):
+        replace(config, navigation=navigation).validate()
+    navigation = dict(config.navigation)
     navigation["velocity_feedback"] = {
         **config.navigation["velocity_feedback"],
         "recovery_reengagement_delay_s": config.navigation["timeout_s"],

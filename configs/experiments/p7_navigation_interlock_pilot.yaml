@@ -1,0 +1,188 @@
+experiment_role: pilot
+protocol_frozen_utc: ""
+output_dir: outputs/p7_navigation_interlock_pilot
+
+isaaclab:
+  tag: v2.3.2
+  commit: 37ddf626871758333d6ed89cf64ad702aef127d0
+  isaac_sim_version_prefix: "5.1.0"
+  physics_backend: physx
+  enhanced_determinism: true
+  maximum_startup_attempts: 2
+
+vectorization:
+  num_seeds: 16
+  simulator_seed: 1420240
+  seeds:
+    - 10301
+    - 10302
+    - 10303
+    - 10304
+    - 10305
+    - 10306
+    - 10307
+    - 10308
+    - 10309
+    - 10310
+    - 10311
+    - 10312
+    - 10313
+    - 10314
+    - 10315
+    - 10316
+
+methods:
+  - B0_raw
+  - B1_dense
+  - B2_lhs
+  - B3_sobol
+  - B4_d_opt
+  - B5_active_no_task
+  - B8_full
+
+calibration:
+  feature_set: m1_affine
+  command_bounds:
+    - [-0.40, 0.40]
+    - [-0.30, 0.30]
+    - [-0.70, 0.70]
+  maximum_linear_norm: 0.45
+  dense_trials: 30
+  active_trials: 12
+  active_candidate_source: global_safe_pool
+  dense_design_seed: 88149
+  lhs_design_seed: 88151
+  sobol_design_seed: 88159
+  warmup_s: 0.50
+  ramp_in_s: 0.30
+  settle_s: 0.60
+  measure_s: 0.70
+  ramp_out_s: 0.50
+  model_prior_scale: 0.10
+  model_prior_gain: 1.00
+  validation_commands:
+    - [0.13, 0.04, 0.08]
+    - [0.13, -0.04, -0.08]
+    - [0.10, 0.08, 0.16]
+    - [0.10, -0.08, -0.16]
+    - [0.16, 0.06, 0.14]
+    - [0.16, -0.06, -0.14]
+    - [0.09, 0.10, 0.21]
+    - [0.09, -0.10, -0.21]
+
+navigation:
+  sample_rate_hz: 50
+  planner_rate_hz: 10
+  timeout_s: 60.0
+  initial_stabilization_s: 0.50
+  environment_spacing_m: 8.0
+  cruise_speed_mps: 0.18
+  maximum_lateral_speed_mps: 0.14
+  maximum_yaw_rate_rps: 0.25
+  position_gain: 0.80
+  heading_gain: 0.50
+  waypoint_radius_m: 0.25
+  goal_radius_m: 0.25
+  collision_footprint_radius_m: 0.20
+  maximum_linear_accel_mps2: 1.0
+  maximum_angular_accel_rps2: 2.5
+  inverse_regularization: 0.005
+  inverse_risk_weight: 0.01
+  inverse_undertracking_confidence_weights: [1.00, 0.50, 0.50]
+  inactive_axis_command_limits: [0.08, 0.06, 0.12]
+  velocity_feedback:
+    gain: 1.00
+    ema_alpha: 0.25
+    maximum_correction: [0.12, 0.08, 0.15]
+    activation_threshold: 0.02
+    startup_delay_s: 2.00
+    recovery_reengagement_delay_s: 0.50
+  height_rate_guard:
+    activation_height_m: 0.22
+    minimum_drop_per_planner_tick_m: 0.002
+    hold_s: 0.40
+    maximum_linear_command_norm: 0.20
+    high_rate_interlock:
+      enabled: true
+      activation_height_m: 0.20
+      release_height_m: 0.23
+      minimum_clearance_m: 0.01
+      prediction_steps: 5
+  stall_recovery:
+    minimum_desired_speed_mps: 0.10
+    maximum_actual_speed_mps: 0.02
+    maximum_base_height_m: 0.22
+    detection_s: 0.30
+    emergency_base_height_m: 0.20
+    zero_command_s: 1.00
+    emergency_zero_command_s: 0.50
+    maximum_attempts: 3
+    maximum_emergency_attempts: 30
+  task_commands:
+    - [0.12, 0.00, 0.00]
+    - [0.16, 0.00, 0.00]
+    - [0.18, 0.00, 0.00]
+    - [0.14, 0.08, 0.15]
+    - [0.14, -0.08, -0.15]
+    - [0.10, 0.10, 0.22]
+    - [0.10, -0.10, -0.22]
+
+safety:
+  min_base_height_m: 0.15
+  max_base_height_m: 0.65
+  max_coupled_load: 1.00
+
+checkpoints:
+  flat:
+    url: https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt
+    sha256: 47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439
+
+# Previously failed confirmatory maps are intentionally reused only as a
+# development pressure set. These results cannot be pooled with confirmation.
+maps:
+  - id: confirm_asymmetric_corridor
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    distortion: affine_low
+    physics: {static_friction: 0.59, dynamic_friction: 0.43, payload_add_kg: 1.7, com_offset_x_m: 0.017}
+    waypoints: [[0.70, 0.08], [1.45, 0.12], [2.20, 0.09], [2.95, 0.11]]
+    obstacles:
+      - {center: [1.50, 0.78], size: [3.00, 0.20, 0.50]}
+      - {center: [1.50, -0.52], size: [3.00, 0.20, 0.50]}
+  - id: confirm_dual_gate
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    distortion: affine_low
+    physics: {static_friction: 0.63, dynamic_friction: 0.46, payload_add_kg: 1.4, com_offset_x_m: -0.014}
+    waypoints: [[0.65, 0.00], [1.10, -0.04], [1.70, 0.00], [2.20, 0.04], [2.85, 0.00]]
+    obstacles:
+      - {center: [1.10, 0.72], size: [0.26, 0.65, 0.50]}
+      - {center: [1.10, -0.72], size: [0.26, 0.65, 0.50]}
+      - {center: [2.20, 0.72], size: [0.26, 0.65, 0.50]}
+      - {center: [2.20, -0.72], size: [0.26, 0.65, 0.50]}
+  - id: confirm_loaded_arc
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    distortion: affine_low
+    physics: {static_friction: 0.61, dynamic_friction: 0.44, payload_add_kg: 2.0, com_offset_x_m: 0.020}
+    waypoints: [[0.60, 0.05], [1.20, 0.16], [1.85, 0.22], [2.50, 0.14], [3.10, 0.00]]
+    obstacles:
+      - {center: [1.55, -0.62], size: [0.30, 0.30, 0.50]}
+      - {center: [2.35, 0.68], size: [0.30, 0.30, 0.50]}
+publication_gates:
+  minimum_maps: 3
+  minimum_seeds_per_map: 16
+  minimum_b8_success_rate: 0.95
+  maximum_b8_collision_rate: 0.05
+  minimum_b8_vs_b0_time_improvement_ci95_lower_s: 0.0
+  minimum_b8_vs_b0_time_win_rate: 0.90
+  maximum_success_rate_noninferiority_margin: 0.05
+  maximum_collision_rate_noninferiority_margin: 0.05
+  maximum_b8_to_b1_mean_completion_time_ratio: 1.20
+  maximum_b8_to_b1_completion_time_ratio_ci95_upper: 1.25
+  maximum_b8_to_b1_calibration_budget_ratio: 0.40
+  required_matched_baselines: [B2_lhs, B3_sobol, B4_d_opt, B5_active_no_task]
+  maximum_b8_to_matched_time_ratio_ci95_upper: 1.25
+  minimum_valid_observation_ratio: 0.95
+  maximum_serious_safety_events: 0
+  maximum_abort_latency_s: 0.04

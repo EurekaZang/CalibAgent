@@ -30,6 +30,7 @@ from calibagent.core.safety import (
     HardSafetyFilter,
     SafetyEnvelope,
     height_rate_guarded_command,
+    predictive_height_interlock,
 )
 from calibagent.interfaces.types import PriorState, RobotState, VelocityCommand
 from calibagent.sim import CommandDistortion, make_distortion_parameters
@@ -566,6 +567,8 @@ def _run_navigation(
     recovery = dict(navigation["stall_recovery"])
     velocity_feedback = dict(navigation["velocity_feedback"])
     height_rate_guard = dict(navigation["height_rate_guard"])
+    high_rate_interlock = dict(height_rate_guard.get("high_rate_interlock", {}))
+    high_rate_interlock_enabled = bool(high_rate_interlock.get("enabled", False))
     feedback_alpha = float(velocity_feedback["ema_alpha"])
     feedback_startup_delay_s = float(velocity_feedback["startup_delay_s"])
     feedback_recovery_reengagement_delay_s = float(
@@ -639,6 +642,8 @@ def _run_navigation(
     height_guard_ticks = np.zeros(count, dtype=np.int64)
     height_guard_active = np.zeros(count, dtype=bool)
     height_guard_updates = np.zeros(count, dtype=np.int64)
+    high_rate_interlock_active = np.zeros(count, dtype=bool)
+    high_rate_interlock_updates = np.zeros(count, dtype=np.int64)
     feedback_resume_after_s = np.full(
         count,
         feedback_startup_delay_s,
@@ -649,6 +654,7 @@ def _run_navigation(
     arrays = _state_arrays(robot, origins)
     previous_position = arrays[0][:, :2].copy()
     previous_planner_height = arrays[0][:, 2].copy()
+    previous_sample_height = arrays[0][:, 2].copy()
     safety_event_count = 0
 
     with torch.no_grad():
@@ -843,6 +849,32 @@ def _run_navigation(
                         else:
                             height_guard_active[env_index] = False
                 previous_planner_height = position[:, 2].copy()
+            if high_rate_interlock_enabled:
+                current_height = arrays[0][:, 2]
+                for env_index in range(count):
+                    if finished[env_index]:
+                        high_rate_interlock_active[env_index] = False
+                        continue
+                    active, _ = predictive_height_interlock(
+                        base_height_m=float(current_height[env_index]),
+                        previous_base_height_m=float(previous_sample_height[env_index]),
+                        activation_height_m=float(
+                            high_rate_interlock["activation_height_m"]
+                        ),
+                        release_height_m=float(high_rate_interlock["release_height_m"]),
+                        minimum_projected_height_m=(
+                            float(config.safety_min_base_height_m)
+                            + float(high_rate_interlock["minimum_clearance_m"])
+                        ),
+                        prediction_steps=int(high_rate_interlock["prediction_steps"]),
+                        previously_active=bool(high_rate_interlock_active[env_index]),
+                    )
+                    high_rate_interlock_active[env_index] = active
+                    if active:
+                        compensated[env_index] = 0.0
+                        feedback_active[env_index] = False
+                        high_rate_interlock_updates[env_index] += 1
+                previous_sample_height = current_height.copy()
             effective = distortion.step(compensated, dt)
             effective[finished] = 0.0
             command_term.vel_command_b[:] = torch.as_tensor(
@@ -900,6 +932,9 @@ def _run_navigation(
                         "inverse_target_wz": inverse_target[env_index, 2],
                         "velocity_feedback_active": bool(feedback_active[env_index]),
                         "height_rate_guard_active": bool(height_guard_active[env_index]),
+                        "high_rate_height_interlock_active": bool(
+                            high_rate_interlock_active[env_index]
+                        ),
                         "compensated_vx": compensated[env_index, 0],
                         "compensated_vy": compensated[env_index, 1],
                         "compensated_wz": compensated[env_index, 2],
@@ -952,6 +987,9 @@ def _run_navigation(
             "emergency_recovery_attempts": int(emergency_recovery_attempts[index]),
             "velocity_feedback_updates": int(feedback_updates[index]),
             "height_rate_guard_updates": int(height_guard_updates[index]),
+            "high_rate_height_interlock_updates": int(
+                high_rate_interlock_updates[index]
+            ),
             "serious_safety_event": bool(serious[index]),
         }
         for index, seed in enumerate(config.seeds)
@@ -1072,6 +1110,12 @@ def run_p7_navigation(
         ),
         "height_rate_guard_updates": int(
             sum(int(row["height_rate_guard_updates"]) for row in episode_rows)
+        ),
+        "high_rate_height_interlock_updates": int(
+            sum(
+                int(row["high_rate_height_interlock_updates"])
+                for row in episode_rows
+            )
         ),
         "valid_observation_ratio": float(np.mean(valid)) if valid else 1.0,
         "safety_events": int(safety_events),

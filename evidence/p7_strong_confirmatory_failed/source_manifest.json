@@ -1,0 +1,2287 @@
+{
+  "artifacts": {
+    "maps/confirm_asymmetric_corridor/B0_raw/calibration_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/calibration_metrics.csv",
+      "sha256": "3dbe911114e33e7559a343d7d05642e1b745e739a677b8c68f053408eab6186d"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/calibration_validation.csv",
+      "sha256": "3ebb9e738ccb0ddb30e126749517e37ea5c518534f29dfc97b20dc54b2a15fa5"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/distortion_parameters.json": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/episode_metrics.csv",
+      "sha256": "53a773eb95e63fe119417c3e7cc3fe1b1e99b8434c6874ab2cc0755b879e2f57"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/launch_attempts.json": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/launch_attempts.json",
+      "sha256": "1b516c075d9ebcee7a1a2e814caea7c48d6dcc3251c3a040dbbdddbca53bf4e4"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/launch_command.json": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/launch_command.json",
+      "sha256": "a84369393f776f5e8b7e496d8f83c3be0067d6f68bc9472343946198effbc7d1"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/launch_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/launch_config.json",
+      "sha256": "33e2c8a1159d34cfa4e0635542ea272e19de4b8caa0bf171431e204bea721267"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/map_geometry.json": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/map_geometry.json",
+      "sha256": "de17e518107a867f3b35ea9e1f9d7e89733058cb49e5e26f99b7a4e6dacf23c2"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/nav_trace.csv.gz": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/nav_trace.csv.gz",
+      "sha256": "bf98a98a8a101c832bedbe29bd251faadee7bd0c6f95ad689f3996880412f291"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/posterior_state.npz": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/posterior_state.npz",
+      "sha256": "d4b70a7e105e79994dd950e24f6e50758d7333841068dc8d09a96590948a701a"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/scenario_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/scenario_config.json",
+      "sha256": "33e2c8a1159d34cfa4e0635542ea272e19de4b8caa0bf171431e204bea721267"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/simulator.log": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/simulator.log",
+      "sha256": "25411e13d758be66deedbbd6cd8f13016c63cd2caa227c7792637e24b660d9ac"
+    },
+    "maps/confirm_asymmetric_corridor/B0_raw/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/B0_raw/summary.json",
+      "sha256": "c5b7181162162e5049e72aeeac038e66a74f44ba0645f201d0d4f13f7d597da0"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/calibration_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/calibration_metrics.csv",
+      "sha256": "a91edc3408b8d65c1fb108550e2a49ff22c138e00812d01cd95529e2c1499099"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/calibration_validation.csv",
+      "sha256": "0fa401b0d76efce4575a6bd941a22d489b1483fb009fa88ddb94832dece6583f"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/distortion_parameters.json": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/episode_metrics.csv",
+      "sha256": "9c5394b89fdd50e6f0b7a12e2cebcc144d56e91717368340260a60ae3c81c8bd"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/launch_attempts.json": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/launch_attempts.json",
+      "sha256": "b168a6df490a45172badc0e8c87b9d2b374e47f77a3a5742d5ece02b945308a9"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/launch_command.json": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/launch_command.json",
+      "sha256": "e441c6cd108f0d680acefbc8f950455013f90a75e346929da669530d59c6addc"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/launch_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/launch_config.json",
+      "sha256": "b570fcdab4faaed039daed719b58b1d94a6f3a4d87040f77f9dab3f4b4b0b16d"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/map_geometry.json": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/map_geometry.json",
+      "sha256": "de17e518107a867f3b35ea9e1f9d7e89733058cb49e5e26f99b7a4e6dacf23c2"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/nav_trace.csv.gz": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/nav_trace.csv.gz",
+      "sha256": "665a208e5a2a0dc5e85b04e33ff2b64275e69942e1739f0600c4885f37a9c44f"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/posterior_state.npz": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/posterior_state.npz",
+      "sha256": "1a762303b994bf208905b0aef1ebd9b5ac83e0df95065f2b02dc482060c0ff09"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/scenario_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/scenario_config.json",
+      "sha256": "b570fcdab4faaed039daed719b58b1d94a6f3a4d87040f77f9dab3f4b4b0b16d"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/simulator.log": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/simulator.log",
+      "sha256": "5bc19693cc82458745e4791abf01c7b447d4711305687e71e995dbc6979467ea"
+    },
+    "maps/confirm_asymmetric_corridor/B1_dense/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/B1_dense/summary.json",
+      "sha256": "123b9804b3ee35a153c084c5be0c6275c20bd947f132ac622a1f60e5bdce6d8d"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/calibration_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/calibration_metrics.csv",
+      "sha256": "ddac13297a4193dcb8ef7220ac4bf0fd77b6deb5e2959211d0425b45f8451336"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/calibration_validation.csv",
+      "sha256": "791ec5c126e42f05d9d692d4b1e0ad70803a0e046493b362fb06dea10edf7216"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/distortion_parameters.json": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/episode_metrics.csv",
+      "sha256": "12e55083c37a59d37e1012bb4d0786c1e9f7d4081fa8ef6bd65f840dc4f57cc1"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/launch_attempts.json": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/launch_attempts.json",
+      "sha256": "054257e495094e637178fc5067fbef6103d83c93dc1bf579e74268266449f4e6"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/launch_command.json": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/launch_command.json",
+      "sha256": "3134d5a1491cf0585eb30225c55fcf9c3dead55dc2e88b1c3b0722f86653a9af"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/launch_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/launch_config.json",
+      "sha256": "5799246f3faa74685b8fe21e5c3789ad3d6034ff33cdf55116d63be3a48a6a31"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/map_geometry.json": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/map_geometry.json",
+      "sha256": "de17e518107a867f3b35ea9e1f9d7e89733058cb49e5e26f99b7a4e6dacf23c2"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/nav_trace.csv.gz": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/nav_trace.csv.gz",
+      "sha256": "077375d60795a251d448c2bf92028d53d6148da944b17c5c024e3f0e6f3f5825"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/posterior_state.npz": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/posterior_state.npz",
+      "sha256": "aef8b882d5141f37a4ac0edb9da46042babfa3c6694c8515b7f3edfcc16129c1"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/scenario_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/scenario_config.json",
+      "sha256": "5799246f3faa74685b8fe21e5c3789ad3d6034ff33cdf55116d63be3a48a6a31"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/simulator.log": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/simulator.log",
+      "sha256": "b40a181b8d45ffe986d28b673fdca33ddab7673dc231eb587a6ab074bf4ff552"
+    },
+    "maps/confirm_asymmetric_corridor/B2_lhs/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/B2_lhs/summary.json",
+      "sha256": "50ecb4dddae35ad0432e6ab2ae8181d525e5a6fcebc1a44bbcd22a12c0e462ef"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/calibration_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/calibration_metrics.csv",
+      "sha256": "6db07595cf5e641a09fbcf0ecb1bac2d949043cce22d124e9215759b4391b1f8"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/calibration_validation.csv",
+      "sha256": "0704411696ecce9cafc21db9088a71076fc6fade6069f6f9230af9bf41bebb3f"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/distortion_parameters.json": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/episode_metrics.csv",
+      "sha256": "46326eb54df492a7791baf4ce63e70a6383f261d0c496f5be3afef31760efe5e"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/launch_attempts.json": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/launch_attempts.json",
+      "sha256": "ec9abee64edc93826d63a208b1169c3279762c1bbc721c329c7747960563cb3e"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/launch_command.json": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/launch_command.json",
+      "sha256": "f367d6ac30a2c567bff3631c3620b64b52c6b794c049b1bcda3029770b0d9499"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/launch_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/launch_config.json",
+      "sha256": "fe8f30bf1e7c5f5b89daad4622ef89359170d0c47d261a7e2aa0ff9f25f7172e"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/map_geometry.json": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/map_geometry.json",
+      "sha256": "de17e518107a867f3b35ea9e1f9d7e89733058cb49e5e26f99b7a4e6dacf23c2"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/nav_trace.csv.gz": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/nav_trace.csv.gz",
+      "sha256": "bd59ce59d7e1467358ed6f113e0e5d7743fa10206fabd45ba753f84571331b1b"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/posterior_state.npz": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/posterior_state.npz",
+      "sha256": "f8c6a441452fad41004b4570c9ddffa02b7c31259f8018e79367fdabb0042e6c"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/scenario_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/scenario_config.json",
+      "sha256": "fe8f30bf1e7c5f5b89daad4622ef89359170d0c47d261a7e2aa0ff9f25f7172e"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/simulator.log": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/simulator.log",
+      "sha256": "2c6b102893155d5105cc8c76782944f8fa8f12823eb787be209aba18c16fef74"
+    },
+    "maps/confirm_asymmetric_corridor/B3_sobol/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/B3_sobol/summary.json",
+      "sha256": "11ee4d668997ec4dd35ef896e967163b06dcd563efc24fbba04af1fa1510cda4"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/calibration_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/calibration_metrics.csv",
+      "sha256": "43320ea8782860adde3f1e879e4e43e3f3c43a1eac82ab42c6a60ac583e9c620"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/calibration_validation.csv",
+      "sha256": "a565ac565799e8e4dd5bb88618ddd9c72a28e755683155a0539ac751317e9493"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/distortion_parameters.json": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/episode_metrics.csv",
+      "sha256": "c8d99f7f5e754ad79300cffc093b91da79c16962b3c9f4365ec95e73f4b5e3c1"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/launch_attempts.json": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/launch_attempts.json",
+      "sha256": "7cfe4345b25a8377e7b6455e12def489026a6795e2a0d8944e249967a27a3635"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/launch_command.json": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/launch_command.json",
+      "sha256": "1e0b8105a40641f2355bc77e73b7d2e9791e02d7faf3b1b502583766bce2c400"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/launch_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/launch_config.json",
+      "sha256": "77bc45e7f3d96a393a96ba7620a2c9e7541e4b21dc61a81ca004d1a4078399af"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/map_geometry.json": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/map_geometry.json",
+      "sha256": "de17e518107a867f3b35ea9e1f9d7e89733058cb49e5e26f99b7a4e6dacf23c2"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/nav_trace.csv.gz": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/nav_trace.csv.gz",
+      "sha256": "e5b7c377c18347d7a0c2f265b78a23f5c9c8cb03c31fec59388b41eea65ac00c"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/posterior_state.npz": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/posterior_state.npz",
+      "sha256": "e0393d2a135eb7c2f86c5803d1083d6752575b97d9979b75143ecce7456e12aa"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/scenario_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/scenario_config.json",
+      "sha256": "77bc45e7f3d96a393a96ba7620a2c9e7541e4b21dc61a81ca004d1a4078399af"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/simulator.log": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/simulator.log",
+      "sha256": "79d40fb2d33496324917e5314c3f98a3586c25f7e808d92f56304ee8c0baf023"
+    },
+    "maps/confirm_asymmetric_corridor/B4_d_opt/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/B4_d_opt/summary.json",
+      "sha256": "16a9a4c8b383e5c00ef9c21c0dc1cab1eea0e3b290da27f80f1f84ee55184825"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/calibration_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/calibration_metrics.csv",
+      "sha256": "275068a5197f34631e12f0a00cd40ff602ba9f013be024be1b4160fadfbfa09b"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/calibration_validation.csv",
+      "sha256": "619808c0ac509c6a43c551c9c4a874258c8150cde966db04beb409e9560b3a3f"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/distortion_parameters.json": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/episode_metrics.csv",
+      "sha256": "95f5e6654c1073abb366021fa1fe540b4040865c3e00d57e44aaae3169db5c58"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/launch_attempts.json": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/launch_attempts.json",
+      "sha256": "e921a71ddbb926ed01da0ad4679efbccee0a10bac24d31f564a273ee554043ea"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/launch_command.json": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/launch_command.json",
+      "sha256": "1f422eb6bfc77b84def81c2c688d40c196655fa12a475c3e60ad95ea3d25c6a5"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/launch_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/launch_config.json",
+      "sha256": "1c0b3ce8cc505cb618e842211c839e197c1428a9b16f004d14bf48435c41c7c9"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/map_geometry.json": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/map_geometry.json",
+      "sha256": "de17e518107a867f3b35ea9e1f9d7e89733058cb49e5e26f99b7a4e6dacf23c2"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/nav_trace.csv.gz": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/nav_trace.csv.gz",
+      "sha256": "e952d6c7528c01a658c3a635826a2baa60c72862773a104fdc43c976a42627b9"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/posterior_state.npz": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/posterior_state.npz",
+      "sha256": "7134b739266c2ca711b16020f841dd7a3163a959e6b706642f21884edf9215db"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/scenario_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/scenario_config.json",
+      "sha256": "1c0b3ce8cc505cb618e842211c839e197c1428a9b16f004d14bf48435c41c7c9"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/simulator.log": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/simulator.log",
+      "sha256": "96459784e36107c2c1d7af686353cc6f72295062a592d65b14d5f1cf297fab83"
+    },
+    "maps/confirm_asymmetric_corridor/B5_active_no_task/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/B5_active_no_task/summary.json",
+      "sha256": "b60f50e5b194712c20cc88bc16ebc1b4951a117315d32cbd1d4d9364e382bab9"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/calibration_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/calibration_metrics.csv",
+      "sha256": "8624958ab2c4ac1766ffcc053991ef050467087f68e38ca170785beaf213e449"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/calibration_validation.csv",
+      "sha256": "02e5c6f0b8d9cbbb1b67d4b43a1ae7870562dc7709021c3a3c3a14ec6c8ac6ac"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/distortion_parameters.json": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/episode_metrics.csv",
+      "sha256": "3cbf33a1b16d27eeeb6a6fd72bf2fd56a43877c1783048dcfc96136e5373ae72"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/launch_attempts.json": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/launch_attempts.json",
+      "sha256": "011c09df4a0fbe3fa531fa42501a3b079098da0f3cc49948d944b397c9125f46"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/launch_command.json": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/launch_command.json",
+      "sha256": "ca35448c8d50d323001eb81e2bc7aec2835d87978bd4cf5d3b77fcb35acff7f4"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/launch_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/launch_config.json",
+      "sha256": "fb65553dec3b0617be9acd19eed4c2a1e1aa4bbe06568b474836fb55f42579a2"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/map_geometry.json": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/map_geometry.json",
+      "sha256": "de17e518107a867f3b35ea9e1f9d7e89733058cb49e5e26f99b7a4e6dacf23c2"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/nav_trace.csv.gz": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/nav_trace.csv.gz",
+      "sha256": "df9f60fc35fe028d9e6bae594fd0c05e656cea9bace1ec0a0214eae310c7cb78"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/posterior_state.npz": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/posterior_state.npz",
+      "sha256": "de1f99b437710d155ddca5aec73374c735522bd31c9b3c952dd0710d4670b0ff"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/scenario_config.json": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/scenario_config.json",
+      "sha256": "fb65553dec3b0617be9acd19eed4c2a1e1aa4bbe06568b474836fb55f42579a2"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/simulator.log": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/simulator.log",
+      "sha256": "bfe211d70a68c38caa946d3cfbb2c48f39bbb837f7e903a030b8029b24e39d67"
+    },
+    "maps/confirm_asymmetric_corridor/B8_full/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/B8_full/summary.json",
+      "sha256": "b4a5d16533e136eef338baf4fd6a86fe789c4acf593a2a89d797fde5b60ef30c"
+    },
+    "maps/confirm_asymmetric_corridor/calibration_validation.csv": {
+      "path": "maps/confirm_asymmetric_corridor/calibration_validation.csv",
+      "sha256": "83a3c45bdf1801a9be27a0344f1ee80d388a38afd487173362e24edfa71daf30"
+    },
+    "maps/confirm_asymmetric_corridor/episode_metrics.csv": {
+      "path": "maps/confirm_asymmetric_corridor/episode_metrics.csv",
+      "sha256": "91ea3d93868e844b245a0cf93077039f50325c51a0db33ccd71317925b14e464"
+    },
+    "maps/confirm_asymmetric_corridor/summary.json": {
+      "path": "maps/confirm_asymmetric_corridor/summary.json",
+      "sha256": "dc3ec7a15f3bccb9a384b63ddd6a4060584a4d149cda1cad56a95945a87c071e"
+    },
+    "maps/confirm_dual_gate/B0_raw/calibration_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B0_raw/calibration_metrics.csv",
+      "sha256": "2e9bacb46da7c57cb9bbd8eaaadad2c723e13a1a01aba0e915fbba254630e490"
+    },
+    "maps/confirm_dual_gate/B0_raw/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/B0_raw/calibration_validation.csv",
+      "sha256": "dde8a4c91c724b66337d4451b72e239cc076b914cc4811d7370f508352d00f6b"
+    },
+    "maps/confirm_dual_gate/B0_raw/distortion_parameters.json": {
+      "path": "maps/confirm_dual_gate/B0_raw/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_dual_gate/B0_raw/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B0_raw/episode_metrics.csv",
+      "sha256": "24f11b5c75ba2ca63957fa0902d429c1cbda490c615378ab12e3d0efae0f2974"
+    },
+    "maps/confirm_dual_gate/B0_raw/launch_attempts.json": {
+      "path": "maps/confirm_dual_gate/B0_raw/launch_attempts.json",
+      "sha256": "8bf3ce74434fb8b53628d018592fba82bd8a6c3c44dc10fe433194e1a009fcba"
+    },
+    "maps/confirm_dual_gate/B0_raw/launch_command.json": {
+      "path": "maps/confirm_dual_gate/B0_raw/launch_command.json",
+      "sha256": "261ef3ff7fd64816d025219a87c0e8e22c5fbda90a099d04d502067b4c65edc3"
+    },
+    "maps/confirm_dual_gate/B0_raw/launch_config.json": {
+      "path": "maps/confirm_dual_gate/B0_raw/launch_config.json",
+      "sha256": "a848e935453510d44c4d9e9f9cf27e4ee59c64ca608223cd8ae0238c528de1f8"
+    },
+    "maps/confirm_dual_gate/B0_raw/map_geometry.json": {
+      "path": "maps/confirm_dual_gate/B0_raw/map_geometry.json",
+      "sha256": "44277cc147e4aa30578533c1395ba42a60a13565d9743b8b35043f7f2c6d1f60"
+    },
+    "maps/confirm_dual_gate/B0_raw/nav_trace.csv.gz": {
+      "path": "maps/confirm_dual_gate/B0_raw/nav_trace.csv.gz",
+      "sha256": "3f2a3fa4f6ecc138513a13a606784abc798837e9435a43e2c5a66075fd46547f"
+    },
+    "maps/confirm_dual_gate/B0_raw/posterior_state.npz": {
+      "path": "maps/confirm_dual_gate/B0_raw/posterior_state.npz",
+      "sha256": "d4b70a7e105e79994dd950e24f6e50758d7333841068dc8d09a96590948a701a"
+    },
+    "maps/confirm_dual_gate/B0_raw/scenario_config.json": {
+      "path": "maps/confirm_dual_gate/B0_raw/scenario_config.json",
+      "sha256": "a848e935453510d44c4d9e9f9cf27e4ee59c64ca608223cd8ae0238c528de1f8"
+    },
+    "maps/confirm_dual_gate/B0_raw/simulator.log": {
+      "path": "maps/confirm_dual_gate/B0_raw/simulator.log",
+      "sha256": "2d52f56898528bc7c6f0d55f7568636f322d3b9512a76efbb7b3d7ccb858e22a"
+    },
+    "maps/confirm_dual_gate/B0_raw/summary.json": {
+      "path": "maps/confirm_dual_gate/B0_raw/summary.json",
+      "sha256": "21208fc858e25d8dfaf04787dbaa2da8ad075f46428acf990569db7e7b7450e6"
+    },
+    "maps/confirm_dual_gate/B1_dense/calibration_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B1_dense/calibration_metrics.csv",
+      "sha256": "add6f122398916d35c53d7b43621394ec9c96603111ca64933588ed18dfbc8c6"
+    },
+    "maps/confirm_dual_gate/B1_dense/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/B1_dense/calibration_validation.csv",
+      "sha256": "2371b5a6678668ce49b208e90f9d4948aa661d4fb1c0f81d57957c330a719733"
+    },
+    "maps/confirm_dual_gate/B1_dense/distortion_parameters.json": {
+      "path": "maps/confirm_dual_gate/B1_dense/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_dual_gate/B1_dense/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B1_dense/episode_metrics.csv",
+      "sha256": "9859bb7d03c4e836325de3f44886f1edc1b51b6166ef6c34900e078053ad0707"
+    },
+    "maps/confirm_dual_gate/B1_dense/launch_attempts.json": {
+      "path": "maps/confirm_dual_gate/B1_dense/launch_attempts.json",
+      "sha256": "122ddf78d204e572a32d7c3930065e084c046e4a53954a3c70b747ae2549b5bf"
+    },
+    "maps/confirm_dual_gate/B1_dense/launch_command.json": {
+      "path": "maps/confirm_dual_gate/B1_dense/launch_command.json",
+      "sha256": "da65f091a08f1b03a9139edaa407b267f73c297e1b8cb3e8beb35eb5425e212c"
+    },
+    "maps/confirm_dual_gate/B1_dense/launch_config.json": {
+      "path": "maps/confirm_dual_gate/B1_dense/launch_config.json",
+      "sha256": "eed3d4d25bffd1431a1c2049b0d4e7ea7fa87784cad6555d5ff59b23204110b2"
+    },
+    "maps/confirm_dual_gate/B1_dense/map_geometry.json": {
+      "path": "maps/confirm_dual_gate/B1_dense/map_geometry.json",
+      "sha256": "44277cc147e4aa30578533c1395ba42a60a13565d9743b8b35043f7f2c6d1f60"
+    },
+    "maps/confirm_dual_gate/B1_dense/nav_trace.csv.gz": {
+      "path": "maps/confirm_dual_gate/B1_dense/nav_trace.csv.gz",
+      "sha256": "8c2a94a1da4f623ed4ed6dd2cb13766a0f692e7fc6941f731c8e4105619569b9"
+    },
+    "maps/confirm_dual_gate/B1_dense/posterior_state.npz": {
+      "path": "maps/confirm_dual_gate/B1_dense/posterior_state.npz",
+      "sha256": "1f26808551e6b260f7343575400e5af505f1ac9e949814d93711a8ae2f629e5a"
+    },
+    "maps/confirm_dual_gate/B1_dense/scenario_config.json": {
+      "path": "maps/confirm_dual_gate/B1_dense/scenario_config.json",
+      "sha256": "eed3d4d25bffd1431a1c2049b0d4e7ea7fa87784cad6555d5ff59b23204110b2"
+    },
+    "maps/confirm_dual_gate/B1_dense/simulator.log": {
+      "path": "maps/confirm_dual_gate/B1_dense/simulator.log",
+      "sha256": "83e45f622addd683f62a8dc8ef79890b5fd70cbf3415ea8017ab7eb16a6d3835"
+    },
+    "maps/confirm_dual_gate/B1_dense/summary.json": {
+      "path": "maps/confirm_dual_gate/B1_dense/summary.json",
+      "sha256": "951093c7170e0681b6a669a1c6824226f76444e1b7037a866a44afff1ff67c48"
+    },
+    "maps/confirm_dual_gate/B2_lhs/calibration_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B2_lhs/calibration_metrics.csv",
+      "sha256": "e1b7086111f0133654260c7b784e6a4a9b8617c7441dcf68c7048d648fe406c2"
+    },
+    "maps/confirm_dual_gate/B2_lhs/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/B2_lhs/calibration_validation.csv",
+      "sha256": "c398ce87e3e2ee83adf1cd3e2c0ec7e6e5e045f6f22ae570677326375da8de5d"
+    },
+    "maps/confirm_dual_gate/B2_lhs/distortion_parameters.json": {
+      "path": "maps/confirm_dual_gate/B2_lhs/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_dual_gate/B2_lhs/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B2_lhs/episode_metrics.csv",
+      "sha256": "1a8bf83301bf6febaf4605a893270e186a75fbeb72182875ef18b6c9e895d692"
+    },
+    "maps/confirm_dual_gate/B2_lhs/launch_attempts.json": {
+      "path": "maps/confirm_dual_gate/B2_lhs/launch_attempts.json",
+      "sha256": "b6757b0146e071dc6efc6ae69475abcbaa64bcc8cb2045c793a5f40e018c7f4e"
+    },
+    "maps/confirm_dual_gate/B2_lhs/launch_command.json": {
+      "path": "maps/confirm_dual_gate/B2_lhs/launch_command.json",
+      "sha256": "412987362cd08dcc8147df95258e07c0adc7dd6e891e1f6435c84a7ac395c6eb"
+    },
+    "maps/confirm_dual_gate/B2_lhs/launch_config.json": {
+      "path": "maps/confirm_dual_gate/B2_lhs/launch_config.json",
+      "sha256": "4c14a7f1e1af2b6dc6ebd148f823a17f6773336c8c3da431f20a1978d0fa6b12"
+    },
+    "maps/confirm_dual_gate/B2_lhs/map_geometry.json": {
+      "path": "maps/confirm_dual_gate/B2_lhs/map_geometry.json",
+      "sha256": "44277cc147e4aa30578533c1395ba42a60a13565d9743b8b35043f7f2c6d1f60"
+    },
+    "maps/confirm_dual_gate/B2_lhs/nav_trace.csv.gz": {
+      "path": "maps/confirm_dual_gate/B2_lhs/nav_trace.csv.gz",
+      "sha256": "5b55385a71b873026cf4134ffe55590e8f8335888bc2e7cd238901995294ae9d"
+    },
+    "maps/confirm_dual_gate/B2_lhs/posterior_state.npz": {
+      "path": "maps/confirm_dual_gate/B2_lhs/posterior_state.npz",
+      "sha256": "2693f104ca37f65cf29952dece0d654ce60bb43d1fa5c837c4342177b4598908"
+    },
+    "maps/confirm_dual_gate/B2_lhs/scenario_config.json": {
+      "path": "maps/confirm_dual_gate/B2_lhs/scenario_config.json",
+      "sha256": "4c14a7f1e1af2b6dc6ebd148f823a17f6773336c8c3da431f20a1978d0fa6b12"
+    },
+    "maps/confirm_dual_gate/B2_lhs/simulator.log": {
+      "path": "maps/confirm_dual_gate/B2_lhs/simulator.log",
+      "sha256": "ccb2844afce182d9bd6483d1d962f8f9c0846954a9eedb08ab72fbfdb45087df"
+    },
+    "maps/confirm_dual_gate/B2_lhs/summary.json": {
+      "path": "maps/confirm_dual_gate/B2_lhs/summary.json",
+      "sha256": "1034e020989b5c1f089a06c649d5b545b97634fb12ae2b2f06765a5984fc68c3"
+    },
+    "maps/confirm_dual_gate/B3_sobol/calibration_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B3_sobol/calibration_metrics.csv",
+      "sha256": "853cced4e2bd08b5d2c5b099ad79ea34659129051fb969b0cf4f00f524a96724"
+    },
+    "maps/confirm_dual_gate/B3_sobol/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/B3_sobol/calibration_validation.csv",
+      "sha256": "634f8710cb89639868e7524bf173f493da171101d29bbb50da96327eda4caf57"
+    },
+    "maps/confirm_dual_gate/B3_sobol/distortion_parameters.json": {
+      "path": "maps/confirm_dual_gate/B3_sobol/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_dual_gate/B3_sobol/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B3_sobol/episode_metrics.csv",
+      "sha256": "e006f09e18ccc252c4bcc077951859ce2dfab85fe1643df26a5abf655b51eb76"
+    },
+    "maps/confirm_dual_gate/B3_sobol/launch_attempts.json": {
+      "path": "maps/confirm_dual_gate/B3_sobol/launch_attempts.json",
+      "sha256": "d50a47341192d1e9631102f862ebdabfd503965cb2787483c97374d095adb55d"
+    },
+    "maps/confirm_dual_gate/B3_sobol/launch_command.json": {
+      "path": "maps/confirm_dual_gate/B3_sobol/launch_command.json",
+      "sha256": "c5748b2946ae888e6c2689659ace57cd6c1dda2f962eb601b0106a110cde7aea"
+    },
+    "maps/confirm_dual_gate/B3_sobol/launch_config.json": {
+      "path": "maps/confirm_dual_gate/B3_sobol/launch_config.json",
+      "sha256": "6a3d2ea08ec8e40c09bdc3f967f151e1a425c643a9e55d29f856232d824db4c6"
+    },
+    "maps/confirm_dual_gate/B3_sobol/map_geometry.json": {
+      "path": "maps/confirm_dual_gate/B3_sobol/map_geometry.json",
+      "sha256": "44277cc147e4aa30578533c1395ba42a60a13565d9743b8b35043f7f2c6d1f60"
+    },
+    "maps/confirm_dual_gate/B3_sobol/nav_trace.csv.gz": {
+      "path": "maps/confirm_dual_gate/B3_sobol/nav_trace.csv.gz",
+      "sha256": "3842d2e0d79ebe64bf7e5cb4425e33d6ab27c741009750ffb49dec70db94b2b6"
+    },
+    "maps/confirm_dual_gate/B3_sobol/posterior_state.npz": {
+      "path": "maps/confirm_dual_gate/B3_sobol/posterior_state.npz",
+      "sha256": "f8e93e6966c7b457c5b8ecb4880bb0083b1d32cc350312783e23811978559a56"
+    },
+    "maps/confirm_dual_gate/B3_sobol/scenario_config.json": {
+      "path": "maps/confirm_dual_gate/B3_sobol/scenario_config.json",
+      "sha256": "6a3d2ea08ec8e40c09bdc3f967f151e1a425c643a9e55d29f856232d824db4c6"
+    },
+    "maps/confirm_dual_gate/B3_sobol/simulator.log": {
+      "path": "maps/confirm_dual_gate/B3_sobol/simulator.log",
+      "sha256": "ec1a13561821a8088c23e58c5195a84b0a072cb1c73b4beeaeb0d2ff57e8b857"
+    },
+    "maps/confirm_dual_gate/B3_sobol/summary.json": {
+      "path": "maps/confirm_dual_gate/B3_sobol/summary.json",
+      "sha256": "25d465c82fb22a052a23d23009e787c97b3cb3a9a07a4f10f057c8e95d596734"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/calibration_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/calibration_metrics.csv",
+      "sha256": "d9f7690582af22ce37b5a5079fada998ca188d1d66bb66e430eb6febcf2d6e74"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/calibration_validation.csv",
+      "sha256": "092f62ca280fa3284f6d79962d91325bc5e47cfbbc8a247fd562815bd5b6281c"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/distortion_parameters.json": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/episode_metrics.csv",
+      "sha256": "8627206c19519d2f78c4e5e534728ea99ce3b5b54bd3e88d4418f29476696e0b"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/launch_attempts.json": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/launch_attempts.json",
+      "sha256": "0da67c5d655d8c7b8309b08e59f58a62d0f9ab9624a7b9e65e1140a4f1326cf0"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/launch_command.json": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/launch_command.json",
+      "sha256": "8d5227d766a261de2de5a23c42288002eadbb950675d46d530e40de401111597"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/launch_config.json": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/launch_config.json",
+      "sha256": "98452dcd19defd43c4ff910707c0f46aa2654e0f16e53b0c1d5f1ff07f8dbed0"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/map_geometry.json": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/map_geometry.json",
+      "sha256": "44277cc147e4aa30578533c1395ba42a60a13565d9743b8b35043f7f2c6d1f60"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/nav_trace.csv.gz": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/nav_trace.csv.gz",
+      "sha256": "ac55f0902d2cd5838d0d22c898477b007c3c07372c00fe77486be4f5eda4aefb"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/posterior_state.npz": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/posterior_state.npz",
+      "sha256": "1ffbe7adaaa4fd074c6930d7c7603d29d2097a53e50b3ae6cf08f01af6c1d92b"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/scenario_config.json": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/scenario_config.json",
+      "sha256": "98452dcd19defd43c4ff910707c0f46aa2654e0f16e53b0c1d5f1ff07f8dbed0"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/simulator.log": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/simulator.log",
+      "sha256": "e86b966872d3a8dfab8f89df8645f693331e13675d5ff9293ff1412f50058bbb"
+    },
+    "maps/confirm_dual_gate/B4_d_opt/summary.json": {
+      "path": "maps/confirm_dual_gate/B4_d_opt/summary.json",
+      "sha256": "0d4cd1537004b9cff3fe9b1fdf1edb8f2d5b24ae4d6bc73a3f91bca937434265"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/calibration_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/calibration_metrics.csv",
+      "sha256": "7c958aaebe07c9a21d0560154cdd05eca83af4f0cfdaaa8400f18843eeb67285"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/calibration_validation.csv",
+      "sha256": "6057f263b80da756c0bacdaf12fdb044a378e66a2d0185a17480c0bb09441091"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/distortion_parameters.json": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/episode_metrics.csv",
+      "sha256": "4c1eb4992847f87a9edbca29922074adf32b879372ea00c59d1a5ee8b181eb5b"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/launch_attempts.json": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/launch_attempts.json",
+      "sha256": "54a45c3a1429ce3a0e0ad7e2c0d87dcab3e73a55b61f4e759ae32009058f047d"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/launch_command.json": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/launch_command.json",
+      "sha256": "375d5fc82ce9a31cdb5213abb86a39e929acdfb3075ccd7044ea3b9c4430c415"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/launch_config.json": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/launch_config.json",
+      "sha256": "57bb5f3cad15905ae1bb4ecec19ac07de209d21347bef304a2b37bcb1b724ad2"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/map_geometry.json": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/map_geometry.json",
+      "sha256": "44277cc147e4aa30578533c1395ba42a60a13565d9743b8b35043f7f2c6d1f60"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/nav_trace.csv.gz": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/nav_trace.csv.gz",
+      "sha256": "bd4cbc06c938f555523fca8d7a7d33e15d18b12f656907b0711cbbf2925fd6c0"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/posterior_state.npz": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/posterior_state.npz",
+      "sha256": "dd167604f934616663b3e7bf6973b455c59f9f7721c4b6a78ccb7c499e8dafe0"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/scenario_config.json": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/scenario_config.json",
+      "sha256": "57bb5f3cad15905ae1bb4ecec19ac07de209d21347bef304a2b37bcb1b724ad2"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/simulator.log": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/simulator.log",
+      "sha256": "af44a77810446482edc90fc8abf17a2d94ce8462ea170cc496a2d5bd0ce808e1"
+    },
+    "maps/confirm_dual_gate/B5_active_no_task/summary.json": {
+      "path": "maps/confirm_dual_gate/B5_active_no_task/summary.json",
+      "sha256": "0010b8330746a668ee04b180eb828b6b4020a819f322d61e889007868eccba1a"
+    },
+    "maps/confirm_dual_gate/B8_full/calibration_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B8_full/calibration_metrics.csv",
+      "sha256": "5b7de096e4e016fbdddd3647b63757cd3b3155c1784955b4374bd11449040858"
+    },
+    "maps/confirm_dual_gate/B8_full/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/B8_full/calibration_validation.csv",
+      "sha256": "cf757d46f8bf9c6f0abcbb186fa8501da93d4ff75c643eb2324d88f2cc7095b5"
+    },
+    "maps/confirm_dual_gate/B8_full/distortion_parameters.json": {
+      "path": "maps/confirm_dual_gate/B8_full/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_dual_gate/B8_full/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/B8_full/episode_metrics.csv",
+      "sha256": "fcd03ba3beb6ef58e3e23ec3d328cdf4575aac4a84c173798e0ac8f48e920e82"
+    },
+    "maps/confirm_dual_gate/B8_full/launch_attempts.json": {
+      "path": "maps/confirm_dual_gate/B8_full/launch_attempts.json",
+      "sha256": "ba625a4d9e0ccf5e623ddc40d9a74f703eb5a52c00c4799ac598234bb582b6f6"
+    },
+    "maps/confirm_dual_gate/B8_full/launch_command.json": {
+      "path": "maps/confirm_dual_gate/B8_full/launch_command.json",
+      "sha256": "e43dba8aa674505f24bc97fb9ef3262746cce8747faf6a8450afaf23b3ea67fc"
+    },
+    "maps/confirm_dual_gate/B8_full/launch_config.json": {
+      "path": "maps/confirm_dual_gate/B8_full/launch_config.json",
+      "sha256": "233f14b7b7f9aca34d3a45a9b810443d6ad29cb02814e76f491ac17a5efac10a"
+    },
+    "maps/confirm_dual_gate/B8_full/map_geometry.json": {
+      "path": "maps/confirm_dual_gate/B8_full/map_geometry.json",
+      "sha256": "44277cc147e4aa30578533c1395ba42a60a13565d9743b8b35043f7f2c6d1f60"
+    },
+    "maps/confirm_dual_gate/B8_full/nav_trace.csv.gz": {
+      "path": "maps/confirm_dual_gate/B8_full/nav_trace.csv.gz",
+      "sha256": "b014657b9c037169a2846ba1da6b7b0e41bdedfe579985f1a55c6f35e8549982"
+    },
+    "maps/confirm_dual_gate/B8_full/posterior_state.npz": {
+      "path": "maps/confirm_dual_gate/B8_full/posterior_state.npz",
+      "sha256": "dd59183ea4f07bfb6b13df345acb2012d7e1ba9f892fd661baaf729897f0df6e"
+    },
+    "maps/confirm_dual_gate/B8_full/scenario_config.json": {
+      "path": "maps/confirm_dual_gate/B8_full/scenario_config.json",
+      "sha256": "233f14b7b7f9aca34d3a45a9b810443d6ad29cb02814e76f491ac17a5efac10a"
+    },
+    "maps/confirm_dual_gate/B8_full/simulator.log": {
+      "path": "maps/confirm_dual_gate/B8_full/simulator.log",
+      "sha256": "af9d7c224fa73924b7217610ddb68a2f21bad96baa1d69145ad151a7447cb656"
+    },
+    "maps/confirm_dual_gate/B8_full/summary.json": {
+      "path": "maps/confirm_dual_gate/B8_full/summary.json",
+      "sha256": "29469c3f8d2b865c1d3a4bb953df16fd56525815010f6297c4f9c677f6f63d5e"
+    },
+    "maps/confirm_dual_gate/calibration_validation.csv": {
+      "path": "maps/confirm_dual_gate/calibration_validation.csv",
+      "sha256": "4768d0efc439e1a342d895b39acf2407e30dd456fbdfdc89a2ddbfec2d86b07b"
+    },
+    "maps/confirm_dual_gate/episode_metrics.csv": {
+      "path": "maps/confirm_dual_gate/episode_metrics.csv",
+      "sha256": "7aa68795ce12f5252718757ee814207d7a37d43d5bb4d8c29c987480c687f6e3"
+    },
+    "maps/confirm_dual_gate/summary.json": {
+      "path": "maps/confirm_dual_gate/summary.json",
+      "sha256": "bc7418c68933a04570927df002509d3ea067920279e21117ffdbb42f866a4678"
+    },
+    "maps/confirm_loaded_arc/B0_raw/calibration_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B0_raw/calibration_metrics.csv",
+      "sha256": "db7a18ba9e8db3a6add00c624bbe3ccd7be3c2a0b615d2a2f8c47c5c566d0e1c"
+    },
+    "maps/confirm_loaded_arc/B0_raw/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/B0_raw/calibration_validation.csv",
+      "sha256": "29e98224a03bfda4a1bacdcd0304fda0a7745cc532acea52ee36a5f17cab97f2"
+    },
+    "maps/confirm_loaded_arc/B0_raw/distortion_parameters.json": {
+      "path": "maps/confirm_loaded_arc/B0_raw/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_loaded_arc/B0_raw/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B0_raw/episode_metrics.csv",
+      "sha256": "3d3403755e54022c06159cb08ecdc0daf66448e069e1528a59de0fd4ce9d4b3a"
+    },
+    "maps/confirm_loaded_arc/B0_raw/launch_attempts.json": {
+      "path": "maps/confirm_loaded_arc/B0_raw/launch_attempts.json",
+      "sha256": "9943e8cf82ebc19e7284eb36f4f98315d22cd2c81d809833b6ec5a9b48dc10b5"
+    },
+    "maps/confirm_loaded_arc/B0_raw/launch_command.json": {
+      "path": "maps/confirm_loaded_arc/B0_raw/launch_command.json",
+      "sha256": "03db12882cd748ffa2bc5d96287fa146cb321160bf6c74f61e88e2f9c1c642cb"
+    },
+    "maps/confirm_loaded_arc/B0_raw/launch_config.json": {
+      "path": "maps/confirm_loaded_arc/B0_raw/launch_config.json",
+      "sha256": "3f05a6c3238386db776c6764fcedb3edae5d4cb2d82fa49a961620e25b005646"
+    },
+    "maps/confirm_loaded_arc/B0_raw/map_geometry.json": {
+      "path": "maps/confirm_loaded_arc/B0_raw/map_geometry.json",
+      "sha256": "f10ac93bb10fd373ed5f8d0c607d73553410ac2fca6b060e7f28002642ede6c5"
+    },
+    "maps/confirm_loaded_arc/B0_raw/nav_trace.csv.gz": {
+      "path": "maps/confirm_loaded_arc/B0_raw/nav_trace.csv.gz",
+      "sha256": "d19dd89c5bbf2d485170cf2e87f0eeccf0161f684f309e50f2a920638bdb7cea"
+    },
+    "maps/confirm_loaded_arc/B0_raw/posterior_state.npz": {
+      "path": "maps/confirm_loaded_arc/B0_raw/posterior_state.npz",
+      "sha256": "d4b70a7e105e79994dd950e24f6e50758d7333841068dc8d09a96590948a701a"
+    },
+    "maps/confirm_loaded_arc/B0_raw/scenario_config.json": {
+      "path": "maps/confirm_loaded_arc/B0_raw/scenario_config.json",
+      "sha256": "3f05a6c3238386db776c6764fcedb3edae5d4cb2d82fa49a961620e25b005646"
+    },
+    "maps/confirm_loaded_arc/B0_raw/simulator.log": {
+      "path": "maps/confirm_loaded_arc/B0_raw/simulator.log",
+      "sha256": "4463c6b32d584e79453ec7526e497137bbe37fc7cc4f01b6678cb9450f2b2a61"
+    },
+    "maps/confirm_loaded_arc/B0_raw/summary.json": {
+      "path": "maps/confirm_loaded_arc/B0_raw/summary.json",
+      "sha256": "987fb006322332288c15f1ab10d659f1666d10f7f2036385afe50ff811adad79"
+    },
+    "maps/confirm_loaded_arc/B1_dense/calibration_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B1_dense/calibration_metrics.csv",
+      "sha256": "62aece6b3e71d534dfc31754c5fbedf42950bb5e6db8d7364e00145382d88148"
+    },
+    "maps/confirm_loaded_arc/B1_dense/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/B1_dense/calibration_validation.csv",
+      "sha256": "71f0322c5845809ccaa57f710fd71b25b9f246822032a6a0375348ceccc9f6eb"
+    },
+    "maps/confirm_loaded_arc/B1_dense/distortion_parameters.json": {
+      "path": "maps/confirm_loaded_arc/B1_dense/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_loaded_arc/B1_dense/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B1_dense/episode_metrics.csv",
+      "sha256": "435482a4522eebf62a49af7898819b56d88d111e45b592a16e7a90a260c16c43"
+    },
+    "maps/confirm_loaded_arc/B1_dense/launch_attempts.json": {
+      "path": "maps/confirm_loaded_arc/B1_dense/launch_attempts.json",
+      "sha256": "5fdc958e7faab6cdfaf2d97b740bbe0e2dc350fe05150ec873d53719237173ec"
+    },
+    "maps/confirm_loaded_arc/B1_dense/launch_command.json": {
+      "path": "maps/confirm_loaded_arc/B1_dense/launch_command.json",
+      "sha256": "e27d4812828f8de66b1ef135d498d55e041ead0acbd2823c266fd37e3dab30c8"
+    },
+    "maps/confirm_loaded_arc/B1_dense/launch_config.json": {
+      "path": "maps/confirm_loaded_arc/B1_dense/launch_config.json",
+      "sha256": "43096c9fd73586aedb29188b7eb6553af7e7f985f83416791f5670af2a8810d1"
+    },
+    "maps/confirm_loaded_arc/B1_dense/map_geometry.json": {
+      "path": "maps/confirm_loaded_arc/B1_dense/map_geometry.json",
+      "sha256": "f10ac93bb10fd373ed5f8d0c607d73553410ac2fca6b060e7f28002642ede6c5"
+    },
+    "maps/confirm_loaded_arc/B1_dense/nav_trace.csv.gz": {
+      "path": "maps/confirm_loaded_arc/B1_dense/nav_trace.csv.gz",
+      "sha256": "49e6fc53e316f6a1b3f56754da623c9108ba93071d98450c242dffeeb5987167"
+    },
+    "maps/confirm_loaded_arc/B1_dense/posterior_state.npz": {
+      "path": "maps/confirm_loaded_arc/B1_dense/posterior_state.npz",
+      "sha256": "b40701f16084a0baa1bceb760140ed8a9067f5b9c0094b0cde0c030b7b75563c"
+    },
+    "maps/confirm_loaded_arc/B1_dense/scenario_config.json": {
+      "path": "maps/confirm_loaded_arc/B1_dense/scenario_config.json",
+      "sha256": "43096c9fd73586aedb29188b7eb6553af7e7f985f83416791f5670af2a8810d1"
+    },
+    "maps/confirm_loaded_arc/B1_dense/simulator.log": {
+      "path": "maps/confirm_loaded_arc/B1_dense/simulator.log",
+      "sha256": "b1ab3aa2e09245b021da6a4a0444965919b00d5f7255833d61fe3f00ea8dcad5"
+    },
+    "maps/confirm_loaded_arc/B1_dense/summary.json": {
+      "path": "maps/confirm_loaded_arc/B1_dense/summary.json",
+      "sha256": "6a5486270a7ec58f7632722968cc2643f9d66a5a09db80c14fe23b2741dea989"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/calibration_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/calibration_metrics.csv",
+      "sha256": "4d5b4133ded7c2be760f1936266977836c8d9916c3960704d498403146e2bcfc"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/calibration_validation.csv",
+      "sha256": "e833aeea5da9348f472e622e43cb4f409289f7e21e4f429bfb2168f45e65d0f7"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/distortion_parameters.json": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/episode_metrics.csv",
+      "sha256": "e2f6982e06733c796b17c18166752837e135cccab5ef0f849589e8ff0b85200a"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/launch_attempts.json": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/launch_attempts.json",
+      "sha256": "090a6fcad9b0e3684897c54105b703744c9a54140556dbac058ceec57689a044"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/launch_command.json": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/launch_command.json",
+      "sha256": "2ddf1e966cbefbddedafa5cc5c414d2d0534d5f61014827658d5127473cf366f"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/launch_config.json": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/launch_config.json",
+      "sha256": "7df2bffaeba2c231bb44877d438dfbd6842e340e5fe3bf34dff893d9ffc806fe"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/map_geometry.json": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/map_geometry.json",
+      "sha256": "f10ac93bb10fd373ed5f8d0c607d73553410ac2fca6b060e7f28002642ede6c5"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/nav_trace.csv.gz": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/nav_trace.csv.gz",
+      "sha256": "fb3088567993fac4d0cf7aff5f730660a3d96b9209019e648a97a75f202e0396"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/posterior_state.npz": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/posterior_state.npz",
+      "sha256": "47daafe78988d2c499b363ff463f43f25b0563051200aead82153afa3d6c9390"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/scenario_config.json": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/scenario_config.json",
+      "sha256": "7df2bffaeba2c231bb44877d438dfbd6842e340e5fe3bf34dff893d9ffc806fe"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/simulator.log": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/simulator.log",
+      "sha256": "c30ca825ec9c0ffdcb762d5a8f8d911622936a5edae50f4c8eb15d9a02d70e5a"
+    },
+    "maps/confirm_loaded_arc/B2_lhs/summary.json": {
+      "path": "maps/confirm_loaded_arc/B2_lhs/summary.json",
+      "sha256": "4b4f6fb7c19e6e943d1a5389638253e5fd18cc0377675ce350d90010f94fc3a6"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/calibration_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/calibration_metrics.csv",
+      "sha256": "9ad331ecf20118c24336ef91369e974a61abfc41e8315402ae89ef5ce52271b8"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/calibration_validation.csv",
+      "sha256": "4fd246d35507931bef4275acdec317461cd80c7c1aae722c777c9e3ed212a4b8"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/distortion_parameters.json": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/episode_metrics.csv",
+      "sha256": "334ce2f6aedf9ded78ecaeb1cc68cb2e9bd908d87fe14fa268d0fd50e947c636"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/launch_attempts.json": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/launch_attempts.json",
+      "sha256": "210f464a4f7e95512427d07dc92dd56a58b725d0d3dab05660114f7cd01f6108"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/launch_command.json": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/launch_command.json",
+      "sha256": "5d09d9e8a4b907dc55f19b70966b7d5556cc39112dcd373381c8dc5cc05bd5e4"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/launch_config.json": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/launch_config.json",
+      "sha256": "a43e7b0e04d9fb85b0884e346258b9bac05a9f491c2cb24bab47643b903b6497"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/map_geometry.json": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/map_geometry.json",
+      "sha256": "f10ac93bb10fd373ed5f8d0c607d73553410ac2fca6b060e7f28002642ede6c5"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/nav_trace.csv.gz": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/nav_trace.csv.gz",
+      "sha256": "70995c9dcead8ca16959649d5337d8a34dfacf5aa11831dd681a07e0514fcee5"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/posterior_state.npz": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/posterior_state.npz",
+      "sha256": "6fa1ae75604fde7026dc8acf4d0000b4521b85a5947a2d5b4bdd7626829940f7"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/scenario_config.json": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/scenario_config.json",
+      "sha256": "a43e7b0e04d9fb85b0884e346258b9bac05a9f491c2cb24bab47643b903b6497"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/simulator.log": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/simulator.log",
+      "sha256": "e44f5bc434d26e90d9bcae48a3813b0693824583558d8e36d9b35cff60abaf12"
+    },
+    "maps/confirm_loaded_arc/B3_sobol/summary.json": {
+      "path": "maps/confirm_loaded_arc/B3_sobol/summary.json",
+      "sha256": "ac8bac2e8aaf4ecd479c9e3a5d429294dc43f6ac615509c4570c915d121098f4"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/calibration_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/calibration_metrics.csv",
+      "sha256": "5b1e878e1668bafc5e949a7e363c379754c2db7eec3846939caf698cfd3830cf"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/calibration_validation.csv",
+      "sha256": "0931de06e96c16cc647a58e1500ffbbc0e2a5aea365cde7a6dc0c2d0e66431f9"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/distortion_parameters.json": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/episode_metrics.csv",
+      "sha256": "7a1d310d7bbd20b9921e4a6e3438b6d545a2a0b77966265f0a50d08a509d74ec"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/launch_attempts.json": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/launch_attempts.json",
+      "sha256": "cbe6f6ed5f8e28a3e06ddef186135e7dddb960d497cb57b2a9a5e2057640b123"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/launch_command.json": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/launch_command.json",
+      "sha256": "0e9f1f6101f505577113b13d96774d4003238351758f82f32a881ececcd61df5"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/launch_config.json": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/launch_config.json",
+      "sha256": "56bd36858591702bf35032445fbd0cde422d67e8ace4f71fce5a50a7951b8467"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/map_geometry.json": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/map_geometry.json",
+      "sha256": "f10ac93bb10fd373ed5f8d0c607d73553410ac2fca6b060e7f28002642ede6c5"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/nav_trace.csv.gz": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/nav_trace.csv.gz",
+      "sha256": "ea12e01dfcd0c05c746517dbcc896ba1ee914f2bd5e5cfaa74d27185c6ee7538"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/posterior_state.npz": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/posterior_state.npz",
+      "sha256": "f758d572b763dc8a0367b1e021e415c2188f7fb7309c3bc3c675e71b2e7b80f2"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/scenario_config.json": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/scenario_config.json",
+      "sha256": "56bd36858591702bf35032445fbd0cde422d67e8ace4f71fce5a50a7951b8467"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/simulator.log": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/simulator.log",
+      "sha256": "9f75e8cf639e2b16d6dd8cd7c3aa7dc52a718b778bd2e0b897a1ca94be2944c1"
+    },
+    "maps/confirm_loaded_arc/B4_d_opt/summary.json": {
+      "path": "maps/confirm_loaded_arc/B4_d_opt/summary.json",
+      "sha256": "8ab3ba2bfb52bfb6292ae78b19d4e77e99c944aa15e5d9dbaf212f395c4b2b8d"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/calibration_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/calibration_metrics.csv",
+      "sha256": "1bee8044e590dd4169d5accd40efbf747b3df35048b43a45cdcbc769fd64b7cc"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/calibration_validation.csv",
+      "sha256": "43715022baf72868199047e1f74e23ac65d0e5cd00f94b224370341c5c6427c3"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/distortion_parameters.json": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/episode_metrics.csv",
+      "sha256": "95c2eb7ea8d5e710de1b140577f889173458e6e0022bd987520cd7820f530e54"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/launch_attempts.json": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/launch_attempts.json",
+      "sha256": "0c323922f25bb10c252a59c6189fa816f363d33a42c66f51b76f5b9a20800b91"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/launch_command.json": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/launch_command.json",
+      "sha256": "8a013fb4037fc97d1ec21a98f41e7c2bfaae5e9baa59c689febb94172d324bf2"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/launch_config.json": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/launch_config.json",
+      "sha256": "3ba5f18f19b0137dedbd03d59283808070e4dd9e9e90ac375656d9a26a02db0b"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/map_geometry.json": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/map_geometry.json",
+      "sha256": "f10ac93bb10fd373ed5f8d0c607d73553410ac2fca6b060e7f28002642ede6c5"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/nav_trace.csv.gz": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/nav_trace.csv.gz",
+      "sha256": "d7898729ce70756b0ced25f4d0b2794cd42043443be3b98431d72207c2226f8e"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/posterior_state.npz": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/posterior_state.npz",
+      "sha256": "5690a277e577ec848a9ee5a660a8e5253df812fdfbfb85c720dfa74902e38c78"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/scenario_config.json": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/scenario_config.json",
+      "sha256": "3ba5f18f19b0137dedbd03d59283808070e4dd9e9e90ac375656d9a26a02db0b"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/simulator.log": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/simulator.log",
+      "sha256": "67697dd5e66e3e9cfa3c3fb610b55b4fb2cff795b7a02dcf3ffff1677593a0bc"
+    },
+    "maps/confirm_loaded_arc/B5_active_no_task/summary.json": {
+      "path": "maps/confirm_loaded_arc/B5_active_no_task/summary.json",
+      "sha256": "f1065a43d076d75c2e18df41d52edde5b42abb11a46dc3e4f1ddafb3a0c24a57"
+    },
+    "maps/confirm_loaded_arc/B8_full/calibration_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B8_full/calibration_metrics.csv",
+      "sha256": "94c40f95dd662c155318f956ee70a5f4c266a78ab1b90e0518b7e79eccb8b55b"
+    },
+    "maps/confirm_loaded_arc/B8_full/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/B8_full/calibration_validation.csv",
+      "sha256": "ebc6521b4ff76647c047b910af9f93d230b0aafb87f376196a76a5fa5b66c5bd"
+    },
+    "maps/confirm_loaded_arc/B8_full/distortion_parameters.json": {
+      "path": "maps/confirm_loaded_arc/B8_full/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_loaded_arc/B8_full/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/B8_full/episode_metrics.csv",
+      "sha256": "d5d4631ca91b7371d4d5703454cc46e26556f701c9909f5404eb56af51cca672"
+    },
+    "maps/confirm_loaded_arc/B8_full/launch_attempts.json": {
+      "path": "maps/confirm_loaded_arc/B8_full/launch_attempts.json",
+      "sha256": "3fe456692974d0551eb3452fec7fd5a2a3e1fff801064a92987003a967d502f4"
+    },
+    "maps/confirm_loaded_arc/B8_full/launch_command.json": {
+      "path": "maps/confirm_loaded_arc/B8_full/launch_command.json",
+      "sha256": "42483af3e55accecdbcd854665f207d6fce8a3656461c1279c01d12ff879a3f7"
+    },
+    "maps/confirm_loaded_arc/B8_full/launch_config.json": {
+      "path": "maps/confirm_loaded_arc/B8_full/launch_config.json",
+      "sha256": "0b30de3cb5289655611321aa6289f6d9fb9b8adc0ccb52e0563e84566ba41423"
+    },
+    "maps/confirm_loaded_arc/B8_full/map_geometry.json": {
+      "path": "maps/confirm_loaded_arc/B8_full/map_geometry.json",
+      "sha256": "f10ac93bb10fd373ed5f8d0c607d73553410ac2fca6b060e7f28002642ede6c5"
+    },
+    "maps/confirm_loaded_arc/B8_full/nav_trace.csv.gz": {
+      "path": "maps/confirm_loaded_arc/B8_full/nav_trace.csv.gz",
+      "sha256": "e764a2091c2ac6bb263ecab02631f513b012dff556c117b8948431e6a7f9bc70"
+    },
+    "maps/confirm_loaded_arc/B8_full/posterior_state.npz": {
+      "path": "maps/confirm_loaded_arc/B8_full/posterior_state.npz",
+      "sha256": "597b9caa467133a3270de0b41c673b1299bcc4bcb29893afc525469652f828af"
+    },
+    "maps/confirm_loaded_arc/B8_full/scenario_config.json": {
+      "path": "maps/confirm_loaded_arc/B8_full/scenario_config.json",
+      "sha256": "0b30de3cb5289655611321aa6289f6d9fb9b8adc0ccb52e0563e84566ba41423"
+    },
+    "maps/confirm_loaded_arc/B8_full/simulator.log": {
+      "path": "maps/confirm_loaded_arc/B8_full/simulator.log",
+      "sha256": "fb27555f6d8c887cfcb9dd6a0f5ba71aa92b25e7cda53d7e17cac214e05d4674"
+    },
+    "maps/confirm_loaded_arc/B8_full/summary.json": {
+      "path": "maps/confirm_loaded_arc/B8_full/summary.json",
+      "sha256": "9cf633ef5368bb8ab39cf185dcac4b6bfad9d1310b2957a2205452f7423d5da0"
+    },
+    "maps/confirm_loaded_arc/calibration_validation.csv": {
+      "path": "maps/confirm_loaded_arc/calibration_validation.csv",
+      "sha256": "f3104c6c7f5a676cc29591286c73fa3b9e985d74acb6b45601f3c653bab7fe68"
+    },
+    "maps/confirm_loaded_arc/episode_metrics.csv": {
+      "path": "maps/confirm_loaded_arc/episode_metrics.csv",
+      "sha256": "c9b8848189ace8f7e7eb6aea3db28abf76b15766f3d07b9a03de4578f5442bc9"
+    },
+    "maps/confirm_loaded_arc/summary.json": {
+      "path": "maps/confirm_loaded_arc/summary.json",
+      "sha256": "1ac1e1396229a92df4b04f93936d0ddd970bc895448fa03f43ca9480982eb798"
+    },
+    "maps/confirm_long_corridor/B0_raw/calibration_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B0_raw/calibration_metrics.csv",
+      "sha256": "6854ac06d49e135f9d9f257ce4740fd7e7f76f2fb3ef780faff745880a624c3b"
+    },
+    "maps/confirm_long_corridor/B0_raw/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/B0_raw/calibration_validation.csv",
+      "sha256": "208660957d7e420a8f8f907c5de3d6d93204874f455ecbffd29d4bb01ab05057"
+    },
+    "maps/confirm_long_corridor/B0_raw/distortion_parameters.json": {
+      "path": "maps/confirm_long_corridor/B0_raw/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_long_corridor/B0_raw/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B0_raw/episode_metrics.csv",
+      "sha256": "7f27acafa54038ac9f10dee918c824187a5e778168b0b58e0350098937df717c"
+    },
+    "maps/confirm_long_corridor/B0_raw/launch_attempts.json": {
+      "path": "maps/confirm_long_corridor/B0_raw/launch_attempts.json",
+      "sha256": "602a2e99d7e46a83040975599573aa118c87748a60d256718528dc4f2fbf3138"
+    },
+    "maps/confirm_long_corridor/B0_raw/launch_command.json": {
+      "path": "maps/confirm_long_corridor/B0_raw/launch_command.json",
+      "sha256": "4cd058f2a114fea84bae8d4ca4f008cf0ea48f8df4f1c0e25928894db7d40432"
+    },
+    "maps/confirm_long_corridor/B0_raw/launch_config.json": {
+      "path": "maps/confirm_long_corridor/B0_raw/launch_config.json",
+      "sha256": "6e330f50fc28cec807ec823568a016ebd3e765b283608333dce0f4f022aeb172"
+    },
+    "maps/confirm_long_corridor/B0_raw/map_geometry.json": {
+      "path": "maps/confirm_long_corridor/B0_raw/map_geometry.json",
+      "sha256": "a701d1260e332ee27abf08eab02795ae91dfe435d35dfd89e4a124c9b3699634"
+    },
+    "maps/confirm_long_corridor/B0_raw/nav_trace.csv.gz": {
+      "path": "maps/confirm_long_corridor/B0_raw/nav_trace.csv.gz",
+      "sha256": "3e8904727e2a5de2ffb0b172ddc521695891facbe21ccd875059b22128bb5211"
+    },
+    "maps/confirm_long_corridor/B0_raw/posterior_state.npz": {
+      "path": "maps/confirm_long_corridor/B0_raw/posterior_state.npz",
+      "sha256": "d4b70a7e105e79994dd950e24f6e50758d7333841068dc8d09a96590948a701a"
+    },
+    "maps/confirm_long_corridor/B0_raw/scenario_config.json": {
+      "path": "maps/confirm_long_corridor/B0_raw/scenario_config.json",
+      "sha256": "6e330f50fc28cec807ec823568a016ebd3e765b283608333dce0f4f022aeb172"
+    },
+    "maps/confirm_long_corridor/B0_raw/simulator.log": {
+      "path": "maps/confirm_long_corridor/B0_raw/simulator.log",
+      "sha256": "acf2f2995eebbb04c80d3b2de537d3c592b0014de7377badada51b8e4cd716e1"
+    },
+    "maps/confirm_long_corridor/B0_raw/summary.json": {
+      "path": "maps/confirm_long_corridor/B0_raw/summary.json",
+      "sha256": "50d131f73025860b2f91bc408f2f001bfafe229a5f3b07fb2b08a75154d880f4"
+    },
+    "maps/confirm_long_corridor/B1_dense/calibration_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B1_dense/calibration_metrics.csv",
+      "sha256": "3dcbe8a5791b73778c011e10975d847bab49d2bd02959f44d5b4e020b557fd26"
+    },
+    "maps/confirm_long_corridor/B1_dense/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/B1_dense/calibration_validation.csv",
+      "sha256": "2f0417bcdfa71fae48f9c640846200de6f7b80a602f0c4dbbdf2a6465bd21432"
+    },
+    "maps/confirm_long_corridor/B1_dense/distortion_parameters.json": {
+      "path": "maps/confirm_long_corridor/B1_dense/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_long_corridor/B1_dense/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B1_dense/episode_metrics.csv",
+      "sha256": "d299ec9d3fdc755b59ec13e97c4265cafe019d51de78f7a07d329b4a6c0da829"
+    },
+    "maps/confirm_long_corridor/B1_dense/launch_attempts.json": {
+      "path": "maps/confirm_long_corridor/B1_dense/launch_attempts.json",
+      "sha256": "437ddc89fcd8e4562f26921365ce72d4b5d46fdbd90996ad2d63b05298c245d1"
+    },
+    "maps/confirm_long_corridor/B1_dense/launch_command.json": {
+      "path": "maps/confirm_long_corridor/B1_dense/launch_command.json",
+      "sha256": "20bce2066cb274d81367a3b406e92e02d7d693324ecf87b639d019fda0eb6792"
+    },
+    "maps/confirm_long_corridor/B1_dense/launch_config.json": {
+      "path": "maps/confirm_long_corridor/B1_dense/launch_config.json",
+      "sha256": "500ee6e9f22a2dbf5e1d9dd755f8ab9b633dfafae3f5163acd20e01edc95d22c"
+    },
+    "maps/confirm_long_corridor/B1_dense/map_geometry.json": {
+      "path": "maps/confirm_long_corridor/B1_dense/map_geometry.json",
+      "sha256": "a701d1260e332ee27abf08eab02795ae91dfe435d35dfd89e4a124c9b3699634"
+    },
+    "maps/confirm_long_corridor/B1_dense/nav_trace.csv.gz": {
+      "path": "maps/confirm_long_corridor/B1_dense/nav_trace.csv.gz",
+      "sha256": "870c6a88a47ec892b3fa0f4e9840faf3d21b466f05a4b301300aded3124a3720"
+    },
+    "maps/confirm_long_corridor/B1_dense/posterior_state.npz": {
+      "path": "maps/confirm_long_corridor/B1_dense/posterior_state.npz",
+      "sha256": "7f23982c16fa353c80683dd120a99490366e596836a9da4e4ee2954ae455741c"
+    },
+    "maps/confirm_long_corridor/B1_dense/scenario_config.json": {
+      "path": "maps/confirm_long_corridor/B1_dense/scenario_config.json",
+      "sha256": "500ee6e9f22a2dbf5e1d9dd755f8ab9b633dfafae3f5163acd20e01edc95d22c"
+    },
+    "maps/confirm_long_corridor/B1_dense/simulator.log": {
+      "path": "maps/confirm_long_corridor/B1_dense/simulator.log",
+      "sha256": "0b92f90ffe52c46865088044072e49e3a3e98804527539ebcdcc411487654d0a"
+    },
+    "maps/confirm_long_corridor/B1_dense/summary.json": {
+      "path": "maps/confirm_long_corridor/B1_dense/summary.json",
+      "sha256": "b42368f8987fd2cbfcb2a44e7be0eb59fe656d5ea4bea64aca39e1c9979a1c3b"
+    },
+    "maps/confirm_long_corridor/B2_lhs/calibration_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B2_lhs/calibration_metrics.csv",
+      "sha256": "079c79dbe9edb7db023324051f15cf74ed75ad7609dedf957a8816227a75154f"
+    },
+    "maps/confirm_long_corridor/B2_lhs/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/B2_lhs/calibration_validation.csv",
+      "sha256": "4aa305eeee8641284c44cba095625448135085b69d4991f2179e7e2b9b364adb"
+    },
+    "maps/confirm_long_corridor/B2_lhs/distortion_parameters.json": {
+      "path": "maps/confirm_long_corridor/B2_lhs/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_long_corridor/B2_lhs/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B2_lhs/episode_metrics.csv",
+      "sha256": "4bc72e900ffa5be10b744ffcf15193b1ef361eac445edee65be5d9ac3bae3d7d"
+    },
+    "maps/confirm_long_corridor/B2_lhs/launch_attempts.json": {
+      "path": "maps/confirm_long_corridor/B2_lhs/launch_attempts.json",
+      "sha256": "5175f9d1bb67b1ad3271831085723feb47eaae504f4b3f14fbfd2bb019739c5b"
+    },
+    "maps/confirm_long_corridor/B2_lhs/launch_command.json": {
+      "path": "maps/confirm_long_corridor/B2_lhs/launch_command.json",
+      "sha256": "95a1ef1676a6a326994fb77df3e5f61f847e886e21ad28c83b88831aa1abfb02"
+    },
+    "maps/confirm_long_corridor/B2_lhs/launch_config.json": {
+      "path": "maps/confirm_long_corridor/B2_lhs/launch_config.json",
+      "sha256": "1fd98a9ced72d168eaeb91af92f921fd1654f0c773d744ed512eef5b7bf878d3"
+    },
+    "maps/confirm_long_corridor/B2_lhs/map_geometry.json": {
+      "path": "maps/confirm_long_corridor/B2_lhs/map_geometry.json",
+      "sha256": "a701d1260e332ee27abf08eab02795ae91dfe435d35dfd89e4a124c9b3699634"
+    },
+    "maps/confirm_long_corridor/B2_lhs/nav_trace.csv.gz": {
+      "path": "maps/confirm_long_corridor/B2_lhs/nav_trace.csv.gz",
+      "sha256": "5131b9653eb16f175513245f8819e8e5d4573760b72d87c242d30c736af799f5"
+    },
+    "maps/confirm_long_corridor/B2_lhs/posterior_state.npz": {
+      "path": "maps/confirm_long_corridor/B2_lhs/posterior_state.npz",
+      "sha256": "bedb5261814e7ef0de88ec4f1c9656a271a7684cdb210568cb8b9f2eae47f4cf"
+    },
+    "maps/confirm_long_corridor/B2_lhs/scenario_config.json": {
+      "path": "maps/confirm_long_corridor/B2_lhs/scenario_config.json",
+      "sha256": "1fd98a9ced72d168eaeb91af92f921fd1654f0c773d744ed512eef5b7bf878d3"
+    },
+    "maps/confirm_long_corridor/B2_lhs/simulator.log": {
+      "path": "maps/confirm_long_corridor/B2_lhs/simulator.log",
+      "sha256": "93be6a413e7ee1ea6ec188a094ef1126fd8904822da8b3d990bd19c549388406"
+    },
+    "maps/confirm_long_corridor/B2_lhs/summary.json": {
+      "path": "maps/confirm_long_corridor/B2_lhs/summary.json",
+      "sha256": "30ff643aca2c91b54cadef77782d5bfeaa2f0541e85656c9a2ba6d67e46e0160"
+    },
+    "maps/confirm_long_corridor/B3_sobol/calibration_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B3_sobol/calibration_metrics.csv",
+      "sha256": "b3cb49eedbea02a787bf96765fa16d8c3fb163b11f34495000b61e3a0ce0285e"
+    },
+    "maps/confirm_long_corridor/B3_sobol/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/B3_sobol/calibration_validation.csv",
+      "sha256": "51605d2da3b0a8f1605ffad0b0a427365a0dc3b2c998ce932e88dd6f2d8c209c"
+    },
+    "maps/confirm_long_corridor/B3_sobol/distortion_parameters.json": {
+      "path": "maps/confirm_long_corridor/B3_sobol/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_long_corridor/B3_sobol/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B3_sobol/episode_metrics.csv",
+      "sha256": "83d392488ce4881b4c4ab5053bec0bc7fdf1e30d966e68f02bf60a07f52ef26b"
+    },
+    "maps/confirm_long_corridor/B3_sobol/launch_attempts.json": {
+      "path": "maps/confirm_long_corridor/B3_sobol/launch_attempts.json",
+      "sha256": "3837fc10da54a1d034ab8f526a0ca32cfd7866a6425cbb018f0e390d65f68847"
+    },
+    "maps/confirm_long_corridor/B3_sobol/launch_command.json": {
+      "path": "maps/confirm_long_corridor/B3_sobol/launch_command.json",
+      "sha256": "9d162ad0adbaa60cf9fa19dc87a4296985f361c7a1ddd09918b778f53bf91a6c"
+    },
+    "maps/confirm_long_corridor/B3_sobol/launch_config.json": {
+      "path": "maps/confirm_long_corridor/B3_sobol/launch_config.json",
+      "sha256": "4ecdc3ca2b69688f09be8fc2699f67b0fc89fcf07ff10733fc198059a3c8a6e5"
+    },
+    "maps/confirm_long_corridor/B3_sobol/map_geometry.json": {
+      "path": "maps/confirm_long_corridor/B3_sobol/map_geometry.json",
+      "sha256": "a701d1260e332ee27abf08eab02795ae91dfe435d35dfd89e4a124c9b3699634"
+    },
+    "maps/confirm_long_corridor/B3_sobol/nav_trace.csv.gz": {
+      "path": "maps/confirm_long_corridor/B3_sobol/nav_trace.csv.gz",
+      "sha256": "96a40eeadf7b51d78d8ef7ece14df39a9e4f7fe03f1eace39a845e3475da0b7c"
+    },
+    "maps/confirm_long_corridor/B3_sobol/posterior_state.npz": {
+      "path": "maps/confirm_long_corridor/B3_sobol/posterior_state.npz",
+      "sha256": "88aa9944ca2f5eb873ad9023f7e7c1853e6fe2ae0db85e0f6fc04058a1c595f9"
+    },
+    "maps/confirm_long_corridor/B3_sobol/scenario_config.json": {
+      "path": "maps/confirm_long_corridor/B3_sobol/scenario_config.json",
+      "sha256": "4ecdc3ca2b69688f09be8fc2699f67b0fc89fcf07ff10733fc198059a3c8a6e5"
+    },
+    "maps/confirm_long_corridor/B3_sobol/simulator.log": {
+      "path": "maps/confirm_long_corridor/B3_sobol/simulator.log",
+      "sha256": "425fcff9784ec0416089f60aad0f681b59cf6d10c760a47fb0ffe0fbd948718f"
+    },
+    "maps/confirm_long_corridor/B3_sobol/summary.json": {
+      "path": "maps/confirm_long_corridor/B3_sobol/summary.json",
+      "sha256": "ccef98cf37d413363eee36d87a42a5530cbd729dcb1255dac6ec6fe8a5d88db9"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/calibration_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/calibration_metrics.csv",
+      "sha256": "a7826bce7fc5cd2bfaaeb59896ed9c67e5a2564843d23f0eed2d87eb377e3ded"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/calibration_validation.csv",
+      "sha256": "c379ff3839a35f2bcc732e80a32a84a58959f8442ac601101a524509c63532cf"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/distortion_parameters.json": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/episode_metrics.csv",
+      "sha256": "0fab8a7864d01948ec3f7d863c127625446640a1f89f42f19b86171a14f96fe1"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/launch_attempts.json": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/launch_attempts.json",
+      "sha256": "2c3b72fa94de3b578ae6b380b085217eb8d597acd2f39f42b771eedeb38e7a7c"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/launch_command.json": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/launch_command.json",
+      "sha256": "4cfa17cf7ef7d57ae26781fd8388eae6692ac729bb90d49e7ffc3aaa13eb6952"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/launch_config.json": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/launch_config.json",
+      "sha256": "d64d438804b43bd2fe4797f713bdc508fb9fb64ca07cd16a5fc6ed61ff03966d"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/map_geometry.json": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/map_geometry.json",
+      "sha256": "a701d1260e332ee27abf08eab02795ae91dfe435d35dfd89e4a124c9b3699634"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/nav_trace.csv.gz": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/nav_trace.csv.gz",
+      "sha256": "e4211c7696ac92ff40645548b79f4631db7e59dd60a84309348342a70ed73fde"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/posterior_state.npz": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/posterior_state.npz",
+      "sha256": "5d5a6ef0ff5fa657de2e80327c4f929476ca06c62085a8ccee8d75dbb7eeed2a"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/scenario_config.json": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/scenario_config.json",
+      "sha256": "d64d438804b43bd2fe4797f713bdc508fb9fb64ca07cd16a5fc6ed61ff03966d"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/simulator.log": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/simulator.log",
+      "sha256": "27027bf366edfc6a2eccb7beacab4614e4117a09a39eaf0eb124f6590d338801"
+    },
+    "maps/confirm_long_corridor/B4_d_opt/summary.json": {
+      "path": "maps/confirm_long_corridor/B4_d_opt/summary.json",
+      "sha256": "0dfba612b581ee2d8fa94026e4fc426132d788f04c01e686333b9606ff155ff0"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/calibration_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/calibration_metrics.csv",
+      "sha256": "c64ffacec4f17163dd80d36c74d6dcd4a2137f59654a6d391d83ff2703662755"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/calibration_validation.csv",
+      "sha256": "b13039287738b94bb81fc9c4f661103b72991f3bc65ae46d0ecc0ca41e82d65c"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/distortion_parameters.json": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/episode_metrics.csv",
+      "sha256": "3e26cc4572039f7678e24337dbdd8cb1b26f376e7f4b97f5b526cc986a5a2034"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/launch_attempts.json": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/launch_attempts.json",
+      "sha256": "435fc6339549d6ce2da644eb104c69fd70b9d9044b9cd999ec3addcdc012b90d"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/launch_command.json": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/launch_command.json",
+      "sha256": "c9807624a4840bfd6acb1546e8661e756773b03cfbdebf88802a71dd5fa2bd4e"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/launch_config.json": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/launch_config.json",
+      "sha256": "3b478d5c5b88acd36416da2fbce105acfd8f41f87845ebfc2bb9481f5052aa3b"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/map_geometry.json": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/map_geometry.json",
+      "sha256": "a701d1260e332ee27abf08eab02795ae91dfe435d35dfd89e4a124c9b3699634"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/nav_trace.csv.gz": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/nav_trace.csv.gz",
+      "sha256": "d5b08c16162bae13b8b52bb2d9816a55da4ce1e07d273b257324513b1883b2fa"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/posterior_state.npz": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/posterior_state.npz",
+      "sha256": "f933b28e4b64d87b882ed2fbd672ce0b168d741ad89188dfcd0ca300af61586e"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/scenario_config.json": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/scenario_config.json",
+      "sha256": "3b478d5c5b88acd36416da2fbce105acfd8f41f87845ebfc2bb9481f5052aa3b"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/simulator.log": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/simulator.log",
+      "sha256": "2edad11fbedca7ef578fec8e428c50c4a0b9d41778a2cd122c99e32ed1087bc7"
+    },
+    "maps/confirm_long_corridor/B5_active_no_task/summary.json": {
+      "path": "maps/confirm_long_corridor/B5_active_no_task/summary.json",
+      "sha256": "df34b02f15ccc62e345df8f0ee6d304b5b3442b6a66fe3900b8e57f296ef37e2"
+    },
+    "maps/confirm_long_corridor/B8_full/calibration_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B8_full/calibration_metrics.csv",
+      "sha256": "1ba0b8f6f100fc338cb46d01a852e8e113a46f00eed6f62ee8faabf26739cd00"
+    },
+    "maps/confirm_long_corridor/B8_full/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/B8_full/calibration_validation.csv",
+      "sha256": "ddf89e38761ef60a15c10516f2ed6610d6ae54ee36572f7eaa1c4f3802c528c2"
+    },
+    "maps/confirm_long_corridor/B8_full/distortion_parameters.json": {
+      "path": "maps/confirm_long_corridor/B8_full/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_long_corridor/B8_full/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/B8_full/episode_metrics.csv",
+      "sha256": "8210b708d09b2edea23f0eb40c38f40bd3c52163c1c68fa148895c42668268d7"
+    },
+    "maps/confirm_long_corridor/B8_full/launch_attempts.json": {
+      "path": "maps/confirm_long_corridor/B8_full/launch_attempts.json",
+      "sha256": "0c9bc5ef7731e1bcec1357af07394dba37a96c0a19fb24b25dc14b96dcb48659"
+    },
+    "maps/confirm_long_corridor/B8_full/launch_command.json": {
+      "path": "maps/confirm_long_corridor/B8_full/launch_command.json",
+      "sha256": "1befba9da6cb6961ac04fede9774541c8199f1f0bab2569286b7f9df9a8d87a7"
+    },
+    "maps/confirm_long_corridor/B8_full/launch_config.json": {
+      "path": "maps/confirm_long_corridor/B8_full/launch_config.json",
+      "sha256": "cc3682d39f292f0e4fb22563ea548f846723519ac3c0cb5fc7da77d5eafee6dc"
+    },
+    "maps/confirm_long_corridor/B8_full/map_geometry.json": {
+      "path": "maps/confirm_long_corridor/B8_full/map_geometry.json",
+      "sha256": "a701d1260e332ee27abf08eab02795ae91dfe435d35dfd89e4a124c9b3699634"
+    },
+    "maps/confirm_long_corridor/B8_full/nav_trace.csv.gz": {
+      "path": "maps/confirm_long_corridor/B8_full/nav_trace.csv.gz",
+      "sha256": "cf6cfc0bf2f9742ee5a8d70f341e87b07283984bfc16b360c2d61dcb23a99f9c"
+    },
+    "maps/confirm_long_corridor/B8_full/posterior_state.npz": {
+      "path": "maps/confirm_long_corridor/B8_full/posterior_state.npz",
+      "sha256": "a225d1551365df664700cfe71f1e1a1d281af7d9e54512f0120bf4181387f03b"
+    },
+    "maps/confirm_long_corridor/B8_full/scenario_config.json": {
+      "path": "maps/confirm_long_corridor/B8_full/scenario_config.json",
+      "sha256": "cc3682d39f292f0e4fb22563ea548f846723519ac3c0cb5fc7da77d5eafee6dc"
+    },
+    "maps/confirm_long_corridor/B8_full/simulator.log": {
+      "path": "maps/confirm_long_corridor/B8_full/simulator.log",
+      "sha256": "0b2a2ecf2a2a86401a293bba0a561415c5eab34996a6e3f58d4cc83d98e1276d"
+    },
+    "maps/confirm_long_corridor/B8_full/summary.json": {
+      "path": "maps/confirm_long_corridor/B8_full/summary.json",
+      "sha256": "30595efb5d96940d6e932e3c8c5a25f1ae333d8b41d49ed80df8c7ec6cdbf633"
+    },
+    "maps/confirm_long_corridor/calibration_validation.csv": {
+      "path": "maps/confirm_long_corridor/calibration_validation.csv",
+      "sha256": "06e15e0e64b8cac81bf85ca93eb7ddce7e83f7f28a60ba7b717dfe576f06a274"
+    },
+    "maps/confirm_long_corridor/episode_metrics.csv": {
+      "path": "maps/confirm_long_corridor/episode_metrics.csv",
+      "sha256": "530fff1a5fd0fc59ad6472a73a089c40bc940b6e8a74363b3bb2653cb39b7082"
+    },
+    "maps/confirm_long_corridor/summary.json": {
+      "path": "maps/confirm_long_corridor/summary.json",
+      "sha256": "630a8c9fe75049647929a9ef71b4ffed404c39d3d42b9074b63a2fa11ecb53c8"
+    },
+    "maps/confirm_s_curve/B0_raw/calibration_metrics.csv": {
+      "path": "maps/confirm_s_curve/B0_raw/calibration_metrics.csv",
+      "sha256": "a78cbf7911fb9d64cab47100a655fd53d83e57c92610700e80eaed07ac7ad9c1"
+    },
+    "maps/confirm_s_curve/B0_raw/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/B0_raw/calibration_validation.csv",
+      "sha256": "e2d34aa2b478e36a6f3136221da734b1184cfe444ae8d6bf3b4b72d7be32d375"
+    },
+    "maps/confirm_s_curve/B0_raw/distortion_parameters.json": {
+      "path": "maps/confirm_s_curve/B0_raw/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_s_curve/B0_raw/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/B0_raw/episode_metrics.csv",
+      "sha256": "451b02d7d58f9293eae982576bccb179d8390e0aef9d650a04d6d6b9770cd230"
+    },
+    "maps/confirm_s_curve/B0_raw/launch_attempts.json": {
+      "path": "maps/confirm_s_curve/B0_raw/launch_attempts.json",
+      "sha256": "d11d0322e029b10ca1e3996624cb72b7cdd443145f721c24bec44b939b6377f3"
+    },
+    "maps/confirm_s_curve/B0_raw/launch_command.json": {
+      "path": "maps/confirm_s_curve/B0_raw/launch_command.json",
+      "sha256": "ddd66891787f83d19bc7da8b56b61c64d48cbb59c3196af3d4b6d7b748ae73e8"
+    },
+    "maps/confirm_s_curve/B0_raw/launch_config.json": {
+      "path": "maps/confirm_s_curve/B0_raw/launch_config.json",
+      "sha256": "d9aac9907fda828d2233ded35f7e25df1e6d62cc505abed82c4ad6a3a62ff932"
+    },
+    "maps/confirm_s_curve/B0_raw/map_geometry.json": {
+      "path": "maps/confirm_s_curve/B0_raw/map_geometry.json",
+      "sha256": "25b7ae7312b752af0dfd66ad9046da46c50fb023fcaacef6290c9892549ef9b5"
+    },
+    "maps/confirm_s_curve/B0_raw/nav_trace.csv.gz": {
+      "path": "maps/confirm_s_curve/B0_raw/nav_trace.csv.gz",
+      "sha256": "76d8f5d566bbdf8ec7efab6063d5f5201d5828ceb5ba6e244d62500895af8593"
+    },
+    "maps/confirm_s_curve/B0_raw/posterior_state.npz": {
+      "path": "maps/confirm_s_curve/B0_raw/posterior_state.npz",
+      "sha256": "d4b70a7e105e79994dd950e24f6e50758d7333841068dc8d09a96590948a701a"
+    },
+    "maps/confirm_s_curve/B0_raw/scenario_config.json": {
+      "path": "maps/confirm_s_curve/B0_raw/scenario_config.json",
+      "sha256": "d9aac9907fda828d2233ded35f7e25df1e6d62cc505abed82c4ad6a3a62ff932"
+    },
+    "maps/confirm_s_curve/B0_raw/simulator.log": {
+      "path": "maps/confirm_s_curve/B0_raw/simulator.log",
+      "sha256": "943027ada18d34987b91a3ef85821449f7b4a7e096bbb4825e8cda3553994855"
+    },
+    "maps/confirm_s_curve/B0_raw/summary.json": {
+      "path": "maps/confirm_s_curve/B0_raw/summary.json",
+      "sha256": "5412c13e490c61a4c7289b578671378cc8f3e12836f4f1d5daa5bddcc05eb0f5"
+    },
+    "maps/confirm_s_curve/B1_dense/calibration_metrics.csv": {
+      "path": "maps/confirm_s_curve/B1_dense/calibration_metrics.csv",
+      "sha256": "19a64cc7bd9cde4955dda9614c88008c45991520559e6d8b28bbf8c572b4bc91"
+    },
+    "maps/confirm_s_curve/B1_dense/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/B1_dense/calibration_validation.csv",
+      "sha256": "d08f98074dc693331ba376330b5cb748e00fd21b5066bd94afa48c7ad791b0d5"
+    },
+    "maps/confirm_s_curve/B1_dense/distortion_parameters.json": {
+      "path": "maps/confirm_s_curve/B1_dense/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_s_curve/B1_dense/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/B1_dense/episode_metrics.csv",
+      "sha256": "74c8fb78ee1c3fff953ea92cba02eee32e95a548ed67171045cf62eb9a98fef6"
+    },
+    "maps/confirm_s_curve/B1_dense/launch_attempts.json": {
+      "path": "maps/confirm_s_curve/B1_dense/launch_attempts.json",
+      "sha256": "0e1fbcbb4735cb3d7916f51be50324a9442e46f502f54e7d220e6ccb3bb9ae0b"
+    },
+    "maps/confirm_s_curve/B1_dense/launch_command.json": {
+      "path": "maps/confirm_s_curve/B1_dense/launch_command.json",
+      "sha256": "1c19fefa9a35e23edd35008f818b406cc7aa95c56378efaa879b445eac4cc948"
+    },
+    "maps/confirm_s_curve/B1_dense/launch_config.json": {
+      "path": "maps/confirm_s_curve/B1_dense/launch_config.json",
+      "sha256": "e47f4dfe0a2d28f15cd93ef5f0d8a024d71f5d92218b3900da9cd61ab6c907d3"
+    },
+    "maps/confirm_s_curve/B1_dense/map_geometry.json": {
+      "path": "maps/confirm_s_curve/B1_dense/map_geometry.json",
+      "sha256": "25b7ae7312b752af0dfd66ad9046da46c50fb023fcaacef6290c9892549ef9b5"
+    },
+    "maps/confirm_s_curve/B1_dense/nav_trace.csv.gz": {
+      "path": "maps/confirm_s_curve/B1_dense/nav_trace.csv.gz",
+      "sha256": "85a73b5a20cc0129fb27f6c7f9531ac2728fcb08efe1548e1236fdfc08bde932"
+    },
+    "maps/confirm_s_curve/B1_dense/posterior_state.npz": {
+      "path": "maps/confirm_s_curve/B1_dense/posterior_state.npz",
+      "sha256": "13d755b1cb50f8f8ee956212be4b2b5327733e54ec531faa84c76965b7a06a56"
+    },
+    "maps/confirm_s_curve/B1_dense/scenario_config.json": {
+      "path": "maps/confirm_s_curve/B1_dense/scenario_config.json",
+      "sha256": "e47f4dfe0a2d28f15cd93ef5f0d8a024d71f5d92218b3900da9cd61ab6c907d3"
+    },
+    "maps/confirm_s_curve/B1_dense/simulator.log": {
+      "path": "maps/confirm_s_curve/B1_dense/simulator.log",
+      "sha256": "15c3cc52766c156055b08f337db90da829f7d32630fac66625ad07f8b467ac06"
+    },
+    "maps/confirm_s_curve/B1_dense/summary.json": {
+      "path": "maps/confirm_s_curve/B1_dense/summary.json",
+      "sha256": "318a434234d50f69b9e85537b47142da583cfcac944de6e525e7e800683d2495"
+    },
+    "maps/confirm_s_curve/B2_lhs/calibration_metrics.csv": {
+      "path": "maps/confirm_s_curve/B2_lhs/calibration_metrics.csv",
+      "sha256": "5eaac46aaba0f70ad1968c4f6ea657e9219985cb410d19334512ba872a26e0dc"
+    },
+    "maps/confirm_s_curve/B2_lhs/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/B2_lhs/calibration_validation.csv",
+      "sha256": "a62dd33a35a1ec4b0f7d1678f67a84f645fe7b11f471d73b293160a5bac2542d"
+    },
+    "maps/confirm_s_curve/B2_lhs/distortion_parameters.json": {
+      "path": "maps/confirm_s_curve/B2_lhs/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_s_curve/B2_lhs/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/B2_lhs/episode_metrics.csv",
+      "sha256": "515ce36f7ce7d4edd26320f5963ee1d36ab2828a3476e5cd339b170d9c67897f"
+    },
+    "maps/confirm_s_curve/B2_lhs/launch_attempts.json": {
+      "path": "maps/confirm_s_curve/B2_lhs/launch_attempts.json",
+      "sha256": "35f6836ecc3c23a030bb7015decb551ef51c36b8747caf0801a2e33693a3fa0e"
+    },
+    "maps/confirm_s_curve/B2_lhs/launch_command.json": {
+      "path": "maps/confirm_s_curve/B2_lhs/launch_command.json",
+      "sha256": "06706a40cad1d91a187032c72a851e44b6e645e31730fe5b27ef30e5722632ae"
+    },
+    "maps/confirm_s_curve/B2_lhs/launch_config.json": {
+      "path": "maps/confirm_s_curve/B2_lhs/launch_config.json",
+      "sha256": "576b62f560fcd1adab116e31547699142f02f439804dd2239571b288657ab2ac"
+    },
+    "maps/confirm_s_curve/B2_lhs/map_geometry.json": {
+      "path": "maps/confirm_s_curve/B2_lhs/map_geometry.json",
+      "sha256": "25b7ae7312b752af0dfd66ad9046da46c50fb023fcaacef6290c9892549ef9b5"
+    },
+    "maps/confirm_s_curve/B2_lhs/nav_trace.csv.gz": {
+      "path": "maps/confirm_s_curve/B2_lhs/nav_trace.csv.gz",
+      "sha256": "8280c373dd901334d561bcd100f6cf4aea7e47a5d460492f5107c545ae31c7a8"
+    },
+    "maps/confirm_s_curve/B2_lhs/posterior_state.npz": {
+      "path": "maps/confirm_s_curve/B2_lhs/posterior_state.npz",
+      "sha256": "b7b8e01e93707ae27d5856932ec7875c833028e0cb130a5616221c7a7cdadbf7"
+    },
+    "maps/confirm_s_curve/B2_lhs/scenario_config.json": {
+      "path": "maps/confirm_s_curve/B2_lhs/scenario_config.json",
+      "sha256": "576b62f560fcd1adab116e31547699142f02f439804dd2239571b288657ab2ac"
+    },
+    "maps/confirm_s_curve/B2_lhs/simulator.log": {
+      "path": "maps/confirm_s_curve/B2_lhs/simulator.log",
+      "sha256": "fa4916e5109e3d7e13be60114955bc880885bba71eabae6ff215636e2918b455"
+    },
+    "maps/confirm_s_curve/B2_lhs/summary.json": {
+      "path": "maps/confirm_s_curve/B2_lhs/summary.json",
+      "sha256": "bb3789e731090c5fc2302319706463e5a778fc35f04be8341bc41574a43c525e"
+    },
+    "maps/confirm_s_curve/B3_sobol/calibration_metrics.csv": {
+      "path": "maps/confirm_s_curve/B3_sobol/calibration_metrics.csv",
+      "sha256": "594a49953e96d3e291ab1b6050303bdfdf051dfe7a3d20c010f0785f588cffec"
+    },
+    "maps/confirm_s_curve/B3_sobol/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/B3_sobol/calibration_validation.csv",
+      "sha256": "cf16cf188ffe823d6b9a27e2812fcb18b7d812fbf52eedc14e9ab50b06e83da4"
+    },
+    "maps/confirm_s_curve/B3_sobol/distortion_parameters.json": {
+      "path": "maps/confirm_s_curve/B3_sobol/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_s_curve/B3_sobol/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/B3_sobol/episode_metrics.csv",
+      "sha256": "e87adc97953e51568ea18d05deda5a5704fdbcd971661a288a840a341aff2e8f"
+    },
+    "maps/confirm_s_curve/B3_sobol/launch_attempts.json": {
+      "path": "maps/confirm_s_curve/B3_sobol/launch_attempts.json",
+      "sha256": "d19a7e6bdf5480c9addc8bb43a4b5f49cafe56bfab6b8b30b127844660cb206b"
+    },
+    "maps/confirm_s_curve/B3_sobol/launch_command.json": {
+      "path": "maps/confirm_s_curve/B3_sobol/launch_command.json",
+      "sha256": "df0d0be3008dd5c65f840af60c1fdf5225704c9cb999f3685bfca21baf381358"
+    },
+    "maps/confirm_s_curve/B3_sobol/launch_config.json": {
+      "path": "maps/confirm_s_curve/B3_sobol/launch_config.json",
+      "sha256": "78b5ec127628e820a2581fbddaa50009ca39b72786554d4ee6def46516ca9c84"
+    },
+    "maps/confirm_s_curve/B3_sobol/map_geometry.json": {
+      "path": "maps/confirm_s_curve/B3_sobol/map_geometry.json",
+      "sha256": "25b7ae7312b752af0dfd66ad9046da46c50fb023fcaacef6290c9892549ef9b5"
+    },
+    "maps/confirm_s_curve/B3_sobol/nav_trace.csv.gz": {
+      "path": "maps/confirm_s_curve/B3_sobol/nav_trace.csv.gz",
+      "sha256": "2c2fe20d4eead4f16ae53fe5f3c0cc613dcb47cfd74133b932d5534a3f8002bc"
+    },
+    "maps/confirm_s_curve/B3_sobol/posterior_state.npz": {
+      "path": "maps/confirm_s_curve/B3_sobol/posterior_state.npz",
+      "sha256": "83d2394b22972c275a84f567d415be1d90854c4ed571afaa168da338e40f893a"
+    },
+    "maps/confirm_s_curve/B3_sobol/scenario_config.json": {
+      "path": "maps/confirm_s_curve/B3_sobol/scenario_config.json",
+      "sha256": "78b5ec127628e820a2581fbddaa50009ca39b72786554d4ee6def46516ca9c84"
+    },
+    "maps/confirm_s_curve/B3_sobol/simulator.log": {
+      "path": "maps/confirm_s_curve/B3_sobol/simulator.log",
+      "sha256": "c6ad003aae56c822d4445a0ff31f3dece4695df29655e2e7996389df256bd621"
+    },
+    "maps/confirm_s_curve/B3_sobol/summary.json": {
+      "path": "maps/confirm_s_curve/B3_sobol/summary.json",
+      "sha256": "79df38a2e26d0d12875cbd3c0788e763bedde8ca26f95891d2c2941f97d56fa7"
+    },
+    "maps/confirm_s_curve/B4_d_opt/calibration_metrics.csv": {
+      "path": "maps/confirm_s_curve/B4_d_opt/calibration_metrics.csv",
+      "sha256": "0e2acf2719a393301732686403420900e21dee9f66acb304ad5cc13239599dcb"
+    },
+    "maps/confirm_s_curve/B4_d_opt/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/B4_d_opt/calibration_validation.csv",
+      "sha256": "1c518e425bfb5b1d5fdd849facec54f8e908a027777b82f97b2220f04c703d28"
+    },
+    "maps/confirm_s_curve/B4_d_opt/distortion_parameters.json": {
+      "path": "maps/confirm_s_curve/B4_d_opt/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_s_curve/B4_d_opt/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/B4_d_opt/episode_metrics.csv",
+      "sha256": "369499fcdb8b164a8cdb9ceca5f5dafed89ad297d64d79e75263126b7c41fb5b"
+    },
+    "maps/confirm_s_curve/B4_d_opt/launch_attempts.json": {
+      "path": "maps/confirm_s_curve/B4_d_opt/launch_attempts.json",
+      "sha256": "6d1d6e7ea1aa6e0dac08e2b52f4bc2019e885bda1d360f76fc4e4560ca340639"
+    },
+    "maps/confirm_s_curve/B4_d_opt/launch_command.json": {
+      "path": "maps/confirm_s_curve/B4_d_opt/launch_command.json",
+      "sha256": "5f9cd99021db84ae478a66f9b2e0ee5587a7e6556c6ee7af23a355f2fde34289"
+    },
+    "maps/confirm_s_curve/B4_d_opt/launch_config.json": {
+      "path": "maps/confirm_s_curve/B4_d_opt/launch_config.json",
+      "sha256": "350d9efeabfdb3ab22bfd62979c590bd1d1128f93056c9d8c9d4e62ecafbcc07"
+    },
+    "maps/confirm_s_curve/B4_d_opt/map_geometry.json": {
+      "path": "maps/confirm_s_curve/B4_d_opt/map_geometry.json",
+      "sha256": "25b7ae7312b752af0dfd66ad9046da46c50fb023fcaacef6290c9892549ef9b5"
+    },
+    "maps/confirm_s_curve/B4_d_opt/nav_trace.csv.gz": {
+      "path": "maps/confirm_s_curve/B4_d_opt/nav_trace.csv.gz",
+      "sha256": "236315da8caa664c555dca790f8f75ef8daa986c9e499fb7ca3045a955d0f6d1"
+    },
+    "maps/confirm_s_curve/B4_d_opt/posterior_state.npz": {
+      "path": "maps/confirm_s_curve/B4_d_opt/posterior_state.npz",
+      "sha256": "04d95314b6e1df2a9b10d0860e8d7c84eb3b8068cb8f5d79d4c5d0c6d361d416"
+    },
+    "maps/confirm_s_curve/B4_d_opt/scenario_config.json": {
+      "path": "maps/confirm_s_curve/B4_d_opt/scenario_config.json",
+      "sha256": "350d9efeabfdb3ab22bfd62979c590bd1d1128f93056c9d8c9d4e62ecafbcc07"
+    },
+    "maps/confirm_s_curve/B4_d_opt/simulator.log": {
+      "path": "maps/confirm_s_curve/B4_d_opt/simulator.log",
+      "sha256": "e49bc8fb1ef482b19bd4034cdaa2222b57748c7abcbf08d00ad6c0e8cf835d15"
+    },
+    "maps/confirm_s_curve/B4_d_opt/summary.json": {
+      "path": "maps/confirm_s_curve/B4_d_opt/summary.json",
+      "sha256": "fa4350085d44f719038765b167f985bb2dc0868a60311a265068ce0330b09315"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/calibration_metrics.csv": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/calibration_metrics.csv",
+      "sha256": "fefbf03cc0147b599bc1693bd791c47364f5e42b92f91f765f89bf5e5366a277"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/calibration_validation.csv",
+      "sha256": "ec50576db3c72760972787709f35ba2637885b6c7a9cbef3d6aa1132fe209377"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/distortion_parameters.json": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/episode_metrics.csv",
+      "sha256": "ced1a24c902765040652537fc8d4ef65fcfad3f0ff0c8288e2fd6a729a8a4918"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/launch_attempts.json": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/launch_attempts.json",
+      "sha256": "b8756bf9f63cf35a0ae62628ea4ef558988509bfb8d76c77620d21970855cf8a"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/launch_command.json": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/launch_command.json",
+      "sha256": "c050002fe1b105c52bbafa596a3456afb7b7986a75ed6c1a2c0afe67c7810d27"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/launch_config.json": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/launch_config.json",
+      "sha256": "4c9618c1d12f2ce868e24add3a60d13030cd11f75eeb66fdc197f1fb45306c29"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/map_geometry.json": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/map_geometry.json",
+      "sha256": "25b7ae7312b752af0dfd66ad9046da46c50fb023fcaacef6290c9892549ef9b5"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/nav_trace.csv.gz": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/nav_trace.csv.gz",
+      "sha256": "f59a8274eac275397e77c869441767a34ecd9e8515cfd58ec12ce7b29cf76a8b"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/posterior_state.npz": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/posterior_state.npz",
+      "sha256": "72ca6789a512f7eebd3a39de3c4f7e117eddcfdeeaea9727b77e6bfe4ac69b84"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/scenario_config.json": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/scenario_config.json",
+      "sha256": "4c9618c1d12f2ce868e24add3a60d13030cd11f75eeb66fdc197f1fb45306c29"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/simulator.log": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/simulator.log",
+      "sha256": "9dcc56d0e3dcd83136664f0ff3eedd90dac6c77871ce7fc8cc50a67ed4d5b529"
+    },
+    "maps/confirm_s_curve/B5_active_no_task/summary.json": {
+      "path": "maps/confirm_s_curve/B5_active_no_task/summary.json",
+      "sha256": "3a135d39515d2f038ef5961a4f76d2464172e9abc562ff807f133ebd0bc5fb00"
+    },
+    "maps/confirm_s_curve/B8_full/calibration_metrics.csv": {
+      "path": "maps/confirm_s_curve/B8_full/calibration_metrics.csv",
+      "sha256": "64361faac08ab62cd8a73a69a441383acdc1055b0bc80fe3549258ceb606a9a7"
+    },
+    "maps/confirm_s_curve/B8_full/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/B8_full/calibration_validation.csv",
+      "sha256": "ad388e8bbaab15c56994813f5a83b390867ea9ac980d6f7e7f423341494a5271"
+    },
+    "maps/confirm_s_curve/B8_full/distortion_parameters.json": {
+      "path": "maps/confirm_s_curve/B8_full/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_s_curve/B8_full/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/B8_full/episode_metrics.csv",
+      "sha256": "0d3650a21991a6d775bb27b9230c3bf384a86e1a55b464d30561ada3972e5b59"
+    },
+    "maps/confirm_s_curve/B8_full/launch_attempts.json": {
+      "path": "maps/confirm_s_curve/B8_full/launch_attempts.json",
+      "sha256": "505c00e1e45fd3c3309125921693139a09756f2a28f12e54d073e5c437554e20"
+    },
+    "maps/confirm_s_curve/B8_full/launch_command.json": {
+      "path": "maps/confirm_s_curve/B8_full/launch_command.json",
+      "sha256": "3ba4420ade9a5cf830489384ec658c03ce883fa2b09c72cf126fefc370360c06"
+    },
+    "maps/confirm_s_curve/B8_full/launch_config.json": {
+      "path": "maps/confirm_s_curve/B8_full/launch_config.json",
+      "sha256": "e12653cbc6661c7264164c2989dfe8b54d1e31ff6be75298526be1af4e74f5f2"
+    },
+    "maps/confirm_s_curve/B8_full/map_geometry.json": {
+      "path": "maps/confirm_s_curve/B8_full/map_geometry.json",
+      "sha256": "25b7ae7312b752af0dfd66ad9046da46c50fb023fcaacef6290c9892549ef9b5"
+    },
+    "maps/confirm_s_curve/B8_full/nav_trace.csv.gz": {
+      "path": "maps/confirm_s_curve/B8_full/nav_trace.csv.gz",
+      "sha256": "aa6130e20e968d159d8dd3854cc3a6d8b59ec497f8f02509743f23da5ba14919"
+    },
+    "maps/confirm_s_curve/B8_full/posterior_state.npz": {
+      "path": "maps/confirm_s_curve/B8_full/posterior_state.npz",
+      "sha256": "e38d3b51d78532e7e4f80697412d38fbe58dcb6031bbdf9e80ed0b0371616a91"
+    },
+    "maps/confirm_s_curve/B8_full/scenario_config.json": {
+      "path": "maps/confirm_s_curve/B8_full/scenario_config.json",
+      "sha256": "e12653cbc6661c7264164c2989dfe8b54d1e31ff6be75298526be1af4e74f5f2"
+    },
+    "maps/confirm_s_curve/B8_full/simulator.log": {
+      "path": "maps/confirm_s_curve/B8_full/simulator.log",
+      "sha256": "3b79e8a34349037f791c6a5d08efda918b552fa15537f3d6a779142408d91a31"
+    },
+    "maps/confirm_s_curve/B8_full/summary.json": {
+      "path": "maps/confirm_s_curve/B8_full/summary.json",
+      "sha256": "d6c5b87986f1105386d4ad23a75d09e67a0f4ac900d9425b4c86a20054e3a73f"
+    },
+    "maps/confirm_s_curve/calibration_validation.csv": {
+      "path": "maps/confirm_s_curve/calibration_validation.csv",
+      "sha256": "ebfc0e6fb0b4ba10e280fd5ae9cf676e0b2df526400b7b2b7729f630e1fe101a"
+    },
+    "maps/confirm_s_curve/episode_metrics.csv": {
+      "path": "maps/confirm_s_curve/episode_metrics.csv",
+      "sha256": "b4c0c2af7b3179ed74e1e47ef8dd1c9562172be1cb6250aa885011825bfb5df6"
+    },
+    "maps/confirm_s_curve/summary.json": {
+      "path": "maps/confirm_s_curve/summary.json",
+      "sha256": "2b8f5a6da5a5d52b91ec26631759784471d9237380ad1225b0d656405f8a3428"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/calibration_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/calibration_metrics.csv",
+      "sha256": "0fc5e82bf8d7cb38b824e66a0362c5f15904130473fe9964b8d0d1e0e74c73a9"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/calibration_validation.csv",
+      "sha256": "dc1c685395864ec6d45cd8cb61ede0ee4fd2f24c922a471f231e2dca9def48e0"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/distortion_parameters.json": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/episode_metrics.csv",
+      "sha256": "82ad6e2cb7e67993af47f6b9f2eef7242e610303d15df8f03524c3bfbc29e6a5"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/launch_attempts.json": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/launch_attempts.json",
+      "sha256": "def52b35b48dfe3588500a9f1c8ac2954faa44184afa314a3d5764df697069d6"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/launch_command.json": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/launch_command.json",
+      "sha256": "42cc8483d5b4da6d6390e6274d837fbcc4bb203472ddd847472fb4e124f9e478"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/launch_config.json": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/launch_config.json",
+      "sha256": "38c0e7b51c46eb114ca2e9586d7973589388932b7775d2b9974e973740cedecf"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/map_geometry.json": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/map_geometry.json",
+      "sha256": "d850d2d2c7002575dd32135387ff27929eb3583b6632bb5cd609b558423beaeb"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/nav_trace.csv.gz": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/nav_trace.csv.gz",
+      "sha256": "1b7e18d2d83c6ec1662a59e8834dca2f9f399d3c9c4959ced1ae43e90e8f0932"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/posterior_state.npz": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/posterior_state.npz",
+      "sha256": "d4b70a7e105e79994dd950e24f6e50758d7333841068dc8d09a96590948a701a"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/scenario_config.json": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/scenario_config.json",
+      "sha256": "38c0e7b51c46eb114ca2e9586d7973589388932b7775d2b9974e973740cedecf"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/simulator.log": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/simulator.log",
+      "sha256": "340817ec9cc768b534736c3c983bb1b3aa47e54ff9e9460ad796abdd3e0fde0b"
+    },
+    "maps/confirm_staggered_slalom/B0_raw/summary.json": {
+      "path": "maps/confirm_staggered_slalom/B0_raw/summary.json",
+      "sha256": "78eadde5e2aaef6efa8c4535da3f38401aad493edf1820f9c4d5cdfface3aa2b"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/calibration_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/calibration_metrics.csv",
+      "sha256": "31b85d14efad9683e85f38ee27821f204908fc916b6f9507b2d553025198f3cc"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/calibration_validation.csv",
+      "sha256": "d6a13016fe82d3402fca4206f29aa145adc75fdb0800bd6dbca9a7802cf9d561"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/distortion_parameters.json": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/episode_metrics.csv",
+      "sha256": "7ea6526dc62b9a30e298c83ae54319ae0d62b4735cc59121d5d078a37a701399"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/launch_attempts.json": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/launch_attempts.json",
+      "sha256": "4133c7897b935f74cce57c18af7a7d8eeda5438aaf97c0363aeea243485c9d0d"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/launch_command.json": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/launch_command.json",
+      "sha256": "4b778c4d3f87d1615f8b98b955477e631bde34c9fb9a51412e3e4e272c0fa3dc"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/launch_config.json": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/launch_config.json",
+      "sha256": "f180c1ebac6ce902a9e5664a2062c93f97a91b620b2fd24d308228ccf4851da1"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/map_geometry.json": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/map_geometry.json",
+      "sha256": "d850d2d2c7002575dd32135387ff27929eb3583b6632bb5cd609b558423beaeb"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/nav_trace.csv.gz": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/nav_trace.csv.gz",
+      "sha256": "d051827cb44635a4684f2facf7175bbab0059762c24180dca171591b52b1922f"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/posterior_state.npz": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/posterior_state.npz",
+      "sha256": "649cf993abb47b24e74a0ab7419b7daea9adf169a10b02af2cc3d6f413ce7624"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/scenario_config.json": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/scenario_config.json",
+      "sha256": "f180c1ebac6ce902a9e5664a2062c93f97a91b620b2fd24d308228ccf4851da1"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/simulator.log": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/simulator.log",
+      "sha256": "c0ef184a9ccdfcbe52a00ac88fd44a22b6bdc3aea430345c635a35b2619f01d3"
+    },
+    "maps/confirm_staggered_slalom/B1_dense/summary.json": {
+      "path": "maps/confirm_staggered_slalom/B1_dense/summary.json",
+      "sha256": "19bacd1140c35b6b5d33e0b5713e55ffcfdfa8f36f0c1a2cd0291714a2b492bc"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/calibration_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/calibration_metrics.csv",
+      "sha256": "316436d905fc86594b9925da03f882cecac30673c80259e5cf3aa6b172ea9510"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/calibration_validation.csv",
+      "sha256": "3b08e274ee122cd6553427ef22af21ee5684ed632f14bbc93b31b75db11f0fb8"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/distortion_parameters.json": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/episode_metrics.csv",
+      "sha256": "0bb52c713df3d4a8526a195274b7601d9dd90221f8e7a63bc9d3323cc7ca340c"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/launch_attempts.json": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/launch_attempts.json",
+      "sha256": "4fb9d0f7bf6c870f98d0e570a9f42f6cac03973574f32013e6def142cb476a2b"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/launch_command.json": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/launch_command.json",
+      "sha256": "d0d392cc81599999904a9b8a6a487cb7b799ca8e6eadd2a431a7df00d7d3dd51"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/launch_config.json": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/launch_config.json",
+      "sha256": "fcdbb2a652ee7db8102e7c1b4cceedbd2d91ad105f69d38cc1cd33b7e32a104f"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/map_geometry.json": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/map_geometry.json",
+      "sha256": "d850d2d2c7002575dd32135387ff27929eb3583b6632bb5cd609b558423beaeb"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/nav_trace.csv.gz": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/nav_trace.csv.gz",
+      "sha256": "49d706b69db9ebef8d0f4e13ebe2566c2831b7f059166ae05a3460c269c85a5b"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/posterior_state.npz": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/posterior_state.npz",
+      "sha256": "ea8a8d7a10d11c33e4869773dc666eaceb7fc9ab5d47d14bdca0ce0642604956"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/scenario_config.json": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/scenario_config.json",
+      "sha256": "fcdbb2a652ee7db8102e7c1b4cceedbd2d91ad105f69d38cc1cd33b7e32a104f"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/simulator.log": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/simulator.log",
+      "sha256": "3c5fd5c3030c4ab75cdf149f5572584708685c2bf3764c832a48824318f6e2e9"
+    },
+    "maps/confirm_staggered_slalom/B2_lhs/summary.json": {
+      "path": "maps/confirm_staggered_slalom/B2_lhs/summary.json",
+      "sha256": "8991a42f92acde4f5ec66fce4ff1ff3add595b26564e409edc8d1be5f8bb3f96"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/calibration_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/calibration_metrics.csv",
+      "sha256": "2ea06aeb442ff1558cb96ccd0c8358e4b2e1b964a3f92eec6922ff9b8ec97bff"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/calibration_validation.csv",
+      "sha256": "7a5ae1b98aa43413130643219bb073330621dd0e29f6f0895152f0a878327393"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/distortion_parameters.json": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/episode_metrics.csv",
+      "sha256": "cbeac61e489d13e0f676cccb2e80e35665def9e35918fbb927539f64aa841bca"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/launch_attempts.json": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/launch_attempts.json",
+      "sha256": "445fd6267e44b2e03e4a6469d952ca970b79b555cb4cf86771447c33b911d657"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/launch_command.json": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/launch_command.json",
+      "sha256": "718d636307b39b527200353766ebaf8b8cb6e9af8448133800e1ddc12e2fd47b"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/launch_config.json": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/launch_config.json",
+      "sha256": "cdc49c6e381934cecd0a97f99acdf7cd75ea8714c582727ec62c65fde674f251"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/map_geometry.json": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/map_geometry.json",
+      "sha256": "d850d2d2c7002575dd32135387ff27929eb3583b6632bb5cd609b558423beaeb"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/nav_trace.csv.gz": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/nav_trace.csv.gz",
+      "sha256": "e5cab287e51e89ea7c86da80ace1c41e3c31764f789188a8a9e620eeff48a899"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/posterior_state.npz": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/posterior_state.npz",
+      "sha256": "2255e0435f9ecd5416776e6f6f91f7838c6b0eed47059a2973f1f0652e156dec"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/scenario_config.json": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/scenario_config.json",
+      "sha256": "cdc49c6e381934cecd0a97f99acdf7cd75ea8714c582727ec62c65fde674f251"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/simulator.log": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/simulator.log",
+      "sha256": "6155141e723e34e897f60998869c224f38128ffa5a85a372a305e3a70a760f42"
+    },
+    "maps/confirm_staggered_slalom/B3_sobol/summary.json": {
+      "path": "maps/confirm_staggered_slalom/B3_sobol/summary.json",
+      "sha256": "c6c537b0b9540976f5fc07bea222745152475eb0393ae691afb3c85c5717570a"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/calibration_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/calibration_metrics.csv",
+      "sha256": "302341f9aa5dc71d273ee9f39bffc44553a15fa18caa06afbbcb9afc12b18147"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/calibration_validation.csv",
+      "sha256": "80387f1340400f783c479549efe29b9afc006de1e01f0ff4e3cb522c610a3c50"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/distortion_parameters.json": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/episode_metrics.csv",
+      "sha256": "29e92a1a951964139483bdce94ece946cbfbed41cbebc637dc9894bb5de4a4bf"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/launch_attempts.json": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/launch_attempts.json",
+      "sha256": "546b2353bee7ff147c5657c4aaf52d2e90cd50d9a0ece4239117fc201f8a5f84"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/launch_command.json": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/launch_command.json",
+      "sha256": "6c3056f806da2bcda15b3712e6ddb4307be50f33a74182f68b3e87dee3d19b6b"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/launch_config.json": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/launch_config.json",
+      "sha256": "91a8363cb0193abd5f67604943fcfb0b947faac8ae8f0ce6a0ecde84b4b4d456"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/map_geometry.json": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/map_geometry.json",
+      "sha256": "d850d2d2c7002575dd32135387ff27929eb3583b6632bb5cd609b558423beaeb"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/nav_trace.csv.gz": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/nav_trace.csv.gz",
+      "sha256": "4742b5a636eb3249ea0481c8f0db0ef7f2b29beee876eed4c782a55d3525befa"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/posterior_state.npz": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/posterior_state.npz",
+      "sha256": "70e5b97958b4dd29ffe4858c2c17b8e2c7c0c3bb7f304c0b3d18b0a27fc1af21"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/scenario_config.json": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/scenario_config.json",
+      "sha256": "91a8363cb0193abd5f67604943fcfb0b947faac8ae8f0ce6a0ecde84b4b4d456"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/simulator.log": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/simulator.log",
+      "sha256": "6a71653b1271a18beb16de4e54f4cd984bf04a683dceff66e9c93edab11ecf12"
+    },
+    "maps/confirm_staggered_slalom/B4_d_opt/summary.json": {
+      "path": "maps/confirm_staggered_slalom/B4_d_opt/summary.json",
+      "sha256": "faa1039ec38852cfea24787767e3da8eca711f8e34f68ef9f88dcfb452186493"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/calibration_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/calibration_metrics.csv",
+      "sha256": "4287bd7352746874174f808331d4ebc7aa80a400a853ec9fd22147b1f94dca16"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/calibration_validation.csv",
+      "sha256": "fd9caa97a88e514963bca3c4af214975102b12557630f9734ee2378c636424f1"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/distortion_parameters.json": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/episode_metrics.csv",
+      "sha256": "43de6d48a8667d8d4073fd16c2023fe6757c818db5e326d201ed075d0b8e1a8a"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/launch_attempts.json": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/launch_attempts.json",
+      "sha256": "56a7e900b7af2dc9463bd8746f6c534a8c9391331bcc5ae54a221d1916d455ad"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/launch_command.json": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/launch_command.json",
+      "sha256": "6f10f4f3391d74e8a3b922a152bfd59b784b5de35d04421a9d94b5334711d4dd"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/launch_config.json": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/launch_config.json",
+      "sha256": "c0a172780ef1c5b0769e3a179c284e58c9587a34090d48098b4f963bd3df7b69"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/map_geometry.json": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/map_geometry.json",
+      "sha256": "d850d2d2c7002575dd32135387ff27929eb3583b6632bb5cd609b558423beaeb"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/nav_trace.csv.gz": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/nav_trace.csv.gz",
+      "sha256": "d3cf46c9a2517dcf8db5ed45594e9f11c4f2abb923fc85d9d72ff52d3fb2c5f1"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/posterior_state.npz": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/posterior_state.npz",
+      "sha256": "3322a3117032c1ceb891f667e9d18826089668b8e2c934250337f45f46449de0"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/scenario_config.json": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/scenario_config.json",
+      "sha256": "c0a172780ef1c5b0769e3a179c284e58c9587a34090d48098b4f963bd3df7b69"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/simulator.log": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/simulator.log",
+      "sha256": "d10af1f1682e63b7c704469c9e5c4cae0dcebeeee38a38625d36ea6ce5091de2"
+    },
+    "maps/confirm_staggered_slalom/B5_active_no_task/summary.json": {
+      "path": "maps/confirm_staggered_slalom/B5_active_no_task/summary.json",
+      "sha256": "7b3de5aaf94966155d51b3dbd967efef49c19b79658f9f561bd97539df23b79b"
+    },
+    "maps/confirm_staggered_slalom/B8_full/calibration_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B8_full/calibration_metrics.csv",
+      "sha256": "8ea4e6b9b8e22b2979a646083155d110a1eeb96f4b9637a7be14c3d678efa25e"
+    },
+    "maps/confirm_staggered_slalom/B8_full/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/B8_full/calibration_validation.csv",
+      "sha256": "25afa0ddb3987cd2bf5c6ab87bcb7da6e4da1b2413efa5753976d047f309510a"
+    },
+    "maps/confirm_staggered_slalom/B8_full/distortion_parameters.json": {
+      "path": "maps/confirm_staggered_slalom/B8_full/distortion_parameters.json",
+      "sha256": "39f14d408f6ec11b3d3f017122517842839e1bbeb8ca354e7365d606190ae953"
+    },
+    "maps/confirm_staggered_slalom/B8_full/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/B8_full/episode_metrics.csv",
+      "sha256": "6faa588f9d4f3d3ce842a196615cda44f8a31e3d9283dd2b1ed35fc69475cda4"
+    },
+    "maps/confirm_staggered_slalom/B8_full/launch_attempts.json": {
+      "path": "maps/confirm_staggered_slalom/B8_full/launch_attempts.json",
+      "sha256": "133e218d6d23fdaf11d01fc5077e89ec0e5788d5753f6d986eb18e5fad1bbdb9"
+    },
+    "maps/confirm_staggered_slalom/B8_full/launch_command.json": {
+      "path": "maps/confirm_staggered_slalom/B8_full/launch_command.json",
+      "sha256": "aa502715f264278c29826e03c77c0c0ee10f4b72d8535bf60b97d5ee21e946ca"
+    },
+    "maps/confirm_staggered_slalom/B8_full/launch_config.json": {
+      "path": "maps/confirm_staggered_slalom/B8_full/launch_config.json",
+      "sha256": "4d471ab17e57019506bffb4849b1cb8f4a593fdffe5400f85a89daff591e3519"
+    },
+    "maps/confirm_staggered_slalom/B8_full/map_geometry.json": {
+      "path": "maps/confirm_staggered_slalom/B8_full/map_geometry.json",
+      "sha256": "d850d2d2c7002575dd32135387ff27929eb3583b6632bb5cd609b558423beaeb"
+    },
+    "maps/confirm_staggered_slalom/B8_full/nav_trace.csv.gz": {
+      "path": "maps/confirm_staggered_slalom/B8_full/nav_trace.csv.gz",
+      "sha256": "b83a9f5504e89aa87ddf96fc61d2346053d94f6a8426bc25afbaba406dd5243d"
+    },
+    "maps/confirm_staggered_slalom/B8_full/posterior_state.npz": {
+      "path": "maps/confirm_staggered_slalom/B8_full/posterior_state.npz",
+      "sha256": "16c6b243a843ccaf0c6597b7b63480dca28304b29765ae616312c2101cdc0c59"
+    },
+    "maps/confirm_staggered_slalom/B8_full/scenario_config.json": {
+      "path": "maps/confirm_staggered_slalom/B8_full/scenario_config.json",
+      "sha256": "4d471ab17e57019506bffb4849b1cb8f4a593fdffe5400f85a89daff591e3519"
+    },
+    "maps/confirm_staggered_slalom/B8_full/simulator.log": {
+      "path": "maps/confirm_staggered_slalom/B8_full/simulator.log",
+      "sha256": "c3206ec5d7ee6250ae97de4b0cc1f9582b79f7c804017ab229a3fcd9f4e24939"
+    },
+    "maps/confirm_staggered_slalom/B8_full/summary.json": {
+      "path": "maps/confirm_staggered_slalom/B8_full/summary.json",
+      "sha256": "0c0756630b0dee00623165b8acf35c19c02dda7da1f22737d35d517d5471a04a"
+    },
+    "maps/confirm_staggered_slalom/calibration_validation.csv": {
+      "path": "maps/confirm_staggered_slalom/calibration_validation.csv",
+      "sha256": "fc154c455b4fce3a6f049b333ce02036a96ede66485fc12c1d49d52383fb43d5"
+    },
+    "maps/confirm_staggered_slalom/episode_metrics.csv": {
+      "path": "maps/confirm_staggered_slalom/episode_metrics.csv",
+      "sha256": "3f35e78ea45ac7ee0a35b054ac739b1e224b587aa28645da7b5bcb0bc878cf19"
+    },
+    "maps/confirm_staggered_slalom/summary.json": {
+      "path": "maps/confirm_staggered_slalom/summary.json",
+      "sha256": "dcb44eeec7c4a3a86b007e9f8b4c6c474c25bc7c429a7cf39771f5988f4646b9"
+    },
+    "resolved_config.json": {
+      "path": "resolved_config.json",
+      "sha256": "f8dea7f22f5dfc2211fdd709948d3d3a061b9049c04056a99a5975525c47ad8e"
+    },
+    "summary.json": {
+      "path": "summary.json",
+      "sha256": "70aba320d08f1c856e2c8776fb623a095572181c3df410c59921b071deec272b"
+    }
+  },
+  "backend": "isaaclab_physx_go2_fixed_planner_navigation",
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "config_path": "configs/experiments/p7_navigation_strong_confirmatory.yaml",
+  "config_sha256": "12f40fd975dfa7001d817303631a69946faf3555bbedddeedaccd3385ab67242",
+  "git_commit": "8f3c256a592a6133ac6fe3f206b5ef901b37f417",
+  "phase": "P7",
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "schema_version": "1.0"
+}

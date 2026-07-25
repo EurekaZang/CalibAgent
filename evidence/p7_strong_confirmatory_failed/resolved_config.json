@@ -1,0 +1,671 @@
+{
+  "calibration": {
+    "active_candidate_source": "global_safe_pool",
+    "active_trials": 12,
+    "command_bounds": [
+      [
+        -0.4,
+        0.4
+      ],
+      [
+        -0.3,
+        0.3
+      ],
+      [
+        -0.7,
+        0.7
+      ]
+    ],
+    "dense_design_seed": 88149,
+    "dense_trials": 30,
+    "feature_set": "m1_affine",
+    "lhs_design_seed": 88151,
+    "maximum_linear_norm": 0.45,
+    "measure_s": 0.7,
+    "model_prior_gain": 1.0,
+    "model_prior_scale": 0.1,
+    "ramp_in_s": 0.3,
+    "ramp_out_s": 0.5,
+    "settle_s": 0.6,
+    "sobol_design_seed": 88159,
+    "validation_commands": [
+      [
+        0.13,
+        0.04,
+        0.08
+      ],
+      [
+        0.13,
+        -0.04,
+        -0.08
+      ],
+      [
+        0.1,
+        0.08,
+        0.16
+      ],
+      [
+        0.1,
+        -0.08,
+        -0.16
+      ],
+      [
+        0.16,
+        0.06,
+        0.14
+      ],
+      [
+        0.16,
+        -0.06,
+        -0.14
+      ],
+      [
+        0.09,
+        0.1,
+        0.21
+      ],
+      [
+        0.09,
+        -0.1,
+        -0.21
+      ]
+    ],
+    "warmup_s": 0.5
+  },
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "experiment_role": "confirmatory",
+  "isaaclab": {
+    "commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "enhanced_determinism": true,
+    "isaac_sim_version_prefix": "5.1.0",
+    "maximum_startup_attempts": 2,
+    "physics_backend": "physx",
+    "tag": "v2.3.2"
+  },
+  "maps": [
+    {
+      "checkpoint": "flat",
+      "distortion": "affine_low",
+      "id": "confirm_s_curve",
+      "obstacles": [],
+      "physics": {
+        "com_offset_x_m": 0.006,
+        "dynamic_friction": 0.55,
+        "payload_add_kg": 0.6,
+        "static_friction": 0.74
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "waypoints": [
+        [
+          0.65,
+          0.12
+        ],
+        [
+          1.3,
+          -0.12
+        ],
+        [
+          1.95,
+          0.14
+        ],
+        [
+          2.6,
+          -0.1
+        ],
+        [
+          3.2,
+          0.0
+        ]
+      ]
+    },
+    {
+      "checkpoint": "flat",
+      "distortion": "affine_low",
+      "id": "confirm_staggered_slalom",
+      "obstacles": [
+        {
+          "center": [
+            0.78,
+            0.6
+          ],
+          "size": [
+            0.24,
+            0.28,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            1.43,
+            -0.6
+          ],
+          "size": [
+            0.24,
+            0.28,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            2.08,
+            0.6
+          ],
+          "size": [
+            0.24,
+            0.28,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            2.73,
+            -0.6
+          ],
+          "size": [
+            0.24,
+            0.28,
+            0.5
+          ]
+        }
+      ],
+      "physics": {
+        "com_offset_x_m": -0.011,
+        "dynamic_friction": 0.48,
+        "payload_add_kg": 1.1,
+        "static_friction": 0.66
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "waypoints": [
+        [
+          0.65,
+          -0.2
+        ],
+        [
+          1.3,
+          0.2
+        ],
+        [
+          1.95,
+          -0.2
+        ],
+        [
+          2.6,
+          0.2
+        ],
+        [
+          3.25,
+          0.0
+        ]
+      ]
+    },
+    {
+      "checkpoint": "flat",
+      "distortion": "affine_low",
+      "id": "confirm_asymmetric_corridor",
+      "obstacles": [
+        {
+          "center": [
+            1.5,
+            0.78
+          ],
+          "size": [
+            3.0,
+            0.2,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            1.5,
+            -0.52
+          ],
+          "size": [
+            3.0,
+            0.2,
+            0.5
+          ]
+        }
+      ],
+      "physics": {
+        "com_offset_x_m": 0.017,
+        "dynamic_friction": 0.43,
+        "payload_add_kg": 1.7,
+        "static_friction": 0.59
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "waypoints": [
+        [
+          0.7,
+          0.08
+        ],
+        [
+          1.45,
+          0.12
+        ],
+        [
+          2.2,
+          0.09
+        ],
+        [
+          2.95,
+          0.11
+        ]
+      ]
+    },
+    {
+      "checkpoint": "flat",
+      "distortion": "affine_low",
+      "id": "confirm_dual_gate",
+      "obstacles": [
+        {
+          "center": [
+            1.1,
+            0.72
+          ],
+          "size": [
+            0.26,
+            0.65,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            1.1,
+            -0.72
+          ],
+          "size": [
+            0.26,
+            0.65,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            2.2,
+            0.72
+          ],
+          "size": [
+            0.26,
+            0.65,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            2.2,
+            -0.72
+          ],
+          "size": [
+            0.26,
+            0.65,
+            0.5
+          ]
+        }
+      ],
+      "physics": {
+        "com_offset_x_m": -0.014,
+        "dynamic_friction": 0.46,
+        "payload_add_kg": 1.4,
+        "static_friction": 0.63
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "waypoints": [
+        [
+          0.65,
+          0.0
+        ],
+        [
+          1.1,
+          -0.04
+        ],
+        [
+          1.7,
+          0.0
+        ],
+        [
+          2.2,
+          0.04
+        ],
+        [
+          2.85,
+          0.0
+        ]
+      ]
+    },
+    {
+      "checkpoint": "flat",
+      "distortion": "affine_low",
+      "id": "confirm_loaded_arc",
+      "obstacles": [
+        {
+          "center": [
+            1.55,
+            -0.62
+          ],
+          "size": [
+            0.3,
+            0.3,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            2.35,
+            0.68
+          ],
+          "size": [
+            0.3,
+            0.3,
+            0.5
+          ]
+        }
+      ],
+      "physics": {
+        "com_offset_x_m": 0.02,
+        "dynamic_friction": 0.44,
+        "payload_add_kg": 2.0,
+        "static_friction": 0.61
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "waypoints": [
+        [
+          0.6,
+          0.05
+        ],
+        [
+          1.2,
+          0.16
+        ],
+        [
+          1.85,
+          0.22
+        ],
+        [
+          2.5,
+          0.14
+        ],
+        [
+          3.1,
+          0.0
+        ]
+      ]
+    },
+    {
+      "checkpoint": "flat",
+      "distortion": "affine_low",
+      "id": "confirm_long_corridor",
+      "obstacles": [
+        {
+          "center": [
+            1.8,
+            0.62
+          ],
+          "size": [
+            3.6,
+            0.2,
+            0.5
+          ]
+        },
+        {
+          "center": [
+            1.8,
+            -0.72
+          ],
+          "size": [
+            3.6,
+            0.2,
+            0.5
+          ]
+        }
+      ],
+      "physics": {
+        "com_offset_x_m": -0.019,
+        "dynamic_friction": 0.41,
+        "payload_add_kg": 1.9,
+        "static_friction": 0.57
+      },
+      "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+      "waypoints": [
+        [
+          0.75,
+          -0.06
+        ],
+        [
+          1.5,
+          -0.08
+        ],
+        [
+          2.25,
+          -0.04
+        ],
+        [
+          3.0,
+          -0.06
+        ],
+        [
+          3.6,
+          0.0
+        ]
+      ]
+    }
+  ],
+  "methods": [
+    "B0_raw",
+    "B1_dense",
+    "B2_lhs",
+    "B3_sobol",
+    "B4_d_opt",
+    "B5_active_no_task",
+    "B8_full"
+  ],
+  "navigation": {
+    "collision_footprint_radius_m": 0.2,
+    "cruise_speed_mps": 0.18,
+    "environment_spacing_m": 8.0,
+    "goal_radius_m": 0.25,
+    "heading_gain": 0.5,
+    "height_rate_guard": {
+      "activation_height_m": 0.19,
+      "hold_s": 0.3,
+      "maximum_linear_command_norm": 0.28,
+      "minimum_drop_per_planner_tick_m": 0.003
+    },
+    "inactive_axis_command_limits": [
+      0.08,
+      0.06,
+      0.12
+    ],
+    "initial_stabilization_s": 0.5,
+    "inverse_regularization": 0.005,
+    "inverse_risk_weight": 0.01,
+    "inverse_undertracking_confidence_weights": [
+      1.0,
+      0.5,
+      0.5
+    ],
+    "maximum_angular_accel_rps2": 2.5,
+    "maximum_lateral_speed_mps": 0.14,
+    "maximum_linear_accel_mps2": 1.0,
+    "maximum_yaw_rate_rps": 0.25,
+    "planner_rate_hz": 10,
+    "position_gain": 0.8,
+    "sample_rate_hz": 50,
+    "stall_recovery": {
+      "detection_s": 0.3,
+      "emergency_base_height_m": 0.16,
+      "emergency_zero_command_s": 0.5,
+      "maximum_actual_speed_mps": 0.02,
+      "maximum_attempts": 3,
+      "maximum_base_height_m": 0.2,
+      "maximum_emergency_attempts": 30,
+      "minimum_desired_speed_mps": 0.1,
+      "zero_command_s": 1.0
+    },
+    "task_commands": [
+      [
+        0.12,
+        0.0,
+        0.0
+      ],
+      [
+        0.16,
+        0.0,
+        0.0
+      ],
+      [
+        0.18,
+        0.0,
+        0.0
+      ],
+      [
+        0.14,
+        0.08,
+        0.15
+      ],
+      [
+        0.14,
+        -0.08,
+        -0.15
+      ],
+      [
+        0.1,
+        0.1,
+        0.22
+      ],
+      [
+        0.1,
+        -0.1,
+        -0.22
+      ]
+    ],
+    "timeout_s": 60.0,
+    "velocity_feedback": {
+      "activation_threshold": 0.02,
+      "ema_alpha": 0.25,
+      "gain": 1.0,
+      "maximum_correction": [
+        0.12,
+        0.08,
+        0.15
+      ],
+      "recovery_reengagement_delay_s": 2.0,
+      "startup_delay_s": 2.0
+    },
+    "waypoint_radius_m": 0.25
+  },
+  "output_dir": "outputs/p7_strong_confirmatory",
+  "protocol_frozen_utc": "2026-07-26T00:30:00Z",
+  "publication_gates": {
+    "maximum_abort_latency_s": 0.04,
+    "maximum_b8_collision_rate": 0.05,
+    "maximum_b8_collision_rate_ci95_upper": 0.05,
+    "maximum_b8_to_b1_calibration_budget_ratio": 0.4,
+    "maximum_b8_to_b1_completion_time_ratio_ci95_upper": 1.25,
+    "maximum_b8_to_b1_mean_completion_time_ratio": 1.2,
+    "maximum_b8_to_matched_time_ratio_ci95_upper": 1.25,
+    "maximum_collision_rate_noninferiority_margin": 0.05,
+    "maximum_serious_safety_events": 0,
+    "maximum_success_rate_noninferiority_margin": 0.05,
+    "minimum_b8_success_rate": 0.95,
+    "minimum_b8_success_rate_ci95_lower": 0.9,
+    "minimum_b8_vs_b0_time_improvement_ci95_lower_s": 0.0,
+    "minimum_b8_vs_b0_time_win_rate": 0.9,
+    "minimum_maps": 6,
+    "minimum_seeds_per_map": 72,
+    "minimum_valid_observation_ratio": 0.95,
+    "required_matched_baselines": [
+      "B2_lhs",
+      "B3_sobol",
+      "B4_d_opt",
+      "B5_active_no_task"
+    ]
+  },
+  "safety": {
+    "max_base_height_m": 0.65,
+    "max_coupled_load": 1.0,
+    "min_base_height_m": 0.15
+  },
+  "vectorization": {
+    "num_seeds": 72,
+    "seeds": [
+      10201,
+      10202,
+      10203,
+      10204,
+      10205,
+      10206,
+      10207,
+      10208,
+      10209,
+      10210,
+      10211,
+      10212,
+      10213,
+      10214,
+      10215,
+      10216,
+      10217,
+      10218,
+      10219,
+      10220,
+      10221,
+      10222,
+      10223,
+      10224,
+      10225,
+      10226,
+      10227,
+      10228,
+      10229,
+      10230,
+      10231,
+      10232,
+      10233,
+      10234,
+      10235,
+      10236,
+      10237,
+      10238,
+      10239,
+      10240,
+      10241,
+      10242,
+      10243,
+      10244,
+      10245,
+      10246,
+      10247,
+      10248,
+      10249,
+      10250,
+      10251,
+      10252,
+      10253,
+      10254,
+      10255,
+      10256,
+      10257,
+      10258,
+      10259,
+      10260,
+      10261,
+      10262,
+      10263,
+      10264,
+      10265,
+      10266,
+      10267,
+      10268,
+      10269,
+      10270,
+      10271,
+      10272
+    ],
+    "simulator_seed": 1320240
+  }
+}

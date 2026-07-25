@@ -207,6 +207,24 @@ class P7BenchmarkConfig:
             > float(self.calibration["maximum_linear_norm"])
         ):
             raise ValueError("P7 height-rate guard configuration is invalid")
+        high_rate_interlock = height_rate_guard.get("high_rate_interlock")
+        if high_rate_interlock is not None:
+            interlock = dict(high_rate_interlock)
+            minimum_projected_height = float(self.safety["min_base_height_m"]) + float(
+                interlock["minimum_clearance_m"]
+            )
+            if (
+                interlock.get("enabled") is not True
+                or float(interlock["activation_height_m"])
+                <= minimum_projected_height
+                or float(interlock["release_height_m"])
+                <= float(interlock["activation_height_m"])
+                or float(interlock["release_height_m"])
+                >= float(self.safety["max_base_height_m"])
+                or int(interlock["prediction_steps"]) < 1
+                or float(interlock["minimum_clearance_m"]) < 0.0
+            ):
+                raise ValueError("P7 high-rate height interlock configuration is invalid")
         task_commands = np.asarray(self.navigation["task_commands"], dtype=np.float64)
         if (
             task_commands.ndim != 2

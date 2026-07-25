@@ -264,3 +264,53 @@ def height_rate_guarded_command(
     if active and linear_norm > maximum_linear_norm:
         output[:2] *= maximum_linear_norm / linear_norm
     return output, active
+
+
+def predictive_height_interlock(
+    *,
+    base_height_m: float,
+    previous_base_height_m: float,
+    activation_height_m: float,
+    release_height_m: float,
+    minimum_projected_height_m: float,
+    prediction_steps: int,
+    previously_active: bool = False,
+) -> tuple[bool, float]:
+    """Latch a high-rate zero-command interlock before the hard height limit.
+
+    The planner-rate guard cannot react to a base-height drop that crosses the
+    hard envelope between planner ticks.  This helper extrapolates the latest
+    per-sample drop over a short frozen horizon and uses hysteresis to prevent
+    rapid command chatter while the robot is standing back up.
+    """
+
+    scalars = np.asarray(
+        [
+            base_height_m,
+            previous_base_height_m,
+            activation_height_m,
+            release_height_m,
+            minimum_projected_height_m,
+        ],
+        dtype=np.float64,
+    )
+    if (
+        not np.all(np.isfinite(scalars))
+        or minimum_projected_height_m <= 0.0
+        or activation_height_m <= minimum_projected_height_m
+        or release_height_m <= activation_height_m
+        or prediction_steps < 1
+    ):
+        raise ValueError("predictive height interlock inputs are invalid")
+    drop = max(previous_base_height_m - base_height_m, 0.0)
+    projected_height = base_height_m - float(prediction_steps) * drop
+    trigger = bool(
+        base_height_m <= activation_height_m
+        or projected_height <= minimum_projected_height_m
+    )
+    recovered = bool(
+        base_height_m >= release_height_m
+        and base_height_m >= previous_base_height_m
+    )
+    active = bool(trigger or (previously_active and not recovered))
+    return active, projected_height

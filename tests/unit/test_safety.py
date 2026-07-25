@@ -7,6 +7,7 @@ from calibagent.core.safety import (
     HardSafetyFilter,
     SafetyEnvelope,
     height_rate_guarded_command,
+    predictive_height_interlock,
 )
 from calibagent.interfaces.types import Candidate, RobotState, VelocityCommand
 
@@ -117,3 +118,50 @@ def test_height_rate_guard_derates_only_low_descending_commands() -> None:
     )
     assert not active
     assert np.array_equal(unguarded, command)
+
+
+def test_predictive_height_interlock_triggers_early_and_releases_with_hysteresis() -> None:
+    active, projected = predictive_height_interlock(
+        base_height_m=0.205,
+        previous_base_height_m=0.215,
+        activation_height_m=0.19,
+        release_height_m=0.23,
+        minimum_projected_height_m=0.16,
+        prediction_steps=5,
+    )
+    assert active
+    assert projected == pytest.approx(0.155)
+
+    active, _ = predictive_height_interlock(
+        base_height_m=0.22,
+        previous_base_height_m=0.215,
+        activation_height_m=0.19,
+        release_height_m=0.23,
+        minimum_projected_height_m=0.16,
+        prediction_steps=5,
+        previously_active=True,
+    )
+    assert active
+
+    active, _ = predictive_height_interlock(
+        base_height_m=0.235,
+        previous_base_height_m=0.23,
+        activation_height_m=0.19,
+        release_height_m=0.23,
+        minimum_projected_height_m=0.16,
+        prediction_steps=5,
+        previously_active=True,
+    )
+    assert not active
+
+
+def test_predictive_height_interlock_rejects_invalid_threshold_order() -> None:
+    with pytest.raises(ValueError, match="interlock"):
+        predictive_height_interlock(
+            base_height_m=0.20,
+            previous_base_height_m=0.21,
+            activation_height_m=0.15,
+            release_height_m=0.20,
+            minimum_projected_height_m=0.16,
+            prediction_steps=2,
+        )
