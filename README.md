@@ -118,7 +118,10 @@ the retained P7 failure is in
 the successful disjoint replication is in
 [`reports/p7_strong_confirmatory_v2_report.md`](reports/p7_strong_confirmatory_v2_report.md),
 and acquisition requirements are in
-[`docs/p1_real_data_protocol.md`](docs/p1_real_data_protocol.md).
+[`docs/p1_real_data_protocol.md`](docs/p1_real_data_protocol.md). The complete
+P8 online-hardware handoff, including software gates, safety, sample counts,
+raw channels, schemas, randomization, QC, and publication gates, is
+[`docs/p8_go2_real_deployment_data_handoff_zh.md`](docs/p8_go2_real_deployment_data_handoff_zh.md).
 
 ## Claim boundary
 

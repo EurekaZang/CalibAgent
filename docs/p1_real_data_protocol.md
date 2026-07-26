@@ -2,6 +2,10 @@
 
 The detailed Chinese handoff checklist for the hardware team is
 [`p1_go2_real_data_collection_handoff_zh.md`](p1_go2_real_data_collection_handoff_zh.md).
+P1 is the completed passive offline replay scope. For new online P8
+calibration, domain-shift, and navigation evidence, use the separate
+[`p8_go2_real_deployment_data_handoff_zh.md`](p8_go2_real_deployment_data_handoff_zh.md);
+the P1 bundle is not a substitute for that protocol.
 
 P1 real evidence must originate from raw, timestamped Unitree Go2 trials. A
 fixture, simulator rollout, retargeted trajectory, or manually authored
