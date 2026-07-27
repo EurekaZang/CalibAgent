@@ -1,11 +1,14 @@
-# Exact Python 3.12 analysis environment resolved on 2026-07-18.
+# Exact cross-Python 3.10/3.12 analysis environment exported from uv.lock on
+# 2026-07-27. Version markers preserve the lowest supported Python.
 numpy==1.26.4
 scipy==1.14.1
 pandas==2.3.3
 pyarrow==21.0.0
 PyYAML==6.0.3
-matplotlib==3.11.0
-contourpy==1.3.3
+matplotlib==3.10.9 ; python_full_version < "3.11"
+matplotlib==3.11.1 ; python_full_version >= "3.11"
+contourpy==1.3.2 ; python_full_version < "3.11"
+contourpy==1.3.3 ; python_full_version >= "3.11"
 cycler==0.12.1
 fonttools==4.63.0
 kiwisolver==1.5.0
