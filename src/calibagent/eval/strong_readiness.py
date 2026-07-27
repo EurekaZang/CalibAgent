@@ -93,9 +93,11 @@ def _failed_confirmatory_check(
 def _prospective_replication_check(
     workspace: Path,
     criteria: dict[str, Any],
+    *,
+    raw: bool = False,
 ) -> AuditCheck:
     failed_section = dict(criteria["p7_failed_confirmatory"])
-    successful_section = dict(criteria["p7_raw"])
+    successful_section = dict(criteria["p7_raw" if raw else "p7"])
     failed = P7BenchmarkConfig.from_yaml(workspace / str(failed_section["config"]))
     successful = P7BenchmarkConfig.from_yaml(workspace / str(successful_section["config"]))
     failed_manifest = json.loads(
@@ -295,7 +297,7 @@ def audit_strong_readiness(
     p7 = dict(criteria[f"p7{suffix}"])
     checks = [
         _failed_confirmatory_check(root, criteria),
-        _prospective_replication_check(root, criteria),
+        _prospective_replication_check(root, criteria, raw=raw),
         *_p6_checks(
             root,
             {"p6": p6},

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 import yaml
 
 from calibagent.eval.strong_readiness import (
@@ -60,6 +61,16 @@ def test_full_resolution_trace_receipts_reproduce() -> None:
             WORKSPACE / "configs/audit/icra_p6_p7_strong.yaml"
         ).read_text(encoding="utf-8")
     )
+    raw_manifests = [
+        WORKSPACE / str(criteria["p6_raw"]["manifest"]),
+        WORKSPACE / str(criteria["p7_raw"]["manifest"]),
+    ]
+    if not all(path.is_file() for path in raw_manifests):
+        pytest.skip(
+            "full-resolution supplemental outputs are not mounted; "
+            "compact tracked evidence remains covered by the default readiness audit"
+        )
+
     p6 = build_p6_trace_receipt(WORKSPACE, dict(criteria["p6_raw"]))
     p7 = build_p7_trace_receipt(WORKSPACE, dict(criteria["p7_raw"]))
     expected_p6 = json.loads(
