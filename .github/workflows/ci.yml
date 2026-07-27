@@ -18,6 +18,7 @@ jobs:
           cache: pip
       - run: python -m pip install -r env/analysis/requirements.lock.txt -r env/analysis/requirements-dev.lock.txt
       - run: python -m pip install --no-deps -e .
+      - run: ./scripts/audit_source_delivery.sh --local-only
       - run: ruff check .
       - run: mypy src/calibagent
       - run: pytest -p pytest_cov --cov=calibagent --cov-report=term-missing

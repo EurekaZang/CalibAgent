@@ -23,6 +23,97 @@
 
 ---
 
+## 0. 给未参与仿真的实机同事：项目已经做了什么
+
+### 0.1 一句话理解 CalibAgent
+
+Go2 接收到命令速度 `u=(vx, vy, wz)` 后，真实运动速度通常不是完全相同的
+`y=(vx, vy, wz)`。地面、载荷、质心、控制器、死区和轴间耦合都会改变
+`u→y` 的映射。CalibAgent 的工作是：
+
+1. 从一个冻结且安全的候选命令池选择少量标定命令；
+2. 在每个 trial 中执行命令并用独立参考定位测量真实运动；
+3. 在线更新带不确定性的命令到速度模型；
+4. 用该模型把导航所需速度反解为更合适的 Go2 命令；
+5. 如果残差突然变大，检测到环境/动力学变化并主动重新标定。
+
+核心目标不是让机器人“学会走路”。底层 Go2 locomotion controller 保持冻结；
+本项目标定的是上层速度命令到实际机身速度的映射。
+
+### 0.2 P0–P7 分别完成了什么
+
+| 阶段 | 实际完成的工作 | 证据环境 | 对 P8 的意义 |
+|---|---|---|---|
+| P0 | 冻结命令、状态、trial、backend、模型和 planner 接口；建立可追溯 manifest | 软件测试 | 实机代码必须实现同一个 `RobotBackend` contract |
+| P1 | 在 183 个真实 Go2 trial 上验证 raw pose→SE(2) 速度观测和被动 affine 标定 | 真实 Go2，离线回放 | 证明真实数据管线可用，但没有在线主动选择或导航 |
+| P2 | 验证噪声只计一次、posterior uncertainty 和覆盖率 | 合成映射 | 证明模型的不确定性计算没有明显实现错误 |
+| P3 | 比较 random/LHS/Sobol/D-opt/no-task/dense/full，验证 12-trial task-aware active planner | 合成映射 | 给出 P8-NAV 的标定方法和候选选择逻辑 |
+| P4 | 验证 hard safety filter、trial state machine、故障注入和 validation-gated stopping | 软件/冻结 replay | 给出 P8 必须复用并实机化的 fail-closed 流程 |
+| P5 | 将同一模型、planner 和 safety 接到 Isaac Lab/PhysX Go2 与官方 locomotion policy | Isaac Lab | 证明算法可在有动力学的闭环中运行，不等于真机验证 |
+| P6 | 机器人运行中施加 gain、friction、payload、COM 等 shift；比较 frozen/passive/full | Isaac Lab | 形成 P8-SHIFT 的 detector、posterior inflation 和恢复流程 |
+| P7 | 标定后用同一固定 planner 导航；比较 raw、dense 和 12-trial controls | Isaac Lab | 形成 P8-NAV 的地图、导航、inverse compensation 和 endpoint |
+
+P6 强确认使用 4 类 shift、每类 72 个 paired seeds、3 种方法。P7 强确认使用
+6 张地图、每图 72 个 paired seeds、7 种方法；第一次 P7 确认失败被保留，
+之后才在不重叠地图和 seeds 上做冻结 replication。仿真结果支持实验设计和
+软件逻辑，不支持“真机已经成功”。
+
+### 0.3 仿真中的 P8-NAV 原型具体怎样运行
+
+每种方法先得到一个 command→velocity posterior：
+
+- `B0_raw` 不标定；
+- `B1_dense` 执行 30 个冻结 dense commands；
+- LHS、Sobol、D-opt、no-task 等 controls 各执行 12 个 commands；
+- `B8_full` 每一步依据当前 posterior 和导航 task distribution，选择预计最能
+  减少任务区域预测不确定性的安全命令，共 12 次。
+
+导航 planner 对所有方法完全相同。planner 给出期望机身速度后，
+`ConstrainedInverseCompensator` 在冻结候选池里寻找一个安全 Go2 命令，使
+posterior 预测速度尽量接近期望速度；再经过 bounded feedback、height guard、
+stall recovery 和 hard safety filter。最终比较成功、碰撞、完成时间和预算。
+
+### 0.4 仿真中的 P8-SHIFT 原型具体怎样运行
+
+每条 sequence 先在 nominal context 建立 posterior，然后在算法不知道真实
+shift label 和时刻的情况下改变命令映射或物理条件。detector 根据
+预测残差和预测 covariance 计算 normalized innovation energy，并用有界
+CUSUM/evidence window 判断是否发生 shift：
+
+- `frozen`：检测但不更新，用于证明“不适应会怎样”；
+- `passive`：检测后按固定安全设计收数据；
+- `full`：检测后扩大 posterior covariance，再由 task-aware planner 主动选择
+  最有价值的恢复命令。
+
+每个 recovery step 后用 held-out command 检查 rolling RMSE。主要问题是：
+full 是否比 passive 更早降低误差、是否在 12-step 预算内恢复、最终误差是否
+达标，而不是只看 detector 有没有报警。
+
+### 0.5 哪些东西能从仿真直接继承，哪些不能
+
+可以继承并应尽量复用：
+
+- public data contracts、Bayesian model、feature transform；
+- candidate pool、LHS/Sobol/random/D-opt/IVR planners；
+- task distribution、posterior save/load；
+- shift detector、inverse compensator、state machine、stopping rules；
+- 统计单位、方法隔离、失败保留、manifest 和审计逻辑。
+
+必须在真机重新确定，禁止直接复制：
+
+- ROS topic 名、QoS、Unitree SDK 调用和 control mode；
+- base height、roll/pitch、workspace、slew、速度和载荷阈值；
+- 网络/heartbeat timeout、物理制动时间和 E-stop 行为；
+- mocap/LiDAR 外参、参考定位频率和时间同步；
+- 地图几何、摩擦材料、payload 支架和 COM；
+- Isaac Lab policy checkpoint、仿真 friction/mass 数字及仿真随机 seeds。
+
+代码入口、ROS/Unitree adapter 的实现边界和逐步联调方法见
+`docs/p8_go2_implementation_guide_zh.md`。实机团队应先阅读该实现指南，
+再执行本文第 3 节以后的采集协议。
+
+---
+
 ## 1. 先回答：现在是否只缺实机
 
 从论文证据看，P0–P7 的软件、P1 离线真实 Go2 数据、强 P6/P7 仿真和独立审计已经闭合。若论文要增加以下主张，主要剩余工作就是 P8：
@@ -98,6 +189,7 @@ p8_frozen_release/
 ├── backend_hardware_gate_report.json
 ├── protocol/
 │   ├── p8_go2_real_deployment_data_handoff_zh.md
+│   ├── p8_go2_implementation_guide_zh.md
 │   ├── analysis_plan.yaml
 │   └── exported_table_schemas/
 ├── configs/
@@ -1277,5 +1369,9 @@ PI/论文负责人：______________  日期：________________
   `docs/p1_go2_real_data_collection_handoff_zh.md`
 - 本项目强 P6/P7 冻结协议：
   `docs/p6_p7_strong_confirmatory_protocol.md`
+- P8 Go2 实机软件实现与仿真代码导读：
+  `docs/p8_go2_implementation_guide_zh.md`
+- CalibAgent GitHub：
+  <https://github.com/EurekaZang/CalibAgent>
 
 正式实验必须以现场实际型号的最新厂商手册和本地安全制度为准；产品页中的最大性能不能作为实验命令目标。

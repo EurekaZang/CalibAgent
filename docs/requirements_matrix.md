@@ -32,7 +32,7 @@
 | P7 first strong confirmation | Six maps, seven controls, 72 paired seeds; failure retained without pooling | B8 success fell to 50/72 on loaded arc; four primary gate groups failed | **NO-GO retained** |
 | P7 strong disjoint replication | Six new maps, seven controls, 72 new paired seeds; exact and paired-bootstrap inference | B8 success ≥70/72, collision 0/72, worst dense/matched time CI upper 1.074/1.090 | **PASS** |
 | P7 strong trace/provenance | Independent raw recomputation, one-launch/posterior checks and full trace scan | 566/566 source artifacts, 42/42 navigation traces, 3,024 episode records, 0 serious events | **PASS** |
-| P8 online real Go2 | `Go2RosBackend` remains an intentional fail-closed placeholder; the complete frozen-before-capture protocol is specified in `docs/p8_go2_real_deployment_data_handoff_zh.md` | No confirmatory online calibration, real navigation, or real shift-recovery bundle exists yet | **PENDING** |
+| P8 online real Go2 | `Go2RosBackend` remains an intentional fail-closed placeholder; the data protocol and code map are specified in `docs/p8_go2_real_deployment_data_handoff_zh.md` and `docs/p8_go2_implementation_guide_zh.md`; the historical P1 ROS runner is versioned as implementation reference | No completed backend/watchdog/P8 runner or confirmatory online calibration, real navigation, or real shift-recovery bundle exists yet | **PENDING** |
 
 ## Current authoritative verdict
 

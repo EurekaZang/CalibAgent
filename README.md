@@ -49,6 +49,26 @@ Real-robot online active calibration remains P8. P6 and P7 establish
 domain-shift recovery and downstream navigation only in the pinned simulator;
 they are not promoted as sim-to-real or real-hardware results.
 
+**Hardware team start here:** read the complete
+[`P8 data-collection handoff`](docs/p8_go2_real_deployment_data_handoff_zh.md)
+and the
+[`Go2 implementation and simulator-code guide`](docs/p8_go2_implementation_guide_zh.md).
+The guide separates reusable algorithm code from simulator-only orchestration
+and the still-pending ROS 2/Unitree hardware boundary.
+
+The canonical source repository is
+[`EurekaZang/CalibAgent`](https://github.com/EurekaZang/CalibAgent). After
+cloning or before freezing a hardware release, verify that all required source
+is tracked and that the local commit equals `origin/main`:
+
+```bash
+./scripts/audit_source_delivery.sh
+```
+
+This verifies source delivery, not hardware readiness. The Go2 backend,
+watchdog, P8 runners, exporter, and hardware gates remain required before
+confirmatory collection.
+
 ## Reproduce
 
 ```bash
