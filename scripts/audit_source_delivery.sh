@@ -29,7 +29,14 @@ required_paths=(
   "data/calibration_extracted/calibration/go2_plan_capture_runner.py"
   "docs/p8_go2_real_deployment_data_handoff_zh.md"
   "docs/p8_go2_implementation_guide_zh.md"
+  "docs/assets/readme/p5_isaac_sim_closeup.png"
+  "docs/assets/readme/p5_isaac_sim_overview.png"
+  "docs/assets/readme/p5_isaac_sim_capture.json"
+  "docs/assets/readme/p7_isaac_sim_overview.png"
+  "docs/assets/readme/p7_isaac_sim_robot_view.png"
+  "docs/assets/readme/p7_isaac_sim_capture.json"
   "docs/assets/readme/p7_slalom_seed_8006.png"
+  "sim/isaaclab/scripts/capture_readme_scene.py"
   "scripts/build_readme_figures.py"
 )
 

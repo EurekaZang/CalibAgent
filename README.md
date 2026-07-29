@@ -23,16 +23,17 @@ model for navigation and post-shift recovery.
 > **Real-robot online active calibration remains P8.**
 
 <p align="center">
-  <img src="docs/assets/readme/p7_slalom_seed_8006.png"
-       alt="A paired Isaac Lab slalom episode in which raw control stalls and twelve-trial active calibration reaches the goal region."
+  <img src="docs/assets/readme/p7_isaac_sim_overview.png"
+       alt="Native Isaac Sim RGB render of the Unitree Go2 and three obstacles in CalibAgent's frozen P7 slalom scene."
        width="900">
 </p>
 
 <p align="center">
-  <em>Illustrative paired P7 episode (seed 8006), not the aggregate statistical
-  result. B0 raw control times out; B8 enters the goal region after 12
-  calibration trials. The map, trajectories, and
-  <a href="scripts/build_readme_figures.py">figure script</a> are versioned.</em>
+  <em>Native Isaac Sim RGB output from the frozen P7 slalom/B8 scene
+  (seed 8006). This qualitative render uses the registered scene, official Go2
+  policy, and pinned runtime; it is not a statistical result. Configuration,
+  camera poses, and hashes are recorded in the
+  <a href="docs/assets/readme/p7_isaac_sim_capture.json">capture provenance</a>.</em>
 </p>
 
 ## Abstract
@@ -140,6 +141,37 @@ results, estimands, intervals, and limitations are reported in
 
 ## Simulator results
 
+### Native Isaac Sim scene renders
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/assets/readme/p5_isaac_sim_closeup.png"
+           alt="Native Isaac Sim close render of the Unitree Go2 in the frozen P5 closed-loop calibration scene.">
+    </td>
+    <td width="50%">
+      <img src="docs/assets/readme/p7_isaac_sim_robot_view.png"
+           alt="Native Isaac Sim render from behind the Unitree Go2 looking into the frozen P7 slalom course.">
+    </td>
+  </tr>
+  <tr>
+    <td><strong>P5 closed-loop calibration.</strong> Tier-A affine scene,
+      seed 5301, official Go2 flat-policy checkpoint.</td>
+    <td><strong>P7 fixed-planner navigation.</strong> Slalom/B8 scene,
+      seed 8006, with the three registered obstacles.</td>
+  </tr>
+</table>
+
+These are direct 1280×720 RGB outputs from Isaac Sim, not trajectory plots.
+Both were replayed with Isaac Lab v2.3.2
+(`37ddf626871758333d6ed89cf64ad702aef127d0`) and Isaac Sim
+5.1.0-rc.19. Frame hashes, camera extrinsics, frozen configuration hashes,
+policy-checkpoint hashes, and claim boundaries are stored in the
+[P5 capture record](docs/assets/readme/p5_isaac_sim_capture.json) and
+[P7 capture record](docs/assets/readme/p7_isaac_sim_capture.json). The
+reproducible capture implementation is
+[`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py).
+
 ### Sample efficiency and model uncertainty
 
 <p align="center">
@@ -180,6 +212,19 @@ The first strong P7 confirmation failed and remains in
 The successful result uses new maps, new seeds, and a prospectively frozen
 protocol; failed and development runs are not pooled into the positive
 estimate.
+
+<p align="center">
+  <img src="docs/assets/readme/p7_slalom_seed_8006.png"
+       alt="A paired P7 slalom trajectory in which raw control times out and twelve-trial active calibration reaches the goal region."
+       width="900">
+</p>
+
+<p align="center">
+  <em>Illustrative paired P7 episode (seed 8006), separate from the aggregate
+  statistics. B0 raw control times out; B8 enters the goal region after 12
+  calibration trials. The map, trajectories, and
+  <a href="scripts/build_readme_figures.py">figure script</a> are versioned.</em>
+</p>
 
 ## Publication-integrity design
 
@@ -250,6 +295,10 @@ P5–P7 reproduction additionally requires the pinned Isaac Lab v2.3.2/Isaac
 Sim runtime and official Unitree Go2 policy checkpoints. Commands and runtime
 locks are listed in
 [`docs/experiment_registry.md`](docs/experiment_registry.md).
+Native README scene frames are reproduced by
+[`sim/isaaclab/scripts/capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py);
+its required inputs and exact output hashes are preserved in the adjacent P5
+and P7 capture records.
 
 ## Repository structure
 

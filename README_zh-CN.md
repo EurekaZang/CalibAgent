@@ -20,15 +20,16 @@ CalibAgent 是一项面向 ICRA 投稿研究的科研代码库。它研究四足
 > 主动标定仍属于 P8。
 
 <p align="center">
-  <img src="docs/assets/readme/p7_slalom_seed_8006.png"
-       alt="Isaac Lab 中的一组配对绕桩轨迹：未标定控制停滞，十二次主动标定后进入目标区域。"
+  <img src="docs/assets/readme/p7_isaac_sim_overview.png"
+       alt="CalibAgent 冻结 P7 绕桩场景中 Unitree Go2 与三个障碍物的 Isaac Sim 原生 RGB 渲染帧。"
        width="900">
 </p>
 
 <p align="center">
-  <em>具有代表性的 P7 配对仿真 episode（seed 8006），不作为总体统计
-  结果。B0 未标定控制超时；B8 使用 12 次标定试验后进入目标区域。
-  地图、轨迹与<a href="scripts/build_readme_figures.py">绘图脚本</a>均已纳入版本控制。</em>
+  <em>冻结 P7 slalom/B8 场景（seed 8006）的 Isaac Sim 原生 RGB 输出。
+  该定性画面使用注册场景、官方 Go2 策略和固定运行时，不作为统计结果。
+  配置、相机位姿和哈希记录在
+  <a href="docs/assets/readme/p7_isaac_sim_capture.json">抓帧溯源文件</a>中。</em>
 </p>
 
 ## 摘要
@@ -119,6 +120,37 @@ estimand、区间和局限性见 [`reports/`](reports/)。
 
 ## 仿真结果
 
+### Isaac Sim 原生场景画面
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/assets/readme/p5_isaac_sim_closeup.png"
+           alt="冻结 P5 闭环标定场景中 Unitree Go2 的 Isaac Sim 原生近景。">
+    </td>
+    <td width="50%">
+      <img src="docs/assets/readme/p7_isaac_sim_robot_view.png"
+           alt="从 Unitree Go2 后方望向冻结 P7 绕桩路线的 Isaac Sim 原生画面。">
+    </td>
+  </tr>
+  <tr>
+    <td><strong>P5 闭环标定：</strong>Tier-A affine 场景、seed 5301，
+      使用官方 Go2 flat-policy checkpoint。</td>
+    <td><strong>P7 固定规划器导航：</strong>slalom/B8 场景、seed 8006，
+      包含三个注册障碍物。</td>
+  </tr>
+</table>
+
+以上图片是 Isaac Sim 直接输出的 1280×720 RGB 帧，不是轨迹绘图。两组
+画面均使用 Isaac Lab v2.3.2
+（`37ddf626871758333d6ed89cf64ad702aef127d0`）与 Isaac Sim
+5.1.0-rc.19 复现。帧哈希、相机外参、冻结配置哈希、策略 checkpoint
+哈希和论点边界分别保存在
+[P5 抓帧记录](docs/assets/readme/p5_isaac_sim_capture.json)与
+[P7 抓帧记录](docs/assets/readme/p7_isaac_sim_capture.json)中；
+可复现抓帧代码为
+[`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py)。
+
 ### 样本效率与模型不确定性
 
 <p align="center">
@@ -156,6 +188,18 @@ seed×distortion-family 条件错误地视为独立样本。
 [`evidence/p7_strong_confirmatory_failed/`](evidence/p7_strong_confirmatory_failed/)。
 成功结果使用新的地图、新的 seed 和预先冻结的协议；失败实验与开发实验
 没有被并入正面估计。
+
+<p align="center">
+  <img src="docs/assets/readme/p7_slalom_seed_8006.png"
+       alt="P7 绕桩配对轨迹：未标定控制超时，十二次主动标定后进入目标区域。"
+       width="900">
+</p>
+
+<p align="center">
+  <em>具有代表性的 P7 配对 episode（seed 8006），与总体统计分开解释。
+  B0 未标定控制超时；B8 使用 12 次标定试验后进入目标区域。地图、轨迹与
+  <a href="scripts/build_readme_figures.py">绘图脚本</a>均已纳入版本控制。</em>
+</p>
 
 ## 发表完整性设计
 
@@ -222,6 +266,9 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 复现 P5–P7 还需要固定的 Isaac Lab v2.3.2/Isaac Sim 环境和官方 Unitree
 Go2 策略 checkpoint。命令与运行时锁详见
 [`docs/experiment_registry.md`](docs/experiment_registry.md)。
+README 中的原生仿真画面可由
+[`sim/isaaclab/scripts/capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py)
+复现；其输入与精确输出哈希保存在相邻的 P5/P7 抓帧记录中。
 
 ## 仓库结构
 
