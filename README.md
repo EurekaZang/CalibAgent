@@ -1,191 +1,306 @@
 # CalibAgent
 
-![ICRA readiness](https://img.shields.io/badge/ICRA%20readiness-GO-1f883d)
+[English](README.md) | [简体中文](README_zh-CN.md)
 
-**ICRA readiness: GO for the frozen P0–P7 claim set.** The executable audit
-passes all 39 software, real-data, statistical, safety, simulator, provenance,
-and reproducibility checks. P1 is supported by 183 traceable Unitree Go2
-trials; P4 by 60 stopping trajectories and 460 fault/runtime cases; P5 by four
-pinned Isaac Lab scenarios with 20 paired seeds each; P6 by three domain-shift
-scenarios with three controls and 20 seeds each; and P7 by three navigation
-maps, three methods, and 60 seeds per map.
+[![Software CI](https://github.com/EurekaZang/CalibAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/EurekaZang/CalibAgent/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.12-3776AB)
+![License](https://img.shields.io/badge/License-MIT-2F855A)
+![Scoped publication audit](https://img.shields.io/badge/P0--P7%20scoped%20audit-GO-1F883D)
 
-**Strong P6/P7 simulator readiness: GO (12/12 independent checks).** The
-strong-confirmatory extension raises P6 to four shifts × 72 seeds × three
-controls and P7 to six new maps × 72 seeds × seven controls. It retains the
-first failed P7 confirmation and bases the positive P7 claim only on a later,
-disjoint, prospectively frozen replication. Full-source audits verify 158/158
-P6 and 566/566 P7 artifacts, including every full-resolution trajectory.
+**Safe, uncertainty-aware active velocity calibration for quadruped robots.**
 
-CalibAgent is a simulator-agnostic reference implementation of safe,
-uncertainty-aware active calibration for the mapping from quadruped velocity
-commands `(vx, vy, wz)` to measured body velocity.
+CalibAgent is the research codebase for an ICRA-targeted study of how a
+quadruped can select a small number of safe velocity commands, learn its
+command-to-motion map, quantify epistemic uncertainty, and use the calibrated
+model for navigation and post-shift recovery.
 
-This repository implements the frozen P0–P7 engineering and evaluation stack
-derived from
-`CalibAgent_工程实现与仿真实验计划_v0.1.docx`:
+> **Publication scope.** The executable audit is `GO` for the frozen P0–P7
+> claim set. Online active calibration, navigation, and domain-shift recovery
+> on a real Unitree Go2 remain P8 and are not claimed by the current simulator
+> results.
 
-- frozen interfaces, manifests, architecture decisions, CI, and backend seams;
-- offline replay, data conversion, passive M0/M1 models, and grid/random/LHS/Sobol baselines;
-- the M2 Bayesian basis model with serializable posterior and predictive uncertainty;
-- task-aware integrated-variance planning, candidate diagnostics, and greedy fantasy batches;
-- a D-optimal strong baseline, without-task-weight ablation, and dense oracle;
-- a raw Go2 trial ingestion path with SE(2) processing, hashes, and session-isolated evaluation.
-- a fail-closed safety filter, runtime state machine, immediate abort path, and
-  validation/uncertainty-gated stopping rule;
-- a vectorized Isaac Lab/PhysX Go2 closed loop with Tier-A command distortion,
-  Tier-B friction/payload/COM/terrain variation, fixed published policies, and
-  paired bootstrap statistics.
-- an online shift detector with frozen/passive/full controls, bounded posterior
-  inflation and active recovery under in-place gain/friction/payload/COM shifts;
-- a fixed-planner navigation evaluation comparing raw B0, dense B1, and
-  budgeted active B8 calibration against LHS, Sobol, D-optimal, and no-task
-  matched-budget controls on held-out navigation maps.
-- an independent strong-confirmatory audit that recomputes paired statistics,
-  exact rate intervals, trace safety, source hashes, and failed-to-replication
-  provenance without trusting the producer's `GO` field.
+<p align="center">
+  <img src="docs/assets/readme/p7_slalom_seed_8006.png"
+       alt="A paired Isaac Lab slalom episode in which raw control stalls and twelve-trial active calibration reaches the goal region."
+       width="900">
+</p>
 
-Real-robot online active calibration remains P8. P6 and P7 establish
-domain-shift recovery and downstream navigation only in the pinned simulator;
-they are not promoted as sim-to-real or real-hardware results.
+<p align="center">
+  <em>Illustrative paired P7 episode (seed 8006), not the aggregate statistical
+  result. B0 raw control times out; B8 enters the goal region after 12
+  calibration trials. The map, trajectories, and
+  <a href="scripts/build_readme_figures.py">figure script</a> are versioned.</em>
+</p>
 
-**Hardware team start here:** read the complete
-[`P8 data-collection handoff`](docs/p8_go2_real_deployment_data_handoff_zh.md)
-and the
-[`Go2 implementation and simulator-code guide`](docs/p8_go2_implementation_guide_zh.md).
-The guide separates reusable algorithm code from simulator-only orchestration
-and the still-pending ROS 2/Unitree hardware boundary.
+## Abstract
 
-The canonical source repository is
-[`EurekaZang/CalibAgent`](https://github.com/EurekaZang/CalibAgent). After
-cloning or before freezing a hardware release, verify that all required source
-is tracked and that the local commit equals `origin/main`:
+Velocity commands on a legged robot are not executed exactly: actuator
+dynamics, learned locomotion policies, terrain, payload, and saturation create
+a context-dependent mapping from commanded body velocity
+`u = (vx, vy, wz)` to measured velocity `y`. CalibAgent treats this mismatch as
+a sequential experimental-design problem. A Bayesian basis model estimates
+the mapping and its predictive uncertainty; a task-weighted integrated
+variance reduction planner chooses informative commands; non-learned safety
+filters and validation-gated stopping constrain execution.
+
+The frozen evidence spans synthetic studies, 183 passive Unitree Go2 trials,
+fault injection, and pinned Isaac Lab/PhysX experiments. In the synthetic main
+study, active calibration used 39.52% fewer trials than LHS to reach the joint
+accuracy-and-uncertainty target. In strong simulator confirmation, active
+recovery improved early post-shift error over passive updating across four
+held-out shifts. A prospectively frozen navigation replication evaluated
+3,024 episodes on six new maps: B8 achieved at least 70/72 successes per map,
+zero collisions, and registered noninferiority to dense and matched-budget
+controls. These findings are simulator-scoped unless explicitly identified as
+real Go2 replay evidence.
+
+## Research question
+
+> Can a quadruped identify a task-relevant command-to-motion model with fewer
+> safe trials than passive designs, while preserving calibrated uncertainty,
+> bounded stopping behavior, adaptation after domain shift, and downstream
+> navigation performance?
+
+CalibAgent decomposes this question into a staged evidence program:
+
+- **P0–P1:** define portable interfaces and validate passive calibration on
+  real Go2/LiDAR-odometry data;
+- **P2–P3:** test uncertainty calibration and task-aware active design under
+  controlled synthetic mappings;
+- **P4:** verify stopping and fail-closed safety independently of the learned
+  model;
+- **P5–P7:** evaluate the complete loop, shift recovery, and fixed-planner
+  navigation in a pinned simulator;
+- **P8:** conduct online real-Go2 confirmation under the frozen hardware
+  protocol.
+
+## Method
+
+```mermaid
+flowchart LR
+    T["Task distribution"] --> P["Safe candidate pool"]
+    M["Bayesian command-to-motion model"] --> A["Task-weighted IVR planner"]
+    P --> A
+    A --> S["Non-learned safety filter"]
+    S --> B["RobotBackend<br/>Isaac Lab · replay · Go2 (P8)"]
+    B --> R["Raw pose / command / health streams"]
+    R --> O["SE(2) measurement pipeline"]
+    O --> M
+    M --> C["Validation + uncertainty stopping"]
+    C -->|continue| A
+    C -->|accept| I["Inverse compensation"]
+    I --> N["Fixed-planner navigation"]
+    O --> D["Shift detector"]
+    D -->|latched shift| X["Posterior inflation + active recovery"]
+    X --> A
+```
+
+The numerical core imports neither Isaac Lab nor ROS 2. All environments
+implement the same `RobotBackend`/`RawTrialData` contract, and the shared
+measurement pipeline produces a `TrialObservation` before any model update.
+This ports-and-adapters boundary separates algorithmic claims from simulator
+or robot integration.
+
+### Main components
+
+1. **Uncertainty-aware model.** M2 is a Bayesian basis model with
+   cross-axis, hinge, and interaction terms, a serializable posterior, and
+   predictive epistemic variance.
+2. **Task-aware acquisition.** The planner minimizes integrated posterior
+   variance over a declared task-command distribution. Random, LHS, Sobol,
+   Bayesian D-optimal, no-task, and dense controls are implemented under
+   matched data-access rules.
+3. **Independent safety layer.** A hard command/state envelope filters every
+   candidate. The runtime state machine latches aborts and commands zero
+   velocity without delegating safety to the learned model.
+4. **Shift response.** Bounded evidence accumulation detects persistent
+   changes, inflates stale posterior certainty, and allocates a fixed active
+   recovery budget.
+5. **Downstream evaluation.** Calibration methods are compared with identical
+   waypoint planners, maps, policies, physics, seeds, and safety limits.
+
+## Evidence and principal results
+
+| Stage | Design and independent unit | Principal frozen result | Claim boundary |
+|---|---|---|---|
+| **P1 real replay** | 183 valid Go2 trials; three acquisition sessions; leave-one-session-out evaluation | M1 reduced pooled RMSE by **54.45% vs. raw** and **34.07% vs. M0** | Passive offline calibration on one robot/date/environment |
+| **P2–P3 synthetic** | 20 independent seeds; three repeated distortion families; six acquisition controls | Active reached the joint target in 18.67 trials vs. 30.87 for LHS, a **39.52% reduction** (`p = 9.54e-7`) | Controlled synthetic mappings |
+| **P4 safety/stopping** | 60 stopping trajectories, 300 hazards, 160 runtime faults | 0% premature stops; median/p95 excess trials 2/2; 100% hazard rejection; **0 serious events** | Replay and fault-injection evidence |
+| **P5 closed loop** | Four Isaac Lab scenarios × 20 paired seeds; 12 active trials | Worst scenario RMSE reduction **9.30%**; all paired CI lower bounds positive; maximum abort response 20 ms | Pinned Isaac Lab/PhysX and official Go2 policies |
+| **P6 strong shift** | Four held-out shifts × 72 paired seeds × frozen/passive/full | Passive-minus-full early RMSE CI lower bounds **0.00537–0.01536**; terminal RMSE CI upper ≤ 0.12564; **0 serious events** | Registered simulator shifts; no terminal superiority claim over passive |
+| **P7 strong navigation** | Six new maps × 72 paired seeds × seven methods = **3,024 episodes** | Minimum B8 success **70/72**; collisions **0/72** on every map; worst dense/matched time-ratio CI upper **1.074/1.090** | Positive claim comes only from the disjoint replication |
+
+The detailed evidence map is in
+[`docs/requirements_matrix.md`](docs/requirements_matrix.md). Full numerical
+results, estimands, intervals, and limitations are reported in
+[`reports/`](reports/).
+
+## Simulator results
+
+### Sample efficiency and model uncertainty
+
+<p align="center">
+  <img src="evidence/p3_main/sample_efficiency.png"
+       alt="Task-weighted RMSE and epistemic variance versus effective calibration trials for active and passive acquisition methods."
+       width="900">
+</p>
+
+The task-weighted active method reaches the registered joint target earlier
+than the passive designs. The right panel shows the corresponding reduction in
+integrated epistemic variance. Inference uses the 20 independent seeds, not the
+60 repeated seed-by-family conditions.
+
+### Shift recovery and downstream navigation
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="reports/figures/p6_strong_confirmatory.png"
+           alt="Strong P6 active recovery effects and terminal RMSE with 95 percent bootstrap intervals.">
+    </td>
+    <td width="50%">
+      <img src="reports/figures/p7_strong_confirmatory_v2.png"
+           alt="Strong P7 navigation success intervals and paired completion-time noninferiority results.">
+    </td>
+  </tr>
+  <tr>
+    <td><strong>P6.</strong> Full active recovery improves the registered early
+      window over passive updating and remains below the absolute terminal
+      RMSE gate.</td>
+    <td><strong>P7.</strong> The disjoint replication passes exact success and
+      collision gates and paired completion-time noninferiority gates.</td>
+  </tr>
+</table>
+
+The first strong P7 confirmation failed and remains in
+[`evidence/p7_strong_confirmatory_failed/`](evidence/p7_strong_confirmatory_failed/).
+The successful result uses new maps, new seeds, and a prospectively frozen
+protocol; failed and development runs are not pooled into the positive
+estimate.
+
+## Publication-integrity design
+
+- **Protocol isolation:** development and confirmation seeds are disjoint;
+  task commands and held-out evaluation commands use separate fixed seeds.
+- **Correct statistical unit:** paired simulator seed is the independent unit;
+  repeated scenarios or maps are not treated as independent replicates.
+- **Endpoint discipline:** downstream navigation endpoints cannot be rescued
+  by a favorable calibration diagnostic.
+- **Failure retention:** failed confirmation and corrective pilots remain
+  versioned and are excluded from confirmatory estimates.
+- **Executable audit:** publication checks recompute statistics and verify
+  hashes, manifests, runtime locks, trace coverage, safety response, and Git
+  ancestry without trusting a producer-written `GO` field.
+- **Claim separation:** software CI, simulator readiness, real-data replay, and
+  online hardware confirmation are distinct gates.
+
+See the frozen
+[`experiment protocol`](docs/experiment_protocol.md),
+[`strong-confirmatory protocol`](docs/p6_p7_strong_confirmatory_protocol.md),
+and
+[`completion semantics`](docs/completion_semantics.md).
+
+## Reproduce the audited package
+
+### 1. Install
 
 ```bash
+git clone https://github.com/EurekaZang/CalibAgent.git
+cd CalibAgent
+python -m venv .venv
+.venv/bin/pip install \
+  -r env/analysis/requirements.lock.txt \
+  -r env/analysis/requirements-dev.lock.txt
+.venv/bin/pip install --no-deps -e .
+```
+
+### 2. Run software and publication gates
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
+  .venv/bin/pytest -p pytest_cov --cov=calibagent
+.venv/bin/ruff check .
+.venv/bin/mypy src/calibagent
+.venv/bin/calibagent-audit --workspace . --require-ready
+.venv/bin/calibagent-audit-strong --workspace . --require-ready
 ./scripts/audit_source_delivery.sh
 ```
 
-This verifies source delivery, not hardware readiness. The Go2 backend,
-watchdog, P8 runners, exporter, and hardware gates remain required before
-confirmatory collection.
-
-## Reproduce
+With the 1.06 GB supplemental trajectory trees mounted:
 
 ```bash
-python -m venv .venv
-.venv/bin/pip install -r env/analysis/requirements.lock.txt \
-  -r env/analysis/requirements-dev.lock.txt
-.venv/bin/pip install --no-deps -e .
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/pytest -p pytest_cov --cov=calibagent
-.venv/bin/python -m calibagent.cli.audit_readiness --workspace . --require-ready
-.venv/bin/python -m calibagent.cli.audit_strong_readiness \
-  --workspace . --require-ready
-.venv/bin/calibagent-p1-plan \
-  --config configs/experiments/p1_go2_capture.yaml \
-  --output outputs/p1_capture/plan.csv
-.venv/bin/python -m calibagent.cli.run_benchmark \
-  --config configs/experiments/p3_synthetic_main.yaml
-.venv/bin/python -m calibagent.cli.run_p4_benchmark \
-  --config configs/experiments/p4_safety_stop_main.yaml
-.venv/bin/python -m calibagent.cli.build_figures \
-  --registry outputs/p3_main/trial_trace.csv \
-  --output outputs/p3_main/sample_efficiency.png \
-  --uncertainty-slice outputs/p3_main/uncertainty_slice.csv
-```
-
-P5–P7 additionally require the pinned Isaac Lab/Isaac Sim runtime and official
-policy checkpoints:
-
-```bash
-.venv/bin/python -m calibagent.cli.run_p5_isaaclab \
-  --config configs/experiments/p5_isaaclab_main.yaml \
-  --isaaclab-root /path/to/IsaacLab-v2.3.2
-.venv/bin/python -m calibagent.cli.run_p6_isaaclab \
-  --config configs/experiments/p6_domain_shift_main.yaml \
-  --isaaclab-root /path/to/IsaacLab-v2.3.2
-.venv/bin/python -m calibagent.cli.run_p7_isaaclab \
-  --config configs/experiments/p7_navigation_main.yaml \
-  --isaaclab-root /path/to/IsaacLab-v2.3.2
-```
-
-When the full supplemental output trees are mounted, repeat the 1.06 GB
-trajectory/hash audit with:
-
-```bash
-.venv/bin/python -m calibagent.cli.audit_strong_readiness \
+.venv/bin/calibagent-audit-strong \
   --workspace . --raw --require-ready
 ```
 
-The benchmarks write resolved configurations, run-level metrics, trial/pose
-traces, paired statistics, simulator logs, and manifests. See
-[`docs/requirements_matrix.md`](docs/requirements_matrix.md) for phase-level
-evidence and [`docs/experiment_protocol.md`](docs/experiment_protocol.md) for
-the evaluation protocol and its corrected statistical-unit warning.
+### 3. Rebuild README figures
 
-Software CI and publication readiness are separate gates. See
-[`docs/completion_semantics.md`](docs/completion_semantics.md) and the
-[`2026-07-24 P0–P7 ICRA audit`](docs/audits/icra_p0_p7_2026-07-24.md).
-The corrected main result is in [`reports/p3_main_report.md`](reports/p3_main_report.md),
-the real Go2 result is in [`reports/p1_real_report.md`](reports/p1_real_report.md),
-the safety/stopping result is in [`reports/p4_main_report.md`](reports/p4_main_report.md),
-the simulator result is in [`reports/p5_main_report.md`](reports/p5_main_report.md),
-the shift result is in [`reports/p6_main_report.md`](reports/p6_main_report.md),
-the navigation result is in [`reports/p7_main_report.md`](reports/p7_main_report.md),
-the strong shift result is in
-[`reports/p6_strong_confirmatory_report.md`](reports/p6_strong_confirmatory_report.md),
-the retained P7 failure is in
-[`reports/p7_strong_confirmatory_failure.md`](reports/p7_strong_confirmatory_failure.md),
-the successful disjoint replication is in
-[`reports/p7_strong_confirmatory_v2_report.md`](reports/p7_strong_confirmatory_v2_report.md),
-and acquisition requirements are in
-[`docs/p1_real_data_protocol.md`](docs/p1_real_data_protocol.md). The complete
-P8 online-hardware handoff, including software gates, safety, sample counts,
-raw channels, schemas, randomization, QC, and publication gates, is
-[`docs/p8_go2_real_deployment_data_handoff_zh.md`](docs/p8_go2_real_deployment_data_handoff_zh.md).
-
-## Claim boundary
-
-The GO verdict is deliberately scoped. P1 demonstrates passive, offline
-full-affine calibration on real Go2/LiDAR-odometry trials. P3 demonstrates the
-active planner under the frozen synthetic benchmark. P4 demonstrates stopping
-and safety logic through frozen replay and fault injection. P5 demonstrates the
-active closed loop in pinned Isaac Lab simulation. P6 demonstrates simulated
-in-place shift detection and recovery, and P7 demonstrates simulator navigation
-with a fixed planner. It does **not** claim that P3–P7 have been executed
-online on a real Go2, that sim-to-real robustness is established, or that the
-simulator results replace hardware validation.
-
-For the stronger P6/P7 claim, P6 establishes an early-recovery advantage over
-passive updating and an absolute terminal-accuracy bound; it does not establish
-terminal superiority over passive updating. P7 establishes benefit over raw
-control and registered noninferiority to dense and matched-budget controls only
-in the pinned simulator. The first strong P7 confirmation failed and is part of
-the evidence record.
-
-## Quick API
-
-```python
-from calibagent.core.models.bayesian import BayesianBasisModel
-from calibagent.core.models.features import BasisTransformer
-from calibagent.core.planning.task import TaskDistribution
-from calibagent.core.planning.ivr import IntegratedVariancePlanner
-
-transformer = BasisTransformer("m2_affine_cross_hinge").fit(command_reference)
-model = BayesianBasisModel(transformer, prior_scale=1.0, noise_variance=[0.01] * 3)
-task = TaskDistribution.uniform(task_commands)
-candidate = IntegratedVariancePlanner().propose(model, task, history=[])[0]
+```bash
+.venv/bin/python -m calibagent.cli.build_figures \
+  --registry evidence/p3_main/trial_trace.csv \
+  --output evidence/p3_main/sample_efficiency.png \
+  --uncertainty-slice evidence/p3_main/uncertainty_slice.csv
+.venv/bin/python scripts/build_readme_figures.py
 ```
 
-## Data policy
+P5–P7 reproduction additionally requires the pinned Isaac Lab v2.3.2/Isaac
+Sim runtime and official Unitree Go2 policy checkpoints. Commands and runtime
+locks are listed in
+[`docs/experiment_registry.md`](docs/experiment_registry.md).
 
-Dense-oracle evaluation points are never used to fit the model, tune the
-planner, or fit feature scaling. Development and final confirmation seeds are
-disjoint and recorded in manifests/reports. Regenerable outputs are
-intentionally gitignored. Frozen P3–P7 evidence is stored under the corresponding
-`evidence/p3_main/` through `evidence/p7_main/` roots. The
-self-contained P1 evidence bundle is under `evidence/p1_real/`; every frozen
-artifact is hash-checked by the live audit.
-The stronger P6/P7 compact evidence is under
-`evidence/p6_strong_confirmatory/` and
-`evidence/p7_strong_confirmatory_v2/`; hash-bound trace receipts link those
-trees to the full supplemental trajectories.
+## Repository structure
+
+| Path | Purpose |
+|---|---|
+| [`src/calibagent/core/`](src/calibagent/core/) | Bayesian models, active planners, stopping, safety, shift detection |
+| [`src/calibagent/interfaces/`](src/calibagent/interfaces/) | Backend-independent data and execution contracts |
+| [`src/calibagent/backends/`](src/calibagent/backends/) | Replay, Isaac Lab, and fail-closed Go2 adapters |
+| [`src/calibagent/eval/`](src/calibagent/eval/) | Frozen benchmark and publication-audit implementations |
+| [`configs/experiments/`](configs/experiments/) | Versioned development and confirmatory protocols |
+| [`evidence/`](evidence/) | Compact, hash-bound evidence required by live audits |
+| [`reports/`](reports/) | Phase reports, audit records, and publication figures |
+| [`docs/`](docs/) | Architecture decisions, protocols, claim matrix, and hardware handoff |
+| [`tests/`](tests/) | Unit, integration, regression, and governance tests |
+
+## Real-robot P8
+
+P1 provides real Go2 passive-replay evidence, but the online P8 boundary is
+still open. `Go2RosBackend` intentionally fails closed until its ROS 2/Unitree
+implementation, independent watchdog, P8-NAV/P8-SHIFT runners, and hardware
+gates are complete.
+
+Hardware collaborators should start with:
+
+- the
+  [Go2 implementation and simulator-code guide](docs/p8_go2_implementation_guide_zh.md);
+- the
+  [complete real-robot experiment and data handoff](docs/p8_go2_real_deployment_data_handoff_zh.md).
+
+## Data and provenance
+
+Regenerable outputs are gitignored. Frozen compact evidence is versioned under
+`evidence/`; manifests bind artifacts to source commits, configurations,
+runtime versions, policy hashes, and the supplemental full-resolution traces.
+Dense-oracle evaluation points never fit the model, planner, or feature
+scaling. See [`docs/experiment_protocol.md`](docs/experiment_protocol.md) for
+the data-access rules.
+
+## Citation
+
+The manuscript citation will be added when the public preprint is released.
+Until then, cite the repository version used in your work:
+
+```bibtex
+@software{calibagent_2026,
+  author  = {{CalibAgent contributors}},
+  title   = {CalibAgent: Safe and Uncertainty-Aware Active Velocity
+             Calibration for Quadruped Robots},
+  year    = {2026},
+  version = {0.1.0},
+  url     = {https://github.com/EurekaZang/CalibAgent}
+}
+```
+
+## License
+
+CalibAgent is released under the [MIT License](LICENSE).

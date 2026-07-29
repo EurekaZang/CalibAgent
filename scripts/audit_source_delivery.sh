@@ -14,6 +14,8 @@ elif [[ -n "${1:-}" ]]; then
 fi
 
 required_paths=(
+  "README.md"
+  "README_zh-CN.md"
   "src/calibagent/interfaces/types.py"
   "src/calibagent/interfaces/protocols.py"
   "src/calibagent/backends/go2_ros.py"
@@ -27,6 +29,8 @@ required_paths=(
   "data/calibration_extracted/calibration/go2_plan_capture_runner.py"
   "docs/p8_go2_real_deployment_data_handoff_zh.md"
   "docs/p8_go2_implementation_guide_zh.md"
+  "docs/assets/readme/p7_slalom_seed_8006.png"
+  "scripts/build_readme_figures.py"
 )
 
 for path in "${required_paths[@]}"; do
