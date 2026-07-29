@@ -14,10 +14,13 @@ quadruped can select a small number of safe velocity commands, learn its
 command-to-motion map, quantify epistemic uncertainty, and use the calibrated
 model for navigation and post-shift recovery.
 
-> **Publication scope.** The executable audit is `GO` for the frozen P0–P7
-> claim set. Online active calibration, navigation, and domain-shift recovery
-> on a real Unitree Go2 remain P8 and are not claimed by the current simulator
-> results.
+> **ICRA readiness: GO for the frozen P0–P7 claim set.**
+> **Strong P6/P7 simulator readiness: GO.** The first strong P7 confirmation
+> failed and remains part of the evidence record; the positive navigation
+> claim rests only on the later disjoint replication. CalibAgent does **not**
+> claim that P3–P7 have been executed online on a real Go2 or that sim-to-real
+> robustness has been established. **Real-robot online active calibration
+> remains P8.**
 
 <p align="center">
   <img src="docs/assets/readme/p7_slalom_seed_8006.png"
