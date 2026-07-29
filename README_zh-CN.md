@@ -19,19 +19,6 @@ CalibAgent 是一项面向 ICRA 投稿研究的科研代码库。它研究四足
 > Go2 上在线运行，也不主张已经证明 sim-to-real 稳健性。真实机器人在线
 > 主动标定仍属于 P8。
 
-<p align="center">
-  <img src="docs/assets/readme/p7_isaac_sim_overview.png"
-       alt="CalibAgent 冻结 P7 绕桩场景中 Unitree Go2 与三个障碍物的 Isaac Sim 原生 RGB 渲染帧。"
-       width="900">
-</p>
-
-<p align="center">
-  <em>冻结 P7 slalom/B8 场景（seed 8006）的 Isaac Sim 原生 RGB 输出。
-  该定性画面使用注册场景、官方 Go2 策略和固定运行时，不作为统计结果。
-  配置、相机位姿和哈希记录在
-  <a href="docs/assets/readme/p7_isaac_sim_capture.json">抓帧溯源文件</a>中。</em>
-</p>
-
 ## 摘要
 
 腿式机器人不会精确执行速度指令。执行器动态、学习式运动策略、地形、
@@ -120,17 +107,26 @@ estimand、区间和局限性见 [`reports/`](reports/)。
 
 ## 仿真结果
 
-### Isaac Sim 实验图库——40 张原生 RGB 画面
+### Isaac Sim 实验图库——29 张证据内容互不重复的图片
 
-图库覆盖 P5–P7 主实验和确认性实验使用的全部冻结仿真场景：**20 组配置，
-每组两个视角**。所有图片均为 Isaac Sim 直接输出的 1280×720 RGB 帧，
-使用 Isaac Lab v2.3.2
+图库覆盖全部 20 组冻结 P5–P7 仿真配置，并删除了无法从外观区分的重复静态
+场景。P7 的九张几何结构不同的地图各保留全局与机器人视角，共 18 张
+1280×720 原生 RGB 帧。P5/P6 的 11 组配置各保留一张 1600×900 响应事实
+卡：卡内包含两个注册验证指令的 Isaac Sim 原生帧、对应的实际仿真 XY
+响应轨迹，以及冻结物理、失真、seed、checkpoint 和终态数值。
+
+全部仿真帧均使用 Isaac Lab v2.3.2
 （`37ddf626871758333d6ed89cf64ad702aef127d0`）与 Isaac Sim
-5.1.0-rc.19 复现，不是轨迹绘图或生成式插图。
+5.1.0-rc.19。P5/P6 响应卡会明确标注为组合展示，不被当作新增定量证据；
+原生源帧哈希与响应轨迹哈希保存在对应 provenance 中。
 
 P7 画面中的青色线段和球体表示冻结规划器的路径与航点，绿色球体表示注册
 目标点。这些标记由版本化场景配置直接生成，仅用于抓帧读图，不参与碰撞，
 不改变 episode，也不作为定量证据。
+
+每张 P5/P6 响应卡执行实验代码中索引为 2 和 7 的注册验证指令。黄色表示
+起点，绿色表示注册测量窗终点，彩色线由实际仿真机体位姿轨迹重放得到。
+轨迹几何不参与碰撞，仅用于读图。
 
 #### P7 独立强确认复现——全部六张地图
 
@@ -201,29 +197,24 @@ P7 画面中的青色线段和球体表示冻结规划器的路径与航点，�
 
 <table>
   <tr>
-    <th width="20%">冻结场景</th>
-    <th width="40%">场景全景</th>
-    <th width="40%">机器人近景</th>
+    <th width="22%">冻结场景</th>
+    <th width="78%">注册响应事实卡</th>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_affine_capture.json"><strong>Tier-A affine</strong></a><br>平地与仿射执行失真。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_overview.png" alt="P5 Tier-A affine 标定场景的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_closeup.png" alt="P5 Tier-A affine 标定场景中的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_experiment_card.png" alt="P5 Tier-A affine Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_capture.json"><strong>Tier-A deadzone</strong></a><br>平地与指令死区。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_overview.png" alt="P5 Tier-A deadzone 标定场景的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_closeup.png" alt="P5 Tier-A deadzone 标定场景中的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_experiment_card.png" alt="P5 Tier-A deadzone Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_capture.json"><strong>Tier-B friction + payload</strong></a><br>低摩擦、+2.0 kg 载荷、+0.02 m 质心偏移。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_overview.png" alt="P5 Tier-B 摩擦载荷场景的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_closeup.png" alt="P5 Tier-B 摩擦载荷场景中的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_experiment_card.png" alt="P5 Tier-B 摩擦载荷 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_rough_capture.json"><strong>Tier-B rough</strong></a><br>程序化崎岖地形与偏移载荷。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_overview.png" alt="P5 Tier-B 崎岖地形场景的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_closeup.png" alt="P5 Tier-B 崎岖地形场景中的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_experiment_card.png" alt="P5 Tier-B 崎岖地形 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
 </table>
 
@@ -231,24 +222,20 @@ P7 画面中的青色线段和球体表示冻结规划器的路径与航点，�
 
 <table>
   <tr>
-    <th width="20%">偏移后场景</th>
-    <th width="40%">场景全景</th>
-    <th width="40%">机器人近景</th>
+    <th width="22%">偏移后场景</th>
+    <th width="78%">注册响应事实卡</th>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_capture.json"><strong>摩擦 + 载荷 + 增益</strong></a><br>摩擦 0.90→0.25、+3.0 kg、+0.03 m 质心。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_overview.png" alt="P6 主实验摩擦载荷增益偏移的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_closeup.png" alt="P6 主实验摩擦载荷增益偏移后的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_experiment_card.png" alt="P6 主实验摩擦载荷增益偏移 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_capture.json"><strong>增益重耦合</strong></a><br>保持物理参数，仅改变注册执行映射。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_overview.png" alt="P6 主实验增益耦合偏移的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_closeup.png" alt="P6 主实验增益耦合偏移后的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_experiment_card.png" alt="P6 主实验增益耦合偏移 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_capture.json"><strong>混合上下文</strong></a><br>摩擦 0.80→0.40、+2.0 kg、+0.02 m 质心。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_overview.png" alt="P6 主实验混合上下文偏移的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_closeup.png" alt="P6 主实验混合上下文偏移后的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_experiment_card.png" alt="P6 主实验混合上下文偏移 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
 </table>
 
@@ -256,38 +243,34 @@ P7 画面中的青色线段和球体表示冻结规划器的路径与航点，�
 
 <table>
   <tr>
-    <th width="20%">偏移后场景</th>
-    <th width="40%">场景全景</th>
-    <th width="40%">机器人近景</th>
+    <th width="22%">偏移后场景</th>
+    <th width="78%">注册响应事实卡</th>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_capture.json"><strong>摩擦 + 载荷</strong></a><br>摩擦 0.92→0.28、+2.8 kg、+0.028 m 质心。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_overview.png" alt="P6 强确认摩擦载荷偏移的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_closeup.png" alt="P6 强确认摩擦载荷偏移后的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_experiment_card.png" alt="P6 强确认摩擦载荷偏移 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_capture.json"><strong>增益重耦合</strong></a><br>保持摩擦与载荷，使用留出增益映射。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_overview.png" alt="P6 强确认增益重耦合偏移的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_closeup.png" alt="P6 强确认增益重耦合偏移后的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_experiment_card.png" alt="P6 强确认增益重耦合偏移 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_capture.json"><strong>混合上下文</strong></a><br>摩擦 0.80→0.42、+2.2 kg、−0.022 m 质心。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_overview.png" alt="P6 强确认混合上下文偏移的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_closeup.png" alt="P6 强确认混合上下文偏移后的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_experiment_card.png" alt="P6 强确认混合上下文偏移 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_capture.json"><strong>仅载荷 + 质心</strong></a><br>保持摩擦，+3.0 kg、−0.032 m 质心。</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_overview.png" alt="P6 强确认仅载荷质心偏移的 Isaac Sim 全景。"></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_closeup.png" alt="P6 强确认仅载荷质心偏移后的 Isaac Sim 机器人近景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_experiment_card.png" alt="P6 强确认仅载荷质心偏移 Isaac Sim 响应事实卡，包含两个注册探测、实际轨迹和冻结参数。"></td>
   </tr>
 </table>
 
 每个场景标题链接到对应抓帧记录，其中保存冻结场景/配置哈希、策略
-checkpoint 哈希、选定 seed、运行时身份、相机位姿、标记语义和 PNG
-SHA-256。可复现实现为
-[`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py)。
-这些画面用于记录仿真设置；统计论点仍以版本化 manifest、episode 表和审计
-输出为依据。
+checkpoint 哈希、选定 seed、运行时身份、相机位姿、注册探测指令、失真
+参数、响应轨迹哈希、标记语义和 PNG SHA-256。可复现实现为
+[`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py)与
+[`build_isaac_response_card.py`](scripts/build_isaac_response_card.py)。
+治理测试会拒绝完全重复和近重复的图库图片。这些图片用于记录仿真设置与
+定性响应；统计论点仍以版本化 manifest、episode 表和审计输出为依据。
 
 ### 样本效率与模型不确定性
 

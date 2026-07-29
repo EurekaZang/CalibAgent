@@ -1,59 +1,360 @@
 {
-  "artifact_type": "qualitative_isaac_sim_scene_capture",
-  "capture_only_visualization_overlays": [],
+  "artifact_type": "qualitative_isaac_sim_response_card",
+  "capture_only_visualization_overlays": [
+    {
+      "collision_enabled": false,
+      "endpoint_marker": "green",
+      "kind": "measured_response_trajectory",
+      "probe_name": "coupled_response",
+      "rendered_points": 28,
+      "rendered_segments": 27,
+      "sampled_xy_m": [
+        [
+          0.0003814697265625,
+          -4.76837158203125e-05
+        ],
+        [
+          -0.0015726089477539062,
+          -0.0027294158935546875
+        ],
+        [
+          0.0028057098388671875,
+          -0.0029087066650390625
+        ],
+        [
+          0.008539199829101562,
+          0.0018129348754882812
+        ],
+        [
+          0.01386260986328125,
+          0.007224082946777344
+        ],
+        [
+          0.019193649291992188,
+          0.011906623840332031
+        ],
+        [
+          0.02390289306640625,
+          0.015428543090820312
+        ],
+        [
+          0.027587890625,
+          0.017691612243652344
+        ],
+        [
+          0.030355453491210938,
+          0.018904685974121094
+        ],
+        [
+          0.03306770324707031,
+          0.018886566162109375
+        ],
+        [
+          0.03919410705566406,
+          0.015096664428710938
+        ],
+        [
+          0.049861907958984375,
+          0.006702423095703125
+        ],
+        [
+          0.06377029418945312,
+          -0.0003662109375
+        ],
+        [
+          0.07758331298828125,
+          -0.0007495880126953125
+        ],
+        [
+          0.08814048767089844,
+          0.0007238388061523438
+        ],
+        [
+          0.09777259826660156,
+          -0.00244903564453125
+        ],
+        [
+          0.10634040832519531,
+          -0.00687408447265625
+        ],
+        [
+          0.11294174194335938,
+          -0.010589599609375
+        ],
+        [
+          0.1171112060546875,
+          -0.012889862060546875
+        ],
+        [
+          0.11926841735839844,
+          -0.0142822265625
+        ],
+        [
+          0.12012481689453125,
+          -0.015348434448242188
+        ],
+        [
+          0.12011337280273438,
+          -0.016021728515625
+        ],
+        [
+          0.11955833435058594,
+          -0.016521453857421875
+        ],
+        [
+          0.11881446838378906,
+          -0.01673126220703125
+        ],
+        [
+          0.11812782287597656,
+          -0.016614913940429688
+        ],
+        [
+          0.1175689697265625,
+          -0.016408920288085938
+        ],
+        [
+          0.11709022521972656,
+          -0.016241073608398438
+        ],
+        [
+          0.11687278747558594,
+          -0.016183853149414062
+        ]
+      ],
+      "segment_color_rgb": [
+        0.1,
+        0.72,
+        0.95
+      ],
+      "source_samples": 160,
+      "start_marker": "yellow"
+    },
+    {
+      "collision_enabled": false,
+      "endpoint_marker": "green",
+      "kind": "measured_response_trajectory",
+      "probe_name": "forward_turn_response",
+      "rendered_points": 28,
+      "rendered_segments": 27,
+      "sampled_xy_m": [
+        [
+          0.0003814697265625,
+          -4.76837158203125e-05
+        ],
+        [
+          -0.0015726089477539062,
+          -0.0027294158935546875
+        ],
+        [
+          0.0028057098388671875,
+          -0.0029087066650390625
+        ],
+        [
+          0.008539199829101562,
+          0.0018129348754882812
+        ],
+        [
+          0.01386260986328125,
+          0.007224082946777344
+        ],
+        [
+          0.019193649291992188,
+          0.011906623840332031
+        ],
+        [
+          0.02390289306640625,
+          0.015428543090820312
+        ],
+        [
+          0.027587890625,
+          0.017691612243652344
+        ],
+        [
+          0.030355453491210938,
+          0.018904685974121094
+        ],
+        [
+          0.03321266174316406,
+          0.019454002380371094
+        ],
+        [
+          0.04164886474609375,
+          0.020715713500976562
+        ],
+        [
+          0.056552886962890625,
+          0.024483680725097656
+        ],
+        [
+          0.07464981079101562,
+          0.031533241271972656
+        ],
+        [
+          0.09103584289550781,
+          0.038002967834472656
+        ],
+        [
+          0.10798263549804688,
+          0.03878593444824219
+        ],
+        [
+          0.1239166259765625,
+          0.03863716125488281
+        ],
+        [
+          0.14031982421875,
+          0.04183387756347656
+        ],
+        [
+          0.15615463256835938,
+          0.0473785400390625
+        ],
+        [
+          0.1743450164794922,
+          0.05125141143798828
+        ],
+        [
+          0.1973896026611328,
+          0.05295562744140625
+        ],
+        [
+          0.2311115264892578,
+          0.03786468505859375
+        ],
+        [
+          0.2683887481689453,
+          0.034252166748046875
+        ],
+        [
+          0.3073101043701172,
+          0.04752159118652344
+        ],
+        [
+          0.3550872802734375,
+          0.056682586669921875
+        ],
+        [
+          0.3967742919921875,
+          0.06842517852783203
+        ],
+        [
+          0.43036842346191406,
+          0.0793447494506836
+        ],
+        [
+          0.4590797424316406,
+          0.09429073333740234
+        ],
+        [
+          0.4738292694091797,
+          0.10639286041259766
+        ]
+      ],
+      "segment_color_rgb": [
+        0.92,
+        0.35,
+        0.16
+      ],
+      "source_samples": 160,
+      "start_marker": "yellow"
+    }
+  ],
+  "card_generation": {
+    "matplotlib_version": "3.11.1",
+    "pillow_version": "12.3.0",
+    "script": "scripts/build_isaac_response_card.py",
+    "source_frame_count": 2,
+    "source_frame_sha256": [
+      "5a2997ae95f20b6246aca623ae9c6d1ffdfbcd566f6fac72a640a048762006ac",
+      "740498751028d89c20654629edb364431b80085f5b9a2f4148dabada2c68cd89"
+    ],
+    "standalone_source_frames_retained": false
+  },
   "checkpoint": {
     "key": "rough",
     "path": "outputs/p5_cache/go2_rough_checkpoint.pt",
     "registered_sha256": "f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2",
     "sha256": "f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2"
   },
+  "composite_presentation": true,
   "declared_seed_membership_verified": true,
-  "frames": [
-    {
-      "camera_pose_frame": "environment_local",
-      "description": "Oblique view of the Go2 in the P5 closed-loop calibration scene.",
-      "eye_xyz_m": [
-        2.6,
-        2.2,
-        1.45
+  "dynamic_response_distortion": {
+    "family": "identity",
+    "parameter_seed": 5301,
+    "parameters": {
+      "affine": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
       ],
-      "path": "p5_tier_b_rough_overview.png",
-      "resolution": [
-        1280,
-        720
+      "bias": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
       ],
-      "sha256": "f538f9267e558b2974e341ca30e9fa7e288a61ffda08833a88bcc302065cf32d",
-      "target_xyz_m": [
-        0.0,
-        0.0,
-        0.28
+      "deadzone": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "delay_steps": [
+        0
+      ],
+      "noise_std": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "saturation": [
+        [
+          0.75,
+          0.45,
+          1.2
+        ]
+      ],
+      "time_constant_s": [
+        0.0
       ]
     },
+    "registration": "P5 frozen distortion construction",
+    "stochastic_seed": 740334
+  },
+  "frames": [
     {
-      "camera_pose_frame": "environment_local",
-      "description": "Front-oblique view of the Go2 under the registered policy.",
-      "eye_xyz_m": [
-        1.25,
-        1.15,
-        0.72
-      ],
-      "path": "p5_tier_b_rough_closeup.png",
+      "description": "Two native Isaac Sim response frames, their actual XY response traces, and the frozen scenario facts.",
+      "path": "p5_tier_b_rough_experiment_card.png",
       "resolution": [
-        1280,
-        720
+        1600,
+        900
       ],
-      "sha256": "b950cfb4ce7c6aeb26a198c61d786a6390c46c0b467919e926cc3c1144c3a09b",
-      "target_xyz_m": [
-        0.0,
-        0.0,
-        0.27
-      ]
+      "sha256": "6c79b12bdb14adad01a3523fe750c53e925e757aaef2c1a1aca0932f3e0ff78d"
     }
   ],
-  "interpretation": "These RGB frames document the frozen scene and simulator assets. They do not replace or augment the registered multi-seed statistics.",
+  "interpretation": "This composite documents two registered validation-command replays and their exact scenario context. It is qualitative setup/response documentation and does not replace the registered multi-seed statistics.",
   "method": "active",
   "physical_context": {
-    "capture_stage": "declared_closed_loop_context",
+    "capture_stage": "registered_closed_loop_dynamic_response",
     "com_offset_x_m": 0.01,
     "distortion": "identity",
     "dynamic_friction": 0.6,
@@ -73,8 +374,148 @@
   "scenario_config": "evidence/p5_main/scenarios/tier_b_rough/launch_config.json",
   "scenario_config_sha256": "879a7c3036f7b7eb3b29facf46323f320179edd875d7df6a9facc966ac686ce8",
   "scenario_id": "tier_b_rough",
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "selected_seed": 5301,
+  "source_frames": [
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Registered validation command [0.20, -0.18, -0.30] and its simulated body-response trajectory.",
+      "eye_xyz_m": [
+        1.65,
+        2.15,
+        1.55
+      ],
+      "resolution": [
+        1280,
+        720
+      ],
+      "response_probe": {
+        "capture_at": "registered_measurement_window_endpoint_before_ramp_out",
+        "capture_pose_after_four_zero_command_render_steps": [
+          0.11510467529296875,
+          -0.015333175659179688,
+          0.34693682193756104,
+          -0.038827940821647644,
+          -0.06696217507123947,
+          -0.16091272234916687
+        ],
+        "desired_command": [
+          0.2,
+          -0.18,
+          -0.3
+        ],
+        "effective_command_max": [
+          0.2,
+          0.0,
+          0.0
+        ],
+        "effective_command_min": [
+          0.0,
+          -0.18,
+          -0.3
+        ],
+        "effective_command_trace_sha256": "ce6b3fa420ba0d94c9f7b018429057e403c5191c4baeff452af6bc49b9c5f6c8",
+        "name": "coupled_response",
+        "profile_phase_counts": {
+          "-1": 50,
+          "0": 20,
+          "1": 40,
+          "2": 50
+        },
+        "profile_samples": 160,
+        "registered_command_index": 2,
+        "registered_command_source": "sim/isaaclab/calibagent_sim/runner.py::_VALIDATION_COMMANDS[2]",
+        "response_endpoint_pose": [
+          0.11687278747558594,
+          -0.016183853149414062,
+          0.3481448292732239,
+          -0.04533582180738449,
+          -0.04795132577419281,
+          -0.17614582180976868
+        ],
+        "sample_rate_hz": 50.0,
+        "step_dt_s": 0.02,
+        "trajectory_sha256": "195f499650439b59149a9a1246a16633f967e4b7eb73247d49c36e9a8cca0dc9"
+      },
+      "retained_as_standalone": false,
+      "sha256": "5a2997ae95f20b6246aca623ae9c6d1ffdfbcd566f6fac72a640a048762006ac",
+      "source_capture_basename": "p5_tier_b_rough_coupled_response.png",
+      "target_xyz_m": [
+        0.18,
+        -0.12,
+        0.15
+      ]
+    },
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Registered validation command [0.35, 0.00, 0.50] and its simulated body-response trajectory.",
+      "eye_xyz_m": [
+        -1.55,
+        2.1,
+        1.45
+      ],
+      "resolution": [
+        1280,
+        720
+      ],
+      "response_probe": {
+        "capture_at": "registered_measurement_window_endpoint_before_ramp_out",
+        "capture_pose_after_four_zero_command_render_steps": [
+          0.4889373779296875,
+          0.12105178833007812,
+          0.3481125831604004,
+          0.05983949825167656,
+          -0.11196966469287872,
+          0.569746196269989
+        ],
+        "desired_command": [
+          0.35,
+          0.0,
+          0.5
+        ],
+        "effective_command_max": [
+          0.35,
+          0.0,
+          0.5
+        ],
+        "effective_command_min": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "effective_command_trace_sha256": "ca1221119cd8af5a6c10507fc7a4fddbb39047423591a0c9a0079f48288b5c0f",
+        "name": "forward_turn_response",
+        "profile_phase_counts": {
+          "-1": 50,
+          "0": 20,
+          "1": 40,
+          "2": 50
+        },
+        "profile_samples": 160,
+        "registered_command_index": 7,
+        "registered_command_source": "sim/isaaclab/calibagent_sim/runner.py::_VALIDATION_COMMANDS[7]",
+        "response_endpoint_pose": [
+          0.4738292694091797,
+          0.10639286041259766,
+          0.3465983271598816,
+          0.10737187415361404,
+          -0.09968264400959015,
+          0.5611251592636108
+        ],
+        "sample_rate_hz": 50.0,
+        "step_dt_s": 0.02,
+        "trajectory_sha256": "07784460983378dbecc8d2796b51aa00aaddc474968058cbdf3acc2553651eda"
+      },
+      "retained_as_standalone": false,
+      "sha256": "740498751028d89c20654629edb364431b80085f5b9a2f4148dabada2c68cd89",
+      "source_capture_basename": "p5_tier_b_rough_forward_turn_response.png",
+      "target_xyz_m": [
+        0.35,
+        0.18,
+        0.14
+      ]
+    }
+  ],
   "source_phase": "P5",
   "stabilization": {
     "command": [
@@ -82,7 +523,7 @@
       0.0,
       0.0
     ],
-    "policy": "registered official Go2 flat checkpoint",
+    "policy": "registered official Go2 rough checkpoint",
     "steps": 0
   },
   "task": "Isaac-Velocity-Rough-Unitree-Go2-Play-v0"

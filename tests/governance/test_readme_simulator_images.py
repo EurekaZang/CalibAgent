@@ -1,13 +1,19 @@
-"""Governance checks for the native Isaac Sim images embedded in the README."""
+"""Governance checks for factual, non-duplicate Isaac Sim README images."""
 
 from __future__ import annotations
 
 import hashlib
 import json
+import re
 import struct
+from itertools import combinations
 from pathlib import Path
 
+import numpy as np
 import pytest
+from PIL import Image
+
+from calibagent.sim import make_distortion_parameters
 
 WORKSPACE = Path(__file__).resolve().parents[2]
 GALLERY_DIR = WORKSPACE / "docs" / "assets" / "readme" / "isaac_sim"
@@ -84,39 +90,7 @@ def _assert_png_matches_record(image_path: Path, frame: dict[str, object]) -> No
         header = stream.read(24)
     assert header[:8] == b"\x89PNG\r\n\x1a\n"
     width, height = struct.unpack(">II", header[16:24])
-    assert [width, height] == frame["resolution"] == [1280, 720]
-
-
-@pytest.mark.parametrize(
-    ("phase", "scenario_config"),
-    [
-        ("p5", "evidence/p5_main/scenarios/tier_a_affine/launch_config.json"),
-        ("p7", "evidence/p7_main/maps/slalom/B8_full/launch_config.json"),
-    ],
-)
-def test_native_isaac_sim_frames_are_hash_bound(
-    phase: str,
-    scenario_config: str,
-) -> None:
-    capture_path = WORKSPACE / "docs" / "assets" / "readme" / f"{phase}_isaac_sim_capture.json"
-    capture = json.loads(capture_path.read_text(encoding="utf-8"))
-    evidence_manifest = json.loads(
-        (WORKSPACE / f"evidence/{phase}_main/manifest.json").read_text(encoding="utf-8")
-    )
-    config_path = WORKSPACE / scenario_config
-    config = json.loads(config_path.read_text(encoding="utf-8"))
-
-    assert capture["artifact_type"] == "qualitative_isaac_sim_scene_capture"
-    assert capture["quantitative_evidence"] is False
-    assert capture["runtime"] == evidence_manifest["runtime"]
-    assert capture["scenario_config"] == scenario_config
-    assert capture["scenario_config_sha256"] == _sha256(config_path)
-    assert capture["selected_seed"] in config["seeds"]
-    assert capture["checkpoint"]["sha256"] == capture["checkpoint"]["registered_sha256"]
-
-    for frame in capture["frames"]:
-        image_path = capture_path.parent / frame["path"]
-        _assert_png_matches_record(image_path, frame)
+    assert [width, height] == frame["resolution"]
 
 
 def test_gallery_contains_exactly_the_registered_twenty_configurations() -> None:
@@ -136,7 +110,6 @@ def test_gallery_frames_are_bound_to_frozen_evidence(prefix: str) -> None:
     config_file = WORKSPACE / config_path
     config = json.loads(config_file.read_text(encoding="utf-8"))
 
-    assert capture["artifact_type"] == "qualitative_isaac_sim_scene_capture"
     assert capture["quantitative_evidence"] is False
     assert capture["source_phase"] == source_phase
     assert capture["scenario_id"] == scenario
@@ -147,16 +120,23 @@ def test_gallery_frames_are_bound_to_frozen_evidence(prefix: str) -> None:
     assert capture["selected_seed"] in config["seeds"]
     assert capture["declared_seed_membership_verified"] is True
     assert capture["checkpoint"]["sha256"] == capture["checkpoint"]["registered_sha256"]
-    assert len(capture["frames"]) == 2
-
-    second_view = "robot_view" if source_phase == "P7" else "closeup"
-    expected_frames = {f"{prefix}_overview.png", f"{prefix}_{second_view}.png"}
-    assert {frame["path"] for frame in capture["frames"]} == expected_frames
-    for frame in capture["frames"]:
-        _assert_png_matches_record(GALLERY_DIR / frame["path"], frame)
+    assert capture["stabilization"]["policy"] == (
+        f"registered official Go2 {capture['checkpoint']['key']} checkpoint"
+    )
 
     overlays = capture["capture_only_visualization_overlays"]
     if source_phase == "P7":
+        assert capture["physical_context"]["physics"] == config["physics"]
+        assert capture["artifact_type"] == "qualitative_isaac_sim_scene_capture"
+        assert len(capture["frames"]) == 2
+        expected_frames = {
+            f"{prefix}_overview.png",
+            f"{prefix}_robot_view.png",
+        }
+        assert {frame["path"] for frame in capture["frames"]} == expected_frames
+        for frame in capture["frames"]:
+            assert frame["resolution"] == [1280, 720]
+            _assert_png_matches_record(GALLERY_DIR / frame["path"], frame)
         assert overlays
         assert {overlay["kind"] for overlay in overlays} <= {
             "goal",
@@ -164,27 +144,176 @@ def test_gallery_frames_are_bound_to_frozen_evidence(prefix: str) -> None:
             "waypoint",
         }
     else:
-        assert overlays == []
+        if source_phase == "P5":
+            context = capture["physical_context"]
+            for key in (
+                "terrain",
+                "static_friction",
+                "dynamic_friction",
+                "payload_add_kg",
+                "com_offset_x_m",
+                "distortion",
+            ):
+                assert context[key] == config[key]
+        else:
+            assert capture["physical_context"]["pre_physics"] == config["pre_physics"]
+            assert capture["physical_context"]["post_physics"] == config["post_physics"]
+            assert (
+                capture["physical_context"]["pre_distortion"]
+                == config["pre_distortion"]
+            )
+            assert (
+                capture["physical_context"]["post_distortion"]
+                == config["post_distortion"]
+            )
+        assert capture["artifact_type"] == "qualitative_isaac_sim_response_card"
+        assert capture["schema_version"] == "1.1"
+        assert capture["composite_presentation"] is True
+        assert len(capture["frames"]) == 1
+        card = capture["frames"][0]
+        assert card["path"] == f"{prefix}_experiment_card.png"
+        assert card["resolution"] == [1600, 900]
+        _assert_png_matches_record(GALLERY_DIR / card["path"], card)
 
-
-def test_bilingual_readmes_embed_native_isaac_sim_frames() -> None:
-    hero_image = "docs/assets/readme/p7_isaac_sim_overview.png"
-    gallery_images = {
-        f"docs/assets/readme/isaac_sim/{prefix}_{view}.png"
-        for prefix in GALLERY_PREFIXES
-        for view in (
-            ("overview", "robot_view")
-            if prefix.startswith("p7_")
-            else ("overview", "closeup")
+        expected_family = (
+            config["distortion"] if source_phase == "P5" else config["post_distortion"]
         )
+        expected_parameter_seed = capture["selected_seed"]
+        expected_stochastic_seed = int(config["simulator_seed"]) + 91
+        if source_phase == "P6":
+            expected_parameter_seed += int(config["post_seed_offset"])
+            expected_stochastic_seed = int(config["simulator_seed"]) + 117
+        distortion = capture["dynamic_response_distortion"]
+        assert distortion["family"] == expected_family
+        assert distortion["parameter_seed"] == expected_parameter_seed
+        assert distortion["stochastic_seed"] == expected_stochastic_seed
+        assert distortion["parameters"] == make_distortion_parameters(
+            expected_family,
+            (expected_parameter_seed,),
+        ).to_dict()
+
+        assert len(capture["source_frames"]) == 2
+        assert capture["card_generation"]["source_frame_sha256"] == [
+            frame["sha256"] for frame in capture["source_frames"]
+        ]
+        assert capture["card_generation"]["standalone_source_frames_retained"] is False
+        expected_commands = {
+            2: [0.20, -0.18, -0.30],
+            7: [0.35, 0.00, 0.50],
+        }
+        observed_indices = set()
+        for source_frame in capture["source_frames"]:
+            assert source_frame["retained_as_standalone"] is False
+            assert source_frame["source_capture_basename"].startswith(prefix)
+            probe = source_frame["response_probe"]
+            index = probe["registered_command_index"]
+            observed_indices.add(index)
+            assert probe["desired_command"] == expected_commands[index]
+            assert probe["capture_at"] == (
+                "registered_measurement_window_endpoint_before_ramp_out"
+            )
+            assert len(probe["response_endpoint_pose"]) == 6
+            assert np.all(np.isfinite(probe["response_endpoint_pose"]))
+            assert len(probe["trajectory_sha256"]) == 64
+            assert len(probe["effective_command_trace_sha256"]) == 64
+        assert observed_indices == {2, 7}
+
+        assert len(overlays) == 2
+        assert {overlay["probe_name"] for overlay in overlays} == {
+            "coupled_response",
+            "forward_turn_response",
+        }
+        for overlay in overlays:
+            assert overlay["kind"] == "measured_response_trajectory"
+            assert overlay["collision_enabled"] is False
+            assert overlay["source_samples"] >= overlay["rendered_points"] >= 2
+            points = np.asarray(overlay["sampled_xy_m"], dtype=np.float64)
+            assert points.shape == (overlay["rendered_points"], 2)
+            assert np.all(np.isfinite(points))
+
+
+def test_response_cards_have_unique_fact_and_trace_signatures() -> None:
+    signatures = set()
+    for prefix in GALLERY_PREFIXES:
+        if prefix.startswith("p7_"):
+            continue
+        capture = json.loads(
+            (GALLERY_DIR / f"{prefix}_capture.json").read_text(encoding="utf-8")
+        )
+        signature = (
+            capture["scenario_config_sha256"],
+            capture["dynamic_response_distortion"]["family"],
+            capture["dynamic_response_distortion"]["parameter_seed"],
+            tuple(
+                frame["response_probe"]["trajectory_sha256"]
+                for frame in capture["source_frames"]
+            ),
+        )
+        assert signature not in signatures
+        signatures.add(signature)
+    assert len(signatures) == 11
+
+
+def test_gallery_contains_no_exact_or_near_duplicate_images() -> None:
+    image_paths = []
+    for prefix in GALLERY_PREFIXES:
+        capture = json.loads(
+            (GALLERY_DIR / f"{prefix}_capture.json").read_text(encoding="utf-8")
+        )
+        image_paths.extend(GALLERY_DIR / frame["path"] for frame in capture["frames"])
+    assert len(image_paths) == 29
+    hashes = [_sha256(path) for path in image_paths]
+    assert len(hashes) == len(set(hashes))
+
+    thumbnails = {
+        path.name: np.asarray(
+            Image.open(path)
+            .convert("RGB")
+            .resize((160, 90), Image.Resampling.LANCZOS),
+            dtype=np.float32,
+        )
+        / 255.0
+        for path in image_paths
     }
+    for left, right in combinations(sorted(thumbnails), 2):
+        mean_absolute_difference = float(
+            np.mean(np.abs(thumbnails[left] - thumbnails[right]))
+        )
+        assert mean_absolute_difference >= 0.005, (
+            f"near-duplicate gallery images: {left} vs {right}; "
+            f"downsampled RGB MAE={mean_absolute_difference:.6f}"
+        )
+
+
+def test_bilingual_readmes_embed_every_factual_gallery_image() -> None:
+    gallery_images = set()
+    for prefix in GALLERY_PREFIXES:
+        if prefix.startswith("p7_"):
+            gallery_images.update(
+                {
+                    f"docs/assets/readme/isaac_sim/{prefix}_overview.png",
+                    f"docs/assets/readme/isaac_sim/{prefix}_robot_view.png",
+                }
+            )
+        else:
+            gallery_images.add(
+                f"docs/assets/readme/isaac_sim/{prefix}_experiment_card.png"
+            )
     gallery_records = {
         f"docs/assets/readme/isaac_sim/{prefix}_capture.json"
         for prefix in GALLERY_PREFIXES
     }
     for readme_name in ("README.md", "README_zh-CN.md"):
         readme = (WORKSPACE / readme_name).read_text(encoding="utf-8")
-        assert hero_image in readme
+        local_images = [
+            source
+            for source in re.findall(r'<img\s+src="([^"]+)"', readme)
+            if not source.startswith(("http://", "https://"))
+        ]
+        assert len(local_images) == len(set(local_images))
+        assert all((WORKSPACE / source).is_file() for source in local_images)
         assert gallery_images <= {image for image in gallery_images if image in readme}
         assert gallery_records <= {record for record in gallery_records if record in readme}
-        assert "40" in readme
+        assert "29" in readme
+        assert "_closeup.png" not in readme
+        assert "isaac_sim/p5_tier_a_affine_overview.png" not in readme

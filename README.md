@@ -22,20 +22,6 @@ model for navigation and post-shift recovery.
 > sim-to-real robustness has been established.
 > **Real-robot online active calibration remains P8.**
 
-<p align="center">
-  <img src="docs/assets/readme/p7_isaac_sim_overview.png"
-       alt="Native Isaac Sim RGB render of the Unitree Go2 and three obstacles in CalibAgent's frozen P7 slalom scene."
-       width="900">
-</p>
-
-<p align="center">
-  <em>Native Isaac Sim RGB output from the frozen P7 slalom/B8 scene
-  (seed 8006). This qualitative render uses the registered scene, official Go2
-  policy, and pinned runtime; it is not a statistical result. Configuration,
-  camera poses, and hashes are recorded in the
-  <a href="docs/assets/readme/p7_isaac_sim_capture.json">capture provenance</a>.</em>
-</p>
-
 ## Abstract
 
 Velocity commands on a legged robot are not executed exactly: actuator
@@ -141,19 +127,33 @@ results, estimands, intervals, and limitations are reported in
 
 ## Simulator results
 
-### Isaac Sim experiment gallery — 40 native RGB frames
+### Isaac Sim experiment gallery — 29 evidence-distinct images
 
-The gallery covers every frozen simulator scene used by the main and
-confirmatory P5–P7 evaluations: **20 configurations, two views each**. Every
-image is a direct 1280×720 Isaac Sim RGB output replayed with Isaac Lab v2.3.2
+The gallery covers all 20 frozen P5–P7 simulator configurations without
+repeating visually indistinguishable static scenes. P7 contributes 18 direct
+1280×720 RGB frames for nine geometrically distinct maps. The 11 P5/P6
+configurations each contribute one 1600×900 response card: two native Isaac
+Sim frames replaying registered validation commands, the corresponding
+simulated XY response traces, and the exact frozen physics, distortion, seed,
+checkpoint, and endpoint values.
+
+All simulator frames use Isaac Lab v2.3.2
 (`37ddf626871758333d6ed89cf64ad702aef127d0`) and Isaac Sim
-5.1.0-rc.19. It is not a trajectory plot or a generated illustration.
+5.1.0-rc.19. P5/P6 cards are transparently labeled composites, not additional
+quantitative evidence; their native source-frame hashes and response-trace
+hashes are retained in the linked provenance.
 
 In the P7 frames, cyan lines and spheres show the frozen planner path and
 waypoints, and the green sphere marks the registered goal. These are
 non-colliding, capture-only overlays derived from the versioned scenario
 configuration; they do not alter an episode and are not quantitative
 evidence.
+
+In each P5/P6 response card, the two commands are the registered validation
+commands at indices 2 and 7. Yellow marks the start, green marks the end of the
+registered measurement window, and the colored line is replayed from the
+actual simulated body-pose trace. The line geometry is non-colliding and used
+only for visualization.
 
 #### P7 disjoint strong-confirmatory replication — all six maps
 
@@ -224,29 +224,24 @@ evidence.
 
 <table>
   <tr>
-    <th width="20%">Frozen scenario</th>
-    <th width="40%">Scene overview</th>
-    <th width="40%">Robot close-up</th>
+    <th width="22%">Frozen scenario</th>
+    <th width="78%">Registered response card</th>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_affine_capture.json"><strong>Tier-A affine</strong></a><br>Flat terrain and affine actuation distortion.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_overview.png" alt="Isaac Sim overview of the P5 Tier-A affine calibration scene."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-A affine calibration scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_experiment_card.png" alt="P5 Tier-A affine Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_capture.json"><strong>Tier-A deadzone</strong></a><br>Flat terrain and command deadzone.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_overview.png" alt="Isaac Sim overview of the P5 Tier-A deadzone calibration scene."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-A deadzone calibration scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_experiment_card.png" alt="P5 Tier-A deadzone Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_capture.json"><strong>Tier-B friction + payload</strong></a><br>Low friction, +2.0 kg payload, +0.02 m COM shift.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_overview.png" alt="Isaac Sim overview of the P5 Tier-B friction-and-payload scene."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-B friction-and-payload scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_experiment_card.png" alt="P5 Tier-B friction-and-payload Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_rough_capture.json"><strong>Tier-B rough</strong></a><br>Procedural rough terrain and shifted payload.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_overview.png" alt="Isaac Sim overview of the P5 Tier-B rough-terrain scene."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-B rough-terrain scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_experiment_card.png" alt="P5 Tier-B rough-terrain Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
 </table>
 
@@ -254,24 +249,20 @@ evidence.
 
 <table>
   <tr>
-    <th width="20%">Post-shift scenario</th>
-    <th width="40%">Scene overview</th>
-    <th width="40%">Robot close-up</th>
+    <th width="22%">Post-shift scenario</th>
+    <th width="78%">Registered response card</th>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_capture.json"><strong>Friction + payload + gain</strong></a><br>Friction 0.90→0.25, +3.0 kg, +0.03 m COM.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_overview.png" alt="Isaac Sim overview of the P6 main friction-payload-gain shift."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_closeup.png" alt="Isaac Sim robot close-up after the P6 main friction-payload-gain shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_experiment_card.png" alt="P6 main friction-payload-gain Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_capture.json"><strong>Gain recoupling</strong></a><br>Held physics with a registered actuation remapping.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_overview.png" alt="Isaac Sim overview of the P6 main gain-coupling shift."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_closeup.png" alt="Isaac Sim robot close-up after the P6 main gain-coupling shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_experiment_card.png" alt="P6 main gain-coupling Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_capture.json"><strong>Mixed context</strong></a><br>Friction 0.80→0.40, +2.0 kg, +0.02 m COM.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_overview.png" alt="Isaac Sim overview of the P6 main mixed-context shift."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_closeup.png" alt="Isaac Sim robot close-up after the P6 main mixed-context shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_experiment_card.png" alt="P6 main mixed-context Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
 </table>
 
@@ -279,38 +270,37 @@ evidence.
 
 <table>
   <tr>
-    <th width="20%">Post-shift scenario</th>
-    <th width="40%">Scene overview</th>
-    <th width="40%">Robot close-up</th>
+    <th width="22%">Post-shift scenario</th>
+    <th width="78%">Registered response card</th>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_capture.json"><strong>Friction + payload</strong></a><br>Friction 0.92→0.28, +2.8 kg, +0.028 m COM.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_overview.png" alt="Isaac Sim overview of the P6 confirmatory friction-payload shift."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory friction-payload shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_experiment_card.png" alt="P6 confirmatory friction-payload Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_capture.json"><strong>Gain recoupling</strong></a><br>Held friction and payload; held-out gain mapping.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_overview.png" alt="Isaac Sim overview of the P6 confirmatory gain-recoupling shift."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory gain-recoupling shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_experiment_card.png" alt="P6 confirmatory gain-recoupling Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_capture.json"><strong>Mixed context</strong></a><br>Friction 0.80→0.42, +2.2 kg, −0.022 m COM.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_overview.png" alt="Isaac Sim overview of the P6 confirmatory mixed-context shift."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory mixed-context shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_experiment_card.png" alt="P6 confirmatory mixed-context Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
   <tr>
     <td><a href="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_capture.json"><strong>Payload + COM only</strong></a><br>+3.0 kg and −0.032 m COM at held friction.</td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_overview.png" alt="Isaac Sim overview of the P6 confirmatory payload-and-COM-only shift."></td>
-    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory payload-and-COM-only shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_experiment_card.png" alt="P6 confirmatory payload-and-COM-only Isaac Sim response card with two registered probes, actual trajectories, and frozen facts."></td>
   </tr>
 </table>
 
 Each linked capture record stores the frozen scenario/configuration hash,
-policy-checkpoint hash, selected seed, runtime identity, camera poses, overlay
-semantics, and PNG SHA-256 hashes. The reproducible implementation is
-[`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py).
-These scene frames document the simulator setup; statistical claims remain
-grounded in the versioned manifests, episode tables, and audit outputs.
+policy-checkpoint hash, selected seed, runtime identity, camera poses,
+registered probe commands, distortion parameters, response-trace hashes,
+overlay semantics, and PNG SHA-256 hashes. The reproducible implementations
+are [`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py)
+and
+[`build_isaac_response_card.py`](scripts/build_isaac_response_card.py).
+Governance tests reject exact and near-duplicate gallery images. These assets
+document the simulator setup and qualitative response; statistical claims
+remain grounded in the versioned manifests, episode tables, and audit outputs.
 
 ### Sample efficiency and model uncertainty
 

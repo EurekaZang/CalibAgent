@@ -1,59 +1,352 @@
 {
-  "artifact_type": "qualitative_isaac_sim_scene_capture",
-  "capture_only_visualization_overlays": [],
+  "artifact_type": "qualitative_isaac_sim_response_card",
+  "capture_only_visualization_overlays": [
+    {
+      "collision_enabled": false,
+      "endpoint_marker": "green",
+      "kind": "measured_response_trajectory",
+      "probe_name": "coupled_response",
+      "rendered_points": 27,
+      "rendered_segments": 26,
+      "sampled_xy_m": [
+        [
+          -0.0003179125487804413,
+          2.0197014237055555e-05
+        ],
+        [
+          -0.002192571759223938,
+          0.0004247845208737999
+        ],
+        [
+          -0.006750516593456268,
+          0.0004569704469759017
+        ],
+        [
+          -0.011075235903263092,
+          -0.004593639634549618
+        ],
+        [
+          -0.012583095580339432,
+          -0.009784957394003868
+        ],
+        [
+          -0.01248384639620781,
+          -0.013074122369289398
+        ],
+        [
+          -0.011727552860975266,
+          -0.014629951678216457
+        ],
+        [
+          -0.010446876287460327,
+          -0.015451675280928612
+        ],
+        [
+          -0.007852967828512192,
+          -0.017622699961066246
+        ],
+        [
+          -0.004335958510637283,
+          -0.022067980840802193
+        ],
+        [
+          0.0013121441006660461,
+          -0.029026363044977188
+        ],
+        [
+          0.009352080523967743,
+          -0.03801346942782402
+        ],
+        [
+          0.018777884542942047,
+          -0.04704001173377037
+        ],
+        [
+          0.027946531772613525,
+          -0.056262169033288956
+        ],
+        [
+          0.03637722507119179,
+          -0.06425873190164566
+        ],
+        [
+          0.045071981847286224,
+          -0.0713740885257721
+        ],
+        [
+          0.05401930212974548,
+          -0.08027475327253342
+        ],
+        [
+          0.06267166137695312,
+          -0.08853008598089218
+        ],
+        [
+          0.07108472287654877,
+          -0.09514662623405457
+        ],
+        [
+          0.07801717519760132,
+          -0.1038936898112297
+        ],
+        [
+          0.08403484523296356,
+          -0.11336469650268555
+        ],
+        [
+          0.09157784283161163,
+          -0.12520304322242737
+        ],
+        [
+          0.1009305864572525,
+          -0.14039616286754608
+        ],
+        [
+          0.11059927940368652,
+          -0.1542970836162567
+        ],
+        [
+          0.12010829150676727,
+          -0.17001831531524658
+        ],
+        [
+          0.1295439451932907,
+          -0.1859554946422577
+        ],
+        [
+          0.13998451828956604,
+          -0.20048217475414276
+        ]
+      ],
+      "segment_color_rgb": [
+        0.1,
+        0.72,
+        0.95
+      ],
+      "source_samples": 105,
+      "start_marker": "yellow"
+    },
+    {
+      "collision_enabled": false,
+      "endpoint_marker": "green",
+      "kind": "measured_response_trajectory",
+      "probe_name": "forward_turn_response",
+      "rendered_points": 27,
+      "rendered_segments": 26,
+      "sampled_xy_m": [
+        [
+          -0.0003179125487804413,
+          2.0197014237055555e-05
+        ],
+        [
+          -0.002192571759223938,
+          0.0004247845208737999
+        ],
+        [
+          -0.006750516593456268,
+          0.0004569704469759017
+        ],
+        [
+          -0.011075235903263092,
+          -0.004593639634549618
+        ],
+        [
+          -0.012583095580339432,
+          -0.009784957394003868
+        ],
+        [
+          -0.01248384639620781,
+          -0.013074122369289398
+        ],
+        [
+          -0.011727552860975266,
+          -0.014629951678216457
+        ],
+        [
+          -0.010306760668754578,
+          -0.015065019950270653
+        ],
+        [
+          -0.005847848951816559,
+          -0.014950985088944435
+        ],
+        [
+          0.0021746866405010223,
+          -0.014653880149126053
+        ],
+        [
+          0.012759417295455933,
+          -0.01462435070425272
+        ],
+        [
+          0.02546802908182144,
+          -0.014203939586877823
+        ],
+        [
+          0.039481814950704575,
+          -0.01257137581706047
+        ],
+        [
+          0.054744817316532135,
+          -0.009079411625862122
+        ],
+        [
+          0.069780632853508,
+          -0.004811246879398823
+        ],
+        [
+          0.0837116688489914,
+          0.0009832531213760376
+        ],
+        [
+          0.09564250707626343,
+          0.008539609611034393
+        ],
+        [
+          0.10369256138801575,
+          0.017009593546390533
+        ],
+        [
+          0.10714760422706604,
+          0.025932677090168
+        ],
+        [
+          0.10477592051029205,
+          0.032731249928474426
+        ],
+        [
+          0.1014026403427124,
+          0.036200813949108124
+        ],
+        [
+          0.100105881690979,
+          0.044294290244579315
+        ],
+        [
+          0.102608323097229,
+          0.04897604137659073
+        ],
+        [
+          0.10797564685344696,
+          0.056208930909633636
+        ],
+        [
+          0.12038631737232208,
+          0.06186962127685547
+        ],
+        [
+          0.13244684040546417,
+          0.06918070465326309
+        ],
+        [
+          0.1441110223531723,
+          0.07708591967821121
+        ]
+      ],
+      "segment_color_rgb": [
+        0.92,
+        0.35,
+        0.16
+      ],
+      "source_samples": 105,
+      "start_marker": "yellow"
+    }
+  ],
+  "card_generation": {
+    "matplotlib_version": "3.11.1",
+    "pillow_version": "12.3.0",
+    "script": "scripts/build_isaac_response_card.py",
+    "source_frame_count": 2,
+    "source_frame_sha256": [
+      "6c6425e83567b241eb672776d3f5e13fcc96f1405e90425b56a8e2528bdfdc97",
+      "bb878ad9eeda4841ffa9f8d99f8cdc8f1720c0683e9b21e62abbcf7c11a29e37"
+    ],
+    "standalone_source_frames_retained": false
+  },
   "checkpoint": {
     "key": "flat",
     "path": "outputs/p5_cache/go2_flat_checkpoint.pt",
     "registered_sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
     "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439"
   },
+  "composite_presentation": true,
   "declared_seed_membership_verified": true,
-  "frames": [
-    {
-      "camera_pose_frame": "environment_local",
-      "description": "Oblique view of the Go2 in a P6 post-shift physical context.",
-      "eye_xyz_m": [
-        2.6,
-        2.2,
-        1.45
+  "dynamic_response_distortion": {
+    "family": "affine_low",
+    "parameter_seed": 6601,
+    "parameters": {
+      "affine": [
+        [
+          [
+            0.6947543221578283,
+            0.04892440679470153,
+            -0.09149301481238672
+          ],
+          [
+            -0.06027342880098019,
+            0.6613023339361886,
+            0.06402619827142111
+          ],
+          [
+            0.11669083437386321,
+            0.04887874732001607,
+            0.7110278692349268
+          ]
+        ]
       ],
-      "path": "p6_main_friction_payload_gain_shift_overview.png",
-      "resolution": [
-        1280,
-        720
+      "bias": [
+        [
+          -0.017484260537241364,
+          -0.013368885495324917,
+          0.03498249555802237
+        ]
       ],
-      "sha256": "fbce969412e1ebbdfc9357d2ec52958d65292fd5d1a936b4f67f2479db394dda",
-      "target_xyz_m": [
-        0.0,
-        0.0,
-        0.28
+      "deadzone": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "delay_steps": [
+        0
+      ],
+      "noise_std": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "saturation": [
+        [
+          0.75,
+          0.45,
+          1.2
+        ]
+      ],
+      "time_constant_s": [
+        0.0
       ]
     },
+    "registration": "P6 post-shift distortion construction",
+    "stochastic_seed": 790358
+  },
+  "frames": [
     {
-      "camera_pose_frame": "environment_local",
-      "description": "Front-oblique view after applying the registered P6 shift.",
-      "eye_xyz_m": [
-        1.25,
-        1.15,
-        0.72
-      ],
-      "path": "p6_main_friction_payload_gain_shift_closeup.png",
+      "description": "Two native Isaac Sim response frames, their actual XY response traces, and the frozen scenario facts.",
+      "path": "p6_main_friction_payload_gain_shift_experiment_card.png",
       "resolution": [
-        1280,
-        720
+        1600,
+        900
       ],
-      "sha256": "9d84297150f18f0a2331d144fbbfe811940d29dda33df75e4ffbe8dff4664480",
-      "target_xyz_m": [
-        0.0,
-        0.0,
-        0.27
-      ]
+      "sha256": "83506388421d2d69b7f2145c4bb46dde21832656d11f3865c53965b5d6009407"
     }
   ],
-  "interpretation": "These RGB frames document the frozen scene and simulator assets. They do not replace or augment the registered multi-seed statistics.",
+  "interpretation": "This composite documents two registered validation-command replays and their exact scenario context. It is qualitative setup/response documentation and does not replace the registered multi-seed statistics.",
   "method": "full",
   "physical_context": {
-    "capture_stage": "registered_post_shift_context",
+    "capture_stage": "registered_post_shift_dynamic_response",
     "post_distortion": "affine_low",
     "post_physics": {
       "com_offset_x_m": 0.03,
@@ -81,8 +374,148 @@
   "scenario_config": "evidence/p6_main/scenarios/friction_payload_gain_shift/full/launch_config.json",
   "scenario_config_sha256": "8cd38fe5971a1458e998f7e1d4ad8eae145d0f6e86541ce2a5a1a1c97b1926e5",
   "scenario_id": "friction_payload_gain_shift",
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "selected_seed": 6601,
+  "source_frames": [
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Registered validation command [0.20, -0.18, -0.30] and its simulated body-response trajectory.",
+      "eye_xyz_m": [
+        1.65,
+        2.15,
+        1.55
+      ],
+      "resolution": [
+        1280,
+        720
+      ],
+      "response_probe": {
+        "capture_at": "registered_measurement_window_endpoint_before_ramp_out",
+        "capture_pose_after_four_zero_command_render_steps": [
+          0.14699409902095795,
+          -0.21062803268432617,
+          0.18694061040878296,
+          0.04986603185534477,
+          0.0708543211221695,
+          -0.14011333882808685
+        ],
+        "desired_command": [
+          0.2,
+          -0.18,
+          -0.3
+        ],
+        "effective_command_max": [
+          0.14010811511499402,
+          -0.013368885495324917,
+          0.03498249555802237
+        ],
+        "effective_command_min": [
+          -0.017484260537241364,
+          -0.16366585084546123,
+          -0.1637858728552859
+        ],
+        "effective_command_trace_sha256": "e0b5d10fb56fee8ef38f8cc8b5134313f3225ce1cee6fe7e107584429f54b5de",
+        "name": "coupled_response",
+        "profile_phase_counts": {
+          "-1": 25,
+          "0": 15,
+          "1": 30,
+          "2": 35
+        },
+        "profile_samples": 105,
+        "registered_command_index": 2,
+        "registered_command_source": "sim/isaaclab/calibagent_sim/runner.py::_VALIDATION_COMMANDS[2]",
+        "response_endpoint_pose": [
+          0.13998451828956604,
+          -0.20048217475414276,
+          0.18475109338760376,
+          0.053449373692274094,
+          0.05649667978286743,
+          -0.1375560164451599
+        ],
+        "sample_rate_hz": 50.0,
+        "step_dt_s": 0.02,
+        "trajectory_sha256": "e883823a236441937226c3d48f066a5c10f80f4fea2e5ff56d35c3c07a55a24b"
+      },
+      "retained_as_standalone": false,
+      "sha256": "6c6425e83567b241eb672776d3f5e13fcc96f1405e90425b56a8e2528bdfdc97",
+      "source_capture_basename": "p6_main_friction_payload_gain_shift_coupled_response.png",
+      "target_xyz_m": [
+        0.18,
+        -0.12,
+        0.15
+      ]
+    },
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Registered validation command [0.35, 0.00, 0.50] and its simulated body-response trajectory.",
+      "eye_xyz_m": [
+        -1.55,
+        2.1,
+        1.45
+      ],
+      "resolution": [
+        1280,
+        720
+      ],
+      "response_probe": {
+        "capture_at": "registered_measurement_window_endpoint_before_ramp_out",
+        "capture_pose_after_four_zero_command_render_steps": [
+          0.15065759420394897,
+          0.08313821256160736,
+          0.19198156893253326,
+          0.02943727932870388,
+          0.07601568847894669,
+          0.6302228569984436
+        ],
+        "desired_command": [
+          0.35,
+          0.0,
+          0.5
+        ],
+        "effective_command_max": [
+          0.17993324481180514,
+          -0.002451486439957424,
+          0.4313382222063379
+        ],
+        "effective_command_min": [
+          -0.017484260537241364,
+          -0.013368885495324917,
+          0.03498249555802237
+        ],
+        "effective_command_trace_sha256": "95f94060f21186d025d65e20926a0237c323259d48eec647f5a155bf6a48c789",
+        "name": "forward_turn_response",
+        "profile_phase_counts": {
+          "-1": 25,
+          "0": 15,
+          "1": 30,
+          "2": 35
+        },
+        "profile_samples": 105,
+        "registered_command_index": 7,
+        "registered_command_source": "sim/isaaclab/calibagent_sim/runner.py::_VALIDATION_COMMANDS[7]",
+        "response_endpoint_pose": [
+          0.1441110223531723,
+          0.07708591967821121,
+          0.1882883608341217,
+          0.03353521600365639,
+          0.05959734320640564,
+          0.6170255541801453
+        ],
+        "sample_rate_hz": 50.0,
+        "step_dt_s": 0.02,
+        "trajectory_sha256": "492f2df06e8facdd7bdc36f54775f0ce13a6660cf4378823a4890d2287ebdabe"
+      },
+      "retained_as_standalone": false,
+      "sha256": "bb878ad9eeda4841ffa9f8d99f8cdc8f1720c0683e9b21e62abbcf7c11a29e37",
+      "source_capture_basename": "p6_main_friction_payload_gain_shift_forward_turn_response.png",
+      "target_xyz_m": [
+        0.35,
+        0.18,
+        0.14
+      ]
+    }
+  ],
   "source_phase": "P6",
   "stabilization": {
     "command": [
