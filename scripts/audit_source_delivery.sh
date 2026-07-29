@@ -14,8 +14,14 @@ elif [[ -n "${1:-}" ]]; then
 fi
 
 required_paths=(
+  "CITATION.cff"
+  "CONTRIBUTING.md"
+  "LICENSE"
+  "LICENSE_SCOPE.md"
+  "NOTICE"
   "README.md"
   "README_zh-CN.md"
+  "docs/intellectual_property_and_publication.md"
   "src/calibagent/interfaces/types.py"
   "src/calibagent/interfaces/protocols.py"
   "src/calibagent/backends/go2_ros.py"
@@ -39,6 +45,7 @@ required_paths=(
   "docs/assets/readme/isaac_sim/p7_replicate_s_bend_overview.png"
   "docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_overview.png"
   "tests/governance/test_readme_simulator_images.py"
+  "tests/governance/test_ip_metadata.py"
   "sim/isaaclab/scripts/capture_readme_scene.py"
   "scripts/build_isaac_response_card.py"
   "scripts/build_readme_figures.py"

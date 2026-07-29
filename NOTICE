@@ -1,0 +1,29 @@
+CalibAgent Copyright and Attribution Notice
+===========================================
+
+Copyright © 2026 EurekaZang and CalibAgent contributors.
+
+CalibAgent is a mixed-license research repository. The authoritative
+file-to-license mapping is LICENSE_SCOPE.md:
+
+- software: MIT;
+- original research prose and visual material: CC BY-NC-ND 4.0;
+- original machine-readable research data and evidence: CC BY 4.0;
+- third-party and file-specific material: its own terms.
+
+Preferred attribution:
+
+  CalibAgent, EurekaZang and CalibAgent contributors, version or commit used,
+  https://github.com/EurekaZang/CalibAgent
+
+Use CITATION.cff for machine-readable software citation. Retaining this notice
+does not replace normal scholarly citation, and scholarly citation does not
+replace license attribution.
+
+The repository interoperates with, or contains visual output produced using,
+NVIDIA Isaac Sim, Isaac Lab, and Unitree Go2 assets and policies. Those
+external products, assets, policies, names, and trademarks are not relicensed
+by CalibAgent. Their appearance does not imply sponsorship or endorsement.
+
+No permission is granted to misrepresent authorship, experimental provenance,
+or endorsement.

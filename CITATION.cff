@@ -1,0 +1,25 @@
+cff-version: "1.2.0"
+message: >-
+  If you use CalibAgent, cite the archived release or exact commit. When the
+  project paper DOI is added, cite both the paper and the software artifact.
+title: "CalibAgent: Safe and Uncertainty-Aware Active Velocity Calibration for Quadruped Robots"
+type: software
+authors:
+  - name: "EurekaZang"
+abstract: >-
+  Research software and frozen evidence for safe, uncertainty-aware active
+  command-to-motion calibration, simulator domain-shift recovery, and
+  downstream quadruped navigation evaluation.
+version: "0.1.0"
+date-released: "2026-07-29"
+repository-code: "https://github.com/EurekaZang/CalibAgent"
+url: "https://github.com/EurekaZang/CalibAgent"
+license: MIT
+license-url: "https://github.com/EurekaZang/CalibAgent/blob/main/LICENSE_SCOPE.md"
+keywords:
+  - quadruped robotics
+  - active calibration
+  - uncertainty quantification
+  - Isaac Lab
+  - sim-to-real
+  - navigation

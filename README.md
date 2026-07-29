@@ -4,7 +4,7 @@
 
 [![Software CI](https://github.com/EurekaZang/CalibAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/EurekaZang/CalibAgent/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.12-3776AB)
-![License](https://img.shields.io/badge/License-MIT-2F855A)
+[![License: mixed](https://img.shields.io/badge/license-code%20MIT%20%7C%20research%20CC-2F855A)](LICENSE_SCOPE.md)
 ![Scoped publication audit](https://img.shields.io/badge/P0--P7%20scoped%20audit-GO-1F883D)
 
 **Safe, uncertainty-aware active velocity calibration for quadruped robots.**
@@ -470,19 +470,37 @@ the data-access rules.
 ## Citation
 
 The manuscript citation will be added when the public preprint is released.
-Until then, cite the repository version used in your work:
+Until then, cite the exact repository release or commit used in your work.
+GitHub, Zenodo, and reference managers can read the authoritative metadata
+from [`CITATION.cff`](CITATION.cff).
 
 ```bibtex
 @software{calibagent_2026,
-  author  = {{CalibAgent contributors}},
+  author  = {{EurekaZang and CalibAgent contributors}},
   title   = {CalibAgent: Safe and Uncertainty-Aware Active Velocity
              Calibration for Quadruped Robots},
   year    = {2026},
   version = {0.1.0},
-  url     = {https://github.com/EurekaZang/CalibAgent}
+  url     = {https://github.com/EurekaZang/CalibAgent},
+  note    = {Cite the exact release or commit used}
 }
 ```
 
 ## License
 
-CalibAgent is released under the [MIT License](LICENSE).
+CalibAgent uses a scope-aware research license:
+
+- software is released under the [MIT License](LICENSE);
+- original research prose and visual material is licensed under
+  [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/);
+- original machine-readable research data and evidence is licensed under
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/);
+- third-party simulator, policy, robot, and trademark rights remain with
+  their respective owners.
+
+The authoritative file mapping, attribution form, prior-version boundary, and
+third-party exclusions are in [`LICENSE_SCOPE.md`](LICENSE_SCOPE.md) and
+[`NOTICE`](NOTICE). Contribution provenance is governed by
+[`CONTRIBUTING.md`](CONTRIBUTING.md). For patent, AI-authorship, preprint, and
+IEEE accepted-manuscript handling, see the
+[intellectual-property and publication checklist](docs/intellectual_property_and_publication.md).

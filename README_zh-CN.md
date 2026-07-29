@@ -4,7 +4,7 @@
 
 [![Software CI](https://github.com/EurekaZang/CalibAgent/actions/workflows/ci.yml/badge.svg)](https://github.com/EurekaZang/CalibAgent/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.12-3776AB)
-![License](https://img.shields.io/badge/License-MIT-2F855A)
+[![分层许可证](https://img.shields.io/badge/license-code%20MIT%20%7C%20research%20CC-2F855A)](LICENSE_SCOPE.md)
 ![Scoped publication audit](https://img.shields.io/badge/P0--P7%20scoped%20audit-GO-1F883D)
 
 **面向四足机器人的安全、不确定性感知主动速度标定。**
@@ -426,19 +426,35 @@ manifest 将每个产物绑定到源代码 commit、配置、运行时版本、�
 
 ## 引用
 
-公开预印本发布后将补充正式论文引用。在此之前，请引用实际使用的仓库版本：
+公开预印本发布后将补充正式论文引用。在此之前，请引用实际使用的精确 release
+或 commit。GitHub、Zenodo 和文献管理器可以读取
+[`CITATION.cff`](CITATION.cff) 中的权威机器可读元数据。
 
 ```bibtex
 @software{calibagent_2026,
-  author  = {{CalibAgent contributors}},
+  author  = {{EurekaZang and CalibAgent contributors}},
   title   = {CalibAgent: Safe and Uncertainty-Aware Active Velocity
              Calibration for Quadruped Robots},
   year    = {2026},
   version = {0.1.0},
-  url     = {https://github.com/EurekaZang/CalibAgent}
+  url     = {https://github.com/EurekaZang/CalibAgent},
+  note    = {Cite the exact release or commit used}
 }
 ```
 
 ## 许可证
 
-CalibAgent 使用 [MIT License](LICENSE)。
+CalibAgent 使用分层科研许可：
+
+- 软件代码使用 [MIT License](LICENSE)；
+- 原创科研文稿和图片使用
+  [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)；
+- 原创机器可读实验数据和证据使用
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)；
+- 第三方仿真器、策略、机器人资产和商标仍归各自权利人。
+
+权威的文件范围、署名格式、旧版本边界和第三方排除规则见
+[`LICENSE_SCOPE.md`](LICENSE_SCOPE.md) 与 [`NOTICE`](NOTICE)。未来贡献的
+权利来源由 [`CONTRIBUTING.md`](CONTRIBUTING.md) 管理。专利、AI 辅助创作、
+预印本以及 IEEE 接收稿的处理要求见
+[知识产权与出版检查表](docs/intellectual_property_and_publication.md)。
