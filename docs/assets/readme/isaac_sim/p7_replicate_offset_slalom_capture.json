@@ -1,0 +1,185 @@
+{
+  "artifact_type": "qualitative_isaac_sim_scene_capture",
+  "capture_only_visualization_overlays": [
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        0.62,
+        0.18
+      ]
+    },
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        1.24,
+        -0.19
+      ]
+    },
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        1.88,
+        0.18
+      ]
+    },
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        2.52,
+        -0.17
+      ]
+    },
+    {
+      "kind": "goal",
+      "position_xy_m": [
+        3.16,
+        0.0
+      ]
+    },
+    {
+      "end_xy_m": [
+        0.62,
+        0.18
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "end_xy_m": [
+        1.24,
+        -0.19
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        0.62,
+        0.18
+      ]
+    },
+    {
+      "end_xy_m": [
+        1.88,
+        0.18
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        1.24,
+        -0.19
+      ]
+    },
+    {
+      "end_xy_m": [
+        2.52,
+        -0.17
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        1.88,
+        0.18
+      ]
+    },
+    {
+      "end_xy_m": [
+        3.16,
+        0.0
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        2.52,
+        -0.17
+      ]
+    }
+  ],
+  "checkpoint": {
+    "key": "flat",
+    "path": "outputs/p5_cache/go2_flat_checkpoint.pt",
+    "registered_sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+    "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439"
+  },
+  "declared_seed_membership_verified": true,
+  "frames": [
+    {
+      "description": "Elevated view fitted to the frozen replicate_offset_slalom navigation map.",
+      "eye_xyz_m": [
+        4.51,
+        3.53,
+        3.1740000000000004
+      ],
+      "path": "p7_replicate_offset_slalom_overview.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "afe4f08e20ba6558408dd73c66380cdd9ddd0a66fb691cc8c32c7858865f7089",
+      "target_xyz_m": [
+        1.58,
+        0.0,
+        0.16
+      ]
+    },
+    {
+      "description": "Low route-facing view of the Go2 and replicate_offset_slalom map.",
+      "eye_xyz_m": [
+        -1.65,
+        2.5149999999999997,
+        1.25
+      ],
+      "path": "p7_replicate_offset_slalom_robot_view.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "43c9e25714d9385da20fb273bdcdf56d1afe90267f6b5752afcaee2f7d5ba9bc",
+      "target_xyz_m": [
+        1.58,
+        0.0,
+        0.2
+      ]
+    }
+  ],
+  "interpretation": "These RGB frames document the frozen scene and simulator assets. They do not replace or augment the registered multi-seed statistics.",
+  "method": "B8_full",
+  "physical_context": {
+    "capture_stage": "declared_navigation_context",
+    "physics": {
+      "com_offset_x_m": 0.012,
+      "dynamic_friction": 0.47,
+      "payload_add_kg": 1.2,
+      "static_friction": 0.65
+    }
+  },
+  "quantitative_evidence": false,
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "runtime_manifest": "evidence/p7_strong_confirmatory_v2/manifest.json",
+  "scenario_config": "evidence/p7_strong_confirmatory_v2/maps/replicate_offset_slalom/B8_full/launch_config.json",
+  "scenario_config_sha256": "663dffec193f8315def42d5df664e452774640e3ca87e4c4385e62e9f78e725b",
+  "scenario_id": "replicate_offset_slalom",
+  "schema_version": "1.0",
+  "selected_seed": 10501,
+  "source_phase": "P7",
+  "stabilization": {
+    "command": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "policy": "registered official Go2 flat checkpoint",
+    "steps": 0
+  },
+  "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0"
+}

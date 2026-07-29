@@ -1,0 +1,97 @@
+{
+  "artifact_type": "qualitative_isaac_sim_scene_capture",
+  "capture_only_visualization_overlays": [],
+  "checkpoint": {
+    "key": "flat",
+    "path": "outputs/p5_cache/go2_flat_checkpoint.pt",
+    "registered_sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+    "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439"
+  },
+  "declared_seed_membership_verified": true,
+  "frames": [
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Oblique view of the Go2 in a P6 post-shift physical context.",
+      "eye_xyz_m": [
+        2.6,
+        2.2,
+        1.45
+      ],
+      "path": "p6_main_gain_coupling_shift_overview.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "7bfbb89bc7e8a9a3ecf3c0ce732d46df4348a1663ec12ba16a2d7ac07b493e8f",
+      "target_xyz_m": [
+        0.0,
+        0.0,
+        0.28
+      ]
+    },
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Front-oblique view after applying the registered P6 shift.",
+      "eye_xyz_m": [
+        1.25,
+        1.15,
+        0.72
+      ],
+      "path": "p6_main_gain_coupling_shift_closeup.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "b0200d8d215f10dcefef7ee6f102f0d7e7fe31e0e11d04e88de4e4a0d38aa097",
+      "target_xyz_m": [
+        0.0,
+        0.0,
+        0.27
+      ]
+    }
+  ],
+  "interpretation": "These RGB frames document the frozen scene and simulator assets. They do not replace or augment the registered multi-seed statistics.",
+  "method": "full",
+  "physical_context": {
+    "capture_stage": "registered_post_shift_context",
+    "post_distortion": "affine_low",
+    "post_physics": {
+      "com_offset_x_m": 0.0,
+      "dynamic_friction": 0.6,
+      "payload_add_kg": 0.0,
+      "static_friction": 0.8
+    },
+    "pre_distortion": "affine_high",
+    "pre_physics": {
+      "com_offset_x_m": 0.0,
+      "dynamic_friction": 0.6,
+      "payload_add_kg": 0.0,
+      "static_friction": 0.8
+    }
+  },
+  "quantitative_evidence": false,
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "runtime_manifest": "evidence/p6_main/manifest.json",
+  "scenario_config": "evidence/p6_main/scenarios/gain_coupling_shift/full/launch_config.json",
+  "scenario_config_sha256": "c828d4bf6283e8dcf981b7a55e05eee1105afa08f820266bd3f266c924126261",
+  "scenario_id": "gain_coupling_shift",
+  "schema_version": "1.0",
+  "selected_seed": 6601,
+  "source_phase": "P6",
+  "stabilization": {
+    "command": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "policy": "registered official Go2 flat checkpoint",
+    "steps": 0
+  },
+  "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0"
+}

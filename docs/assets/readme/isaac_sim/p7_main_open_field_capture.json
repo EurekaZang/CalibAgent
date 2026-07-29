@@ -1,0 +1,151 @@
+{
+  "artifact_type": "qualitative_isaac_sim_scene_capture",
+  "capture_only_visualization_overlays": [
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "kind": "waypoint",
+      "position_xy_m": [
+        1.5,
+        0.0
+      ]
+    },
+    {
+      "kind": "goal",
+      "position_xy_m": [
+        2.2,
+        0.0
+      ]
+    },
+    {
+      "end_xy_m": [
+        0.8,
+        0.0
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "end_xy_m": [
+        1.5,
+        0.0
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "end_xy_m": [
+        2.2,
+        0.0
+      ],
+      "kind": "route_segment",
+      "start_xy_m": [
+        1.5,
+        0.0
+      ]
+    }
+  ],
+  "checkpoint": {
+    "key": "flat",
+    "path": "outputs/p5_cache/go2_flat_checkpoint.pt",
+    "registered_sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+    "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439"
+  },
+  "declared_seed_membership_verified": true,
+  "frames": [
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Elevated view fitted to the frozen open_field navigation map.",
+      "eye_xyz_m": [
+        3.5500000000000003,
+        3.5,
+        3.075
+      ],
+      "path": "p7_main_open_field_overview.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "f9d66e39179fd4c897405c88c959067f60675e9d6c51dea0b64cb6ce29a0cb38",
+      "target_xyz_m": [
+        1.1,
+        0.0,
+        0.16
+      ]
+    },
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Low route-facing view of the Go2 and open_field map.",
+      "eye_xyz_m": [
+        -1.65,
+        2.5,
+        1.25
+      ],
+      "path": "p7_main_open_field_robot_view.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "cc06018d29de08699e710b6f91813f97cc3ea55f8ac591f2de7086fed361caf7",
+      "target_xyz_m": [
+        1.1,
+        0.0,
+        0.2
+      ]
+    }
+  ],
+  "interpretation": "These RGB frames document the frozen scene and simulator assets. They do not replace or augment the registered multi-seed statistics.",
+  "method": "B8_full",
+  "physical_context": {
+    "capture_stage": "declared_navigation_context",
+    "physics": {
+      "com_offset_x_m": 0.0,
+      "dynamic_friction": 0.6,
+      "payload_add_kg": 0.0,
+      "static_friction": 0.8
+    }
+  },
+  "quantitative_evidence": false,
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "runtime_manifest": "evidence/p7_main/manifest.json",
+  "scenario_config": "evidence/p7_main/maps/open_field/B8_full/launch_config.json",
+  "scenario_config_sha256": "1406a4fe5227d1097273b1fba9efcaeb7cdc228c7c67e64349f733600e73507d",
+  "scenario_id": "open_field",
+  "schema_version": "1.0",
+  "selected_seed": 8001,
+  "source_phase": "P7",
+  "stabilization": {
+    "command": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "policy": "registered official Go2 flat checkpoint",
+    "steps": 0
+  },
+  "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0"
+}

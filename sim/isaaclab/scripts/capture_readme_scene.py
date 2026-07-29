@@ -10,7 +10,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
+import re
 import traceback
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -21,9 +24,23 @@ parser.add_argument("--scenario-config", type=Path, required=True)
 parser.add_argument("--checkpoint", type=Path, required=True)
 parser.add_argument("--runtime-manifest", type=Path, required=True)
 parser.add_argument("--output-dir", type=Path, required=True)
-parser.add_argument("--phase", choices=("p5", "p7"), required=True)
+parser.add_argument("--phase", choices=("p5", "p6", "p7"), required=True)
 parser.add_argument("--seed", type=int, required=True)
 parser.add_argument("--stabilization-steps", type=int, default=0)
+parser.add_argument(
+    "--artifact-prefix",
+    help="Output basename; defaults to '<phase>_isaac_sim' for compatibility.",
+)
+parser.add_argument(
+    "--visualize-route",
+    action="store_true",
+    help="Add non-colliding route and waypoint overlays from a P7 frozen config.",
+)
+parser.add_argument(
+    "--auto-map-view",
+    action="store_true",
+    help="Fit P7 camera views to the frozen waypoint/obstacle extent.",
+)
 AppLauncher.add_app_launcher_args(parser)
 args = parser.parse_args()
 
@@ -32,6 +49,7 @@ simulation_app = app_launcher.app
 
 import gymnasium as gym  # noqa: E402
 import torch  # noqa: E402
+from calibagent_sim.p6_runner import _physical_config as _p6_physical_config  # noqa: E402
 from calibagent_sim.p7_runner import _map_environment  # noqa: E402
 from calibagent_sim.policy import load_actor  # noqa: E402
 from calibagent_sim.runner import (  # noqa: E402
@@ -39,6 +57,7 @@ from calibagent_sim.runner import (  # noqa: E402
     _configure_environment,
 )
 from isaaclab import sim as sim_utils  # noqa: E402
+from isaaclab.assets import AssetBaseCfg  # noqa: E402
 from isaaclab.sensors.camera import CameraCfg  # noqa: E402
 from isaaclab.sensors.camera.utils import save_images_to_file  # noqa: E402
 
@@ -53,6 +72,18 @@ _VIEWS = {
             "eye": (1.25, 1.15, 0.72),
             "target": (0.0, 0.0, 0.27),
             "description": "Front-oblique view of the Go2 under the registered policy.",
+        },
+    },
+    "p6": {
+        "overview": {
+            "eye": (2.6, 2.2, 1.45),
+            "target": (0.0, 0.0, 0.28),
+            "description": "Oblique view of the Go2 in a P6 post-shift physical context.",
+        },
+        "closeup": {
+            "eye": (1.25, 1.15, 0.72),
+            "target": (0.0, 0.0, 0.27),
+            "description": "Front-oblique view after applying the registered P6 shift.",
         },
     },
     "p7": {
@@ -114,6 +145,128 @@ def _p5_config(payload: dict[str, Any]) -> ScenarioConfig:
     )
 
 
+def _artifact_prefix(phase: str) -> str:
+    prefix = args.artifact_prefix or f"{phase}_isaac_sim"
+    if re.fullmatch(r"[a-z0-9][a-z0-9_-]*", prefix) is None:
+        raise ValueError("artifact prefix must contain only lowercase letters, digits, '_' or '-'")
+    return prefix
+
+
+def _p7_views(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    if not args.auto_map_view:
+        return _VIEWS["p7"]
+    points = [(0.0, 0.0)]
+    points.extend((float(point[0]), float(point[1])) for point in payload["waypoints"])
+    for obstacle in payload["obstacles"]:
+        center = obstacle["center"]
+        size = obstacle["size"]
+        points.extend(
+            [
+                (
+                    float(center[0]) - float(size[0]) / 2.0,
+                    float(center[1]) - float(size[1]) / 2.0,
+                ),
+                (
+                    float(center[0]) + float(size[0]) / 2.0,
+                    float(center[1]) + float(size[1]) / 2.0,
+                ),
+            ]
+        )
+    x_values = [point[0] for point in points]
+    y_values = [point[1] for point in points]
+    x_min, x_max = min(x_values), max(x_values)
+    y_min, y_max = min(y_values), max(y_values)
+    x_center = (x_min + x_max) / 2.0
+    y_center = (y_min + y_max) / 2.0
+    course_length = max(x_max - x_min, 2.5)
+    half_width = max((y_max - y_min) / 2.0, 0.7)
+    return {
+        "overview": {
+            "eye": (
+                x_max + 1.35,
+                y_center + 2.8 + half_width,
+                2.7 + 0.15 * course_length,
+            ),
+            "target": (x_center, y_center, 0.16),
+            "description": (f"Elevated view fitted to the frozen {payload['id']} navigation map."),
+        },
+        "robot_view": {
+            "eye": (x_min - 1.65, y_center + 2.15 + half_width / 2.0, 1.25),
+            "target": (x_center, y_center, 0.20),
+            "description": (f"Low route-facing view of the Go2 and {payload['id']} map."),
+        },
+    }
+
+
+def _add_p7_route_overlay(env_cfg: Any, payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """Add capture-only, non-colliding route geometry from frozen waypoints."""
+
+    if not args.visualize_route:
+        return []
+    overlays: list[dict[str, Any]] = []
+    points = [(0.0, 0.0)]
+    points.extend((float(point[0]), float(point[1])) for point in payload["waypoints"])
+    for index, point in enumerate(points):
+        is_goal = index == len(points) - 1
+        marker = AssetBaseCfg(
+            prim_path=f"{{ENV_REGEX_NS}}/ReadmeRoutePoint{index}",
+            spawn=sim_utils.SphereCfg(
+                radius=0.065 if is_goal else 0.045,
+                visual_material=sim_utils.PreviewSurfaceCfg(
+                    diffuse_color=(0.15, 0.90, 0.35) if is_goal else (0.10, 0.62, 0.95),
+                    emissive_color=(0.03, 0.16, 0.05) if is_goal else (0.02, 0.08, 0.16),
+                ),
+            ),
+            init_state=AssetBaseCfg.InitialStateCfg(pos=(point[0], point[1], 0.055)),
+        )
+        setattr(env_cfg.scene, f"readme_route_point_{index}", marker)
+        overlays.append(
+            {
+                "kind": "goal" if is_goal else "waypoint",
+                "position_xy_m": [point[0], point[1]],
+            }
+        )
+    for index, (start, end) in enumerate(pairwise(points)):
+        delta_x = end[0] - start[0]
+        delta_y = end[1] - start[1]
+        length = math.hypot(delta_x, delta_y)
+        yaw = math.atan2(delta_y, delta_x)
+        segment = AssetBaseCfg(
+            prim_path=f"{{ENV_REGEX_NS}}/ReadmeRouteSegment{index}",
+            spawn=sim_utils.CuboidCfg(
+                size=(length, 0.028, 0.012),
+                visual_material=sim_utils.PreviewSurfaceCfg(
+                    diffuse_color=(0.08, 0.54, 0.92),
+                    emissive_color=(0.02, 0.08, 0.18),
+                ),
+            ),
+            init_state=AssetBaseCfg.InitialStateCfg(
+                pos=(
+                    (start[0] + end[0]) / 2.0,
+                    (start[1] + end[1]) / 2.0,
+                    0.014,
+                ),
+                rot=(math.cos(yaw / 2.0), 0.0, 0.0, math.sin(yaw / 2.0)),
+            ),
+        )
+        setattr(env_cfg.scene, f"readme_route_segment_{index}", segment)
+        overlays.append(
+            {
+                "kind": "route_segment",
+                "start_xy_m": [start[0], start[1]],
+                "end_xy_m": [end[0], end[1]],
+            }
+        )
+    return overlays
+
+
+def _checkpoint_key(payload: dict[str, Any], config: ScenarioConfig) -> str:
+    declared = payload.get("checkpoint")
+    if declared is not None:
+        return str(declared)
+    return "rough" if config.terrain == "rough" else "flat"
+
+
 def _capture() -> None:
     scenario_config = args.scenario_config.resolve()
     checkpoint = args.checkpoint.resolve()
@@ -122,15 +275,50 @@ def _capture() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     payload = _single_seed_payload(scenario_config, args.seed)
+    overlays: list[dict[str, Any]] = []
     if args.phase == "p7":
         env_cfg, config = _map_environment(payload, args.device)
         scenario_id = str(payload["id"])
         method = str(payload["method"])
+        overlays = _add_p7_route_overlay(env_cfg, payload)
+        views = _p7_views(payload)
+        physical_context: dict[str, Any] = {
+            "capture_stage": "declared_navigation_context",
+            "physics": payload["physics"],
+        }
+    elif args.phase == "p6":
+        config = _p6_physical_config(
+            payload,
+            dict(payload["post_physics"]),
+            (int(args.seed),),
+        )
+        env_cfg = _configure_environment(config, args.device)
+        scenario_id = str(payload["id"])
+        method = "full"
+        views = _VIEWS["p6"]
+        physical_context = {
+            "capture_stage": "registered_post_shift_context",
+            "pre_physics": payload["pre_physics"],
+            "post_physics": payload["post_physics"],
+            "pre_distortion": payload["pre_distortion"],
+            "post_distortion": payload["post_distortion"],
+        }
     else:
         config = _p5_config(payload)
         env_cfg = _configure_environment(config, args.device)
         scenario_id = config.scenario_id
         method = "active"
+        views = _VIEWS["p5"]
+        physical_context = {
+            "capture_stage": "declared_closed_loop_context",
+            "terrain": config.terrain,
+            "static_friction": config.static_friction,
+            "dynamic_friction": config.dynamic_friction,
+            "payload_add_kg": config.payload_add_kg,
+            "com_offset_x_m": config.com_offset_x_m,
+            "distortion": config.distortion,
+        }
+    prefix = _artifact_prefix(args.phase)
     env_cfg.scene.readme_camera = CameraCfg(
         prim_path="{ENV_REGEX_NS}/ReadmeCamera",
         update_period=0.0,
@@ -153,6 +341,7 @@ def _capture() -> None:
         unwrapped = env.unwrapped
         command_term = unwrapped.command_manager.get_term("base_velocity")
         camera = unwrapped.scene["readme_camera"]
+        environment_origin = unwrapped.scene.env_origins[0]
 
         with torch.no_grad():
             for _ in range(args.stabilization_steps):
@@ -161,17 +350,17 @@ def _capture() -> None:
                 actions = actor(torch.clamp(observation, -100.0, 100.0))
                 env.step(torch.clamp(actions, -100.0, 100.0))
 
-            for name, view in _VIEWS[args.phase].items():
+            for name, view in views.items():
                 eyes = torch.tensor(
                     [view["eye"]],
                     dtype=torch.float32,
                     device=unwrapped.device,
-                )
+                ) + environment_origin
                 targets = torch.tensor(
                     [view["target"]],
                     dtype=torch.float32,
                     device=unwrapped.device,
-                )
+                ) + environment_origin
                 camera.set_world_poses_from_view(eyes, targets)
                 for _ in range(4):
                     command_term.vel_command_b[:] = 0.0
@@ -182,13 +371,14 @@ def _capture() -> None:
                 rgb = camera.data.output["rgb"].clone()
                 if not torch.is_floating_point(rgb):
                     rgb = rgb.to(dtype=torch.float32) / 255.0
-                image_path = output_dir / f"{args.phase}_isaac_sim_{name}.png"
+                image_path = output_dir / f"{prefix}_{name}.png"
                 save_images_to_file(rgb, str(image_path))
                 captured.append(
                     {
                         "path": image_path.name,
                         "sha256": _sha256(image_path),
                         "resolution": [1280, 720],
+                        "camera_pose_frame": "environment_local",
                         "eye_xyz_m": list(view["eye"]),
                         "target_xyz_m": list(view["target"]),
                         "description": view["description"],
@@ -198,6 +388,7 @@ def _capture() -> None:
         env.close()
 
     manifest = json.loads(runtime_manifest.read_text(encoding="utf-8"))
+    checkpoint_key = _checkpoint_key(payload, config)
     provenance = {
         "schema_version": "1.0",
         "artifact_type": "qualitative_isaac_sim_scene_capture",
@@ -213,10 +404,13 @@ def _capture() -> None:
         "runtime_manifest": str(args.runtime_manifest),
         "runtime": manifest["runtime"],
         "checkpoint": {
+            "key": checkpoint_key,
             "path": str(args.checkpoint),
             "sha256": _sha256(checkpoint),
-            "registered_sha256": manifest["checkpoints"]["flat"]["sha256"],
+            "registered_sha256": manifest["checkpoints"][checkpoint_key]["sha256"],
         },
+        "physical_context": physical_context,
+        "capture_only_visualization_overlays": overlays,
         "stabilization": {
             "steps": args.stabilization_steps,
             "command": [0.0, 0.0, 0.0],
@@ -229,8 +423,8 @@ def _capture() -> None:
         ),
     }
     if provenance["checkpoint"]["sha256"] != provenance["checkpoint"]["registered_sha256"]:
-        raise RuntimeError("checkpoint SHA-256 does not match the frozen P7 manifest")
-    (output_dir / f"{args.phase}_isaac_sim_capture.json").write_text(
+        raise RuntimeError("checkpoint SHA-256 does not match the frozen manifest")
+    (output_dir / f"{prefix}_capture.json").write_text(
         json.dumps(provenance, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )

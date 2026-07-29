@@ -1,0 +1,89 @@
+{
+  "artifact_type": "qualitative_isaac_sim_scene_capture",
+  "capture_only_visualization_overlays": [],
+  "checkpoint": {
+    "key": "rough",
+    "path": "outputs/p5_cache/go2_rough_checkpoint.pt",
+    "registered_sha256": "f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2",
+    "sha256": "f2aa77bf0349c10ec2a00071162e37123d0cf80f3447c3989c17a618e1b24ad2"
+  },
+  "declared_seed_membership_verified": true,
+  "frames": [
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Oblique view of the Go2 in the P5 closed-loop calibration scene.",
+      "eye_xyz_m": [
+        2.6,
+        2.2,
+        1.45
+      ],
+      "path": "p5_tier_b_rough_overview.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "f538f9267e558b2974e341ca30e9fa7e288a61ffda08833a88bcc302065cf32d",
+      "target_xyz_m": [
+        0.0,
+        0.0,
+        0.28
+      ]
+    },
+    {
+      "camera_pose_frame": "environment_local",
+      "description": "Front-oblique view of the Go2 under the registered policy.",
+      "eye_xyz_m": [
+        1.25,
+        1.15,
+        0.72
+      ],
+      "path": "p5_tier_b_rough_closeup.png",
+      "resolution": [
+        1280,
+        720
+      ],
+      "sha256": "b950cfb4ce7c6aeb26a198c61d786a6390c46c0b467919e926cc3c1144c3a09b",
+      "target_xyz_m": [
+        0.0,
+        0.0,
+        0.27
+      ]
+    }
+  ],
+  "interpretation": "These RGB frames document the frozen scene and simulator assets. They do not replace or augment the registered multi-seed statistics.",
+  "method": "active",
+  "physical_context": {
+    "capture_stage": "declared_closed_loop_context",
+    "com_offset_x_m": 0.01,
+    "distortion": "identity",
+    "dynamic_friction": 0.6,
+    "payload_add_kg": 1.0,
+    "static_friction": 0.8,
+    "terrain": "rough"
+  },
+  "quantitative_evidence": false,
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "runtime_manifest": "evidence/p5_main/manifest.json",
+  "scenario_config": "evidence/p5_main/scenarios/tier_b_rough/launch_config.json",
+  "scenario_config_sha256": "879a7c3036f7b7eb3b29facf46323f320179edd875d7df6a9facc966ac686ce8",
+  "scenario_id": "tier_b_rough",
+  "schema_version": "1.0",
+  "selected_seed": 5301,
+  "source_phase": "P5",
+  "stabilization": {
+    "command": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "policy": "registered official Go2 flat checkpoint",
+    "steps": 0
+  },
+  "task": "Isaac-Velocity-Rough-Unitree-Go2-Play-v0"
+}

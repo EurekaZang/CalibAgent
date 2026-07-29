@@ -120,36 +120,174 @@ estimand、区间和局限性见 [`reports/`](reports/)。
 
 ## 仿真结果
 
-### Isaac Sim 原生场景画面
+### Isaac Sim 实验图库——40 张原生 RGB 画面
+
+图库覆盖 P5–P7 主实验和确认性实验使用的全部冻结仿真场景：**20 组配置，
+每组两个视角**。所有图片均为 Isaac Sim 直接输出的 1280×720 RGB 帧，
+使用 Isaac Lab v2.3.2
+（`37ddf626871758333d6ed89cf64ad702aef127d0`）与 Isaac Sim
+5.1.0-rc.19 复现，不是轨迹绘图或生成式插图。
+
+P7 画面中的青色线段和球体表示冻结规划器的路径与航点，绿色球体表示注册
+目标点。这些标记由版本化场景配置直接生成，仅用于抓帧读图，不参与碰撞，
+不改变 episode，也不作为定量证据。
+
+#### P7 独立强确认复现——全部六张地图
 
 <table>
   <tr>
-    <td width="50%">
-      <img src="docs/assets/readme/p5_isaac_sim_closeup.png"
-           alt="冻结 P5 闭环标定场景中 Unitree Go2 的 Isaac Sim 原生近景。">
-    </td>
-    <td width="50%">
-      <img src="docs/assets/readme/p7_isaac_sim_robot_view.png"
-           alt="从 Unitree Go2 后方望向冻结 P7 绕桩路线的 Isaac Sim 原生画面。">
-    </td>
+    <th width="20%">冻结地图</th>
+    <th width="40%">全局视角</th>
+    <th width="40%">机器人视角</th>
   </tr>
   <tr>
-    <td><strong>P5 闭环标定：</strong>Tier-A affine 场景、seed 5301，
-      使用官方 Go2 flat-policy checkpoint。</td>
-    <td><strong>P7 固定规划器导航：</strong>slalom/B8 场景、seed 8006，
-      包含三个注册障碍物。</td>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_double_chicane_capture.json"><strong>Double chicane</strong></a><br>连续两次横向换向。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_double_chicane_overview.png" alt="P7 double-chicane 强确认复现地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_double_chicane_robot_view.png" alt="P7 double-chicane 强确认复现地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_extended_lane_capture.json"><strong>Extended lane</strong></a><br>长时域跟踪与停车。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_extended_lane_overview.png" alt="P7 extended-lane 强确认复现地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_extended_lane_robot_view.png" alt="P7 extended-lane 强确认复现地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_capture.json"><strong>Narrow lane</strong></a><br>受限横向净空。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_overview.png" alt="P7 narrow-lane 强确认复现地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_robot_view.png" alt="P7 narrow-lane 强确认复现地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_capture.json"><strong>Offset slalom</strong></a><br>交替偏置障碍物。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_overview.png" alt="P7 offset-slalom 强确认复现地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_robot_view.png" alt="P7 offset-slalom 强确认复现地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_s_bend_capture.json"><strong>S-bend</strong></a><br>连续双向曲率。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_s_bend_overview.png" alt="P7 S-bend 强确认复现地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_s_bend_robot_view.png" alt="P7 S-bend 强确认复现地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_capture.json"><strong>Weighted arc</strong></a><br>非对称曲线路径跟踪。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_overview.png" alt="P7 weighted-arc 强确认复现地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_robot_view.png" alt="P7 weighted-arc 强确认复现地图的 Isaac Sim 机器人视角。"></td>
   </tr>
 </table>
 
-以上图片是 Isaac Sim 直接输出的 1280×720 RGB 帧，不是轨迹绘图。两组
-画面均使用 Isaac Lab v2.3.2
-（`37ddf626871758333d6ed89cf64ad702aef127d0`）与 Isaac Sim
-5.1.0-rc.19 复现。帧哈希、相机外参、冻结配置哈希、策略 checkpoint
-哈希和论点边界分别保存在
-[P5 抓帧记录](docs/assets/readme/p5_isaac_sim_capture.json)与
-[P7 抓帧记录](docs/assets/readme/p7_isaac_sim_capture.json)中；
-可复现抓帧代码为
+#### P7 主导航实验——三张开发地图
+
+<table>
+  <tr>
+    <th width="20%">冻结地图</th>
+    <th width="40%">全局视角</th>
+    <th width="40%">机器人视角</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_main_narrow_corridor_capture.json"><strong>Narrow corridor</strong></a><br>受限走廊穿越。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_narrow_corridor_overview.png" alt="P7 主实验 narrow-corridor 地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_narrow_corridor_robot_view.png" alt="P7 主实验 narrow-corridor 地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_main_open_field_capture.json"><strong>Open field</strong></a><br>无约束目标接近。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_open_field_overview.png" alt="P7 主实验 open-field 地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_open_field_robot_view.png" alt="P7 主实验 open-field 地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_main_slalom_capture.json"><strong>Slalom</strong></a><br>三障碍物交替路线。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_slalom_overview.png" alt="P7 主实验 slalom 地图的 Isaac Sim 全局视角。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_slalom_robot_view.png" alt="P7 主实验 slalom 地图的 Isaac Sim 机器人视角。"></td>
+  </tr>
+</table>
+
+#### P5 闭环标定——四类注册场景
+
+<table>
+  <tr>
+    <th width="20%">冻结场景</th>
+    <th width="40%">场景全景</th>
+    <th width="40%">机器人近景</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_affine_capture.json"><strong>Tier-A affine</strong></a><br>平地与仿射执行失真。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_overview.png" alt="P5 Tier-A affine 标定场景的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_closeup.png" alt="P5 Tier-A affine 标定场景中的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_capture.json"><strong>Tier-A deadzone</strong></a><br>平地与指令死区。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_overview.png" alt="P5 Tier-A deadzone 标定场景的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_closeup.png" alt="P5 Tier-A deadzone 标定场景中的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_capture.json"><strong>Tier-B friction + payload</strong></a><br>低摩擦、+2.0 kg 载荷、+0.02 m 质心偏移。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_overview.png" alt="P5 Tier-B 摩擦载荷场景的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_closeup.png" alt="P5 Tier-B 摩擦载荷场景中的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_rough_capture.json"><strong>Tier-B rough</strong></a><br>程序化崎岖地形与偏移载荷。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_overview.png" alt="P5 Tier-B 崎岖地形场景的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_closeup.png" alt="P5 Tier-B 崎岖地形场景中的 Isaac Sim 机器人近景。"></td>
+  </tr>
+</table>
+
+#### P6 主域偏移恢复实验——三类注册偏移
+
+<table>
+  <tr>
+    <th width="20%">偏移后场景</th>
+    <th width="40%">场景全景</th>
+    <th width="40%">机器人近景</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_capture.json"><strong>摩擦 + 载荷 + 增益</strong></a><br>摩擦 0.90→0.25、+3.0 kg、+0.03 m 质心。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_overview.png" alt="P6 主实验摩擦载荷增益偏移的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_closeup.png" alt="P6 主实验摩擦载荷增益偏移后的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_capture.json"><strong>增益重耦合</strong></a><br>保持物理参数，仅改变注册执行映射。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_overview.png" alt="P6 主实验增益耦合偏移的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_closeup.png" alt="P6 主实验增益耦合偏移后的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_capture.json"><strong>混合上下文</strong></a><br>摩擦 0.80→0.40、+2.0 kg、+0.02 m 质心。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_overview.png" alt="P6 主实验混合上下文偏移的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_closeup.png" alt="P6 主实验混合上下文偏移后的 Isaac Sim 机器人近景。"></td>
+  </tr>
+</table>
+
+#### P6 强确认恢复实验——四类留出偏移
+
+<table>
+  <tr>
+    <th width="20%">偏移后场景</th>
+    <th width="40%">场景全景</th>
+    <th width="40%">机器人近景</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_capture.json"><strong>摩擦 + 载荷</strong></a><br>摩擦 0.92→0.28、+2.8 kg、+0.028 m 质心。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_overview.png" alt="P6 强确认摩擦载荷偏移的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_closeup.png" alt="P6 强确认摩擦载荷偏移后的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_capture.json"><strong>增益重耦合</strong></a><br>保持摩擦与载荷，使用留出增益映射。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_overview.png" alt="P6 强确认增益重耦合偏移的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_closeup.png" alt="P6 强确认增益重耦合偏移后的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_capture.json"><strong>混合上下文</strong></a><br>摩擦 0.80→0.42、+2.2 kg、−0.022 m 质心。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_overview.png" alt="P6 强确认混合上下文偏移的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_closeup.png" alt="P6 强确认混合上下文偏移后的 Isaac Sim 机器人近景。"></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_capture.json"><strong>仅载荷 + 质心</strong></a><br>保持摩擦，+3.0 kg、−0.032 m 质心。</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_overview.png" alt="P6 强确认仅载荷质心偏移的 Isaac Sim 全景。"></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_closeup.png" alt="P6 强确认仅载荷质心偏移后的 Isaac Sim 机器人近景。"></td>
+  </tr>
+</table>
+
+每个场景标题链接到对应抓帧记录，其中保存冻结场景/配置哈希、策略
+checkpoint 哈希、选定 seed、运行时身份、相机位姿、标记语义和 PNG
+SHA-256。可复现实现为
 [`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py)。
+这些画面用于记录仿真设置；统计论点仍以版本化 manifest、episode 表和审计
+输出为依据。
 
 ### 样本效率与模型不确定性
 

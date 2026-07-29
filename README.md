@@ -141,36 +141,176 @@ results, estimands, intervals, and limitations are reported in
 
 ## Simulator results
 
-### Native Isaac Sim scene renders
+### Isaac Sim experiment gallery — 40 native RGB frames
+
+The gallery covers every frozen simulator scene used by the main and
+confirmatory P5–P7 evaluations: **20 configurations, two views each**. Every
+image is a direct 1280×720 Isaac Sim RGB output replayed with Isaac Lab v2.3.2
+(`37ddf626871758333d6ed89cf64ad702aef127d0`) and Isaac Sim
+5.1.0-rc.19. It is not a trajectory plot or a generated illustration.
+
+In the P7 frames, cyan lines and spheres show the frozen planner path and
+waypoints, and the green sphere marks the registered goal. These are
+non-colliding, capture-only overlays derived from the versioned scenario
+configuration; they do not alter an episode and are not quantitative
+evidence.
+
+#### P7 disjoint strong-confirmatory replication — all six maps
 
 <table>
   <tr>
-    <td width="50%">
-      <img src="docs/assets/readme/p5_isaac_sim_closeup.png"
-           alt="Native Isaac Sim close render of the Unitree Go2 in the frozen P5 closed-loop calibration scene.">
-    </td>
-    <td width="50%">
-      <img src="docs/assets/readme/p7_isaac_sim_robot_view.png"
-           alt="Native Isaac Sim render from behind the Unitree Go2 looking into the frozen P7 slalom course.">
-    </td>
+    <th width="20%">Frozen map</th>
+    <th width="40%">Course overview</th>
+    <th width="40%">Robot view</th>
   </tr>
   <tr>
-    <td><strong>P5 closed-loop calibration.</strong> Tier-A affine scene,
-      seed 5301, official Go2 flat-policy checkpoint.</td>
-    <td><strong>P7 fixed-planner navigation.</strong> Slalom/B8 scene,
-      seed 8006, with the three registered obstacles.</td>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_double_chicane_capture.json"><strong>Double chicane</strong></a><br>Two successive lateral reversals.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_double_chicane_overview.png" alt="Isaac Sim overview of the frozen P7 double-chicane replication map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_double_chicane_robot_view.png" alt="Isaac Sim robot view of the frozen P7 double-chicane replication map."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_extended_lane_capture.json"><strong>Extended lane</strong></a><br>Long-horizon tracking and stopping.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_extended_lane_overview.png" alt="Isaac Sim overview of the frozen P7 extended-lane replication map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_extended_lane_robot_view.png" alt="Isaac Sim robot view of the frozen P7 extended-lane replication map."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_capture.json"><strong>Narrow lane</strong></a><br>Restricted lateral clearance.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_overview.png" alt="Isaac Sim overview of the frozen P7 narrow-lane replication map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_robot_view.png" alt="Isaac Sim robot view of the frozen P7 narrow-lane replication map."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_capture.json"><strong>Offset slalom</strong></a><br>Alternating obstacle offsets.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_overview.png" alt="Isaac Sim overview of the frozen P7 offset-slalom replication map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_robot_view.png" alt="Isaac Sim robot view of the frozen P7 offset-slalom replication map."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_s_bend_capture.json"><strong>S-bend</strong></a><br>Continuous bidirectional curvature.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_s_bend_overview.png" alt="Isaac Sim overview of the frozen P7 S-bend replication map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_s_bend_robot_view.png" alt="Isaac Sim robot view of the frozen P7 S-bend replication map."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_capture.json"><strong>Weighted arc</strong></a><br>Asymmetric curved tracking.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_overview.png" alt="Isaac Sim overview of the frozen P7 weighted-arc replication map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_robot_view.png" alt="Isaac Sim robot view of the frozen P7 weighted-arc replication map."></td>
   </tr>
 </table>
 
-These are direct 1280×720 RGB outputs from Isaac Sim, not trajectory plots.
-Both were replayed with Isaac Lab v2.3.2
-(`37ddf626871758333d6ed89cf64ad702aef127d0`) and Isaac Sim
-5.1.0-rc.19. Frame hashes, camera extrinsics, frozen configuration hashes,
-policy-checkpoint hashes, and claim boundaries are stored in the
-[P5 capture record](docs/assets/readme/p5_isaac_sim_capture.json) and
-[P7 capture record](docs/assets/readme/p7_isaac_sim_capture.json). The
-reproducible capture implementation is
+#### P7 main navigation evaluation — three development maps
+
+<table>
+  <tr>
+    <th width="20%">Frozen map</th>
+    <th width="40%">Course overview</th>
+    <th width="40%">Robot view</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_main_narrow_corridor_capture.json"><strong>Narrow corridor</strong></a><br>Constrained corridor traversal.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_narrow_corridor_overview.png" alt="Isaac Sim overview of the frozen P7 main narrow-corridor map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_narrow_corridor_robot_view.png" alt="Isaac Sim robot view of the frozen P7 main narrow-corridor map."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_main_open_field_capture.json"><strong>Open field</strong></a><br>Unconstrained goal approach.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_open_field_overview.png" alt="Isaac Sim overview of the frozen P7 main open-field map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_open_field_robot_view.png" alt="Isaac Sim robot view of the frozen P7 main open-field map."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p7_main_slalom_capture.json"><strong>Slalom</strong></a><br>Three-obstacle alternating course.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_slalom_overview.png" alt="Isaac Sim overview of the frozen P7 main slalom map."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p7_main_slalom_robot_view.png" alt="Isaac Sim robot view of the frozen P7 main slalom map."></td>
+  </tr>
+</table>
+
+#### P5 closed-loop calibration — four registered scenes
+
+<table>
+  <tr>
+    <th width="20%">Frozen scenario</th>
+    <th width="40%">Scene overview</th>
+    <th width="40%">Robot close-up</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_affine_capture.json"><strong>Tier-A affine</strong></a><br>Flat terrain and affine actuation distortion.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_overview.png" alt="Isaac Sim overview of the P5 Tier-A affine calibration scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_affine_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-A affine calibration scene."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_capture.json"><strong>Tier-A deadzone</strong></a><br>Flat terrain and command deadzone.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_overview.png" alt="Isaac Sim overview of the P5 Tier-A deadzone calibration scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_a_deadzone_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-A deadzone calibration scene."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_capture.json"><strong>Tier-B friction + payload</strong></a><br>Low friction, +2.0 kg payload, +0.02 m COM shift.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_overview.png" alt="Isaac Sim overview of the P5 Tier-B friction-and-payload scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-B friction-and-payload scene."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p5_tier_b_rough_capture.json"><strong>Tier-B rough</strong></a><br>Procedural rough terrain and shifted payload.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_overview.png" alt="Isaac Sim overview of the P5 Tier-B rough-terrain scene."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p5_tier_b_rough_closeup.png" alt="Isaac Sim robot close-up in the P5 Tier-B rough-terrain scene."></td>
+  </tr>
+</table>
+
+#### P6 main shift-recovery evaluation — three registered shifts
+
+<table>
+  <tr>
+    <th width="20%">Post-shift scenario</th>
+    <th width="40%">Scene overview</th>
+    <th width="40%">Robot close-up</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_capture.json"><strong>Friction + payload + gain</strong></a><br>Friction 0.90→0.25, +3.0 kg, +0.03 m COM.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_overview.png" alt="Isaac Sim overview of the P6 main friction-payload-gain shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_friction_payload_gain_shift_closeup.png" alt="Isaac Sim robot close-up after the P6 main friction-payload-gain shift."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_capture.json"><strong>Gain recoupling</strong></a><br>Held physics with a registered actuation remapping.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_overview.png" alt="Isaac Sim overview of the P6 main gain-coupling shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_gain_coupling_shift_closeup.png" alt="Isaac Sim robot close-up after the P6 main gain-coupling shift."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_capture.json"><strong>Mixed context</strong></a><br>Friction 0.80→0.40, +2.0 kg, +0.02 m COM.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_overview.png" alt="Isaac Sim overview of the P6 main mixed-context shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_main_mixed_context_shift_closeup.png" alt="Isaac Sim robot close-up after the P6 main mixed-context shift."></td>
+  </tr>
+</table>
+
+#### P6 strong-confirmatory recovery — four held-out shifts
+
+<table>
+  <tr>
+    <th width="20%">Post-shift scenario</th>
+    <th width="40%">Scene overview</th>
+    <th width="40%">Robot close-up</th>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_capture.json"><strong>Friction + payload</strong></a><br>Friction 0.92→0.28, +2.8 kg, +0.028 m COM.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_overview.png" alt="Isaac Sim overview of the P6 confirmatory friction-payload shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_friction_payload_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory friction-payload shift."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_capture.json"><strong>Gain recoupling</strong></a><br>Held friction and payload; held-out gain mapping.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_overview.png" alt="Isaac Sim overview of the P6 confirmatory gain-recoupling shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory gain-recoupling shift."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_capture.json"><strong>Mixed context</strong></a><br>Friction 0.80→0.42, +2.2 kg, −0.022 m COM.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_overview.png" alt="Isaac Sim overview of the P6 confirmatory mixed-context shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_mixed_context_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory mixed-context shift."></td>
+  </tr>
+  <tr>
+    <td><a href="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_capture.json"><strong>Payload + COM only</strong></a><br>+3.0 kg and −0.032 m COM at held friction.</td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_overview.png" alt="Isaac Sim overview of the P6 confirmatory payload-and-COM-only shift."></td>
+    <td><img src="docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_closeup.png" alt="Isaac Sim robot close-up after the P6 confirmatory payload-and-COM-only shift."></td>
+  </tr>
+</table>
+
+Each linked capture record stores the frozen scenario/configuration hash,
+policy-checkpoint hash, selected seed, runtime identity, camera poses, overlay
+semantics, and PNG SHA-256 hashes. The reproducible implementation is
 [`capture_readme_scene.py`](sim/isaaclab/scripts/capture_readme_scene.py).
+These scene frames document the simulator setup; statistical claims remain
+grounded in the versioned manifests, episode tables, and audit outputs.
 
 ### Sample efficiency and model uncertainty
 
