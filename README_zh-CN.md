@@ -411,6 +411,11 @@ P1 已提供真实 Go2 被动回放证据，但在线 P8 边界尚未闭合。
 `Go2RosBackend` 目前有意保持 fail-closed；只有完成 ROS 2/Unitree 接入、
 独立 watchdog、P8-NAV/P8-SHIFT runner 和硬件门控后，才能开始正式采集。
 
+实机范围决策已固定：P8-NAV 只执行 `real_offset_slalom` 和
+`real_weighted_arc` 两条路线，P8-SHIFT 保留全部四类扰动。完整实机 release
+仍处于冻结前，尚未达到 `CONFIRM_READY`。上文六地图结果仍是已完成的 P7
+仿真实验，不是 P8 实机地图数量。
+
 实机同事应首先阅读：
 
 - [Go2 实机软件实现与仿真代码导读](docs/p8_go2_implementation_guide_zh.md)；

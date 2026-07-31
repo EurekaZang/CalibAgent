@@ -451,6 +451,12 @@ still open. `Go2RosBackend` intentionally fails closed until its ROS 2/Unitree
 implementation, independent watchdog, P8-NAV/P8-SHIFT runners, and hardware
 gates are complete.
 
+The real-robot scope decision is fixed at two P8-NAV routes—
+`real_offset_slalom` and `real_weighted_arc`—while retaining all four P8-SHIFT
+interventions. The complete hardware release is still pre-freeze and is not yet
+`CONFIRM_READY`. The six-map results above remain the completed P7 simulator
+study, not the P8 hardware map count.
+
 Hardware collaborators should start with:
 
 - the

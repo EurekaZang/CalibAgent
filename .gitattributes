@@ -1,3 +1,27 @@
-# Preserve the source byte stream and avoid line-ending normalization of the
-# hash-bound real-robot CSV.
-evidence/p1_real/raw_trials.csv binary
+# Protocol/config/source text is hash-bound and must have identical LF bytes on
+# developer machines, robots, CI, and frozen releases.
+*.md text eol=lf
+*.py text eol=lf
+*.pyi text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.toml text eol=lf
+*.xml text eol=lf
+*.txt text eol=lf
+*.lock text eol=lf
+*.sh text eol=lf
+*.c text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hh text eol=lf
+*.hpp text eol=lf
+*.patch text eol=lf
+Dockerfile text eol=lf
+*.Dockerfile text eol=lf
+
+# Preserve the source byte stream and avoid line-ending normalization of this
+# already-collected hash-bound real-robot CSV. The later rule overrides *.csv.
+evidence/p1_real/raw_trials.csv binary -eol

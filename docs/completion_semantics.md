@@ -30,7 +30,7 @@ python -m calibagent.cli.audit_strong_readiness --workspace . --raw --require-re
 The second command exits non-zero until every publication criterion passes.
 Governance tests require README/report claims to agree with this verdict.
 
-## Current status (2026-07-24)
+## Current status (2026-07-31)
 
 | Phase | Highest supported level | Status |
 |---|---|---|
@@ -42,7 +42,7 @@ Governance tests require README/report claims to agree with this verdict.
 | P5 | L3 for frozen simulation claim | Four pinned Isaac Lab Go2 scenarios, 20 paired seeds each, positive paired CIs, physical variation, pose traces, and safety response pass |
 | P6 | L3 for strong frozen simulated shift claim | Four held-out shifts, frozen/passive/full controls, 72 seeds each, exact rate bounds, early active-over-passive effect, absolute terminal accuracy, trace safety, and provenance pass |
 | P7 | L3 for strong frozen simulated navigation claim | First confirmation retained as NO-GO; a disjoint replication on six new maps, seven controls, and 72 new seeds passes exact rate and dense/matched-control noninferiority gates |
-| P8 | L0 protocol only | Online Go2 backend, hardware gates, confirmatory P8-NAV/P8-SHIFT raw data, and independent analysis are still pending |
+| P8 | L0 protocol only | Online Go2 backend, hardware gates, confirmatory P8-NAV on the two frozen real routes (`real_offset_slalom`, `real_weighted_arc`), all P8-SHIFT R1–R4 raw data, and independent analysis are still pending |
 
 Overall ICRA readiness is **GO** for the frozen P0–P7 claim set. The live audit
 recomputes 39/39 checks from frozen evidence. P6/P7 are pinned Isaac
