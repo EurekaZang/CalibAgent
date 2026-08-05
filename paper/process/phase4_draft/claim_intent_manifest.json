@@ -1,0 +1,67 @@
+{
+  "manifest_version": "1.0",
+  "manifest_id": "M-2026-08-05T00:00:00Z-calibagent-draft-1",
+  "emitted_by": "draft_writer_agent",
+  "emitted_at": "2026-08-05T00:00:00Z",
+  "claims": [
+    {
+      "claim_id": "C1",
+      "claim_text": "A coupled affine command model improves held-out velocity prediction on the supplied passive Go2 dataset.",
+      "intended_evidence_kind": "empirical",
+      "planned_refs": ["li2022vio", "taouil2023blackbox"],
+      "negative_constraints": [
+        {"constraint_id": "NC-C1-1", "rule": "Do not generalize beyond the same-day single-robot passive dataset."}
+      ]
+    },
+    {
+      "claim_id": "C2",
+      "claim_text": "Task-weighted active design reaches frozen synthetic targets in fewer trials than registered passive, D-optimal, and no-task controls.",
+      "intended_evidence_kind": "empirical",
+      "planned_refs": ["carrillo2013task", "attia2018goal"],
+      "negative_constraints": [
+        {"constraint_id": "NC-C2-1", "rule": "Do not describe synthetic sample efficiency as demonstrated hardware efficiency."}
+      ]
+    },
+    {
+      "claim_id": "C3",
+      "claim_text": "The independent hard filter and validation-based stopping rule satisfy registered replay and fault-injection gates.",
+      "intended_evidence_kind": "empirical",
+      "planned_refs": [],
+      "negative_constraints": [
+        {"constraint_id": "NC-C3-1", "rule": "Do not describe replay safety as deployment certification."}
+      ]
+    },
+    {
+      "claim_id": "C4",
+      "claim_text": "Twelve-trial active calibration reduces held-out velocity RMSE in four pinned Isaac Lab scenarios.",
+      "intended_evidence_kind": "empirical",
+      "planned_refs": ["mittal2025isaaclab"],
+      "negative_constraints": [
+        {"constraint_id": "NC-C4-1", "rule": "Do not infer sim-to-real transfer."}
+      ]
+    },
+    {
+      "claim_id": "C5",
+      "claim_text": "Full active recovery improves early post-shift RMSE over passive updating under four registered simulator shifts.",
+      "intended_evidence_kind": "empirical",
+      "planned_refs": ["kumar2021rma", "fey2024adapt"],
+      "negative_constraints": [
+        {"constraint_id": "NC-C5-1", "rule": "Do not claim terminal superiority over passive updating."}
+      ]
+    },
+    {
+      "claim_id": "C6",
+      "claim_text": "A prospective disjoint simulator replication supports B8 navigation superiority over raw control and noninferiority to dense and matched-budget controls on registered endpoints.",
+      "intended_evidence_kind": "empirical",
+      "planned_refs": ["taouil2023blackbox"],
+      "negative_constraints": [
+        {"constraint_id": "NC-C6-1", "rule": "Disclose the failed first confirmation and base the claim only on the later replication."}
+      ]
+    }
+  ],
+  "manifest_negative_constraints": [
+    {"constraint_id": "MNC-1", "rule": "P8 is protocol, not completed evidence."},
+    {"constraint_id": "MNC-2", "rule": "No real-world deployment, arbitrary-shift, or sim-to-real claim."},
+    {"constraint_id": "MNC-3", "rule": "No absolute first or only novelty claim."}
+  ]
+}

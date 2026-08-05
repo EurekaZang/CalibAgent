@@ -1,0 +1,12 @@
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+
+# Obsolete outputs from the superseded standalone P6 panel.
+figures/shift_recovery.pdf
+figures/shift_recovery.png

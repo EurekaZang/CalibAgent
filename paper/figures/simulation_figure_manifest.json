@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "purpose": "Provenance and uniqueness audit for Isaac Sim evidence in paper/main.tex",
+  "interpretation": "These images document registered simulator scenes and response replays. They are qualitative and do not replace the frozen multi-seed statistics.",
+  "asset_count": 6,
+  "all_asset_hashes_unique": true,
+  "all_declared_seed_memberships_verified": true,
+  "scientific_figure_manifest": "paper/figures/simulation_scientific_figure_manifest.json",
+  "scientific_figure_manifest_sha256": "3260859e0b1831c0edd15ae00f60c0316c5428ab73cd3e711c2b9bddec8a1258",
+  "scientific_figure_source_count": 10,
+  "entries": [
+    {
+      "asset": "docs/assets/readme/isaac_sim/p7_replicate_s_bend_overview.png",
+      "asset_sha256": "ec9c06cc7c40f98d84788ce8957f2eac6e7d243ad1402e1411d2df94de13be38",
+      "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_s_bend_capture.json",
+      "capture_record_sha256": "b0506c8da755d4aa596b7192674f332d65ef8ab00add7066402c95796dfc4c98",
+      "artifact_type": "qualitative_isaac_sim_scene_capture",
+      "source_phase": "P7",
+      "scenario_id": "replicate_s_bend",
+      "method": "B8_full",
+      "selected_seed": 10501,
+      "resolution": [
+        1280,
+        720
+      ],
+      "quantitative_evidence": false,
+      "scenario_config": "evidence/p7_strong_confirmatory_v2/maps/replicate_s_bend/B8_full/launch_config.json",
+      "scenario_config_sha256": "f15e482a2ef8c7bd866154981f02186d4fbf88f9f9d6a1026200cc46ea0d3c9d",
+      "runtime_manifest": "evidence/p7_strong_confirmatory_v2/manifest.json"
+    },
+    {
+      "asset": "docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_overview.png",
+      "asset_sha256": "afe4f08e20ba6558408dd73c66380cdd9ddd0a66fb691cc8c32c7858865f7089",
+      "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_capture.json",
+      "capture_record_sha256": "2311355a150167e5d6b1578e0d65bc95fa1a93f430a5c69e78132ba9e4d3771f",
+      "artifact_type": "qualitative_isaac_sim_scene_capture",
+      "source_phase": "P7",
+      "scenario_id": "replicate_offset_slalom",
+      "method": "B8_full",
+      "selected_seed": 10501,
+      "resolution": [
+        1280,
+        720
+      ],
+      "quantitative_evidence": false,
+      "scenario_config": "evidence/p7_strong_confirmatory_v2/maps/replicate_offset_slalom/B8_full/launch_config.json",
+      "scenario_config_sha256": "663dffec193f8315def42d5df664e452774640e3ca87e4c4385e62e9f78e725b",
+      "runtime_manifest": "evidence/p7_strong_confirmatory_v2/manifest.json"
+    },
+    {
+      "asset": "docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_overview.png",
+      "asset_sha256": "224044e575f34fa8a78b625ee59aa77ff0406eac9c55f2bf3137d330ab6a3254",
+      "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_capture.json",
+      "capture_record_sha256": "552f8b27468f6267df62e9fbf76f9e21445a5c54ddf0d5f2ad7656a7bdb903d1",
+      "artifact_type": "qualitative_isaac_sim_scene_capture",
+      "source_phase": "P7",
+      "scenario_id": "replicate_narrow_lane",
+      "method": "B8_full",
+      "selected_seed": 10501,
+      "resolution": [
+        1280,
+        720
+      ],
+      "quantitative_evidence": false,
+      "scenario_config": "evidence/p7_strong_confirmatory_v2/maps/replicate_narrow_lane/B8_full/launch_config.json",
+      "scenario_config_sha256": "0ea2424d4457e16268b5095f042ad85e07a10b84130250df207bd4e9730e1495",
+      "runtime_manifest": "evidence/p7_strong_confirmatory_v2/manifest.json"
+    },
+    {
+      "asset": "docs/assets/readme/isaac_sim/p7_replicate_double_chicane_overview.png",
+      "asset_sha256": "a7a61562bea568e15741d2afe830b53f15156ebcfe4d039171ba775044f4819b",
+      "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_double_chicane_capture.json",
+      "capture_record_sha256": "6d47e887ae7ac30174f3824ec17e50e56b84669828a1e9d090ca6debd29f0816",
+      "artifact_type": "qualitative_isaac_sim_scene_capture",
+      "source_phase": "P7",
+      "scenario_id": "replicate_double_chicane",
+      "method": "B8_full",
+      "selected_seed": 10501,
+      "resolution": [
+        1280,
+        720
+      ],
+      "quantitative_evidence": false,
+      "scenario_config": "evidence/p7_strong_confirmatory_v2/maps/replicate_double_chicane/B8_full/launch_config.json",
+      "scenario_config_sha256": "a74022dc0c6bc0a84a50b80087cf7d13c4bda9049f360bfbf6910101b4f25b07",
+      "runtime_manifest": "evidence/p7_strong_confirmatory_v2/manifest.json"
+    },
+    {
+      "asset": "docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_overview.png",
+      "asset_sha256": "bbbdc4473f99e764576b8e85c07343127fefb21aedb3a0734bb064e711314c31",
+      "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_capture.json",
+      "capture_record_sha256": "84e2596f61a263789cf28c2da0b03857a9ace5c7e1554ebab367705d48be5b4a",
+      "artifact_type": "qualitative_isaac_sim_scene_capture",
+      "source_phase": "P7",
+      "scenario_id": "replicate_weighted_arc",
+      "method": "B8_full",
+      "selected_seed": 10501,
+      "resolution": [
+        1280,
+        720
+      ],
+      "quantitative_evidence": false,
+      "scenario_config": "evidence/p7_strong_confirmatory_v2/maps/replicate_weighted_arc/B8_full/launch_config.json",
+      "scenario_config_sha256": "01cfbea90b1f59e1fd58935bd78aa5a274460616fb646d86587fd00682dadef3",
+      "runtime_manifest": "evidence/p7_strong_confirmatory_v2/manifest.json"
+    },
+    {
+      "asset": "docs/assets/readme/isaac_sim/p7_replicate_extended_lane_overview.png",
+      "asset_sha256": "85c26e7cc3db8bdf102f7fb122986984df94608c5744db976088b31136696f83",
+      "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_extended_lane_capture.json",
+      "capture_record_sha256": "4709f531cc3a2ae2d22ca31fa2b218bad242993c2bdd3fe6a3960b13ef7c4a4a",
+      "artifact_type": "qualitative_isaac_sim_scene_capture",
+      "source_phase": "P7",
+      "scenario_id": "replicate_extended_lane",
+      "method": "B8_full",
+      "selected_seed": 10501,
+      "resolution": [
+        1280,
+        720
+      ],
+      "quantitative_evidence": false,
+      "scenario_config": "evidence/p7_strong_confirmatory_v2/maps/replicate_extended_lane/B8_full/launch_config.json",
+      "scenario_config_sha256": "1f61e8b468c94fca2bba8854b5ffc822dfeb2416b21bff8f497d081edc969550",
+      "runtime_manifest": "evidence/p7_strong_confirmatory_v2/manifest.json"
+    }
+  ]
+}

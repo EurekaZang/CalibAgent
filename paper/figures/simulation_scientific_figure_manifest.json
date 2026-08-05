@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "figures": {
+    "p5_simulation_response": {
+      "purpose": "Registered P5 response geometry and paired calibration effects",
+      "display_seed": 5301,
+      "statistical_unit": "20 paired seeds per scenario"
+    },
+    "p6_simulation_shift": {
+      "purpose": "Registered P6 shift construction, response geometry, and recovery effects",
+      "display_seed": 10101,
+      "statistical_unit": "72 paired seeds per shift"
+    }
+  },
+  "sources": [
+    {
+      "path": "docs/assets/readme/isaac_sim/p5_tier_a_affine_capture.json",
+      "sha256": "86d37a2e38c50eba8836f4f166d401c7dee0dcdc4a52d7ef5954f6e5c31adbac"
+    },
+    {
+      "path": "docs/assets/readme/isaac_sim/p5_tier_a_deadzone_capture.json",
+      "sha256": "9f939bc19ca887c5f242f65000bdd5eea8051c0ba16e896a8a0a619310669b27"
+    },
+    {
+      "path": "docs/assets/readme/isaac_sim/p5_tier_b_friction_payload_capture.json",
+      "sha256": "98e1b2b44c073d882c42d4f8aacf80acf1b6fbf64dd8a879c25192e8b9015d71"
+    },
+    {
+      "path": "docs/assets/readme/isaac_sim/p5_tier_b_rough_capture.json",
+      "sha256": "c595d77db9dc6b1ad46f0357ca5b81b94bb31f9c0420c29ce30e842894c9e7a1"
+    },
+    {
+      "path": "docs/assets/readme/isaac_sim/p6_confirm_friction_payload_capture.json",
+      "sha256": "38b35355f34d02f4b1795f3b3f2b7192480c8f99fbf394ad6007fc672ef835e3"
+    },
+    {
+      "path": "docs/assets/readme/isaac_sim/p6_confirm_gain_recoupling_capture.json",
+      "sha256": "b3dbf53a0b3680c2b1ab1337b7ddc679d60cd9176d63caa5378923ae97412d1f"
+    },
+    {
+      "path": "docs/assets/readme/isaac_sim/p6_confirm_mixed_context_capture.json",
+      "sha256": "9995ee9e2421f73fa769675e73819196b2a3d457018c6910c4d745d6dbb77b89"
+    },
+    {
+      "path": "docs/assets/readme/isaac_sim/p6_confirm_payload_com_only_capture.json",
+      "sha256": "000360abb5e346d670948779ea60e8bd1ccf45168bb622fc45a97c12f7cea931"
+    },
+    {
+      "path": "evidence/p5_main/summary.json",
+      "sha256": "988f702a064c1eda80fe579f5b69452270ffffec9a6d95eb2e4b86fb67b84b46"
+    },
+    {
+      "path": "evidence/p6_strong_confirmatory/summary.json",
+      "sha256": "cc3588338cdf5ec99a2ff56243275c87d9566b153760f3f2a23c904585ee5702"
+    }
+  ],
+  "constraint": "Trajectory panels use registered capture overlays; effect panels use frozen multi-seed summaries. No values are digitized from prior raster figures."
+}

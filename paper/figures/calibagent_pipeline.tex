@@ -1,0 +1,71 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[paperwidth=195mm,paperheight=58mm,margin=0mm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,backgrounds,fit,positioning,shapes.geometric}
+
+\definecolor{navy}{HTML}{174A7E}
+\definecolor{blue}{HTML}{4A90C2}
+\definecolor{lightblue}{HTML}{E8F2F8}
+\definecolor{slate}{HTML}{465B68}
+\definecolor{lightgray}{HTML}{F1F3F5}
+\definecolor{amber}{HTML}{E69F00}
+\definecolor{lightamber}{HTML}{FFF3D6}
+\definecolor{green}{HTML}{2A9D8F}
+
+\tikzset{
+  box/.style={draw=slate, rounded corners=1.4pt, line width=0.65pt,
+              fill=white, minimum height=9mm, text width=27mm,
+              align=center, font=\sffamily\scriptsize},
+  model/.style={box, draw=navy, fill=lightblue, line width=0.9pt},
+  guard/.style={box, draw=amber!85!black, fill=lightamber, line width=0.9pt},
+  robot/.style={box, draw=green!80!black, fill=green!10, line width=0.9pt},
+  flow/.style={-{Latex[length=2.2mm]}, line width=0.75pt, draw=slate},
+  feedback/.style={-{Latex[length=2.2mm]}, line width=0.75pt, draw=navy},
+  shiftflow/.style={-{Latex[length=2.2mm]}, line width=0.75pt, draw=amber!85!black,
+                dashed},
+  label/.style={font=\sffamily\tiny, text=slate, fill=white, inner sep=1pt}
+}
+
+\begin{document}
+\pagestyle{empty}
+\centering
+\begin{tikzpicture}[node distance=6mm and 7mm]
+  \node[model] (task) {Frozen task grid\\$\{g_j,w_j\}$};
+  \node[model, right=of task] (acq) {Task-weighted IVR\\rank safe candidates};
+  \node[guard, right=of acq] (safe) {Hard safety filter\\calibration + navigation};
+  \node[robot, right=of safe] (robot) {Fixed locomotion\\controller + robot};
+
+  \node[box, below=10mm of robot] (measure) {Robust steady-motion\\measurement $y,R$};
+  \node[model, left=of measure] (blr) {M2 Bayesian model\\$p(\Theta\mid\mathcal D)$};
+  \node[guard, left=of blr] (stop) {Validated stopping\\+ hard budgets};
+  \node[box, left=of stop] (inverse) {Constrained inverse\\task compensation};
+
+  \draw[flow] (task) -- (acq);
+  \draw[flow] (acq) -- node[label, above] {candidate $c$} (safe);
+  \draw[flow] (safe) -- node[label, above] {accepted $u$} (robot);
+  \draw[flow] (robot) -- (measure);
+  \draw[feedback] (measure) -- node[label, below] {observation} (blr);
+  \draw[feedback] (blr) -- node[label, below] {uncertainty} (stop);
+  \draw[feedback] (stop.north) -- node[label, right] {continue} (acq.south);
+  \draw[flow] (blr.south) .. controls +(0,-7mm) and +(0,-7mm) ..
+      node[label, midway, below] {posterior model} (inverse.south);
+
+  \node[guard, below=14mm of measure] (shift) {Residual CUSUM\\shift latch};
+  \node[model, left=of shift] (recover) {Posterior inflation\\bounded active recovery};
+
+  \begin{scope}[on background layer]
+    \node[draw=slate!45, fill=white, rounded corners=2pt,
+          fit=(task)(acq)(safe)(robot)(measure)(blr)(stop)(inverse),
+          inner sep=3.5mm,
+          label={[font=\sffamily\scriptsize\bfseries,text=navy]above:Nominal calibration and deployment loop}] {};
+    \node[draw=amber!70!black, fill=white, dashed, rounded corners=2pt,
+          fit=(shift)(recover), inner sep=3mm,
+          label={[font=\sffamily\scriptsize\bfseries,text=amber!70!black]below:Shift-recovery branch}] {};
+  \end{scope}
+
+  \draw[shiftflow] (measure.south) -- node[label, right] {innovation} (shift.north);
+  \draw[shiftflow] (shift) -- node[label, above] {alarm} (recover);
+  \draw[shiftflow] (recover.north) -- node[label, right] {inflate} (blr.south);
+\end{tikzpicture}
+\end{document}

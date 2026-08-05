@@ -25,3 +25,6 @@ Dockerfile text eol=lf
 # Preserve the source byte stream and avoid line-ending normalization of this
 # already-collected hash-bound real-robot CSV. The later rule overrides *.csv.
 evidence/p1_real/raw_trials.csv binary -eol
+
+# Preserve the official IEEE conference class exactly as distributed (CRLF).
+paper/ieeeconf.cls binary -eol

@@ -1,0 +1,21 @@
+{
+  "generator": "paper/scripts/build_paper_figures.py",
+  "inputs": {
+    "evidence/p1_real/baseline_fold_metrics.csv": "ec1e7cba1bcd6246e7c0d25e734c613b29c42a53247a74894f18dc9a2be6787d",
+    "evidence/p1_real/baseline_metrics.csv": "cca6baff8464fd3a7d9a93586512fcc9afca519c286b14cb54ad8c15778b5aa8",
+    "evidence/p3_main/paired_statistics.json": "25537ea2f64d2bca4b07282fcf91c9e9b5be6c5bd9e7ae10aad5646d751197c7",
+    "evidence/p7_strong_confirmatory_v2/summary.json": "85590a56bef758ed8c2ad30300756c62ce3925eba18338d462b4d62042f6ca46"
+  },
+  "notes": [
+    "All plotted values are parsed from the listed frozen artifacts.",
+    "P3 intervals are paired bootstrap intervals for trials saved.",
+    "P7 intervals are the registered intervals stored in summary.json."
+  ],
+  "outputs": {
+    "paper/figures/calibration_evidence.pdf": "4ca4a68e0cf4e0192e972c3031bdc578e21c3b9fcec245566b7adc5e53623ec6",
+    "paper/figures/calibration_evidence.png": "1a249fd58424e13f5fddcc1ffb7f3a7f66671703971413a7c2112ac563742ba6",
+    "paper/figures/navigation_results.pdf": "77e4acf589c16d86f1d9649493ab4bdd3a4d1bdcb9d34ce6f63d9a65485764c3",
+    "paper/figures/navigation_results.png": "a7fa5fcb75f97b00d4d74e06cb4aa595814a226784b127e3324c17545e256b9a"
+  },
+  "schema_version": "1.0"
+}
