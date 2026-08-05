@@ -1,0 +1,29 @@
+{
+  "artifacts": {
+    "README.md": {
+      "path": "README.md",
+      "sha256": "a67625ba106cf9d68c7997d5f7a4e1990022a4aace952bbfaaa80c9c3c5c0aed"
+    },
+    "per_sequence.csv": {
+      "path": "per_sequence.csv",
+      "sha256": "0380a39887f684ad20dde753e394aaa495a5f4324e4e94136803dad2c9e96ac9"
+    },
+    "resolved_config.json": {
+      "path": "resolved_config.json",
+      "sha256": "407c2fa3b70487f41526c2048eee58710793840e5ba1b571f1d3d69f2190b874"
+    },
+    "source_manifest.json": {
+      "path": "source_manifest.json",
+      "sha256": "48feb487a7e0d476d6eb93d65cbea4b1ccd100d99f3137b29616d75760db3cc4"
+    },
+    "summary.json": {
+      "path": "summary.json",
+      "sha256": "b2dbcd5f36b4a4cef0e340a6feeea3c0785769f3f06ec5e9b8697cceda79a856"
+    }
+  },
+  "experiment": "stationary_paired_signature_monitor",
+  "schema_version": "1.0",
+  "source_git_commit": "158050149a1738546172805f01dd384722415969",
+  "source_output_manifest_sha256": "48feb487a7e0d476d6eb93d65cbea4b1ccd100d99f3137b29616d75760db3cc4",
+  "verdict": "GO"
+}
