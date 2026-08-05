@@ -1,0 +1,657 @@
+{
+  "artifacts": {
+    "resolved_config.json": {
+      "path": "resolved_config.json",
+      "sha256": "f18ef5745bb4ca1517f05bf2fc4e595462e6575766a451a0aadae1568b399f28"
+    },
+    "scenarios/replication030_friction_payload/frozen/launch_command.json": {
+      "path": "scenarios/replication030_friction_payload/frozen/launch_command.json",
+      "sha256": "a74ae8bbf9df4ba819e0aa5172f2a6953a335623e6fca2bf063808a32537c302"
+    },
+    "scenarios/replication030_friction_payload/frozen/launch_config.json": {
+      "path": "scenarios/replication030_friction_payload/frozen/launch_config.json",
+      "sha256": "b85d81f8843a2438413ec6e2fde217a45bac5fb6283f292c1ad4f6d96219be9a"
+    },
+    "scenarios/replication030_friction_payload/frozen/monitor_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/frozen/monitor_metrics.csv",
+      "sha256": "e44ca511f0d56b67a4f0160e92dc7d63cda058e4841fb22c090f00748bb71e40"
+    },
+    "scenarios/replication030_friction_payload/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/frozen/per_seed_metrics.csv",
+      "sha256": "564976607ed8845961579f02c17781839864db3037e2a6ee75cdc2a12b64f5ab"
+    },
+    "scenarios/replication030_friction_payload/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_friction_payload/frozen/pose_trace.csv.gz",
+      "sha256": "906d8af4c4d928e8c694f7cb6cde32d2aa456812081f78e1bc65552cb95de6f1"
+    },
+    "scenarios/replication030_friction_payload/frozen/recovery_curve.csv": {
+      "path": "scenarios/replication030_friction_payload/frozen/recovery_curve.csv",
+      "sha256": "3a055ff229b1605e2f17e16b01d8a996aa6a7e0942bd21d8fa5e390fc72ed62c"
+    },
+    "scenarios/replication030_friction_payload/frozen/recovery_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/frozen/recovery_metrics.csv",
+      "sha256": "25ebaf9038be06921cd3afe2fac71f73452e3b96625336ca2ebf875401401fd9"
+    },
+    "scenarios/replication030_friction_payload/frozen/scenario_config.json": {
+      "path": "scenarios/replication030_friction_payload/frozen/scenario_config.json",
+      "sha256": "b85d81f8843a2438413ec6e2fde217a45bac5fb6283f292c1ad4f6d96219be9a"
+    },
+    "scenarios/replication030_friction_payload/frozen/shift_events.json": {
+      "path": "scenarios/replication030_friction_payload/frozen/shift_events.json",
+      "sha256": "ca5ebfc91a360e64a764e0aa666d1892591579d07cef87b00fcb917fb890b604"
+    },
+    "scenarios/replication030_friction_payload/frozen/simulator.log": {
+      "path": "scenarios/replication030_friction_payload/frozen/simulator.log",
+      "sha256": "70a96d63a54a2c910adda30b39c01542558ad068262d2518913dee6291f8c606"
+    },
+    "scenarios/replication030_friction_payload/frozen/summary.json": {
+      "path": "scenarios/replication030_friction_payload/frozen/summary.json",
+      "sha256": "8596c0ad7821e6aa2066b2f02290212ec50bbdf4802e477dfd35c390f79ff877"
+    },
+    "scenarios/replication030_friction_payload/full/launch_command.json": {
+      "path": "scenarios/replication030_friction_payload/full/launch_command.json",
+      "sha256": "909c37bc54ccac543148a3f047f7ffd034fe63f7a80990166c02fdcdc35b16c5"
+    },
+    "scenarios/replication030_friction_payload/full/launch_config.json": {
+      "path": "scenarios/replication030_friction_payload/full/launch_config.json",
+      "sha256": "427d20e1f0550e1fec7482b8d72ae273647ec17b9bb727b4d94afa1f9ba02998"
+    },
+    "scenarios/replication030_friction_payload/full/monitor_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/full/monitor_metrics.csv",
+      "sha256": "c8a8bd14d946a9e12c8d1097fb03441250d236ecb041d62a5c513f3a08ee98eb"
+    },
+    "scenarios/replication030_friction_payload/full/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/full/per_seed_metrics.csv",
+      "sha256": "a7854a12a72667c5f55af2f4056aee2f305d75d0aaea91d8cca06b2764f57ccb"
+    },
+    "scenarios/replication030_friction_payload/full/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_friction_payload/full/pose_trace.csv.gz",
+      "sha256": "0eede9827fa585ffe9642024f6285495a7ce47bd33a8552698a2cdd6d401d1aa"
+    },
+    "scenarios/replication030_friction_payload/full/recovery_curve.csv": {
+      "path": "scenarios/replication030_friction_payload/full/recovery_curve.csv",
+      "sha256": "bbcca7fd4ff9084ce25ef5a0793f6e60e9d8664c551de3650a9ec65a555ff1f8"
+    },
+    "scenarios/replication030_friction_payload/full/recovery_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/full/recovery_metrics.csv",
+      "sha256": "7ff906c32ec88c3a2366bcf86911a22ed2f33a90e6d89fdacc4b9a7815b0f476"
+    },
+    "scenarios/replication030_friction_payload/full/scenario_config.json": {
+      "path": "scenarios/replication030_friction_payload/full/scenario_config.json",
+      "sha256": "427d20e1f0550e1fec7482b8d72ae273647ec17b9bb727b4d94afa1f9ba02998"
+    },
+    "scenarios/replication030_friction_payload/full/shift_events.json": {
+      "path": "scenarios/replication030_friction_payload/full/shift_events.json",
+      "sha256": "ca5ebfc91a360e64a764e0aa666d1892591579d07cef87b00fcb917fb890b604"
+    },
+    "scenarios/replication030_friction_payload/full/simulator.log": {
+      "path": "scenarios/replication030_friction_payload/full/simulator.log",
+      "sha256": "4d14b75f57119e09c3c1ff082c4a2e213124b419c80fbd2e405f5fa22e49a944"
+    },
+    "scenarios/replication030_friction_payload/full/summary.json": {
+      "path": "scenarios/replication030_friction_payload/full/summary.json",
+      "sha256": "c5426b2d21701d6d8cec30a0775d22449a104b1248ce1aa4c6f4b0e0c1a95970"
+    },
+    "scenarios/replication030_friction_payload/monitor_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/monitor_metrics.csv",
+      "sha256": "3aa7c067718021452d8a0ad80a43506d88cb4d1ccf4b25a73ebab19830c910a9"
+    },
+    "scenarios/replication030_friction_payload/paired_recovery_effects.csv": {
+      "path": "scenarios/replication030_friction_payload/paired_recovery_effects.csv",
+      "sha256": "f3fdd8361e24aed4dd875b76768bf37eaf28c721e54df22f7f583f371300259b"
+    },
+    "scenarios/replication030_friction_payload/passive/launch_command.json": {
+      "path": "scenarios/replication030_friction_payload/passive/launch_command.json",
+      "sha256": "852cef5015cd0591d5578deb08e353917284691ab30f6a40d493c3e3a3231def"
+    },
+    "scenarios/replication030_friction_payload/passive/launch_config.json": {
+      "path": "scenarios/replication030_friction_payload/passive/launch_config.json",
+      "sha256": "01882ac6147cfa6938c507ee72e9d5840cc6ea9368c5cdf2e72f6c888dfbaa44"
+    },
+    "scenarios/replication030_friction_payload/passive/monitor_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/passive/monitor_metrics.csv",
+      "sha256": "68466bd54c9294b5f0328f1dba550a1a824235382a0ae9f7395f82072df99e83"
+    },
+    "scenarios/replication030_friction_payload/passive/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/passive/per_seed_metrics.csv",
+      "sha256": "a59b87f5bcdcf44a37b5f8149b3f8e7275c190430ae8c9e461b62dd2afefa169"
+    },
+    "scenarios/replication030_friction_payload/passive/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_friction_payload/passive/pose_trace.csv.gz",
+      "sha256": "2123564b8f99cae840e1b3d49138a143792bbb2c9fe8f9830725ce88802a6046"
+    },
+    "scenarios/replication030_friction_payload/passive/recovery_curve.csv": {
+      "path": "scenarios/replication030_friction_payload/passive/recovery_curve.csv",
+      "sha256": "4e2e2532d96fbdd6e33922b929cb02b6a8c5e227de6e1e9fc443f87abdb38133"
+    },
+    "scenarios/replication030_friction_payload/passive/recovery_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/passive/recovery_metrics.csv",
+      "sha256": "824aa39bd070afc5b1874bb3e38628efb440abf866a9c8a2d8056807052a4ea9"
+    },
+    "scenarios/replication030_friction_payload/passive/scenario_config.json": {
+      "path": "scenarios/replication030_friction_payload/passive/scenario_config.json",
+      "sha256": "01882ac6147cfa6938c507ee72e9d5840cc6ea9368c5cdf2e72f6c888dfbaa44"
+    },
+    "scenarios/replication030_friction_payload/passive/shift_events.json": {
+      "path": "scenarios/replication030_friction_payload/passive/shift_events.json",
+      "sha256": "ca5ebfc91a360e64a764e0aa666d1892591579d07cef87b00fcb917fb890b604"
+    },
+    "scenarios/replication030_friction_payload/passive/simulator.log": {
+      "path": "scenarios/replication030_friction_payload/passive/simulator.log",
+      "sha256": "27f820228ef8535edfb7869b7aeb6cf149328e1efc9b928626a57f18d38e1472"
+    },
+    "scenarios/replication030_friction_payload/passive/summary.json": {
+      "path": "scenarios/replication030_friction_payload/passive/summary.json",
+      "sha256": "31083de3a9bcadf9a463367cb6a22c77bf2f6487eb46909ad071b0865447a3ce"
+    },
+    "scenarios/replication030_friction_payload/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/per_seed_metrics.csv",
+      "sha256": "362fdda87564245ec5ac66600258a92e3320db660affbfdf5b709df922b80e27"
+    },
+    "scenarios/replication030_friction_payload/recovery_curve.csv": {
+      "path": "scenarios/replication030_friction_payload/recovery_curve.csv",
+      "sha256": "5e1c5d1c953fcba1017e22109154929fc70087523b7a682b49bcf6f8c61b1245"
+    },
+    "scenarios/replication030_friction_payload/recovery_metrics.csv": {
+      "path": "scenarios/replication030_friction_payload/recovery_metrics.csv",
+      "sha256": "94a3a8df83717300685f037e14cfddd14b6db953f7894e4be48f7efbe65fcb1e"
+    },
+    "scenarios/replication030_friction_payload/summary.json": {
+      "path": "scenarios/replication030_friction_payload/summary.json",
+      "sha256": "f1769bf96177f2469caaad367b55c6408846e2b43077ebc31e5e11af5758e12a"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/launch_command.json": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/launch_command.json",
+      "sha256": "55f5df3c0ae0aa8b6131ba96f8cfccd3ee7ddd2a1a49e31b456ebfa9260b1bcb"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/launch_config.json": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/launch_config.json",
+      "sha256": "c527a91ddbed89b0179ced71226298062e4520e0644ff9de5ca859f91cc219ff"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/monitor_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/monitor_metrics.csv",
+      "sha256": "8b8d03215bbc808c08d7be425783ebdc1fc91adb71143e16557e186295b5cf77"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/per_seed_metrics.csv",
+      "sha256": "33ea7c946dda4e71f26c7d8cbca8253b2fea3a23564e8796ac918a73bccc0bf7"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/pose_trace.csv.gz",
+      "sha256": "1c32eb3923ea5f09d9edc74bd3995749480b60b48a4cc5aab783920933d1f32a"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/recovery_curve.csv": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/recovery_curve.csv",
+      "sha256": "dcbe60b0709427f119e8f8a5dda51e938e596dd83d5016797fa881a712a89f18"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/recovery_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/recovery_metrics.csv",
+      "sha256": "c824b4d5eeb5f5fb4adf671fe4570221cea87246dfb41b3f642c23437539d89e"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/scenario_config.json": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/scenario_config.json",
+      "sha256": "c527a91ddbed89b0179ced71226298062e4520e0644ff9de5ca859f91cc219ff"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/shift_events.json": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/shift_events.json",
+      "sha256": "c388f04b768bc63fdd2d10f27d59253e8a1960fc55ef79b8af02f97e2c86b5ba"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/simulator.log": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/simulator.log",
+      "sha256": "48479b77cb6e700426d9f7faf93116fb1bdc7e32fa7621edf38d08dcebc0f9b9"
+    },
+    "scenarios/replication030_gain_recoupling/frozen/summary.json": {
+      "path": "scenarios/replication030_gain_recoupling/frozen/summary.json",
+      "sha256": "93cfffb4e183a782970831bad607548ab5817ba54f0673c7be0b00ce30e25c8a"
+    },
+    "scenarios/replication030_gain_recoupling/full/launch_command.json": {
+      "path": "scenarios/replication030_gain_recoupling/full/launch_command.json",
+      "sha256": "5b9f2f01b61606264197c09e0f8960465e30573b8464291f79c3513396a235c2"
+    },
+    "scenarios/replication030_gain_recoupling/full/launch_config.json": {
+      "path": "scenarios/replication030_gain_recoupling/full/launch_config.json",
+      "sha256": "a8cc4f33d669be9a513ad4610df96c07260998545920bb99b0217d5c4aa7477e"
+    },
+    "scenarios/replication030_gain_recoupling/full/monitor_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/full/monitor_metrics.csv",
+      "sha256": "3389487d1f73586b5923ab5c74f9a79b0a8a4cf0ac53e5cfd00ce5bba9c016c3"
+    },
+    "scenarios/replication030_gain_recoupling/full/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/full/per_seed_metrics.csv",
+      "sha256": "b560c3ab2fd811b53db12050d1540df61ff6213a7680f3f59c62b51397d99b8e"
+    },
+    "scenarios/replication030_gain_recoupling/full/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_gain_recoupling/full/pose_trace.csv.gz",
+      "sha256": "8aa553dbdaf72df46363b0bb398373903fb88a3139b481bcdad6bb23a59682d8"
+    },
+    "scenarios/replication030_gain_recoupling/full/recovery_curve.csv": {
+      "path": "scenarios/replication030_gain_recoupling/full/recovery_curve.csv",
+      "sha256": "c7895078d18bc57d40944c7cb18dc84dc1cd445364af0a4d50a5d5db58b2a6e1"
+    },
+    "scenarios/replication030_gain_recoupling/full/recovery_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/full/recovery_metrics.csv",
+      "sha256": "88032907f7dcc84627dc52052054f3f96ab5579dc858f673b64a82fd098169c2"
+    },
+    "scenarios/replication030_gain_recoupling/full/scenario_config.json": {
+      "path": "scenarios/replication030_gain_recoupling/full/scenario_config.json",
+      "sha256": "a8cc4f33d669be9a513ad4610df96c07260998545920bb99b0217d5c4aa7477e"
+    },
+    "scenarios/replication030_gain_recoupling/full/shift_events.json": {
+      "path": "scenarios/replication030_gain_recoupling/full/shift_events.json",
+      "sha256": "c388f04b768bc63fdd2d10f27d59253e8a1960fc55ef79b8af02f97e2c86b5ba"
+    },
+    "scenarios/replication030_gain_recoupling/full/simulator.log": {
+      "path": "scenarios/replication030_gain_recoupling/full/simulator.log",
+      "sha256": "0dbea34b8b7fc1c9316950fa28f7cf8d9cc3b9a085aa909968141e2be3090d96"
+    },
+    "scenarios/replication030_gain_recoupling/full/summary.json": {
+      "path": "scenarios/replication030_gain_recoupling/full/summary.json",
+      "sha256": "2cdae74b91d2ded48cd0f4387993977591ce8a9ff80611ee072db21556371f9e"
+    },
+    "scenarios/replication030_gain_recoupling/monitor_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/monitor_metrics.csv",
+      "sha256": "510004a275ffb629b05eeb0e67aa47684026bc53f8dea8296cfe2762c06fdbc6"
+    },
+    "scenarios/replication030_gain_recoupling/paired_recovery_effects.csv": {
+      "path": "scenarios/replication030_gain_recoupling/paired_recovery_effects.csv",
+      "sha256": "71dac6435897af0fbb05e0c403ba08372c5fee2b27eb886a002a3d0217896e87"
+    },
+    "scenarios/replication030_gain_recoupling/passive/launch_command.json": {
+      "path": "scenarios/replication030_gain_recoupling/passive/launch_command.json",
+      "sha256": "b59c5bffaf21e9cb0f928c02b2267659e9818e347767c741649d9426cbb550bc"
+    },
+    "scenarios/replication030_gain_recoupling/passive/launch_config.json": {
+      "path": "scenarios/replication030_gain_recoupling/passive/launch_config.json",
+      "sha256": "46794e2cb0b91d996739198bfbe6ac3a5788fe39bee5acbd6c857a7783e44063"
+    },
+    "scenarios/replication030_gain_recoupling/passive/monitor_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/passive/monitor_metrics.csv",
+      "sha256": "994e21447b6de5a78bf8882873381f2eac5a7b60b65081bbdddcff775264c058"
+    },
+    "scenarios/replication030_gain_recoupling/passive/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/passive/per_seed_metrics.csv",
+      "sha256": "08ba4a34f5fc823a5ab14d101ccf3917133ae320f9b125cd6317bf1d2750c041"
+    },
+    "scenarios/replication030_gain_recoupling/passive/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_gain_recoupling/passive/pose_trace.csv.gz",
+      "sha256": "f7553c4dab67c44df9c5800fbaa136da75bc27ad2ef26b87a27bddb94e7d72be"
+    },
+    "scenarios/replication030_gain_recoupling/passive/recovery_curve.csv": {
+      "path": "scenarios/replication030_gain_recoupling/passive/recovery_curve.csv",
+      "sha256": "2015a5cb79160d8342ff9a0cd7858c3eccf5a259711dfc27e225b504c68c4e48"
+    },
+    "scenarios/replication030_gain_recoupling/passive/recovery_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/passive/recovery_metrics.csv",
+      "sha256": "7f79374cd0baad690a56b00ba5254349edff825d773c15475ed1f409772302df"
+    },
+    "scenarios/replication030_gain_recoupling/passive/scenario_config.json": {
+      "path": "scenarios/replication030_gain_recoupling/passive/scenario_config.json",
+      "sha256": "46794e2cb0b91d996739198bfbe6ac3a5788fe39bee5acbd6c857a7783e44063"
+    },
+    "scenarios/replication030_gain_recoupling/passive/shift_events.json": {
+      "path": "scenarios/replication030_gain_recoupling/passive/shift_events.json",
+      "sha256": "c388f04b768bc63fdd2d10f27d59253e8a1960fc55ef79b8af02f97e2c86b5ba"
+    },
+    "scenarios/replication030_gain_recoupling/passive/simulator.log": {
+      "path": "scenarios/replication030_gain_recoupling/passive/simulator.log",
+      "sha256": "07d09f2b0ae21a85cfcd88e9ef9c938450994d3277b731b2f5b959179d6db478"
+    },
+    "scenarios/replication030_gain_recoupling/passive/summary.json": {
+      "path": "scenarios/replication030_gain_recoupling/passive/summary.json",
+      "sha256": "a4455727fdf101e54ade6203b28b79ed49587030e04e53ae0d1ce7f17253efa8"
+    },
+    "scenarios/replication030_gain_recoupling/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/per_seed_metrics.csv",
+      "sha256": "ec81d731315f171ed5f52bad178a8fdabc139d9a8d775d14197ff2e99cf7c615"
+    },
+    "scenarios/replication030_gain_recoupling/recovery_curve.csv": {
+      "path": "scenarios/replication030_gain_recoupling/recovery_curve.csv",
+      "sha256": "81c27aa4aae22feae2e7fd925f8b13d36c92291d96bca5e8dd9475cfaa75b0b9"
+    },
+    "scenarios/replication030_gain_recoupling/recovery_metrics.csv": {
+      "path": "scenarios/replication030_gain_recoupling/recovery_metrics.csv",
+      "sha256": "3668e98b866cc1214128e062f83bee33e942e7752bc3744a71991529ea835c2c"
+    },
+    "scenarios/replication030_gain_recoupling/summary.json": {
+      "path": "scenarios/replication030_gain_recoupling/summary.json",
+      "sha256": "d4f8dc7091185d6a137db85714825da722077b4844a9e7fb74999fb8027b0609"
+    },
+    "scenarios/replication030_mixed_context/frozen/launch_command.json": {
+      "path": "scenarios/replication030_mixed_context/frozen/launch_command.json",
+      "sha256": "182b379f25f1e366f90cce65ff2f9161ead62e3d3666c2e0b2f634b1cdcf0925"
+    },
+    "scenarios/replication030_mixed_context/frozen/launch_config.json": {
+      "path": "scenarios/replication030_mixed_context/frozen/launch_config.json",
+      "sha256": "c1b75b0fdd51a189dc54eebfcc36a7112aa01437e5ef44d088861b2376b37d05"
+    },
+    "scenarios/replication030_mixed_context/frozen/monitor_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/frozen/monitor_metrics.csv",
+      "sha256": "752e5097eb1c3968202ee0642a7c34392f169dba2331397a68e4ae19caf39a14"
+    },
+    "scenarios/replication030_mixed_context/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/frozen/per_seed_metrics.csv",
+      "sha256": "5e688fc4ec28a94c1421cf6e0186c6dac14cf2333300c3ad29c4a997190ef3a0"
+    },
+    "scenarios/replication030_mixed_context/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_mixed_context/frozen/pose_trace.csv.gz",
+      "sha256": "b53d0a696f11e41574ae51893f9ffce1507d332df31e97a217384898670ff403"
+    },
+    "scenarios/replication030_mixed_context/frozen/recovery_curve.csv": {
+      "path": "scenarios/replication030_mixed_context/frozen/recovery_curve.csv",
+      "sha256": "5c0a9bc639497f9a2773b07b4d997aee94634541393c10f0d4db0cf452c1d371"
+    },
+    "scenarios/replication030_mixed_context/frozen/recovery_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/frozen/recovery_metrics.csv",
+      "sha256": "d4840b1716b7fead2b9e6ef6cc6871d7e969dadedb556bc304196425f52a5d41"
+    },
+    "scenarios/replication030_mixed_context/frozen/scenario_config.json": {
+      "path": "scenarios/replication030_mixed_context/frozen/scenario_config.json",
+      "sha256": "c1b75b0fdd51a189dc54eebfcc36a7112aa01437e5ef44d088861b2376b37d05"
+    },
+    "scenarios/replication030_mixed_context/frozen/shift_events.json": {
+      "path": "scenarios/replication030_mixed_context/frozen/shift_events.json",
+      "sha256": "d9512fe627065fdd52f445b5471c5a7d5f27f9e561dabc73921c59cea658828b"
+    },
+    "scenarios/replication030_mixed_context/frozen/simulator.log": {
+      "path": "scenarios/replication030_mixed_context/frozen/simulator.log",
+      "sha256": "eeae1783d7fbd2478b88151e4fbb884a0875b2fcf2e123e26d96ba0bf82b4416"
+    },
+    "scenarios/replication030_mixed_context/frozen/summary.json": {
+      "path": "scenarios/replication030_mixed_context/frozen/summary.json",
+      "sha256": "9dade1c29601410e3872c85c92d815a58440bfb32df7b0bc8602b7d42989ff98"
+    },
+    "scenarios/replication030_mixed_context/full/launch_command.json": {
+      "path": "scenarios/replication030_mixed_context/full/launch_command.json",
+      "sha256": "8b6c46354a0f631bd91f5bc6243fa11c1e7b77ccfcf818183b211b11ef4be138"
+    },
+    "scenarios/replication030_mixed_context/full/launch_config.json": {
+      "path": "scenarios/replication030_mixed_context/full/launch_config.json",
+      "sha256": "c7d2b6d8f689b2677e98a87915eef64351b3bfd489831ce8bb1682c89b51bad2"
+    },
+    "scenarios/replication030_mixed_context/full/monitor_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/full/monitor_metrics.csv",
+      "sha256": "15f1398f31d678258a28f664a942f719580a759db4c3266ffe74cd609df680a1"
+    },
+    "scenarios/replication030_mixed_context/full/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/full/per_seed_metrics.csv",
+      "sha256": "9fa8757d36ea0e7542608b52e0b80a1fb08b76033a7d0b4b6fc2ed4af64412d4"
+    },
+    "scenarios/replication030_mixed_context/full/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_mixed_context/full/pose_trace.csv.gz",
+      "sha256": "684a83aaeae441386eca3df72095690f8a96d176ca3173aef09cf7d32d5665b5"
+    },
+    "scenarios/replication030_mixed_context/full/recovery_curve.csv": {
+      "path": "scenarios/replication030_mixed_context/full/recovery_curve.csv",
+      "sha256": "56b47b194eabc8bea68024ba716af06461ff3034c82c02c4ae2330925c64d6a6"
+    },
+    "scenarios/replication030_mixed_context/full/recovery_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/full/recovery_metrics.csv",
+      "sha256": "1601a2b8c112745c800ff6db07c72fac2153ed9de661473f6f4709f022e081e6"
+    },
+    "scenarios/replication030_mixed_context/full/scenario_config.json": {
+      "path": "scenarios/replication030_mixed_context/full/scenario_config.json",
+      "sha256": "c7d2b6d8f689b2677e98a87915eef64351b3bfd489831ce8bb1682c89b51bad2"
+    },
+    "scenarios/replication030_mixed_context/full/shift_events.json": {
+      "path": "scenarios/replication030_mixed_context/full/shift_events.json",
+      "sha256": "d9512fe627065fdd52f445b5471c5a7d5f27f9e561dabc73921c59cea658828b"
+    },
+    "scenarios/replication030_mixed_context/full/simulator.log": {
+      "path": "scenarios/replication030_mixed_context/full/simulator.log",
+      "sha256": "9bffa980405ae459d750666cc05fecca2a3237ab3cb415c497e643ffcc6cc941"
+    },
+    "scenarios/replication030_mixed_context/full/summary.json": {
+      "path": "scenarios/replication030_mixed_context/full/summary.json",
+      "sha256": "1809c3ece4df2520dca3840b19cca2bcd2d28615593fc80f79e0ef2206dd9712"
+    },
+    "scenarios/replication030_mixed_context/monitor_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/monitor_metrics.csv",
+      "sha256": "1396c7bf2e8a59d22715d8d50a5b1de25d28d30e9fde1079e68e832a5accbc42"
+    },
+    "scenarios/replication030_mixed_context/paired_recovery_effects.csv": {
+      "path": "scenarios/replication030_mixed_context/paired_recovery_effects.csv",
+      "sha256": "7f4f5df03f25af67edf00a7cceee4d24a099852bef5b460ad8299c4387135f64"
+    },
+    "scenarios/replication030_mixed_context/passive/launch_command.json": {
+      "path": "scenarios/replication030_mixed_context/passive/launch_command.json",
+      "sha256": "f8ebb74756ba6c5c3ec7ebbcaac5356304285c6c4da90adabf2be78768bf63f0"
+    },
+    "scenarios/replication030_mixed_context/passive/launch_config.json": {
+      "path": "scenarios/replication030_mixed_context/passive/launch_config.json",
+      "sha256": "7731447176ece4a54afaf98e0feb529cace4a6d1e7e59fa6eebddcb041c026cc"
+    },
+    "scenarios/replication030_mixed_context/passive/monitor_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/passive/monitor_metrics.csv",
+      "sha256": "b5886a063395502a0a1d6b3753d2ffbcdbdb43b2a8ac78fb32697257beb661c8"
+    },
+    "scenarios/replication030_mixed_context/passive/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/passive/per_seed_metrics.csv",
+      "sha256": "da98246e0540248f103938b3f7e498a8725ff1c5630844b2560b28abde816ac4"
+    },
+    "scenarios/replication030_mixed_context/passive/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_mixed_context/passive/pose_trace.csv.gz",
+      "sha256": "015d4aaab5d832b513b18d694d4179951667f8fe58d14322da9808edc3db4b27"
+    },
+    "scenarios/replication030_mixed_context/passive/recovery_curve.csv": {
+      "path": "scenarios/replication030_mixed_context/passive/recovery_curve.csv",
+      "sha256": "efc453a453298d4c2192a3d39e55de2ef8b5a072b79df00a2d69bc543258fdf0"
+    },
+    "scenarios/replication030_mixed_context/passive/recovery_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/passive/recovery_metrics.csv",
+      "sha256": "577dfa189b614e7f8ef209adc12179ef958a2d930efaa6c1f0a9b94b9e8aeec1"
+    },
+    "scenarios/replication030_mixed_context/passive/scenario_config.json": {
+      "path": "scenarios/replication030_mixed_context/passive/scenario_config.json",
+      "sha256": "7731447176ece4a54afaf98e0feb529cace4a6d1e7e59fa6eebddcb041c026cc"
+    },
+    "scenarios/replication030_mixed_context/passive/shift_events.json": {
+      "path": "scenarios/replication030_mixed_context/passive/shift_events.json",
+      "sha256": "d9512fe627065fdd52f445b5471c5a7d5f27f9e561dabc73921c59cea658828b"
+    },
+    "scenarios/replication030_mixed_context/passive/simulator.log": {
+      "path": "scenarios/replication030_mixed_context/passive/simulator.log",
+      "sha256": "3118517a218955f13db32c8726d7ea4967d277f05d539ef1ab582a8dd4b09d87"
+    },
+    "scenarios/replication030_mixed_context/passive/summary.json": {
+      "path": "scenarios/replication030_mixed_context/passive/summary.json",
+      "sha256": "403d2a2c370c8f0450d1a776a27674cbbeb6fa739b4a46b3008015a3bbb967a8"
+    },
+    "scenarios/replication030_mixed_context/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/per_seed_metrics.csv",
+      "sha256": "be0d63055641aef07a073d1a1e7aec99e8435dd61460b48586345a0f330d3a08"
+    },
+    "scenarios/replication030_mixed_context/recovery_curve.csv": {
+      "path": "scenarios/replication030_mixed_context/recovery_curve.csv",
+      "sha256": "ff7f6f84c2bc9d4b97b2917fb2e7eff02b7c853e02f3bc5777940e153fe40c90"
+    },
+    "scenarios/replication030_mixed_context/recovery_metrics.csv": {
+      "path": "scenarios/replication030_mixed_context/recovery_metrics.csv",
+      "sha256": "70de5e4aa089f2c318a5e1cb7d224c9a38b55840307dcb4f38a60eee08392885"
+    },
+    "scenarios/replication030_mixed_context/summary.json": {
+      "path": "scenarios/replication030_mixed_context/summary.json",
+      "sha256": "b5544d43a755248d19891d308128cbb52fc479621a4906734d01a7da66363cf9"
+    },
+    "scenarios/replication030_payload_com_only/frozen/launch_command.json": {
+      "path": "scenarios/replication030_payload_com_only/frozen/launch_command.json",
+      "sha256": "9389079f7772a3aa41f1ed02fe63da44533b57082e6b42505f6d222711e39cc2"
+    },
+    "scenarios/replication030_payload_com_only/frozen/launch_config.json": {
+      "path": "scenarios/replication030_payload_com_only/frozen/launch_config.json",
+      "sha256": "033b06e4a0f8d3013aaf4669dd6d9218af5f9da4722daced2a60c8dc1274f9d8"
+    },
+    "scenarios/replication030_payload_com_only/frozen/monitor_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/frozen/monitor_metrics.csv",
+      "sha256": "9bbdd6a959879293c611736bace21a409761a97485254e0d6d965e90a8b1e4e2"
+    },
+    "scenarios/replication030_payload_com_only/frozen/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/frozen/per_seed_metrics.csv",
+      "sha256": "8f7b42e250756824589c29d3e537ca540fb6291c28ec91be284cf3a1bd93ff52"
+    },
+    "scenarios/replication030_payload_com_only/frozen/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_payload_com_only/frozen/pose_trace.csv.gz",
+      "sha256": "d6680e0326d9d51686e075639ca9d7500b72d7b535aa9b87b4ee4c9e401347a7"
+    },
+    "scenarios/replication030_payload_com_only/frozen/recovery_curve.csv": {
+      "path": "scenarios/replication030_payload_com_only/frozen/recovery_curve.csv",
+      "sha256": "8a36384b091135b303af26702c136cc9fa683facfed809a2ba5e8579512e8fd6"
+    },
+    "scenarios/replication030_payload_com_only/frozen/recovery_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/frozen/recovery_metrics.csv",
+      "sha256": "e89c0d659087157e88ac83f4f4d549978e77c0930a8af9a39632aa914ed8dc78"
+    },
+    "scenarios/replication030_payload_com_only/frozen/scenario_config.json": {
+      "path": "scenarios/replication030_payload_com_only/frozen/scenario_config.json",
+      "sha256": "033b06e4a0f8d3013aaf4669dd6d9218af5f9da4722daced2a60c8dc1274f9d8"
+    },
+    "scenarios/replication030_payload_com_only/frozen/shift_events.json": {
+      "path": "scenarios/replication030_payload_com_only/frozen/shift_events.json",
+      "sha256": "cbe0a8bacf491e0eb6133487817ab4190ed003d01c9585feb50e5f1639302af6"
+    },
+    "scenarios/replication030_payload_com_only/frozen/simulator.log": {
+      "path": "scenarios/replication030_payload_com_only/frozen/simulator.log",
+      "sha256": "595bada572a7a6866c90e53049a47b0be65eb206b27c5c4078f75843421bc0ef"
+    },
+    "scenarios/replication030_payload_com_only/frozen/summary.json": {
+      "path": "scenarios/replication030_payload_com_only/frozen/summary.json",
+      "sha256": "a63487e2c7d16642437a41ae1e850a6958dbe81d8baa3a02e20316deb807a8c3"
+    },
+    "scenarios/replication030_payload_com_only/full/launch_command.json": {
+      "path": "scenarios/replication030_payload_com_only/full/launch_command.json",
+      "sha256": "8b9067ac40fb70cd19e233ac60cd326b082309434dbe2aa3e418d6bd095377c5"
+    },
+    "scenarios/replication030_payload_com_only/full/launch_config.json": {
+      "path": "scenarios/replication030_payload_com_only/full/launch_config.json",
+      "sha256": "eb1469c2dea52f9e009b80bb59a02beb06b09e4776dc86514e0d5ba327484a1c"
+    },
+    "scenarios/replication030_payload_com_only/full/monitor_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/full/monitor_metrics.csv",
+      "sha256": "d0596814ca8ce62892c30046fbb3d7223fc407be6436666b964197f9fefbb54a"
+    },
+    "scenarios/replication030_payload_com_only/full/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/full/per_seed_metrics.csv",
+      "sha256": "9cb8e8eb9d5435bab3c924eb0c2640baa889aa2a711ecc5d5af43e319e17fbfa"
+    },
+    "scenarios/replication030_payload_com_only/full/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_payload_com_only/full/pose_trace.csv.gz",
+      "sha256": "9fb3b6324279ea5ff683034f5ba9766fd33b667a4a5ef1a9fa15450f8999ca3c"
+    },
+    "scenarios/replication030_payload_com_only/full/recovery_curve.csv": {
+      "path": "scenarios/replication030_payload_com_only/full/recovery_curve.csv",
+      "sha256": "656efa52c327e6115a5c4c31a341e79887953b789c09d7fe24b6f9a7b9c5257e"
+    },
+    "scenarios/replication030_payload_com_only/full/recovery_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/full/recovery_metrics.csv",
+      "sha256": "dd0eae89e998b96500d16b2c0b629fd91f0083705fc312e8abf12c69506f9e2f"
+    },
+    "scenarios/replication030_payload_com_only/full/scenario_config.json": {
+      "path": "scenarios/replication030_payload_com_only/full/scenario_config.json",
+      "sha256": "eb1469c2dea52f9e009b80bb59a02beb06b09e4776dc86514e0d5ba327484a1c"
+    },
+    "scenarios/replication030_payload_com_only/full/shift_events.json": {
+      "path": "scenarios/replication030_payload_com_only/full/shift_events.json",
+      "sha256": "cbe0a8bacf491e0eb6133487817ab4190ed003d01c9585feb50e5f1639302af6"
+    },
+    "scenarios/replication030_payload_com_only/full/simulator.log": {
+      "path": "scenarios/replication030_payload_com_only/full/simulator.log",
+      "sha256": "96de1b2c3b8bb1b5fe761ed362ba505a596c6d74b477899886f81699a4245f5a"
+    },
+    "scenarios/replication030_payload_com_only/full/summary.json": {
+      "path": "scenarios/replication030_payload_com_only/full/summary.json",
+      "sha256": "244851bdd3173c2003cf0d26f8de0a8c4f8c7a74bc997f25de57c2b32c101efe"
+    },
+    "scenarios/replication030_payload_com_only/monitor_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/monitor_metrics.csv",
+      "sha256": "dc50d2e96538d79c5d1d6ca913a96a7fc4aee80badf8e53c60ea95515e68e32b"
+    },
+    "scenarios/replication030_payload_com_only/paired_recovery_effects.csv": {
+      "path": "scenarios/replication030_payload_com_only/paired_recovery_effects.csv",
+      "sha256": "82d155e976f4a0c6607d52a7c95f1ed08c34cefd84dec8be8c31fa5fa8a4f727"
+    },
+    "scenarios/replication030_payload_com_only/passive/launch_command.json": {
+      "path": "scenarios/replication030_payload_com_only/passive/launch_command.json",
+      "sha256": "9b7993605bd24642c1edbd3f93a71e3cff1a7c7ec5a71cff3b5c1340ece7c091"
+    },
+    "scenarios/replication030_payload_com_only/passive/launch_config.json": {
+      "path": "scenarios/replication030_payload_com_only/passive/launch_config.json",
+      "sha256": "f033c3daa3ca6c556814a00a05fcf50137ce08dd3ae14303e2d9d2568baa8b17"
+    },
+    "scenarios/replication030_payload_com_only/passive/monitor_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/passive/monitor_metrics.csv",
+      "sha256": "de5cf8608358381ed2a9c9c66b0b2573242c4ce1c651aaaee59920b63cc45104"
+    },
+    "scenarios/replication030_payload_com_only/passive/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/passive/per_seed_metrics.csv",
+      "sha256": "05fb4970acecf19131ef5a65b6a70963dd88ae1b65bea57f70b0480edbc03135"
+    },
+    "scenarios/replication030_payload_com_only/passive/pose_trace.csv.gz": {
+      "path": "scenarios/replication030_payload_com_only/passive/pose_trace.csv.gz",
+      "sha256": "db85c6ed6de6da2979770dd35ac7bde20f22629762aff687a83891c0a5f05c3d"
+    },
+    "scenarios/replication030_payload_com_only/passive/recovery_curve.csv": {
+      "path": "scenarios/replication030_payload_com_only/passive/recovery_curve.csv",
+      "sha256": "b747c677f385d6ccb68ffe3a53bbbea08b29e947f4652641617b218361e2ae2f"
+    },
+    "scenarios/replication030_payload_com_only/passive/recovery_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/passive/recovery_metrics.csv",
+      "sha256": "84c0fc4b3bd1e7d5330d4fe766bce69ac3d754e7fc6e0835632d40a410b8ba99"
+    },
+    "scenarios/replication030_payload_com_only/passive/scenario_config.json": {
+      "path": "scenarios/replication030_payload_com_only/passive/scenario_config.json",
+      "sha256": "f033c3daa3ca6c556814a00a05fcf50137ce08dd3ae14303e2d9d2568baa8b17"
+    },
+    "scenarios/replication030_payload_com_only/passive/shift_events.json": {
+      "path": "scenarios/replication030_payload_com_only/passive/shift_events.json",
+      "sha256": "cbe0a8bacf491e0eb6133487817ab4190ed003d01c9585feb50e5f1639302af6"
+    },
+    "scenarios/replication030_payload_com_only/passive/simulator.log": {
+      "path": "scenarios/replication030_payload_com_only/passive/simulator.log",
+      "sha256": "408931f2ce2e390668b47148743c69925ed9ddb291854659cce5f17b61311459"
+    },
+    "scenarios/replication030_payload_com_only/passive/summary.json": {
+      "path": "scenarios/replication030_payload_com_only/passive/summary.json",
+      "sha256": "a4bc736f9ff15ddc06a6658fdee7870d562be0c10fe2caba5dedde08197b48fd"
+    },
+    "scenarios/replication030_payload_com_only/per_seed_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/per_seed_metrics.csv",
+      "sha256": "85bb5f68852ff9e5f92ea7d4a0cf83ee012d122d6d5548eddb25881eb3857870"
+    },
+    "scenarios/replication030_payload_com_only/recovery_curve.csv": {
+      "path": "scenarios/replication030_payload_com_only/recovery_curve.csv",
+      "sha256": "207392305b89fb655af5bd8a3f48b2595c146c233499493575e5db4be8538be4"
+    },
+    "scenarios/replication030_payload_com_only/recovery_metrics.csv": {
+      "path": "scenarios/replication030_payload_com_only/recovery_metrics.csv",
+      "sha256": "b5f345683fc9305c63c845cb48cf2d3983e90433034df0f51f1d6b9abdd7db89"
+    },
+    "scenarios/replication030_payload_com_only/summary.json": {
+      "path": "scenarios/replication030_payload_com_only/summary.json",
+      "sha256": "ec25dc7fce83635928c77c407bb5c858442bdde859706ba95ba93390c13ef041"
+    },
+    "summary.json": {
+      "path": "summary.json",
+      "sha256": "a1e39cbe522a64b1ff835537b0eec23b92377c5a479e13204b33b01e8aa9d2ca"
+    }
+  },
+  "backend": "isaaclab_physx_go2_domain_shift",
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "config_path": "configs/experiments/p6_paired_signature_replication_030.yaml",
+  "config_sha256": "4508763f6344d4e04eb48371013096f01fc2e2f9c4521d2533ad1b9f8a0988a4",
+  "git_commit": "30c71b7fb50d358feb6c95ad66a95b8064bb5ad8",
+  "phase": "P6",
+  "resumed": false,
+  "reused_complete_methods": [],
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "schema_version": "1.0"
+}

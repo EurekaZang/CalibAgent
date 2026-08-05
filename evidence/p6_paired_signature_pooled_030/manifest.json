@@ -1,0 +1,204 @@
+{
+  "artifacts": {
+    "README.md": {
+      "path": "README.md",
+      "sha256": "fbc59efe93f2c3edf425947482825e8f9ae6fc4c500a3bcf3cabd053941a567b"
+    },
+    "block_1_resolved_config.json": {
+      "path": "block_1_resolved_config.json",
+      "sha256": "04aa2eecb7eae3a03d2c4867a91065bc9c4d485d6cbd1440820422a2b6f75533"
+    },
+    "block_1_source_manifest.json": {
+      "path": "block_1_source_manifest.json",
+      "sha256": "f36d2896a3a8167185713f4c8ca31b07309c40bfc51d8261a47e51b34e32fa6c"
+    },
+    "block_2_resolved_config.json": {
+      "path": "block_2_resolved_config.json",
+      "sha256": "7a0a7a981b76765cad8bce53775570b197f44806fc0fb671fb8506901507c83d"
+    },
+    "block_2_source_manifest.json": {
+      "path": "block_2_source_manifest.json",
+      "sha256": "7a9b0d477558fcd09b81ca704aa534f692496b4efd863bba44ea7531b449a2a4"
+    },
+    "blocks/block_1/friction_payload/monitor_metrics.csv": {
+      "path": "blocks/block_1/friction_payload/monitor_metrics.csv",
+      "sha256": "629bfe9b6c1b79eed85cf7a41434d6dfabd3217eb4a7005179988385e857715c"
+    },
+    "blocks/block_1/friction_payload/paired_recovery_effects.csv": {
+      "path": "blocks/block_1/friction_payload/paired_recovery_effects.csv",
+      "sha256": "e8a43d44ae444038105599a27b271d14af9517cb4c39ef365393206858d87639"
+    },
+    "blocks/block_1/friction_payload/per_seed_metrics.csv": {
+      "path": "blocks/block_1/friction_payload/per_seed_metrics.csv",
+      "sha256": "6d4eed6bb77010a35e3adf827faca29e8aeda2cac675a6012044dd91b6f2cd90"
+    },
+    "blocks/block_1/friction_payload/recovery_curve.csv": {
+      "path": "blocks/block_1/friction_payload/recovery_curve.csv",
+      "sha256": "ed24c4f5b73726b06fe42e04b7629390bdefef66428ff64b09800a46f561fec7"
+    },
+    "blocks/block_1/friction_payload/summary.json": {
+      "path": "blocks/block_1/friction_payload/summary.json",
+      "sha256": "e807b6d48e57b01c748c6694127a6c1971d8123a59b17d3029af4051203495ae"
+    },
+    "blocks/block_1/gain_recoupling/monitor_metrics.csv": {
+      "path": "blocks/block_1/gain_recoupling/monitor_metrics.csv",
+      "sha256": "d05fea9ce52ca757cfa0f116d9c7de711c92cc4944a9de7e8d25b6524ecec824"
+    },
+    "blocks/block_1/gain_recoupling/paired_recovery_effects.csv": {
+      "path": "blocks/block_1/gain_recoupling/paired_recovery_effects.csv",
+      "sha256": "7ebb0e55192f31e790b458d2ff1cb664fd09872ce55140e1160e7d2d737a3602"
+    },
+    "blocks/block_1/gain_recoupling/per_seed_metrics.csv": {
+      "path": "blocks/block_1/gain_recoupling/per_seed_metrics.csv",
+      "sha256": "ed8e45261a4e40dbdafa65d63679a442dd453d09a37422c5c2ae52b5cded5252"
+    },
+    "blocks/block_1/gain_recoupling/recovery_curve.csv": {
+      "path": "blocks/block_1/gain_recoupling/recovery_curve.csv",
+      "sha256": "f24a0f21fa3d1a4be1432047f5621fafdc4da9802ba782cb240a09818034b28e"
+    },
+    "blocks/block_1/gain_recoupling/summary.json": {
+      "path": "blocks/block_1/gain_recoupling/summary.json",
+      "sha256": "7dce0b6ca63b8beee0fd7c27657248a0ffbb8952ad8d6349de8bd97c89abb439"
+    },
+    "blocks/block_1/mixed_context/monitor_metrics.csv": {
+      "path": "blocks/block_1/mixed_context/monitor_metrics.csv",
+      "sha256": "4c8846f40629e48afaad684a6d60b386b64e101a82c2a349cd97ee278b55f694"
+    },
+    "blocks/block_1/mixed_context/paired_recovery_effects.csv": {
+      "path": "blocks/block_1/mixed_context/paired_recovery_effects.csv",
+      "sha256": "114951bcdaebc715c554d57aa897c670d026e726ff9c04ddee2f720c5f9d9607"
+    },
+    "blocks/block_1/mixed_context/per_seed_metrics.csv": {
+      "path": "blocks/block_1/mixed_context/per_seed_metrics.csv",
+      "sha256": "725e6c643872225dfa4613f12e476994a96715560bde80bb983cfd107122564c"
+    },
+    "blocks/block_1/mixed_context/recovery_curve.csv": {
+      "path": "blocks/block_1/mixed_context/recovery_curve.csv",
+      "sha256": "ab926f2d9b5306d7bc2b9d4ff64d62e98513736b74aa0bfb9525d8f4d0fd4ba4"
+    },
+    "blocks/block_1/mixed_context/summary.json": {
+      "path": "blocks/block_1/mixed_context/summary.json",
+      "sha256": "095ce3be1cf49e42e68bca35bf3fb32436feacec96cae0b22bcfbcb79dbf45b5"
+    },
+    "blocks/block_1/payload_com_only/monitor_metrics.csv": {
+      "path": "blocks/block_1/payload_com_only/monitor_metrics.csv",
+      "sha256": "774d3b0176ee7b4c56e08c45222b69470f8b95414b94a29d3c6eb721f60db4c3"
+    },
+    "blocks/block_1/payload_com_only/paired_recovery_effects.csv": {
+      "path": "blocks/block_1/payload_com_only/paired_recovery_effects.csv",
+      "sha256": "01713951a1e5ad22df0939bbf000b3403faf7f3b1bf30a15ca5dc55670845e93"
+    },
+    "blocks/block_1/payload_com_only/per_seed_metrics.csv": {
+      "path": "blocks/block_1/payload_com_only/per_seed_metrics.csv",
+      "sha256": "25d1d6faf8865b94a44005d32d3aaa5489743c067c2a508e307bc5d2a4d7752c"
+    },
+    "blocks/block_1/payload_com_only/recovery_curve.csv": {
+      "path": "blocks/block_1/payload_com_only/recovery_curve.csv",
+      "sha256": "3fb1876144fc65e86a6205ad8242d302bb9e9c6628d4f0b11054e502ddf214f0"
+    },
+    "blocks/block_1/payload_com_only/summary.json": {
+      "path": "blocks/block_1/payload_com_only/summary.json",
+      "sha256": "dfb7af85f8c720049c8600f97fea55304114c1254d74c0eb8e80e1b2f7a49adb"
+    },
+    "blocks/block_2/friction_payload/monitor_metrics.csv": {
+      "path": "blocks/block_2/friction_payload/monitor_metrics.csv",
+      "sha256": "3aa7c067718021452d8a0ad80a43506d88cb4d1ccf4b25a73ebab19830c910a9"
+    },
+    "blocks/block_2/friction_payload/paired_recovery_effects.csv": {
+      "path": "blocks/block_2/friction_payload/paired_recovery_effects.csv",
+      "sha256": "f3fdd8361e24aed4dd875b76768bf37eaf28c721e54df22f7f583f371300259b"
+    },
+    "blocks/block_2/friction_payload/per_seed_metrics.csv": {
+      "path": "blocks/block_2/friction_payload/per_seed_metrics.csv",
+      "sha256": "362fdda87564245ec5ac66600258a92e3320db660affbfdf5b709df922b80e27"
+    },
+    "blocks/block_2/friction_payload/recovery_curve.csv": {
+      "path": "blocks/block_2/friction_payload/recovery_curve.csv",
+      "sha256": "5e1c5d1c953fcba1017e22109154929fc70087523b7a682b49bcf6f8c61b1245"
+    },
+    "blocks/block_2/friction_payload/summary.json": {
+      "path": "blocks/block_2/friction_payload/summary.json",
+      "sha256": "f1769bf96177f2469caaad367b55c6408846e2b43077ebc31e5e11af5758e12a"
+    },
+    "blocks/block_2/gain_recoupling/monitor_metrics.csv": {
+      "path": "blocks/block_2/gain_recoupling/monitor_metrics.csv",
+      "sha256": "510004a275ffb629b05eeb0e67aa47684026bc53f8dea8296cfe2762c06fdbc6"
+    },
+    "blocks/block_2/gain_recoupling/paired_recovery_effects.csv": {
+      "path": "blocks/block_2/gain_recoupling/paired_recovery_effects.csv",
+      "sha256": "71dac6435897af0fbb05e0c403ba08372c5fee2b27eb886a002a3d0217896e87"
+    },
+    "blocks/block_2/gain_recoupling/per_seed_metrics.csv": {
+      "path": "blocks/block_2/gain_recoupling/per_seed_metrics.csv",
+      "sha256": "ec81d731315f171ed5f52bad178a8fdabc139d9a8d775d14197ff2e99cf7c615"
+    },
+    "blocks/block_2/gain_recoupling/recovery_curve.csv": {
+      "path": "blocks/block_2/gain_recoupling/recovery_curve.csv",
+      "sha256": "81c27aa4aae22feae2e7fd925f8b13d36c92291d96bca5e8dd9475cfaa75b0b9"
+    },
+    "blocks/block_2/gain_recoupling/summary.json": {
+      "path": "blocks/block_2/gain_recoupling/summary.json",
+      "sha256": "d4f8dc7091185d6a137db85714825da722077b4844a9e7fb74999fb8027b0609"
+    },
+    "blocks/block_2/mixed_context/monitor_metrics.csv": {
+      "path": "blocks/block_2/mixed_context/monitor_metrics.csv",
+      "sha256": "1396c7bf2e8a59d22715d8d50a5b1de25d28d30e9fde1079e68e832a5accbc42"
+    },
+    "blocks/block_2/mixed_context/paired_recovery_effects.csv": {
+      "path": "blocks/block_2/mixed_context/paired_recovery_effects.csv",
+      "sha256": "7f4f5df03f25af67edf00a7cceee4d24a099852bef5b460ad8299c4387135f64"
+    },
+    "blocks/block_2/mixed_context/per_seed_metrics.csv": {
+      "path": "blocks/block_2/mixed_context/per_seed_metrics.csv",
+      "sha256": "be0d63055641aef07a073d1a1e7aec99e8435dd61460b48586345a0f330d3a08"
+    },
+    "blocks/block_2/mixed_context/recovery_curve.csv": {
+      "path": "blocks/block_2/mixed_context/recovery_curve.csv",
+      "sha256": "ff7f6f84c2bc9d4b97b2917fb2e7eff02b7c853e02f3bc5777940e153fe40c90"
+    },
+    "blocks/block_2/mixed_context/summary.json": {
+      "path": "blocks/block_2/mixed_context/summary.json",
+      "sha256": "b5544d43a755248d19891d308128cbb52fc479621a4906734d01a7da66363cf9"
+    },
+    "blocks/block_2/payload_com_only/monitor_metrics.csv": {
+      "path": "blocks/block_2/payload_com_only/monitor_metrics.csv",
+      "sha256": "dc50d2e96538d79c5d1d6ca913a96a7fc4aee80badf8e53c60ea95515e68e32b"
+    },
+    "blocks/block_2/payload_com_only/paired_recovery_effects.csv": {
+      "path": "blocks/block_2/payload_com_only/paired_recovery_effects.csv",
+      "sha256": "82d155e976f4a0c6607d52a7c95f1ed08c34cefd84dec8be8c31fa5fa8a4f727"
+    },
+    "blocks/block_2/payload_com_only/per_seed_metrics.csv": {
+      "path": "blocks/block_2/payload_com_only/per_seed_metrics.csv",
+      "sha256": "85bb5f68852ff9e5f92ea7d4a0cf83ee012d122d6d5548eddb25881eb3857870"
+    },
+    "blocks/block_2/payload_com_only/recovery_curve.csv": {
+      "path": "blocks/block_2/payload_com_only/recovery_curve.csv",
+      "sha256": "207392305b89fb655af5bd8a3f48b2595c146c233499493575e5db4be8538be4"
+    },
+    "blocks/block_2/payload_com_only/summary.json": {
+      "path": "blocks/block_2/payload_com_only/summary.json",
+      "sha256": "ec25dc7fce83635928c77c407bb5c858442bdde859706ba95ba93390c13ef041"
+    },
+    "per_context.csv": {
+      "path": "per_context.csv",
+      "sha256": "57719d23dab015b4910b7f2c62f78609b0d94de8f3703388d51d19fee2dd5f77"
+    },
+    "summary.json": {
+      "path": "summary.json",
+      "sha256": "330d2a0e46783b895b4791a4a2cc89f687e8a5dd42c5b065726bb52766ec16ec"
+    }
+  },
+  "packaging": "pooled_compact_confirmation",
+  "schema_version": "1.0",
+  "source_output_manifests": [
+    {
+      "path": "/home/eureka/CalibAgent/outputs/p6_paired_signature_final_030/manifest.json",
+      "sha256": "9852daf82df6f0551a25115f94490f77743f9e196049a9e0b05c3adea84e4919"
+    },
+    {
+      "path": "/home/eureka/CalibAgent/outputs/p6_paired_signature_replication_030/manifest.json",
+      "sha256": "b728cedbb8867a7129f8edb34af5fe769fcfd0fae2bbf6c7063e40d1ba47d7d8"
+    }
+  ]
+}

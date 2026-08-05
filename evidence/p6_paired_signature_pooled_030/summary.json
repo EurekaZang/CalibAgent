@@ -1,0 +1,257 @@
+{
+  "analysis": "two_block_disjoint_seed_pooling",
+  "contexts": [
+    {
+      "context": "friction_payload",
+      "detection_count": 143,
+      "detection_rate": 0.9930555555555556,
+      "detection_rate_ci95": [
+        0.9619166671702172,
+        0.9998241973440963
+      ],
+      "false_alarm_count": 0,
+      "finite": true,
+      "full_final_rmse_ci95": [
+        0.10933886567680917,
+        0.11501767161030295
+      ],
+      "full_final_rmse_mean": 0.11226898097145262,
+      "full_minus_passive_final_rmse_ci95": [
+        0.02455134667068328,
+        0.029497448596606364
+      ],
+      "full_minus_passive_final_rmse_mean": 0.02706647225952981,
+      "full_recovery_count": 141,
+      "full_recovery_rate": 0.9791666666666666,
+      "full_recovery_rate_ci95": [
+        0.9403247938795611,
+        0.9956828857296033
+      ],
+      "full_vs_frozen_final_improvement_ci95": [
+        0.026995824058923396,
+        0.03166166855499634
+      ],
+      "full_vs_frozen_final_improvement_mean": 0.029275214357916697,
+      "full_vs_frozen_win_rate": 0.9930555555555556,
+      "full_vs_passive_early_rmse_improvement_ci95": [
+        0.008109831590047736,
+        0.01065408525185325
+      ],
+      "full_vs_passive_early_rmse_improvement_mean": 0.009358168773327236,
+      "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 2.3005523663157778e-22,
+      "full_vs_passive_early_rmse_win_rate": 0.8888888888888888,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_full_recovery_trials": 6.0,
+      "no_shift_false_alarm_rate": 0.0,
+      "no_shift_false_alarm_rate_ci95": [
+        0.0,
+        0.025291881487516626
+      ],
+      "num_seeds": 144,
+      "p95_detection_delay_trials": 3.0,
+      "p95_full_recovery_trials": 9.0,
+      "safety_aborts": 973,
+      "serious_safety_events": 0,
+      "source_scenarios": [
+        "final030_friction_payload",
+        "replication030_friction_payload"
+      ],
+      "valid_observation_ratio": 0.9391975308641975
+    },
+    {
+      "context": "gain_recoupling",
+      "detection_count": 143,
+      "detection_rate": 0.9930555555555556,
+      "detection_rate_ci95": [
+        0.9619166671702172,
+        0.9998241973440963
+      ],
+      "false_alarm_count": 0,
+      "finite": true,
+      "full_final_rmse_ci95": [
+        0.10471597648941854,
+        0.10891800170920801
+      ],
+      "full_final_rmse_mean": 0.10685179592583995,
+      "full_minus_passive_final_rmse_ci95": [
+        0.02610680744955842,
+        0.03043116947615849
+      ],
+      "full_minus_passive_final_rmse_mean": 0.02823810316191834,
+      "full_recovery_count": 144,
+      "full_recovery_rate": 1.0,
+      "full_recovery_rate_ci95": [
+        0.9747081185124834,
+        1.0
+      ],
+      "full_vs_frozen_final_improvement_ci95": [
+        0.03278939448492427,
+        0.03632599896833583
+      ],
+      "full_vs_frozen_final_improvement_mean": 0.03455086080184158,
+      "full_vs_frozen_win_rate": 0.9930555555555556,
+      "full_vs_passive_early_rmse_improvement_ci95": [
+        0.009610253888068389,
+        0.011400800963599243
+      ],
+      "full_vs_passive_early_rmse_improvement_mean": 0.010531559335637097,
+      "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 2.324486672931421e-25,
+      "full_vs_passive_early_rmse_win_rate": 0.9652777777777778,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 3.0,
+      "median_full_recovery_trials": 6.0,
+      "no_shift_false_alarm_rate": 0.0,
+      "no_shift_false_alarm_rate_ci95": [
+        0.0,
+        0.025291881487516626
+      ],
+      "num_seeds": 144,
+      "p95_detection_delay_trials": 3.9000000000000057,
+      "p95_full_recovery_trials": 8.0,
+      "safety_aborts": 3,
+      "serious_safety_events": 0,
+      "source_scenarios": [
+        "final030_gain_recoupling",
+        "replication030_gain_recoupling"
+      ],
+      "valid_observation_ratio": 0.9938271604938271
+    },
+    {
+      "context": "mixed_context",
+      "detection_count": 144,
+      "detection_rate": 1.0,
+      "detection_rate_ci95": [
+        0.9747081185124834,
+        1.0
+      ],
+      "false_alarm_count": 0,
+      "finite": true,
+      "full_final_rmse_ci95": [
+        0.09581112369021234,
+        0.09939431536276917
+      ],
+      "full_final_rmse_mean": 0.09762265640381379,
+      "full_minus_passive_final_rmse_ci95": [
+        0.020076233707247752,
+        0.023101158771400652
+      ],
+      "full_minus_passive_final_rmse_mean": 0.021593610528853,
+      "full_recovery_count": 144,
+      "full_recovery_rate": 1.0,
+      "full_recovery_rate_ci95": [
+        0.9747081185124834,
+        1.0
+      ],
+      "full_vs_frozen_final_improvement_ci95": [
+        0.04859851487655616,
+        0.051508905343135555
+      ],
+      "full_vs_frozen_final_improvement_mean": 0.05003748163585467,
+      "full_vs_frozen_win_rate": 1.0,
+      "full_vs_passive_early_rmse_improvement_ci95": [
+        0.017740144344708015,
+        0.019172510000264174
+      ],
+      "full_vs_passive_early_rmse_improvement_mean": 0.01846599734409846,
+      "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 1.1129579362482242e-25,
+      "full_vs_passive_early_rmse_win_rate": 1.0,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_full_recovery_trials": 8.0,
+      "no_shift_false_alarm_rate": 0.0,
+      "no_shift_false_alarm_rate_ci95": [
+        0.0,
+        0.025291881487516626
+      ],
+      "num_seeds": 144,
+      "p95_detection_delay_trials": 2.0,
+      "p95_full_recovery_trials": 9.0,
+      "safety_aborts": 6,
+      "serious_safety_events": 0,
+      "source_scenarios": [
+        "final030_mixed_context",
+        "replication030_mixed_context"
+      ],
+      "valid_observation_ratio": 0.9916666666666667
+    },
+    {
+      "context": "payload_com_only",
+      "detection_count": 144,
+      "detection_rate": 1.0,
+      "detection_rate_ci95": [
+        0.9747081185124834,
+        1.0
+      ],
+      "false_alarm_count": 0,
+      "finite": true,
+      "full_final_rmse_ci95": [
+        0.0968668734607359,
+        0.10199170250440956
+      ],
+      "full_final_rmse_mean": 0.09942408772311621,
+      "full_minus_passive_final_rmse_ci95": [
+        0.015658781814019807,
+        0.01962534068893707
+      ],
+      "full_minus_passive_final_rmse_mean": 0.017632313518782486,
+      "full_recovery_count": 144,
+      "full_recovery_rate": 1.0,
+      "full_recovery_rate_ci95": [
+        0.9747081185124834,
+        1.0
+      ],
+      "full_vs_frozen_final_improvement_ci95": [
+        0.023988424498869582,
+        0.027779708840277896
+      ],
+      "full_vs_frozen_final_improvement_mean": 0.025798598989132535,
+      "full_vs_frozen_win_rate": 1.0,
+      "full_vs_passive_early_rmse_improvement_ci95": [
+        0.01091647256565475,
+        0.01290571247774488
+      ],
+      "full_vs_passive_early_rmse_improvement_mean": 0.011915333476301351,
+      "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 1.2358007844554643e-25,
+      "full_vs_passive_early_rmse_win_rate": 0.9930555555555556,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_full_recovery_trials": 6.0,
+      "no_shift_false_alarm_rate": 0.0,
+      "no_shift_false_alarm_rate_ci95": [
+        0.0,
+        0.025291881487516626
+      ],
+      "num_seeds": 144,
+      "p95_detection_delay_trials": 3.0,
+      "p95_full_recovery_trials": 8.849999999999994,
+      "safety_aborts": 654,
+      "serious_safety_events": 0,
+      "source_scenarios": [
+        "final030_payload_com_only",
+        "replication030_payload_com_only"
+      ],
+      "valid_observation_ratio": 0.9475308641975309
+    }
+  ],
+  "gates": {
+    "active_over_frozen": true,
+    "active_over_passive": true,
+    "active_terminal_accuracy": true,
+    "context_coverage": true,
+    "detection_delay": true,
+    "detection_rate": true,
+    "false_alarm_control": true,
+    "finite": true,
+    "full_recovery": true,
+    "safety": true,
+    "seed_coverage": true,
+    "valid_observations": true
+  },
+  "schema_version": "1.0",
+  "source_blocks": [
+    "/home/eureka/CalibAgent/outputs/p6_paired_signature_final_030",
+    "/home/eureka/CalibAgent/outputs/p6_paired_signature_replication_030"
+  ],
+  "verdict": "GO"
+}
