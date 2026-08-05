@@ -9,9 +9,9 @@ reviewer identities.
 
 - Title: *GAUGE: Bridging the Command–Motion Gap in Black-Box Quadrupeds*
 - Language: English
-- Abstract length: approximately 239 words
-- Full-text length: approximately 6,111 PDF words across 8 pages
-- References: 18
+- Abstract length: approximately 253 words
+- Full-text length: approximately 5,097 PDF words across 8 pages
+- References: 17
 - Target venue: IEEE International Conference on Robotics and Automation (ICRA)
 
 ## Field analysis
@@ -21,9 +21,9 @@ reviewer identities.
 | Primary discipline | Robotics: legged-robot calibration and adaptive control |
 | Secondary disciplines | Bayesian experimental design; system identification; field-robot safety and navigation |
 | Research paradigm | Quantitative experimental systems research |
-| Methodology | Bayesian regression and sequential design evaluated with passive hardware data, controlled synthetic experiments, fault injection, and paired physics simulation |
-| Target tier | Top-tier robotics conference. The scope and evidence ladder target ICRA; active hardware validation remains the decisive readiness gate. |
-| Paper maturity | Revised anonymous submission draft. Structure, figures, citations, and numerical claims are complete for the current simulation evidence; active hardware evaluation remains planned. |
+| Methodology | Bayesian regression and sequential design evaluated with passive hardware data, controlled synthetic experiments, fault injection, paired physics simulation, and a repeated qualitative real-Go2 navigation comparison |
+| Target tier | Top-tier robotics conference. The scope and evidence ladder target ICRA; quantitative active hardware calibration and shift recovery remain the principal open validation boundary. |
+| Paper maturity | Revised anonymous eight-page submission draft with complete simulation evidence and three-scene qualitative physical navigation; active hardware acquisition and shift recovery remain planned. |
 
 ## Venue positioning
 
@@ -42,7 +42,7 @@ reviewer identities.
 2. Whether the contribution is distinct from policy adaptation, residual control, and conventional robot calibration.
 3. Whether the evidence package is sufficiently complete for a top-tier robotics conference.
 
-- **Will particularly care about**: A concise contribution boundary and whether passive hardware plus simulated active operation is adequate before P8 arrives.
+- **Will particularly care about**: A concise contribution boundary and whether passive calibration, qualitative physical navigation, and simulated active operation jointly support the stated scope.
 **Possible blind spots**: May not audit every statistical dependency or runtime safety detail.
 
 ## Reviewer Configuration Card 2
@@ -98,7 +98,7 @@ reviewer identities.
 2. Whether a compact steady-state model can justify downstream navigation claims under temporal dynamics and estimator coupling.
 3. Whether the failed P7 confirmation and subsequent interlock change introduce researcher degrees of freedom despite the disjoint replication.
 
-- **Will particularly care about**: The single-robot passive hardware dataset, the absence of active P8 evidence, and any wording that turns simulator confirmation into a hardware claim.
+- **Will particularly care about**: The single-robot hardware scope, the qualitative nature of the new navigation video, the absence of physical active acquisition and shift recovery, and any wording that turns simulator confirmation into a hardware claim.
 **Possible blind spots**: The deliberately adversarial stance may undervalue engineering utility unless checked against the registered endpoints.
 
 ## Panel complementarity

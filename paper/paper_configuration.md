@@ -37,7 +37,9 @@ GAUGE combines uncertainty-aware command-to-motion modeling,
 task-weighted integrated variance reduction, independently enforced safety and
 stopping rules, and shift-triggered active recovery. The existing evidence
 supports sample-efficient calibration, bounded simulator recovery, and
-downstream navigation under the registered conditions.
+downstream navigation under the registered conditions. A fixed-planner Go2
+comparison additionally supports qualitative reductions in hesitation and
+contact across two static scenes and one crossing-pedestrian scene.
 
 ## Evidence boundary
 
@@ -54,10 +56,11 @@ The first draft may claim only the following:
 4. Pinned Isaac Lab experiments support closed-loop calibration, structured
    shift detection and recovery, and navigation on registered simulated
    scenarios and maps.
-5. P8 is an approved real-robot protocol, not completed evidence. The draft
-   must not claim online Go2 active calibration, real-robot shift recovery,
-   real-robot navigation, deployment safety, or sim-to-real transfer until P8
-   passes its evidence gates.
+5. Three real-Go2 navigation scenes compare direct DRL-DCLP commands with the
+   frozen GAUGE inverse over five repetitions per condition. This supports a
+   qualitative planner-facing navigation claim, but not online active
+   calibration, physical shift recovery, deployment safety, trajectory-level
+   effect sizes, or broad sim-to-real transfer.
 
 ## Proposed contributions
 
@@ -77,8 +80,8 @@ The first draft may claim only the following:
 
 ## Eight-page allocation
 
-The current anonymous draft compiles to six pages including references; the
-table below remains the maximum-length planning envelope for the P8 revision.
+The current anonymous draft compiles to eight pages including references; the
+table below records its maximum-length allocation envelope.
 
 | Content | Target pages |
 |---|---:|
@@ -110,6 +113,9 @@ table below remains the maximum-length planning envelope for the P8 revision.
 6. **Navigation consequence** (`plot-from-data`): P7 success and completion-time
    comparisons over six prospectively frozen replication maps and seven
    methods.
+7. **Real-Go2 navigation** (`research-figure`): matched-time direct-command and
+   GAUGE-compensated sequences for two static-obstacle scenes and one
+   crossing-pedestrian scene.
 
 Every quantitative panel will be rebuilt from versioned CSV/JSON evidence. No
 value will be copied from prose when a machine-readable source exists.
@@ -117,6 +123,9 @@ Every direct simulator image is checked against its tracked capture record and
 must have a unique SHA-256 before the manuscript build passes. The P5/P6 vector
 figures are regenerated from registered capture trajectories and frozen
 multi-seed JSON summaries; their source hashes are recorded separately.
+The real-Go2 figure is decoded from the retained source video at twelve unique,
+predeclared timestamps; both conditions use matched elapsed times within each
+scene.
 
 ## Required author inputs before final submission
 

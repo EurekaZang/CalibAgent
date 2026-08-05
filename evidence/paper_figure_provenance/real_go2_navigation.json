@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "generator": "paper/scripts/build_real_navigation_figure.py",
+  "source_video": "paper/figures/Compensation.mp4",
+  "source_video_sha256": "7e63ac45674367aa2f1e30796c4313431c53ae9813cae6939369631680a472ec",
+  "source_video_duration_s": 62.0,
+  "source_video_resolution": [
+    1280,
+    720
+  ],
+  "selection_rule": "Two frames at matched elapsed times in each direct-command/GAUGE scene pair.",
+  "interpretation": "Representative qualitative image sequence. Each scene and condition was repeated five times; the source video contains the representative execution shown here and is not a quantitative log.",
+  "frames": [
+    {
+      "scene": "Static I",
+      "condition": "direct_command",
+      "run_start_s": 1.0,
+      "elapsed_s": 1.75,
+      "video_timestamp_s": 2.75
+    },
+    {
+      "scene": "Static I",
+      "condition": "direct_command",
+      "run_start_s": 1.0,
+      "elapsed_s": 3.25,
+      "video_timestamp_s": 4.25
+    },
+    {
+      "scene": "Static I",
+      "condition": "gauge",
+      "run_start_s": 12.0,
+      "elapsed_s": 1.75,
+      "video_timestamp_s": 13.75
+    },
+    {
+      "scene": "Static I",
+      "condition": "gauge",
+      "run_start_s": 12.0,
+      "elapsed_s": 3.25,
+      "video_timestamp_s": 15.25
+    },
+    {
+      "scene": "Static II",
+      "condition": "direct_command",
+      "run_start_s": 22.0,
+      "elapsed_s": 1.0,
+      "video_timestamp_s": 23.0
+    },
+    {
+      "scene": "Static II",
+      "condition": "direct_command",
+      "run_start_s": 22.0,
+      "elapsed_s": 2.5,
+      "video_timestamp_s": 24.5
+    },
+    {
+      "scene": "Static II",
+      "condition": "gauge",
+      "run_start_s": 31.0,
+      "elapsed_s": 1.0,
+      "video_timestamp_s": 32.0
+    },
+    {
+      "scene": "Static II",
+      "condition": "gauge",
+      "run_start_s": 31.0,
+      "elapsed_s": 2.5,
+      "video_timestamp_s": 33.5
+    },
+    {
+      "scene": "Moving person",
+      "condition": "direct_command",
+      "run_start_s": 41.0,
+      "elapsed_s": 2.5,
+      "video_timestamp_s": 43.5
+    },
+    {
+      "scene": "Moving person",
+      "condition": "direct_command",
+      "run_start_s": 41.0,
+      "elapsed_s": 4.0,
+      "video_timestamp_s": 45.0
+    },
+    {
+      "scene": "Moving person",
+      "condition": "gauge",
+      "run_start_s": 53.0,
+      "elapsed_s": 2.5,
+      "video_timestamp_s": 55.5
+    },
+    {
+      "scene": "Moving person",
+      "condition": "gauge",
+      "run_start_s": 53.0,
+      "elapsed_s": 4.0,
+      "video_timestamp_s": 57.0
+    }
+  ],
+  "outputs": {
+    "paper/figures/real_go2_navigation.pdf": "2d79a05332ed4f77e41d11be237468a975611aaa2e537787b50d8e5bc843235d",
+    "paper/figures/real_go2_navigation.png": "fa749b8bdbb32442aa33c594b08f59731a02628c7c8fc68cf373b7cf00c1b991"
+  }
+}
