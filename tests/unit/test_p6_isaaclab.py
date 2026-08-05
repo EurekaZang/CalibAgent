@@ -142,6 +142,14 @@ def test_p6_config_rejects_budget_and_control_changes() -> None:
         replace(config, methods=("frozen", "full")).validate()
 
 
+def test_p6_config_rejects_contextual_forward_cap_outside_envelope() -> None:
+    config = P6BenchmarkConfig.from_yaml(Path("configs/experiments/p6_domain_shift_main.yaml"))
+    safety = dict(config.safety)
+    safety["forward_cap_after_base_height_abort"] = 0.41
+    with pytest.raises(ValueError, match="contextual forward cap"):
+        replace(config, safety=safety).validate()
+
+
 def _write_rows(path: Path, rows: list[dict[str, Any]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))

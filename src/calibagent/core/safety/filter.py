@@ -221,6 +221,22 @@ class HardSafetyFilter:
         )
 
 
+def filter_candidates_by_forward_cap(
+    candidates: Sequence[Candidate],
+    maximum_forward_velocity: float,
+) -> list[Candidate]:
+    """Apply an empirical forward cap while preserving candidate ranking.
+
+    This filter is activated only after an execution-time base-height abort.
+    Reverse and lateral candidates retain their scores and relative order.
+    """
+
+    cap = float(maximum_forward_velocity)
+    if not np.isfinite(cap) or cap <= 0.0:
+        raise ValueError("contextual forward cap must be positive and finite")
+    return [candidate for candidate in candidates if candidate.command.vx <= cap]
+
+
 def height_rate_guarded_command(
     command: NDArray[np.floating[Any]] | Sequence[float],
     *,
@@ -305,12 +321,8 @@ def predictive_height_interlock(
     drop = max(previous_base_height_m - base_height_m, 0.0)
     projected_height = base_height_m - float(prediction_steps) * drop
     trigger = bool(
-        base_height_m <= activation_height_m
-        or projected_height <= minimum_projected_height_m
+        base_height_m <= activation_height_m or projected_height <= minimum_projected_height_m
     )
-    recovered = bool(
-        base_height_m >= release_height_m
-        and base_height_m >= previous_base_height_m
-    )
+    recovered = bool(base_height_m >= release_height_m and base_height_m >= previous_base_height_m)
     active = bool(trigger or (previously_active and not recovered))
     return active, projected_height

@@ -6,6 +6,7 @@ import pytest
 from calibagent.core.safety import (
     HardSafetyFilter,
     SafetyEnvelope,
+    filter_candidates_by_forward_cap,
     height_rate_guarded_command,
     predictive_height_interlock,
 )
@@ -93,6 +94,18 @@ def test_invalid_envelope_is_rejected() -> None:
     state = _state(position_xy=(float("nan"), 0.0))
     assert HardSafetyFilter().monitor(state).reason_codes == ("STATE_NONFINITE",)
     assert np.isfinite(_candidate((0.1, 0.0, 0.0)).command.as_array()).all()
+
+
+def test_contextual_forward_cap_preserves_safe_candidate_ranking() -> None:
+    candidates = [
+        _candidate((0.34, 0.0, 0.0)),
+        _candidate((-0.36, 0.0, 0.0)),
+        _candidate((0.21, 0.1, 0.2)),
+    ]
+    filtered = filter_candidates_by_forward_cap(candidates, 0.25)
+    assert filtered == candidates[1:]
+    with pytest.raises(ValueError, match="forward cap"):
+        filter_candidates_by_forward_cap(candidates, float("inf"))
 
 
 def test_height_rate_guard_derates_only_low_descending_commands() -> None:

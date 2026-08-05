@@ -145,6 +145,9 @@ class P6BenchmarkConfig:
             self.adaptation["target_rmse_ceiling"]
         ):
             raise ValueError("P6 invalid-window penalty must exceed the recovery ceiling")
+        contextual_cap = self.safety.get("forward_cap_after_base_height_abort")
+        if contextual_cap is not None and not 0.0 < float(contextual_cap) <= 0.40:
+            raise ValueError("P6 contextual forward cap is outside the command envelope")
         for scenario in self.scenarios:
             if str(scenario["checkpoint"]) not in self.checkpoints:
                 raise ValueError("P6 scenario uses an unknown checkpoint")
