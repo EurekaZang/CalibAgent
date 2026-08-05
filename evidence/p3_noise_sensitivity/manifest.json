@@ -1,0 +1,25 @@
+{
+  "artifacts": {
+    "config": "resolved_config.json",
+    "metrics": "metrics.csv",
+    "planner_diagnostics": "planner_diagnostics.csv",
+    "posterior": "representative_posterior.npz",
+    "statistics": "paired_statistics.json",
+    "trials": "trial_trace.csv",
+    "uncertainty_slice": "uncertainty_slice.csv"
+  },
+  "backend": "synthetic",
+  "config_hash": "9169bf7c312ee1e4",
+  "git_commit": "fbefc8d83cedb183147d7cb94bcabea33a2058f8",
+  "isaaclab_commit": "UNSET-P5-NOT-INTEGRATED",
+  "model_id": "M2_basis_blr",
+  "planner_id": "task_iv_reduction_v1",
+  "random_seeds": {
+    "evaluation": 23011,
+    "global": 31013,
+    "task": 11003
+  },
+  "run_id": "20260805_180418_seed31013_task_iv_reduction_v1",
+  "schema_version": "1.0",
+  "stop_reason": null
+}

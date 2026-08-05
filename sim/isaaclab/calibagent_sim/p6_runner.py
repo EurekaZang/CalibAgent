@@ -16,7 +16,9 @@ import torch
 from calibagent.core.models.bayesian import BayesianBasisModel
 from calibagent.core.models.features import BasisTransformer
 from calibagent.core.planning.candidates import CandidatePool, CommandSpace
+from calibagent.core.planning.d_optimal import DOptimalPlanner
 from calibagent.core.planning.ivr import IntegratedVariancePlanner
+from calibagent.core.planning.samplers import latin_hypercube, random_uniform
 from calibagent.core.planning.task import TaskDistribution
 from calibagent.core.safety import HardSafetyFilter, SafetyEnvelope
 from calibagent.core.shift import DomainShiftConfig, DomainShiftDetector
@@ -191,6 +193,42 @@ def _model_components(
     return models, planners, reference, TaskDistribution.uniform(_VALIDATION_COMMANDS)
 
 
+def _recovery_sequence(
+    method: str,
+    seed: int,
+    pool: CandidatePool,
+    count: int,
+) -> np.ndarray:
+    """Return a safe, deterministic matched-budget recovery sequence."""
+
+    if method == "recovery_random":
+        targets = random_uniform(count * 4, _BOUNDS, seed + 91301)
+    elif method == "recovery_lhs":
+        targets = latin_hypercube(count * 4, _BOUNDS, seed + 91303)
+    else:
+        raise ValueError(f"unsupported passive recovery selector: {method}")
+    normalized_pool = pool.command_space.normalized(pool.commands)
+    selected: list[int] = []
+    for target in targets:
+        if len(selected) == count:
+            break
+        remaining = np.asarray(
+            [index for index in range(len(pool.commands)) if index not in selected],
+            dtype=np.int64,
+        )
+        if not len(remaining):
+            break
+        normalized_target = pool.command_space.normalized(target[None, :])[0]
+        distance = np.linalg.norm(
+            normalized_pool[remaining] - normalized_target,
+            axis=1,
+        )
+        selected.append(int(remaining[int(np.argmin(distance))]))
+    if len(selected) != count:
+        raise RuntimeError(f"could not construct {method} recovery sequence")
+    return pool.commands[np.asarray(selected, dtype=np.int64)]
+
+
 def _distortion(
     family: str,
     slots: list[tuple[str, int]],
@@ -287,7 +325,19 @@ def run_p6_scenario(
     pre_config = _physical_config(payload, dict(payload["pre_physics"]), slot_seeds)
     post_config = _physical_config(payload, dict(payload["post_physics"]), slot_seeds)
     actor = load_actor(checkpoint, device)
-    models, planners, _, task = _model_components(pre_config, slots)
+    models, planners, pool, task = _model_components(pre_config, slots)
+    no_task = TaskDistribution.uniform(pool.commands)
+    d_optimal = {key: DOptimalPlanner(pool, duplicate_distance=0.02) for key in slots}
+    recovery_sequences = {
+        key: _recovery_sequence(
+            key[0],
+            key[1],
+            pool,
+            int(payload["trial"]["recovery_budget_trials"]),
+        )
+        for key in slots
+        if key[0] in {"recovery_random", "recovery_lhs"}
+    }
     histories: dict[tuple[str, int], list[np.ndarray]] = {key: [] for key in slots}
     detector_settings = DomainShiftConfig(
         **{
@@ -537,9 +587,17 @@ def run_p6_scenario(
             desired = np.zeros((len(slots), 3), dtype=np.float64)
             sources: list[str] = []
             for index, key in enumerate(slots):
+                adaptive_methods = {
+                    "passive",
+                    "full",
+                    "recovery_no_task",
+                    "recovery_d_opt",
+                    "recovery_lhs",
+                    "recovery_random",
+                }
                 stopped = bool(
                     payload["adaptation"].get("stop_updates_after_recovery", False)
-                    and key[0] in {"passive", "full"}
+                    and key[0] in adaptive_methods
                     and recovered_at[key] is not None
                 )
                 if stopped:
@@ -561,6 +619,40 @@ def run_p6_scenario(
                         raise RuntimeError(f"no safe P6 recovery candidate: {key}")
                     desired[index] = decision.command.as_array()
                     sources.append("active")
+                elif key[0] == "recovery_no_task" and detectors[key].latched:
+                    candidates = planners[key].propose(
+                        models[key],
+                        no_task,
+                        histories[key],
+                        k=min(12, len(planners[key].candidate_pool.commands)),
+                    )
+                    decision = safe_filter.select_first_safe(
+                        candidates,
+                        neutral_state,
+                        zero_history,
+                    )
+                    if not decision.accepted or decision.command is None:
+                        raise RuntimeError(f"no safe no-task recovery candidate: {key}")
+                    desired[index] = decision.command.as_array()
+                    sources.append("active_no_task")
+                elif key[0] == "recovery_d_opt" and detectors[key].latched:
+                    candidates = d_optimal[key].propose(
+                        models[key],
+                        histories[key],
+                        k=min(12, len(pool.commands)),
+                    )
+                    decision = safe_filter.select_first_safe(
+                        candidates,
+                        neutral_state,
+                        zero_history,
+                    )
+                    if not decision.accepted or decision.command is None:
+                        raise RuntimeError(f"no safe D-optimal recovery candidate: {key}")
+                    desired[index] = decision.command.as_array()
+                    sources.append("d_optimal")
+                elif key[0] in {"recovery_random", "recovery_lhs"} and detectors[key].latched:
+                    desired[index] = recovery_sequences[key][recovery_trial - 1]
+                    sources.append(key[0].removeprefix("recovery_"))
                 else:
                     desired[index] = _PASSIVE_RECOVERY[
                         (recovery_trial - 1) % len(_PASSIVE_RECOVERY)
@@ -586,7 +678,7 @@ def run_p6_scenario(
                     and recovered_at[key] is not None
                 )
                 if (
-                    key[0] in {"passive", "full"}
+                    key[0] in adaptive_methods
                     and detectors[key].latched
                     and observation.valid
                     and update_enabled

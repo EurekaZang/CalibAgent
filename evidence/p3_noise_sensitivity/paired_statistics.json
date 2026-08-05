@@ -1,0 +1,41 @@
+{
+  "active_vs_active_no_task": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 11.0,
+    "mean_trials_active": 20.0,
+    "mean_trials_baseline": 31.0,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      11.0,
+      11.0
+    ],
+    "relative_reduction": 0.3548387096774194,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "active_vs_d_opt": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 11.0,
+    "mean_trials_active": 20.0,
+    "mean_trials_baseline": 31.0,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      11.0,
+      11.0
+    ],
+    "relative_reduction": 0.3548387096774194,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  },
+  "active_vs_lhs": {
+    "independent_unit": "seed",
+    "mean_paired_trials_saved": 16.9,
+    "mean_trials_active": 20.0,
+    "mean_trials_baseline": 36.9,
+    "paired_runs": 20,
+    "paired_trials_saved_ci95": [
+      15.05,
+      18.9
+    ],
+    "relative_reduction": 0.4579945799457994,
+    "wilcoxon_one_sided_p": 9.5367431640625e-07
+  }
+}

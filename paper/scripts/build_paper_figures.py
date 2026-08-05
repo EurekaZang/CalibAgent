@@ -13,7 +13,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "paper" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)
@@ -21,8 +20,11 @@ OUT.mkdir(parents=True, exist_ok=True)
 P1_FOLDS = ROOT / "evidence/p1_real/baseline_fold_metrics.csv"
 P1_POOLED = ROOT / "evidence/p1_real/baseline_metrics.csv"
 P3 = ROOT / "evidence/p3_main/paired_statistics.json"
+REVIEW_ANALYSIS = (
+    ROOT / "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json"
+)
 P7 = ROOT / "evidence/p7_strong_confirmatory_v2/summary.json"
-INPUTS = [P1_FOLDS, P1_POOLED, P3, P7]
+INPUTS = [P1_FOLDS, P1_POOLED, P3, REVIEW_ANALYSIS, P7]
 
 BLUE = "#0072B2"
 CYAN = "#56B4E9"
@@ -115,7 +117,8 @@ def p1_values() -> tuple[list[str], np.ndarray]:
 
 def build_calibration_figure() -> list[Path]:
     p3 = load_json(P3)
-    fig, axes = plt.subplots(1, 2, figsize=(7.05, 2.35), constrained_layout=True)
+    review = load_json(REVIEW_ANALYSIS)
+    fig, axes = plt.subplots(1, 3, figsize=(7.05, 2.35), constrained_layout=True)
 
     # (a) Passive hardware model comparison.
     labels, values = p1_values()
@@ -141,13 +144,13 @@ def build_calibration_figure() -> list[Path]:
     axes[0].set_ylabel("Held-out velocity RMSE")
     axes[0].set_ylim(0, 0.092)
     axes[0].grid(axis="y", color=LIGHT_GREY, linewidth=0.55, zorder=0)
-    axes[0].legend(frameon=False, ncol=3, loc="upper center", columnspacing=0.8,
-                   handlelength=2.0)
+    axes[0].legend(frameon=False, ncol=1, loc="upper right", columnspacing=0.8,
+                   handlelength=1.8)
     axes[0].set_title("Passive Go2 model check")
     axes[0].text(
         3,
         values[2, 3] + 0.003,
-        "−54.5% vs raw",
+        "-54.5% vs raw",
         ha="center",
         va="bottom",
         fontsize=6.8,
@@ -188,13 +191,64 @@ def build_calibration_figure() -> list[Path]:
     axes[1].text(
         0.98,
         0.03,
-        "Active mean: 18.67 trials\n95% paired bootstrap CI",
+        "Active mean: 18.67\n95% paired CI",
         transform=axes[1].transAxes,
         ha="right",
         va="bottom",
         fontsize=6.6,
     )
     panel_label(axes[1], "b")
+
+    # (c) Family-resolved target time.  This is the grouped-hatch publication
+    # style: neutral controls, a saturated task-IVR bar, and direct intervals.
+    family_rows = review["p3"]["family_metrics"]
+    families = ["affine", "deadzone", "heteroscedastic"]
+    family_labels = ["Affine", "Dead zone", "Hetero."]
+    method_order = ["lhs", "d_opt", "active_no_task", "active"]
+    method_labels = ["LHS", "D-opt", "No task", "Task IVR"]
+    colors = ["#D3D3D3", "#A9A9A9", "#6F8FAF", VERMILLION]
+    hatches = ["", "", "", "//"]
+    indexed = {(row["family"], row["method"]): row for row in family_rows}
+    x_family = np.arange(len(families))
+    width_family = 0.19
+    for index, (method, label, color, hatch) in enumerate(
+        zip(method_order, method_labels, colors, hatches, strict=True)
+    ):
+        values = np.asarray(
+            [indexed[(family, method)]["mean_trials"] for family in families]
+        )
+        intervals = np.asarray(
+            [indexed[(family, method)]["mean_trials_ci95"] for family in families]
+        )
+        axes[2].bar(
+            x_family + (index - 1.5) * width_family,
+            values,
+            width_family,
+            yerr=np.vstack([values - intervals[:, 0], intervals[:, 1] - values]),
+            capsize=1.5,
+            label=label,
+            color=color,
+            edgecolor="white" if method == "active" else BLACK,
+            linewidth=0.55,
+            hatch=hatch,
+            zorder=3,
+        )
+    axes[2].set_xticks(x_family, family_labels, rotation=18, ha="right")
+    axes[2].set_ylabel("Trials to joint target")
+    axes[2].set_ylim(0, 42)
+    axes[2].grid(axis="y", color=LIGHT_GREY, linewidth=0.55, zorder=0)
+    axes[2].legend(frameon=False, ncol=2, loc="upper left", columnspacing=0.6)
+    axes[2].set_title("Family-resolved efficiency")
+    axes[2].text(
+        0.98,
+        0.03,
+        "20 seeds/family; all reached",
+        transform=axes[2].transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=6.3,
+    )
+    panel_label(axes[2], "c")
 
     return finish(fig, "calibration_evidence")
 
@@ -215,7 +269,8 @@ def build_navigation_figure() -> list[Path]:
     methods = ["B0_raw", "B1_dense", "B2_lhs", "B3_sobol", "B4_d_opt", "B5_active_no_task", "B8_full"]
     method_labels = ["Raw", "Dense", "LHS", "Sobol", "D-opt", "No task", "Full"]
 
-    fig, axes = plt.subplots(1, 3, figsize=(7.05, 2.55), constrained_layout=True)
+    fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 4.35), constrained_layout=True)
+    axes = axes_grid.ravel()
     success = np.asarray(
         [[row["method_summaries"][method]["success_rate"] for method in methods] for row in scenarios]
     )
@@ -250,15 +305,74 @@ def build_navigation_figure() -> list[Path]:
     axes[1].axvline(0, color=BLACK, linewidth=0.7)
     axes[1].set_yticks(y, map_labels)
     axes[1].invert_yaxis()
-    axes[1].set_xlabel("Full − raw time gain (s)")
+    axes[1].set_xlabel("Raw - full capped-time gain (s)")
     axes[1].set_xlim(20, 37)
     axes[1].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
-    axes[1].set_title("Paired completion-time gain")
+    axes[1].set_title("Failure-aware time gain")
+    axes[1].text(
+        0.98,
+        0.03,
+        "Every failure = 60 s",
+        transform=axes[1].transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=6.4,
+    )
     panel_label(axes[1], "b")
+
+    matched_methods = ["B2_lhs", "B3_sobol", "B4_d_opt", "B5_active_no_task"]
+    matched_labels = ["LHS", "Sobol", "D-opt", "No task"]
+    matched_ratio = np.asarray(
+        [
+            [
+                row["matched_baseline_comparisons"][method][
+                    "b8_to_baseline_completion_time_ratio"
+                ]
+                for method in matched_methods
+            ]
+            for row in scenarios
+        ]
+    )
+    matched_upper = np.asarray(
+        [
+            [
+                row["matched_baseline_comparisons"][method][
+                    "b8_to_baseline_completion_time_ratio_ci95"
+                ][1]
+                for method in matched_methods
+            ]
+            for row in scenarios
+        ]
+    )
+    matched_image = axes[2].imshow(
+        matched_ratio,
+        vmin=0.90,
+        vmax=1.10,
+        cmap="RdBu_r",
+        aspect="auto",
+    )
+    axes[2].set_xticks(np.arange(len(matched_methods)), matched_labels, rotation=25, ha="right")
+    axes[2].set_yticks(np.arange(len(map_labels)), map_labels)
+    for i in range(len(map_labels)):
+        for j in range(len(matched_labels)):
+            axes[2].text(
+                j,
+                i,
+                f"{matched_ratio[i, j]:.2f}\n({matched_upper[i, j]:.2f})",
+                ha="center",
+                va="center",
+                fontsize=5.6,
+                color=BLACK,
+            )
+    matched_bar = fig.colorbar(matched_image, ax=axes[2], fraction=0.046, pad=0.03)
+    matched_bar.set_label("Full / control", fontsize=7)
+    matched_bar.ax.tick_params(labelsize=6)
+    axes[2].set_title("Matched-budget capped time (upper CI)")
+    panel_label(axes[2], "c")
 
     ratio = np.asarray([row["b8_to_b1_mean_completion_time_ratio"] for row in scenarios])
     ratio_ci = np.asarray([row["b8_to_b1_completion_time_ratio_ci95"] for row in scenarios])
-    axes[2].errorbar(
+    axes[3].errorbar(
         ratio,
         y,
         xerr=np.vstack([ratio - ratio_ci[:, 0], ratio_ci[:, 1] - ratio]),
@@ -269,18 +383,24 @@ def build_navigation_figure() -> list[Path]:
         markersize=4.3,
         linewidth=1.1,
     )
-    axes[2].axvline(1.0, color=BLACK, linewidth=0.7, label="Equal time")
-    axes[2].axvline(1.25, color=VERMILLION, linestyle="--", linewidth=1.0, label="NI margin")
-    axes[2].set_yticks(y, map_labels)
-    axes[2].invert_yaxis()
-    axes[2].set_xlabel("Full / dense time ratio")
-    axes[2].set_xlim(0.88, 1.27)
-    axes[2].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
-    axes[2].legend(frameon=False, loc="lower right")
-    axes[2].set_title("Dense-budget noninferiority")
-    panel_label(axes[2], "c")
+    axes[3].axvline(1.0, color=BLACK, linewidth=0.7, label="Equal time")
+    axes[3].axvline(1.25, color=VERMILLION, linestyle="--", linewidth=1.0, label="NI margin")
+    axes[3].set_yticks(y, map_labels)
+    axes[3].invert_yaxis()
+    axes[3].set_xlabel("Full / dense capped-time ratio")
+    axes[3].set_xlim(0.88, 1.27)
+    axes[3].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
+    axes[3].legend(frameon=False, loc="lower right")
+    axes[3].set_title("Dense-budget noninferiority")
+    panel_label(axes[3], "d")
 
-    fig.text(0.5, -0.015, "All B8 collision counts were 0/72 on every map.", ha="center", fontsize=7)
+    fig.text(
+        0.5,
+        -0.015,
+        "All full-method collision counts were 0/72 on every map.",
+        ha="center",
+        fontsize=7,
+    )
     return finish(fig, "navigation_results")
 
 

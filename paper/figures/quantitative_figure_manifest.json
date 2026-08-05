@@ -4,7 +4,8 @@
     "evidence/p1_real/baseline_fold_metrics.csv": "ec1e7cba1bcd6246e7c0d25e734c613b29c42a53247a74894f18dc9a2be6787d",
     "evidence/p1_real/baseline_metrics.csv": "cca6baff8464fd3a7d9a93586512fcc9afca519c286b14cb54ad8c15778b5aa8",
     "evidence/p3_main/paired_statistics.json": "25537ea2f64d2bca4b07282fcf91c9e9b5be6c5bd9e7ae10aad5646d751197c7",
-    "evidence/p7_strong_confirmatory_v2/summary.json": "85590a56bef758ed8c2ad30300756c62ce3925eba18338d462b4d62042f6ca46"
+    "evidence/p7_strong_confirmatory_v2/summary.json": "85590a56bef758ed8c2ad30300756c62ce3925eba18338d462b4d62042f6ca46",
+    "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json": "24210d690db6ddbb40a1384aa88e3814b5c0591b0d6118cc91c702fce73067d5"
   },
   "notes": [
     "All plotted values are parsed from the listed frozen artifacts.",
@@ -12,10 +13,10 @@
     "P7 intervals are the registered intervals stored in summary.json."
   ],
   "outputs": {
-    "paper/figures/calibration_evidence.pdf": "4ca4a68e0cf4e0192e972c3031bdc578e21c3b9fcec245566b7adc5e53623ec6",
-    "paper/figures/calibration_evidence.png": "1a249fd58424e13f5fddcc1ffb7f3a7f66671703971413a7c2112ac563742ba6",
-    "paper/figures/navigation_results.pdf": "77e4acf589c16d86f1d9649493ab4bdd3a4d1bdcb9d34ce6f63d9a65485764c3",
-    "paper/figures/navigation_results.png": "a7fa5fcb75f97b00d4d74e06cb4aa595814a226784b127e3324c17545e256b9a"
+    "paper/figures/calibration_evidence.pdf": "1c1255914dcd47754da1ca8914f7ade7cd8b2e35f829333bb1b1a550114b864f",
+    "paper/figures/calibration_evidence.png": "22c304f038d2126621d374c02dee3bd413610971e5d2e6dc140cec2f63dd0dd3",
+    "paper/figures/navigation_results.pdf": "a7ae4ac1f54f1d9f799f28496aaa6e76da1b32281d54416991a965d3df5a9bef",
+    "paper/figures/navigation_results.png": "4f2c7129da76b2708aa24463444f1af9ba27d5c3624b3463c28d89b8dffb0081"
   },
   "schema_version": "1.0"
 }

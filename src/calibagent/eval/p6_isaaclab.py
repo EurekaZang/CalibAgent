@@ -74,8 +74,27 @@ class P6BenchmarkConfig:
             raise ValueError("P6 num_seeds must match the seed list")
         if len(seeds) != len(set(seeds)):
             raise ValueError("P6 seeds must be unique")
-        if self.methods != ("frozen", "passive", "full"):
-            raise ValueError("P6 requires frozen/passive/full controls")
+        required_methods = {"frozen", "passive", "full"}
+        if not required_methods <= set(self.methods) or len(self.methods) != len(
+            set(self.methods)
+        ):
+            raise ValueError(
+                "P6 requires unique frozen/passive/full controls"
+            )
+        if self.experiment_role == "main" and self.methods != (
+            "frozen",
+            "passive",
+            "full",
+        ):
+            raise ValueError("P6 main evidence requires only frozen/passive/full controls")
+        allowed_supplemental = required_methods | {
+            "recovery_no_task",
+            "recovery_d_opt",
+            "recovery_lhs",
+            "recovery_random",
+        }
+        if not set(self.methods) <= allowed_supplemental:
+            raise ValueError("P6 contains an unsupported recovery selector")
         if len(scenario_ids) != len(set(scenario_ids)):
             raise ValueError("P6 scenario ids must be unique")
         if int(self.trial["recovery_budget_trials"]) > 0.40 * int(
@@ -398,6 +417,47 @@ def _aggregate_method_outputs(
         dtype=np.float64,
     )
     early_improvements = passive_early - full_early
+    selector_comparisons: dict[str, dict[str, Any]] = {}
+    for offset, method in enumerate(
+        item for item in methods if item not in {"frozen", "passive", "full"}
+    ):
+        selector_early = np.asarray(
+            [
+                np.mean(
+                    [
+                        curve_indexed.get(
+                            (method, seed, trial),
+                            invalid_window_penalty,
+                        )
+                        for trial in primary_trials
+                    ]
+                )
+                for seed in seeds
+            ],
+            dtype=np.float64,
+        )
+        full_improvement = selector_early - full_early
+        selector_rows = [indexed[(method, seed)] for seed in seeds]
+        selector_comparisons[method] = {
+            "selector_minus_full_early_rmse_mean": float(
+                np.mean(full_improvement)
+            ),
+            "selector_minus_full_early_rmse_ci95": _bootstrap_mean_ci(
+                full_improvement,
+                simulator_seed + 1201 + 20 * offset,
+            ),
+            "full_early_win_rate": float(np.mean(full_improvement > 0.0)),
+            "full_vs_selector_early_wilcoxon_one_sided_p": _paired_wilcoxon_less(
+                full_early,
+                selector_early,
+            ),
+            "selector_recovery_rate": float(
+                np.mean([_as_bool(row["recovered"]) for row in selector_rows])
+            ),
+            "selector_final_rmse_mean": float(
+                np.mean([float(row["final_rmse"]) for row in selector_rows])
+            ),
+        }
     full_rows = [indexed[("full", seed)] for seed in seeds]
     full_final_rmse = np.asarray(
         [float(row["final_rmse"]) for row in full_rows],
@@ -475,6 +535,7 @@ def _aggregate_method_outputs(
             full_early,
             passive_early,
         ),
+        "recovery_selector_comparisons": selector_comparisons,
         "full_minus_passive_final_rmse_mean": float(
             np.mean(-passive_improvements)
         ),

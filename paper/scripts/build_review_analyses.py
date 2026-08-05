@@ -27,7 +27,6 @@ from calibagent.eval.metrics import task_weighted_rmse
 from calibagent.eval.replay import _selection_indices
 from calibagent.eval.synthetic import SyntheticDistortion, make_observation
 
-
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "paper/process/phase4_artifacts/reviewer_analysis"
 OUT.mkdir(parents=True, exist_ok=True)
