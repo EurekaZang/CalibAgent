@@ -37,7 +37,7 @@
   \node[robot, right=of safe] (robot) {Fixed locomotion\\controller + robot};
 
   \node[box, below=10mm of robot] (measure) {Robust steady-motion\\measurement $y,R$};
-  \node[model, left=of measure] (blr) {Bayesian response model\\M1 / M2 basis};
+  \node[model, left=of measure] (blr) {Bayesian response model\\affine / nonlinear basis};
   \node[guard, left=of blr] (stop) {Validated stopping\\+ hard budgets};
   \node[box, left=of stop] (inverse) {Constrained inverse\\task compensation};
 
@@ -51,7 +51,7 @@
   \draw[flow] (blr.south) .. controls +(0,-7mm) and +(0,-7mm) ..
       node[label, midway, below] {posterior model} (inverse.south);
 
-  \node[guard, below=14mm of measure] (shift) {Residual CUSUM\\shift latch};
+  \node[guard, below=14mm of measure] (shift) {Paired residual signatures\\2-of-4 shift latch};
   \node[model, left=of shift] (recover) {Posterior inflation\\bounded active recovery};
 
   \begin{scope}[on background layer]
@@ -64,7 +64,7 @@
           label={[font=\sffamily\scriptsize\bfseries,text=amber!70!black]below:Shift-recovery branch}] {};
   \end{scope}
 
-  \draw[shiftflow] (measure.south) -- node[label, right] {innovation} (shift.north);
+  \draw[shiftflow] (measure.south) -- node[label, right] {signature residual} (shift.north);
   \draw[shiftflow] (shift) -- node[label, above] {alarm} (recover);
   \draw[shiftflow] (recover.north) -- node[label, right] {inflate} (blr.south);
 \end{tikzpicture}

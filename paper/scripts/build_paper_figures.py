@@ -6,6 +6,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -16,24 +17,29 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "paper" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)
+PROVENANCE_OUT = ROOT / "evidence" / "paper_figure_provenance"
+PROVENANCE_OUT.mkdir(parents=True, exist_ok=True)
+
+MAP_ASSETS = {
+    "p7_replicate_s_bend_overview.png": "map_s_bend.png",
+    "p7_replicate_offset_slalom_overview.png": "map_offset_slalom.png",
+    "p7_replicate_narrow_lane_overview.png": "map_narrow_lane.png",
+    "p7_replicate_double_chicane_overview.png": "map_double_chicane.png",
+    "p7_replicate_weighted_arc_overview.png": "map_weighted_arc.png",
+    "p7_replicate_extended_lane_overview.png": "map_extended_lane.png",
+}
 
 P1_FOLDS = ROOT / "evidence/p1_real/baseline_fold_metrics.csv"
 P1_POOLED = ROOT / "evidence/p1_real/baseline_metrics.csv"
 P3 = ROOT / "evidence/p3_main/paired_statistics.json"
-P1_NESTED = (
-    ROOT / "paper/process/phase4_artifacts/reviewer_analysis/p1_nested_models.csv"
-)
+P1_NESTED = ROOT / "paper/process/phase4_artifacts/reviewer_analysis/p1_nested_models.csv"
 P1_NESTED_FOLDS = (
     ROOT / "paper/process/phase4_artifacts/reviewer_analysis/p1_nested_fold_metrics.csv"
 )
-REVIEW_ANALYSIS = (
-    ROOT / "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json"
-)
+REVIEW_ANALYSIS = ROOT / "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json"
 P7 = ROOT / "evidence/p7_strong_confirmatory_v2/summary.json"
 MISMATCH_COMPARISONS = ROOT / "evidence/task_distribution_mismatch/comparisons.csv"
-MISMATCH_RATIOS = (
-    ROOT / "evidence/task_distribution_mismatch/task_ivr_mismatch_ratios.csv"
-)
+MISMATCH_RATIOS = ROOT / "evidence/task_distribution_mismatch/task_ivr_mismatch_ratios.csv"
 INPUTS = [
     P1_FOLDS,
     P1_POOLED,
@@ -138,7 +144,7 @@ def p1_values() -> tuple[list[str], np.ndarray]:
 def build_calibration_figure() -> list[Path]:
     p3 = load_json(P3)
     review = load_json(REVIEW_ANALYSIS)
-    fig, axes_grid = plt.subplots(3, 2, figsize=(7.05, 6.45), constrained_layout=True)
+    fig, axes_grid = plt.subplots(3, 2, figsize=(7.05, 5.25), constrained_layout=True)
     axes = axes_grid.ravel()
 
     # (a) Nested passive hardware models separate intercept and coupling.
@@ -165,9 +171,7 @@ def build_calibration_figure() -> list[Path]:
         linewidth=0.55,
         zorder=2,
     )
-    for session_index, session in enumerate(
-        ["go2-session-01", "go2-session-02", "go2-session-03"]
-    ):
+    for session_index, session in enumerate(["go2-session-01", "go2-session-02", "go2-session-03"]):
         indexed = {
             row["model"]: float(row["rmse"])
             for row in fold_rows
@@ -186,7 +190,7 @@ def build_calibration_figure() -> list[Path]:
     axes[0].set_ylabel("Held-out velocity RMSE")
     axes[0].set_ylim(0, 0.075)
     axes[0].grid(axis="y", color=LIGHT_GREY, linewidth=0.55, zorder=0)
-    axes[0].set_title("Passive Go2 nested model check")
+    axes[0].set_title("Passive Go2 model comparison")
     axes[0].text(
         4,
         nested["coupled_affine"] + 0.003,
@@ -254,9 +258,7 @@ def build_calibration_figure() -> list[Path]:
     for index, (method, label, color, hatch) in enumerate(
         zip(method_order, method_labels, colors, hatches, strict=True)
     ):
-        values = np.asarray(
-            [indexed[(family, method)]["mean_trials"] for family in families]
-        )
+        values = np.asarray([indexed[(family, method)]["mean_trials"] for family in families])
         intervals = np.asarray(
             [indexed[(family, method)]["mean_trials_ci95"] for family in families]
         )
@@ -294,9 +296,7 @@ def build_calibration_figure() -> list[Path]:
     # endpoint, this comparison does not reward the acquisition rule for
     # directly reducing its own uncertainty objective.
     fixed_rows = review["p3"]["fixed_budget_rmse"]
-    fixed_index = {
-        (int(row["budget"]), row["method"]): row for row in fixed_rows
-    }
+    fixed_index = {(int(row["budget"]), row["method"]): row for row in fixed_rows}
     budgets = np.asarray([12, 18, 24, 30])
     fixed_methods = ["lhs", "d_opt", "active_no_task", "active"]
     fixed_labels = ["LHS", "D-opt", "No task", "Task IVR"]
@@ -369,7 +369,10 @@ def build_calibration_figure() -> list[Path]:
             if int(row["budget"]) == 24 and row["baseline"] == baseline
         }
         means = np.asarray(
-            [float(indexed[item]["mean_baseline_minus_task_ivr_rmse"]) for item in distribution_order]
+            [
+                float(indexed[item]["mean_baseline_minus_task_ivr_rmse"])
+                for item in distribution_order
+            ]
         )
         lower = np.asarray([float(indexed[item]["ci95_lower"]) for item in distribution_order])
         upper = np.asarray([float(indexed[item]["ci95_upper"]) for item in distribution_order])
@@ -404,13 +407,13 @@ def build_calibration_figure() -> list[Path]:
             float(row["task_ivr_mismatch_to_declared_rmse_ratio"])
         )
     rng = np.random.default_rng(74131)
-    for budget, color, marker in zip([18, 24, 30], [CYAN, VERMILLION, BLUE], ["s", "o", "D"], strict=True):
+    for budget, color, marker in zip(
+        [18, 24, 30], [CYAN, VERMILLION, BLUE], ["s", "o", "D"], strict=True
+    ):
         means, lowers, uppers = [], [], []
         for distribution in distribution_order:
             values = np.asarray(ratio_index[(distribution, budget)], dtype=float)
-            samples = np.mean(
-                rng.choice(values, size=(4000, len(values)), replace=True), axis=1
-            )
+            samples = np.mean(rng.choice(values, size=(4000, len(values)), replace=True), axis=1)
             means.append(float(np.mean(values)))
             lowers.append(float(np.quantile(samples, 0.025)))
             uppers.append(float(np.quantile(samples, 0.975)))
@@ -428,7 +431,9 @@ def build_calibration_figure() -> list[Path]:
         )
     axes[5].axhline(1.0, color=BLACK, linewidth=0.7)
     axes[5].axhline(2.0, color=ORANGE, linestyle="--", linewidth=0.9, label="2x gate")
-    axes[5].set_xticks(np.arange(len(distribution_order)), ["Decl.", "Fwd", "Left", "Right", "Broad"])
+    axes[5].set_xticks(
+        np.arange(len(distribution_order)), ["Decl.", "Fwd", "Left", "Right", "Broad"]
+    )
     axes[5].set_ylabel("Task-IVR RMSE / declared-task RMSE")
     axes[5].set_ylim(0.75, 3.55)
     axes[5].grid(axis="y", color=LIGHT_GREY, linewidth=0.55)
@@ -452,13 +457,24 @@ def build_navigation_figure() -> list[Path]:
     map_labels = ["S-bend", "Offset", "Narrow", "Chicane", "W. arc", "Extended"]
     rows = {row["map"]: row for row in p7["maps"]}
     scenarios = [rows[name] for name in map_order]
-    methods = ["B0_raw", "B1_dense", "B2_lhs", "B3_sobol", "B4_d_opt", "B5_active_no_task", "B8_full"]
-    method_labels = ["Raw", "Dense", "LHS", "Sobol", "D-opt", "No task", "Full"]
+    methods = [
+        "B0_raw",
+        "B1_dense",
+        "B2_lhs",
+        "B3_sobol",
+        "B4_d_opt",
+        "B5_active_no_task",
+        "B8_full",
+    ]
+    method_labels = ["Raw", "Dense", "LHS", "Sobol", "D-opt", "No task", "CalibAgent"]
 
-    fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 4.35), constrained_layout=True)
+    fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 3.45), constrained_layout=True)
     axes = axes_grid.ravel()
     success = np.asarray(
-        [[row["method_summaries"][method]["success_rate"] for method in methods] for row in scenarios]
+        [
+            [row["method_summaries"][method]["success_rate"] for method in methods]
+            for row in scenarios
+        ]
     )
     image = axes[0].imshow(success, vmin=0.0, vmax=1.0, cmap="cividis", aspect="auto")
     axes[0].set_xticks(np.arange(len(methods)), method_labels, rotation=55, ha="right")
@@ -491,7 +507,7 @@ def build_navigation_figure() -> list[Path]:
     axes[1].axvline(0, color=BLACK, linewidth=0.7)
     axes[1].set_yticks(y, map_labels)
     axes[1].invert_yaxis()
-    axes[1].set_xlabel("Raw - full capped-time gain (s)")
+    axes[1].set_xlabel("Raw - CalibAgent capped-time gain (s)")
     axes[1].set_xlim(20, 37)
     axes[1].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
     axes[1].set_title("Failure-aware time gain")
@@ -552,7 +568,7 @@ def build_navigation_figure() -> list[Path]:
     axes[2].set_yticks(y, map_labels)
     axes[2].invert_yaxis()
     axes[2].set_xlim(-0.02, 0.18)
-    axes[2].set_xlabel("Full task-RMSE reduction vs control")
+    axes[2].set_xlabel("CalibAgent task-RMSE reduction vs control")
     axes[2].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
     axes[2].legend(frameon=False, loc="lower right")
     axes[2].set_title("Matched-budget task validation")
@@ -575,7 +591,7 @@ def build_navigation_figure() -> list[Path]:
     axes[3].axvline(1.25, color=VERMILLION, linestyle="--", linewidth=1.0, label="NI margin")
     axes[3].set_yticks(y, map_labels)
     axes[3].invert_yaxis()
-    axes[3].set_xlabel("Full / dense capped-time ratio")
+    axes[3].set_xlabel("CalibAgent / dense capped-time ratio")
     axes[3].set_xlim(0.88, 1.27)
     axes[3].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
     axes[3].legend(frameon=False, loc="lower right")
@@ -585,7 +601,7 @@ def build_navigation_figure() -> list[Path]:
     fig.text(
         0.5,
         -0.015,
-        "All full-method collision counts were 0/72 on every map.",
+        "All CalibAgent collision counts were 0/72 on every map.",
         ha="center",
         fontsize=7,
     )
@@ -596,6 +612,11 @@ def main() -> None:
     for path in INPUTS:
         if not path.is_file():
             raise FileNotFoundError(path)
+    for source_name, target_name in MAP_ASSETS.items():
+        shutil.copy2(
+            ROOT / "docs" / "assets" / "readme" / "isaac_sim" / source_name,
+            OUT / target_name,
+        )
     outputs = build_calibration_figure() + build_navigation_figure()
     script_path = Path(__file__).resolve()
     manifest = {
@@ -609,7 +630,7 @@ def main() -> None:
             "P7 intervals are the registered intervals stored in summary.json.",
         ],
     }
-    (OUT / "quantitative_figure_manifest.json").write_text(
+    (PROVENANCE_OUT / "quantitative_figure_manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
 

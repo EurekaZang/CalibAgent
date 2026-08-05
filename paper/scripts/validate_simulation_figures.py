@@ -18,16 +18,28 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "docs" / "assets" / "readme" / "isaac_sim"
 MAIN_TEX = ROOT / "paper" / "main.tex"
-MANIFEST = ROOT / "paper" / "figures" / "simulation_figure_manifest.json"
-SCIENTIFIC_MANIFEST = ROOT / "paper" / "figures" / "simulation_scientific_figure_manifest.json"
+STAGED_FIGURES = ROOT / "paper" / "figures"
+PROVENANCE = ROOT / "evidence" / "paper_figure_provenance"
+MANIFEST = PROVENANCE / "simulation_figure_manifest.json"
+SCIENTIFIC_MANIFEST = PROVENANCE / "simulation_scientific_figure_manifest.json"
 
 CAPTURES = {
-    "p7_replicate_s_bend_capture.json": ["p7_replicate_s_bend_overview.png"],
-    "p7_replicate_offset_slalom_capture.json": ["p7_replicate_offset_slalom_overview.png"],
-    "p7_replicate_narrow_lane_capture.json": ["p7_replicate_narrow_lane_overview.png"],
-    "p7_replicate_double_chicane_capture.json": ["p7_replicate_double_chicane_overview.png"],
-    "p7_replicate_weighted_arc_capture.json": ["p7_replicate_weighted_arc_overview.png"],
-    "p7_replicate_extended_lane_capture.json": ["p7_replicate_extended_lane_overview.png"],
+    "p7_replicate_s_bend_capture.json": [("p7_replicate_s_bend_overview.png", "map_s_bend.png")],
+    "p7_replicate_offset_slalom_capture.json": [
+        ("p7_replicate_offset_slalom_overview.png", "map_offset_slalom.png")
+    ],
+    "p7_replicate_narrow_lane_capture.json": [
+        ("p7_replicate_narrow_lane_overview.png", "map_narrow_lane.png")
+    ],
+    "p7_replicate_double_chicane_capture.json": [
+        ("p7_replicate_double_chicane_overview.png", "map_double_chicane.png")
+    ],
+    "p7_replicate_weighted_arc_capture.json": [
+        ("p7_replicate_weighted_arc_overview.png", "map_weighted_arc.png")
+    ],
+    "p7_replicate_extended_lane_capture.json": [
+        ("p7_replicate_extended_lane_overview.png", "map_extended_lane.png")
+    ],
 }
 
 
@@ -50,12 +62,12 @@ def png_resolution(path: Path) -> list[int]:
 
 def manuscript_sim_assets() -> list[str]:
     text = MAIN_TEX.read_text(encoding="utf-8")
-    pattern = re.compile(r"\\includegraphics(?:\[[^]]*\])?\{\.\./docs/assets/readme/isaac_sim/([^}]+)\}")
+    pattern = re.compile(r"\\includegraphics(?:\[[^]]*\])?\{figures/(map_[^}]+\.png)\}")
     return pattern.findall(text)
 
 
 def main() -> None:
-    expected_assets = [asset for assets in CAPTURES.values() for asset in assets]
+    expected_assets = [staged for assets in CAPTURES.values() for _, staged in assets]
     used_assets = manuscript_sim_assets()
     if sorted(used_assets) != sorted(expected_assets):
         missing = sorted(set(expected_assets) - set(used_assets))
@@ -86,7 +98,7 @@ def main() -> None:
             raise SystemExit(f"Unverified display seed: {capture_name}")
         declared_frames = {frame["path"]: frame for frame in capture.get("frames", [])}
 
-        for asset_name in asset_names:
+        for asset_name, staged_name in asset_names:
             if asset_name not in declared_frames:
                 raise SystemExit(f"{asset_name} is not declared by {capture_name}")
             asset_path = ASSETS / asset_name
@@ -102,9 +114,13 @@ def main() -> None:
                     f"Duplicate image content: {asset_name} and {seen_hashes[actual_hash]}"
                 )
             seen_hashes[actual_hash] = asset_name
+            staged_path = STAGED_FIGURES / staged_name
+            if sha256(staged_path) != actual_hash:
+                raise SystemExit(f"Staged manuscript image differs from source: {staged_name}")
             entries.append(
                 {
                     "asset": str(asset_path.relative_to(ROOT)),
+                    "staged_manuscript_asset": str(staged_path.relative_to(ROOT)),
                     "asset_sha256": actual_hash,
                     "capture_record": str(capture_path.relative_to(ROOT)),
                     "capture_record_sha256": sha256(capture_path),
@@ -136,6 +152,7 @@ def main() -> None:
         "scientific_figure_source_count": len(scientific["sources"]),
         "entries": entries,
     }
+    PROVENANCE.mkdir(parents=True, exist_ok=True)
     MANIFEST.write_text(json.dumps(output, indent=2) + "\n", encoding="utf-8")
     print(
         f"PASS: audited {len(entries)} unique scene images and "

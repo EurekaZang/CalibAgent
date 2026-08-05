@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "figures": {
-    "p5_simulation_response": {
-      "purpose": "Registered P5 response geometry and paired calibration effects",
+    "closed_loop_response": {
+      "purpose": "Closed-loop response geometry and paired calibration effects",
       "display_seed": 5301,
       "statistical_unit": "20 paired seeds per scenario"
     },
-    "p6_simulation_shift": {
-      "purpose": "Registered P6 shift construction, response geometry, and recovery effects",
+    "shift_recovery_results": {
+      "purpose": "Held-out shift construction, response geometry, and recovery effects",
       "display_seed": 10101,
-      "statistical_unit": "72 paired seeds per shift"
+      "statistical_unit": "144 paired seeds per shift in two disjoint blocks"
     }
   },
   "sources": [
@@ -50,8 +50,8 @@
       "sha256": "988f702a064c1eda80fe579f5b69452270ffffec9a6d95eb2e4b86fb67b84b46"
     },
     {
-      "path": "evidence/p6_strong_confirmatory/summary.json",
-      "sha256": "cc3588338cdf5ec99a2ff56243275c87d9566b153760f3f2a23c904585ee5702"
+      "path": "evidence/p6_paired_signature_pooled_030/summary.json",
+      "sha256": "330d2a0e46783b895b4791a4a2cc89f687e8a5dd42c5b065726bb52766ec16ec"
     },
     {
       "path": "evidence/recovery_selector_ablation/scenarios/ablate_friction_payload/recovery_curve.csv",

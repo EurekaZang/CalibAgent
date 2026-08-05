@@ -13,7 +13,7 @@ figures:
 simulation-audit: figures
 	../.venv/bin/python scripts/validate_simulation_figures.py
 
-main.pdf: main.tex references.bib ieeeconf.cls figures/calibagent_pipeline.pdf figures/calibration_evidence.pdf figures/p5_simulation_response.pdf figures/p6_simulation_shift.pdf figures/navigation_results.pdf
+main.pdf: main.tex references.bib ieeeconf.cls figures/calibagent_pipeline.pdf figures/calibration_evidence.pdf figures/closed_loop_response.pdf figures/shift_recovery_results.pdf figures/navigation_results.pdf
 	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error main.tex
 
 clean:

@@ -17,8 +17,9 @@ from matplotlib.colors import LinearSegmentedColormap
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE_DIR = ROOT / "docs" / "assets" / "readme" / "isaac_sim"
 OUT = ROOT / "paper" / "figures"
+PROVENANCE_OUT = ROOT / "evidence" / "paper_figure_provenance"
 P5_SUMMARY = ROOT / "evidence" / "p5_main" / "summary.json"
-P6_SUMMARY = ROOT / "evidence" / "p6_strong_confirmatory" / "summary.json"
+P6_SUMMARY = ROOT / "evidence" / "p6_paired_signature_pooled_030" / "summary.json"
 SELECTOR_ROOT = ROOT / "evidence" / "recovery_selector_ablation"
 
 BLUE = "#0072B2"
@@ -106,8 +107,7 @@ def draw_response_axis(
 ) -> None:
     overlays = {item["probe_name"]: item for item in capture["capture_only_visualization_overlays"]}
     probes = {
-        item["response_probe"]["name"]: item["response_probe"]
-        for item in capture["source_frames"]
+        item["response_probe"]["name"]: item["response_probe"] for item in capture["source_frames"]
     }
     names = ["coupled_response", "forward_turn_response"]
     colors = [BLUE, VERMILLION]
@@ -129,12 +129,8 @@ def draw_response_axis(
         for step in range(1, len(scales)):
             vx, vy, wz = command * scales[step - 1]
             yaw = ideal[step - 1, 2]
-            ideal[step, 0] = ideal[step - 1, 0] + dt * (
-                np.cos(yaw) * vx - np.sin(yaw) * vy
-            )
-            ideal[step, 1] = ideal[step - 1, 1] + dt * (
-                np.sin(yaw) * vx + np.cos(yaw) * vy
-            )
+            ideal[step, 0] = ideal[step - 1, 0] + dt * (np.cos(yaw) * vx - np.sin(yaw) * vy)
+            ideal[step, 1] = ideal[step - 1, 1] + dt * (np.sin(yaw) * vx + np.cos(yaw) * vy)
             ideal[step, 2] = yaw + dt * wz
         ax.plot(
             ideal[:, 0],
@@ -156,15 +152,22 @@ def draw_response_axis(
         )
         ax.plot(points[:, 0], points[:, 1], color=color, lw=1.45, zorder=2)
         ax.scatter(points[0, 0], points[0, 1], s=12, marker="D", color=BLACK, zorder=3)
-        ax.scatter(points[-1, 0], points[-1, 1], s=20, marker="o", color=color,
-                   edgecolor="white", linewidth=0.45, zorder=4)
+        ax.scatter(
+            points[-1, 0],
+            points[-1, 1],
+            s=20,
+            marker="o",
+            color=color,
+            edgecolor="white",
+            linewidth=0.45,
+            zorder=4,
+        )
     ax.set_xlim(*limits[0])
     ax.set_ylim(*limits[1])
     ax.set_aspect("equal", adjustable="box")
     style_axis(ax)
-    ax.set_title(f"{panel}  {LABELS[capture['scenario_id']]}", loc="left", pad=3,
-                 fontweight="bold")
-    ax.set_xlabel("Body $x$ displacement [m]", labelpad=1.5)
+    ax.set_title(f"{panel}  {LABELS[capture['scenario_id']]}", loc="left", pad=3, fontweight="bold")
+    ax.set_xlabel("$x$ displacement [m]", labelpad=1.5)
 
 
 def finish(fig: plt.Figure, stem: str) -> None:
@@ -180,7 +183,7 @@ def build_p5() -> None:
     rows = {item["scenario"]: item for item in summary["scenarios"]}
     ordered = [rows[item["scenario_id"]] for item in p5_caps]
 
-    fig = plt.figure(figsize=(7.05, 3.75), constrained_layout=True)
+    fig = plt.figure(figsize=(7.05, 3.20), constrained_layout=True)
     outer = fig.add_gridspec(2, 1, height_ratios=[1.1, 0.9], hspace=0.20)
     top = outer[0].subgridspec(1, 4, wspace=0.25)
     bottom = outer[1].subgridspec(1, 2, wspace=0.34)
@@ -191,22 +194,49 @@ def build_p5() -> None:
         draw_response_axis(ax, capture, chr(ord("a") + index), limits)
         response_axes.append(ax)
         if index == 0:
-            ax.set_ylabel("Body $y$ displacement [m]", labelpad=1.5)
+            ax.set_ylabel("$y$ displacement [m]", labelpad=1.5)
         else:
             ax.set_yticklabels([])
 
     handles = [
-        mpl.lines.Line2D([], [], color=BLUE, lw=1.5, marker="o", markersize=3.5,
-                         label=r"Probe 2: $[0.20,-0.18,-0.30]$"),
-        mpl.lines.Line2D([], [], color=VERMILLION, lw=1.5, marker="o", markersize=3.5,
-                         label=r"Probe 7: $[0.35,0.00,0.50]$"),
-        mpl.lines.Line2D([], [], color=BLACK, lw=0, marker="D", markersize=3,
-                         label="Start"),
-        mpl.lines.Line2D([], [], color=GREY, lw=0.9, ls="--", marker="x",
-                         markersize=3, label="Ideal command response"),
+        mpl.lines.Line2D(
+            [],
+            [],
+            color=BLUE,
+            lw=1.5,
+            marker="o",
+            markersize=3.5,
+            label=r"Coupled command: $[0.20,-0.18,-0.30]$",
+        ),
+        mpl.lines.Line2D(
+            [],
+            [],
+            color=VERMILLION,
+            lw=1.5,
+            marker="o",
+            markersize=3.5,
+            label=r"Forward-turn command: $[0.35,0.00,0.50]$",
+        ),
+        mpl.lines.Line2D([], [], color=BLACK, lw=0, marker="D", markersize=3, label="Start"),
+        mpl.lines.Line2D(
+            [],
+            [],
+            color=GREY,
+            lw=0.9,
+            ls="--",
+            marker="x",
+            markersize=3,
+            label="Ideal command response",
+        ),
     ]
-    fig.legend(handles=handles, loc="outside upper center", ncol=4, frameon=False,
-               columnspacing=1.3, handlelength=1.7)
+    fig.legend(
+        handles=handles,
+        loc="outside upper center",
+        ncol=4,
+        frameon=False,
+        columnspacing=1.3,
+        handlelength=1.7,
+    )
 
     # Paired raw-to-calibrated RMSE.
     ax_rmse = fig.add_subplot(bottom[0, 0])
@@ -226,10 +256,19 @@ def build_p5() -> None:
     ax_rmse.set_xlim(0.07, 0.162)
     ax_rmse.set_xlabel("Held-out velocity RMSE")
     ax_rmse.set_title("e  Held-out calibration", loc="left", fontweight="bold")
-    ax_rmse.text(raw[0], -0.42, "Raw", color=GREY, ha="right", va="center",
-                 fontsize=6.4, fontweight="bold")
-    ax_rmse.text(calibrated[0], -0.42, "Calibrated", color=GREEN, ha="center",
-                 va="center", fontsize=6.4, fontweight="bold")
+    ax_rmse.text(
+        raw[0], -0.42, "Raw", color=GREY, ha="right", va="center", fontsize=6.4, fontweight="bold"
+    )
+    ax_rmse.text(
+        calibrated[0],
+        -0.42,
+        "Calibrated",
+        color=GREEN,
+        ha="center",
+        va="center",
+        fontsize=6.4,
+        fontweight="bold",
+    )
     ax_rmse.grid(axis="x", color=LIGHT_GREY, lw=0.55)
 
     # Seed-paired absolute improvement and bootstrap interval.
@@ -252,34 +291,33 @@ def build_p5() -> None:
     ax_effect.invert_yaxis()
     ax_effect.set_xlim(0, 0.052)
     ax_effect.set_xlabel("Paired raw $-$ calibrated RMSE")
-    ax_effect.set_title("f  Seed-paired effect (95% bootstrap CI)", loc="left",
-                        fontweight="bold")
+    ax_effect.set_title("f  Seed-paired effect (95% bootstrap CI)", loc="left", fontweight="bold")
     ax_effect.grid(axis="x", color=LIGHT_GREY, lw=0.55)
-    finish(fig, "p5_simulation_response")
+    finish(fig, "closed_loop_response")
 
 
 def shift_cell_text(capture: dict[str, Any]) -> tuple[list[str], list[float]]:
     context = capture["physical_context"]
     pre = context["pre_physics"]
     post = context["post_physics"]
-    command_map_labels = {
-        "affine_high": "high",
-        "affine_low": "low",
-        "mixed_low": "mixed",
-    }
     texts = [
         f"{pre['static_friction']:.2f}$\\to${post['static_friction']:.2f}",
         f"{pre['dynamic_friction']:.2f}$\\to${post['dynamic_friction']:.2f}",
         f"{pre['payload_add_kg']:.1f}$\\to${post['payload_add_kg']:.1f}",
-        f"{1000*pre['com_offset_x_m']:.0f}$\\to${1000*post['com_offset_x_m']:.0f}",
-        f"{command_map_labels.get(context['pre_distortion'], context['pre_distortion'])}$\\to$"
-        f"{command_map_labels.get(context['post_distortion'], context['post_distortion'])}",
+        f"{1000 * pre['com_offset_x_m']:.0f}$\\to${1000 * post['com_offset_x_m']:.0f}",
+        "1.05--1.15",
+        ".65--.72",
+        "$\\leq$.04",
+        "$\\leq$.12",
     ]
     magnitudes = [
         abs(post["static_friction"] - pre["static_friction"]),
         abs(post["dynamic_friction"] - pre["dynamic_friction"]),
         abs(post["payload_add_kg"] - pre["payload_add_kg"]),
         abs(1000 * (post["com_offset_x_m"] - pre["com_offset_x_m"])),
+        1.0,
+        1.0,
+        1.0,
         1.0,
     ]
     return texts, magnitudes
@@ -288,11 +326,11 @@ def shift_cell_text(capture: dict[str, Any]) -> tuple[list[str], list[float]]:
 def build_p6() -> None:
     p6_caps = captures(P6_CAPTURE_NAMES)
     summary = load_json(P6_SUMMARY)
-    rows = {item["scenario"]: item for item in summary["scenarios"]}
-    ordered = [rows[item["scenario_id"]] for item in p6_caps]
+    rows = {item["context"]: item for item in summary["contexts"]}
+    ordered = [rows[str(item["scenario_id"]).removeprefix("confirm_")] for item in p6_caps]
 
-    fig = plt.figure(figsize=(7.05, 4.75), constrained_layout=True)
-    outer = fig.add_gridspec(3, 1, height_ratios=[1.05, 0.82, 0.42], hspace=0.24)
+    fig = plt.figure(figsize=(7.05, 4.00), constrained_layout=True)
+    outer = fig.add_gridspec(3, 1, height_ratios=[0.92, 1.03, 0.38], hspace=0.24)
     top = outer[0].subgridspec(1, 4, wspace=0.25)
     middle = outer[1].subgridspec(1, 4, wspace=0.42)
     limits = ((-0.035, 0.225), (-0.32, 0.075))
@@ -300,20 +338,48 @@ def build_p6() -> None:
         ax = fig.add_subplot(top[0, index])
         draw_response_axis(ax, capture, chr(ord("a") + index), limits)
         if index == 0:
-            ax.set_ylabel("Body $y$ displacement [m]", labelpad=1.5)
+            ax.set_ylabel("$y$ displacement [m]", labelpad=1.5)
         else:
             ax.set_yticklabels([])
 
     handles = [
-        mpl.lines.Line2D([], [], color=BLUE, lw=1.5, marker="o", markersize=3.5,
-                         label=r"Probe 2: $[0.20,-0.18,-0.30]$"),
-        mpl.lines.Line2D([], [], color=VERMILLION, lw=1.5, marker="o", markersize=3.5,
-                         label=r"Probe 7: $[0.35,0.00,0.50]$"),
-        mpl.lines.Line2D([], [], color=GREY, lw=0.9, ls="--", marker="x",
-                         markersize=3, label="Ideal command response"),
+        mpl.lines.Line2D(
+            [],
+            [],
+            color=BLUE,
+            lw=1.5,
+            marker="o",
+            markersize=3.5,
+            label=r"Coupled command: $[0.20,-0.18,-0.30]$",
+        ),
+        mpl.lines.Line2D(
+            [],
+            [],
+            color=VERMILLION,
+            lw=1.5,
+            marker="o",
+            markersize=3.5,
+            label=r"Forward-turn command: $[0.35,0.00,0.50]$",
+        ),
+        mpl.lines.Line2D(
+            [],
+            [],
+            color=GREY,
+            lw=0.9,
+            ls="--",
+            marker="x",
+            markersize=3,
+            label="Ideal command response",
+        ),
     ]
-    fig.legend(handles=handles, loc="outside upper center", ncol=3, frameon=False,
-               columnspacing=1.6, handlelength=1.7)
+    fig.legend(
+        handles=handles,
+        loc="outside upper center",
+        ncol=3,
+        frameon=False,
+        columnspacing=1.6,
+        handlelength=1.7,
+    )
 
     # Exact shift design matrix.
     ax_matrix = fig.add_subplot(middle[0, 0:2])
@@ -332,22 +398,42 @@ def build_p6() -> None:
     ax_matrix.imshow(normalized, cmap=cmap, vmin=0, vmax=1, aspect="auto")
     for row_index in range(text_matrix.shape[0]):
         for column_index in range(text_matrix.shape[1]):
-            ax_matrix.text(column_index, row_index, text_matrix[row_index, column_index],
-                           ha="center", va="center", fontsize=5.8, color=BLACK)
-    ax_matrix.set_xticks(np.arange(4), ["Fric.+load", "Gain", "Mixed", "Load/COM"])
-    ax_matrix.set_yticks(np.arange(5),
-                         [r"$\mu_s$", r"$\mu_d$", "Payload [kg]", "COM [mm]", "Cmd map"])
+            ax_matrix.text(
+                column_index,
+                row_index,
+                text_matrix[row_index, column_index],
+                ha="center",
+                va="center",
+                fontsize=5.8,
+                color=BLACK,
+            )
+    ax_matrix.set_xticks(
+        np.arange(4),
+        ["Friction\n+ payload", "Gain shift", "Mixed shift", "Payload\n+ COM"],
+    )
+    ax_matrix.set_yticks(
+        np.arange(8),
+        [
+            r"$\mu_s$",
+            r"$\mu_d$",
+            "Payload [kg]",
+            "COM [mm]",
+            "Gain (pre)",
+            "Gain (post)",
+            r"$|c_{ij}|_{\max}$ (pre)",
+            r"$|c_{ij}|_{\max}$ (post)",
+        ],
+    )
     ax_matrix.tick_params(length=0, pad=2)
     for spine in ax_matrix.spines.values():
         spine.set_visible(True)
         spine.set_color("white")
         spine.set_linewidth(1.0)
     ax_matrix.set_xticks(np.arange(-0.5, 4, 1), minor=True)
-    ax_matrix.set_yticks(np.arange(-0.5, 5, 1), minor=True)
+    ax_matrix.set_yticks(np.arange(-0.5, 8, 1), minor=True)
     ax_matrix.grid(which="minor", color="white", linewidth=1.3)
     ax_matrix.tick_params(which="minor", bottom=False, left=False)
-    ax_matrix.set_title("e  Exact pre$\\to$post shifts", loc="left",
-                        fontweight="bold")
+    ax_matrix.set_title("e  Exact pre$\\to$post shifts", loc="left", fontweight="bold")
 
     # Early active-recovery effect.
     y = np.arange(4)
@@ -366,10 +452,10 @@ def build_p6() -> None:
         lw=1.05,
     )
     ax_early.axvline(0, color=BLACK, lw=0.7)
-    ax_early.set_yticks(y, ["Fric.+load", "Gain", "Mixed", "Load/COM"])
+    ax_early.set_yticks(y, ["Friction + load", "Gain shift", "Mixed shift", "Payload + COM"])
     ax_early.invert_yaxis()
     ax_early.set_xlim(0, 0.0205)
-    ax_early.set_xlabel("Passive $-$ full RMSE")
+    ax_early.set_xlabel("Passive $-$ CalibAgent RMSE")
     ax_early.set_title("f  Early recovery", loc="left", fontweight="bold")
     ax_early.grid(axis="x", color=LIGHT_GREY, lw=0.55)
 
@@ -407,7 +493,8 @@ def build_p6() -> None:
                 "contexts_averaged_within_seed": len(scenario_effects),
             }
         )
-    (OUT / "recovery_selector_effects.json").write_text(
+    PROVENANCE_OUT.mkdir(parents=True, exist_ok=True)
+    (PROVENANCE_OUT / "recovery_selector_effects.json").write_text(
         json.dumps(selector_rows, indent=2) + "\n",
         encoding="utf-8",
     )
@@ -421,9 +508,7 @@ def build_p6() -> None:
     ax_selector.errorbar(
         selector_x,
         selector_mean,
-        yerr=np.vstack(
-            [selector_mean - selector_ci[:, 0], selector_ci[:, 1] - selector_mean]
-        ),
+        yerr=np.vstack([selector_mean - selector_ci[:, 0], selector_ci[:, 1] - selector_mean]),
         fmt="s",
         color=VERMILLION,
         ecolor=VERMILLION,
@@ -436,8 +521,11 @@ def build_p6() -> None:
     ax_selector.set_xlim(-0.45, 3.45)
     ax_selector.set_ylim(0.0, 0.026)
     ax_selector.set_ylabel("Selector $-$ task IVR RMSE")
-    ax_selector.set_title("h  Recovery-selector ablation (four contexts averaged within paired seed)",
-                          loc="left", fontweight="bold")
+    ax_selector.set_title(
+        "h  Recovery-selector ablation (four contexts averaged within paired seed)",
+        loc="left",
+        fontweight="bold",
+    )
     ax_selector.grid(axis="y", color=LIGHT_GREY, lw=0.55)
 
     # Absolute terminal accuracy.
@@ -458,33 +546,31 @@ def build_p6() -> None:
     ax_terminal.axvline(0.14, color=ORANGE, ls="--", lw=1.0)
     ax_terminal.set_yticks(y, [])
     ax_terminal.invert_yaxis()
-    ax_terminal.set_xlim(0.105, 0.142)
+    ax_terminal.set_xlim(0.09, 0.142)
+    ax_terminal.set_xticks([0.10, 0.12, 0.14])
     ax_terminal.set_xlabel("Terminal RMSE")
     ax_terminal.set_title("g  Absolute gate", loc="left", fontweight="bold")
     ax_terminal.grid(axis="x", color=LIGHT_GREY, lw=0.55)
-    ax_terminal.text(0.1395, 3.35, "0.14", ha="right", va="bottom", color=ORANGE,
-                     fontsize=6.2)
-    finish(fig, "p6_simulation_shift")
+    ax_terminal.text(0.1395, 3.35, "0.14", ha="right", va="bottom", color=ORANGE, fontsize=6.2)
+    finish(fig, "shift_recovery_results")
 
 
 def write_manifest() -> None:
     sources = [CAPTURE_DIR / name for name in P5_CAPTURE_NAMES + P6_CAPTURE_NAMES]
     sources.extend([P5_SUMMARY, P6_SUMMARY])
-    sources.extend(
-        sorted((SELECTOR_ROOT / "scenarios").glob("*/recovery_curve.csv"))
-    )
+    sources.extend(sorted((SELECTOR_ROOT / "scenarios").glob("*/recovery_curve.csv")))
     manifest = {
         "schema_version": 1,
         "figures": {
-            "p5_simulation_response": {
-                "purpose": "Registered P5 response geometry and paired calibration effects",
+            "closed_loop_response": {
+                "purpose": "Closed-loop response geometry and paired calibration effects",
                 "display_seed": 5301,
                 "statistical_unit": "20 paired seeds per scenario",
             },
-            "p6_simulation_shift": {
-                "purpose": "Registered P6 shift construction, response geometry, and recovery effects",
+            "shift_recovery_results": {
+                "purpose": "Held-out shift construction, response geometry, and recovery effects",
                 "display_seed": 10101,
-                "statistical_unit": "72 paired seeds per shift",
+                "statistical_unit": "144 paired seeds per shift in two disjoint blocks",
             },
         },
         "sources": [
@@ -495,7 +581,8 @@ def write_manifest() -> None:
             "multi-seed summaries. No values are digitized from prior raster figures."
         ),
     }
-    (OUT / "simulation_scientific_figure_manifest.json").write_text(
+    PROVENANCE_OUT.mkdir(parents=True, exist_ok=True)
+    (PROVENANCE_OUT / "simulation_scientific_figure_manifest.json").write_text(
         json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
     )
 

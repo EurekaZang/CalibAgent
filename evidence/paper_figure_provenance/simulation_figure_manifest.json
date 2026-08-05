@@ -5,12 +5,13 @@
   "asset_count": 6,
   "all_asset_hashes_unique": true,
   "all_declared_seed_memberships_verified": true,
-  "scientific_figure_manifest": "paper/figures/simulation_scientific_figure_manifest.json",
-  "scientific_figure_manifest_sha256": "334fd1b173c85dd8d35389b2f21cfad410b3036c6594accc8491b2ab6f0a5bea",
+  "scientific_figure_manifest": "evidence/paper_figure_provenance/simulation_scientific_figure_manifest.json",
+  "scientific_figure_manifest_sha256": "3768f8d2ed48b48a4160afe639df739eec9202b4bf2fc0738dfdda21a4e6db79",
   "scientific_figure_source_count": 14,
   "entries": [
     {
       "asset": "docs/assets/readme/isaac_sim/p7_replicate_s_bend_overview.png",
+      "staged_manuscript_asset": "paper/figures/map_s_bend.png",
       "asset_sha256": "ec9c06cc7c40f98d84788ce8957f2eac6e7d243ad1402e1411d2df94de13be38",
       "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_s_bend_capture.json",
       "capture_record_sha256": "b0506c8da755d4aa596b7192674f332d65ef8ab00add7066402c95796dfc4c98",
@@ -30,6 +31,7 @@
     },
     {
       "asset": "docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_overview.png",
+      "staged_manuscript_asset": "paper/figures/map_offset_slalom.png",
       "asset_sha256": "afe4f08e20ba6558408dd73c66380cdd9ddd0a66fb691cc8c32c7858865f7089",
       "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_offset_slalom_capture.json",
       "capture_record_sha256": "2311355a150167e5d6b1578e0d65bc95fa1a93f430a5c69e78132ba9e4d3771f",
@@ -49,6 +51,7 @@
     },
     {
       "asset": "docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_overview.png",
+      "staged_manuscript_asset": "paper/figures/map_narrow_lane.png",
       "asset_sha256": "224044e575f34fa8a78b625ee59aa77ff0406eac9c55f2bf3137d330ab6a3254",
       "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_narrow_lane_capture.json",
       "capture_record_sha256": "552f8b27468f6267df62e9fbf76f9e21445a5c54ddf0d5f2ad7656a7bdb903d1",
@@ -68,6 +71,7 @@
     },
     {
       "asset": "docs/assets/readme/isaac_sim/p7_replicate_double_chicane_overview.png",
+      "staged_manuscript_asset": "paper/figures/map_double_chicane.png",
       "asset_sha256": "a7a61562bea568e15741d2afe830b53f15156ebcfe4d039171ba775044f4819b",
       "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_double_chicane_capture.json",
       "capture_record_sha256": "6d47e887ae7ac30174f3824ec17e50e56b84669828a1e9d090ca6debd29f0816",
@@ -87,6 +91,7 @@
     },
     {
       "asset": "docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_overview.png",
+      "staged_manuscript_asset": "paper/figures/map_weighted_arc.png",
       "asset_sha256": "bbbdc4473f99e764576b8e85c07343127fefb21aedb3a0734bb064e711314c31",
       "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_weighted_arc_capture.json",
       "capture_record_sha256": "84e2596f61a263789cf28c2da0b03857a9ace5c7e1554ebab367705d48be5b4a",
@@ -106,6 +111,7 @@
     },
     {
       "asset": "docs/assets/readme/isaac_sim/p7_replicate_extended_lane_overview.png",
+      "staged_manuscript_asset": "paper/figures/map_extended_lane.png",
       "asset_sha256": "85c26e7cc3db8bdf102f7fb122986984df94608c5744db976088b31136696f83",
       "capture_record": "docs/assets/readme/isaac_sim/p7_replicate_extended_lane_capture.json",
       "capture_record_sha256": "4709f531cc3a2ae2d22ca31fa2b218bad242993c2bdd3fe6a3960b13ef7c4a4a",
