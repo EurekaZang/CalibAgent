@@ -17,9 +17,9 @@
     "P7 intervals are the registered intervals stored in summary.json."
   ],
   "outputs": {
-    "paper/figures/calibration_evidence.pdf": "ec7d10ce98e2d38e1cf03fef8eee606552d60e7c289b521945965d839598e544",
+    "paper/figures/calibration_evidence.pdf": "da64095d9e8fdc4c34c17bb7a9f106a687e50547efa9db94a3f64ac0f819ef48",
     "paper/figures/calibration_evidence.png": "b3e2fb9eb189c950b871aadf8bc156d393f8a2787e352c1151704f50c62e77b2",
-    "paper/figures/navigation_results.pdf": "486263f3db7273085c95511323a762d72753307e83e920a7885ef802fb854030",
+    "paper/figures/navigation_results.pdf": "f3b9c7df56fc59e86a642a7222aa761ce64629db56fa5f65def7552d40f8a851",
     "paper/figures/navigation_results.png": "c4c7585f875a37b9fa3c38ac09e9d1bf8037cb39da45706cf258e30e09b86ca1"
   },
   "schema_version": "1.0"

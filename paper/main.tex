@@ -1,18 +1,11 @@
 \documentclass[letterpaper,10pt,conference]{ieeeconf}
 
-\IEEEoverridecommandlockouts
 \overrideIEEEmargins
 
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{url}
-
-\setlength{\textfloatsep}{6pt plus 1pt minus 2pt}
-\setlength{\floatsep}{6pt plus 1pt minus 2pt}
-\setlength{\intextsep}{6pt plus 1pt minus 2pt}
-\setlength{\abovecaptionskip}{3pt}
-\setlength{\belowcaptionskip}{0pt}
 
 \newcommand{\method}{\textsc{CalibAgent}}
 \newcommand{\vect}[1]{\boldsymbol{#1}}
@@ -109,13 +102,13 @@ selection, recovery, and navigation are evaluated in controlled simulation.
   \centering
   \setlength{\tabcolsep}{2pt}
   \begin{tabular}{@{}ccc@{}}
-    \includegraphics[width=0.27\textwidth]{figures/map_s_bend.png} &
-    \includegraphics[width=0.27\textwidth]{figures/map_offset_slalom.png} &
-    \includegraphics[width=0.27\textwidth]{figures/map_narrow_lane.png} \\
+    \includegraphics[width=0.265\textwidth]{figures/map_s_bend.png} &
+    \includegraphics[width=0.265\textwidth]{figures/map_offset_slalom.png} &
+    \includegraphics[width=0.265\textwidth]{figures/map_narrow_lane.png} \\
     \textbf{(a) S-bend} & \textbf{(b) Offset slalom} & \textbf{(c) Narrow lane} \\[2pt]
-    \includegraphics[width=0.27\textwidth]{figures/map_double_chicane.png} &
-    \includegraphics[width=0.27\textwidth]{figures/map_weighted_arc.png} &
-    \includegraphics[width=0.27\textwidth]{figures/map_extended_lane.png} \\
+    \includegraphics[width=0.265\textwidth]{figures/map_double_chicane.png} &
+    \includegraphics[width=0.265\textwidth]{figures/map_weighted_arc.png} &
+    \includegraphics[width=0.265\textwidth]{figures/map_extended_lane.png} \\
     \textbf{(d) Double chicane} & \textbf{(e) Weighted arc} & \textbf{(f) Extended lane}
   \end{tabular}
   \caption{Elevated Isaac Sim views of the six held-out navigation maps. Cyan
@@ -167,7 +160,7 @@ non-learned envelope.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.86\textwidth]{figures/calibagent_pipeline.pdf}
+  \includegraphics[width=0.84\textwidth]{figures/calibagent_pipeline.pdf}
   \caption{\method\ architecture. Task-weighted acquisition ranks calibration
   commands, but the hard filter alone authorizes execution. Valid observations
   update the Bayesian model; held-out validation and uncertainty control
@@ -449,7 +442,7 @@ builders, and commands needed to reproduce every reported result.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/closed_loop_response.pdf}
+  \includegraphics[width=0.98\textwidth]{figures/closed_loop_response.pdf}
   \caption{Closed-loop simulation responses and calibration.
   (a)--(d) Body-displacement trajectories for coupled and forward-turn validation commands in a
   representative paired run; colored curves are measured, dashed gray curves and crosses are
@@ -463,7 +456,7 @@ builders, and commands needed to reproduce every reported result.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/shift_recovery_results.pdf}
+  \includegraphics[width=0.98\textwidth]{figures/shift_recovery_results.pdf}
   \caption{Held-out simulator shifts and active recovery. (a)--(d)
   Measured body-displacement trajectories and dashed ideal command responses
   for the same validation commands in a representative paired run. (e) Exact
@@ -485,7 +478,7 @@ builders, and commands needed to reproduce every reported result.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/calibration_evidence.pdf}
+  \includegraphics[width=0.98\textwidth]{figures/calibration_evidence.pdf}
   \caption{Calibration evidence. (a) Passive real-Go2 held-out RMSE for raw,
   diagonal-linear, diagonal-affine, coupled-linear, and coupled-affine
   commands. (b) Paired trials saved by task IVR;
@@ -596,7 +589,7 @@ than detection and updating alone.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/navigation_results.pdf}
+  \includegraphics[width=0.97\textwidth]{figures/navigation_results.pdf}
   \caption{Held-out simulator navigation (72 seeds/cell). (a) Success
   rate. (b) Paired raw-minus-\method\ gain in the 60-s capped-time estimand, which
   retains every failure as 60~s. (c) Matched-budget validation-RMSE reduction
