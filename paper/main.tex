@@ -37,7 +37,8 @@ cross-axis coupling and asymmetric response, and a task-weighted integrated
 variance objective selects commands for a declared deployment distribution.
 Hard authorization, validation stopping, bounded inverse compensation, and
 residual-triggered recovery remain separate from acquisition. On 183 passive
-Unitree Go2 trials, a coupled affine map reduces held-out velocity RMSE by
+Unitree Go2 trials, a coupled affine map reduces held-out root-mean-square
+error (RMSE) by
 54.5\% relative to raw commands. Across controlled synthetic families, task
 weighting reaches a joint accuracy--uncertainty target in 18.67 trials, saving
 39.5\% over Latin hypercube sampling and 18.8\% over D-optimal design. A
@@ -78,7 +79,7 @@ external velocity interface of a fixed quadruped controller: trials are chosen
 for their reduction of predictive uncertainty over commands expected during
 deployment, not for uniform parameter-space coverage.
 
-This layer differs from locomotion-policy adaptation. RMA conditions a trained
+This layer differs from locomotion-policy adaptation. Rapid Motor Adaptation conditions a trained
 policy on latent environment estimates \cite{kumar2021rma}, residual models can
 update model-based legged controllers online \cite{sun2021unknown}, and recent
 embodiment adaptation identifies hardware changes from short interaction
@@ -108,13 +109,13 @@ selection, recovery, and navigation are evaluated in controlled simulation.
   \centering
   \setlength{\tabcolsep}{2pt}
   \begin{tabular}{@{}ccc@{}}
-    \includegraphics[width=0.285\textwidth]{figures/map_s_bend.png} &
-    \includegraphics[width=0.285\textwidth]{figures/map_offset_slalom.png} &
-    \includegraphics[width=0.285\textwidth]{figures/map_narrow_lane.png} \\
+    \includegraphics[width=0.27\textwidth]{figures/map_s_bend.png} &
+    \includegraphics[width=0.27\textwidth]{figures/map_offset_slalom.png} &
+    \includegraphics[width=0.27\textwidth]{figures/map_narrow_lane.png} \\
     \textbf{(a) S-bend} & \textbf{(b) Offset slalom} & \textbf{(c) Narrow lane} \\[2pt]
-    \includegraphics[width=0.285\textwidth]{figures/map_double_chicane.png} &
-    \includegraphics[width=0.285\textwidth]{figures/map_weighted_arc.png} &
-    \includegraphics[width=0.285\textwidth]{figures/map_extended_lane.png} \\
+    \includegraphics[width=0.27\textwidth]{figures/map_double_chicane.png} &
+    \includegraphics[width=0.27\textwidth]{figures/map_weighted_arc.png} &
+    \includegraphics[width=0.27\textwidth]{figures/map_extended_lane.png} \\
     \textbf{(d) Double chicane} & \textbf{(e) Weighted arc} & \textbf{(f) Extended lane}
   \end{tabular}
   \caption{Elevated Isaac Sim views of the six held-out navigation maps. Cyan
@@ -166,7 +167,7 @@ non-learned envelope.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.90\textwidth]{figures/calibagent_pipeline.pdf}
+  \includegraphics[width=0.86\textwidth]{figures/calibagent_pipeline.pdf}
   \caption{\method\ architecture. Task-weighted acquisition ranks calibration
   commands, but the hard filter alone authorizes execution. Valid observations
   update the Bayesian model; held-out validation and uncertainty control
@@ -235,7 +236,11 @@ alongside the scalar score.
 \subsection{Task-Weighted Active Selection}
 
 A declared task distribution is represented by grid commands
-$\{\vect{g}_j\}_{j=1}^{G}$ and normalized weights $w_j$. For candidate
+$\{\vect{g}_j\}_{j=1}^{G}$ and normalized weights $w_j$. This grid lies in the
+input domain of the forward response model. For navigation, nominal waypoint-
+planner outputs before compensation are a fixed proxy for the command inputs
+visited by the inverse solver; the support-mismatch experiment tests this
+proxy outside its declared range. For candidate
 $\vect{c}$, let $\tilde r_a(\vect{c})$ denote measurement variance available
 at planning time. A Sherman--Morrison update gives the outcome-independent,
 conditional one-step reduction in weighted epistemic variance:
@@ -311,9 +316,11 @@ budget. Normal validation stopping resumes after recovery.
 \subsection{Passive Hardware and Sample Efficiency}
 
 The hardware dataset contains 183 valid passive Unitree Go2 trials collected in
-three 61-trial sessions. Livox MID360 FAST-LIO/global localization provides the
+three 61-trial sessions. Livox MID360 FAST-LIO lidar--inertial odometry with
+global localization provides the
 reference pose. Each session is held out once; a training fold contains 122
-trials, of which sampled fits use 30 selected trials and dense fits use all 122.
+trials, of which sampled fits use the first 30 commands of a fixed Latin
+hypercube design and dense fits use all 122.
 Each command uses 0.6~s ramp-in, 0.8~s settling, 2.0~s measurement, and 0.6~s
 ramp-out. Held-out three-axis and per-axis RMSE compare raw commands, diagonal
 affine calibration, and coupled affine calibration. Additional diagonal-linear
@@ -323,7 +330,17 @@ Sample efficiency is evaluated over 20 independent seeds in each of three
 synthetic response families: affine, dead-zone, and heteroscedastic. Every
 nonlinear coupled fit begins with the same six-command seed design and has a
 160-trial horizon. Candidate, task, and evaluation Sobol sets are independently
-scrambled. The task measure is a Gaussian mixture centered at
+scrambled. Commands span $[-1,1]\times[-.5,.5]\times[-1.5,1.5]$ with
+$\|(v_x,v_y)\|_2\leq1$. Ground truth is
+$\vect{y}=\operatorname{clip}(A\vect{d}(\vect{u})+\vect{b},-\vect{s},\vect{s})+
+\vect{\epsilon}$: diagonal gains are uniform on $[.72,1.08]$, off-axis terms
+on $[-.12,.12]$, and biases within $\pm(.04,.025,.06)$. The dead-zone and
+heteroscedastic families use
+$\vect{d}=\operatorname{sign}(\vect{u})[|\vect{u}|-(.12,.08,.20)]_+$; the former
+clips at $(.82,.42,1.20)$ and the other families at $(2,1,3)$. All families
+use base noise standard deviation
+$(.025,.018,.035)$; the heteroscedastic family multiplies it elementwise by
+$(1+.7|\vect{u}|)$. The task measure is a Gaussian mixture centered at
 $(.55,0,0)$, $(.30,0,.70)$, and $(.30,0,-.70)$ with weights
 $(.50,.25,.25)$ and diagonal scales $(.14,.08,.18)$ for the first component
 and $(.12,.08,.16)$ for the turns. The model uses prior scale 1.0 and frozen process
@@ -360,12 +377,20 @@ eight-command task/validation measure is uniform over $(-.30,0,\pm.35)$,
 $(.20,\pm.18,\pm.30)$ with all four sign combinations, and
 $(.35,0,\pm.50)$.
 
+For hardware and simulation, body-frame pose increments feed a robust
+constant-twist estimate. A Huber location gives steady velocity; the sample
+covariance of segment twists divided by the sample count supplies measurement
+covariance, whose diagonal enters Eq.~\eqref{eq:model}. Timestamp, sample-count,
+command-constancy, and steady-window checks reject invalid observations.
+
 The stopping and authorization tests replay 60 active-acquisition traces,
 exercise 300 out-of-envelope proposals and 20 safe controls, and inject 160
 sampled-state faults. The tested bounds are $|v_x|\leq0.75$~m/s,
 $|v_y|\leq0.45$~m/s, and $|\omega_z|\leq1.2$~rad/s, with a 20~ms monitoring
 period. Shift recovery uses two independently frozen 72-seed blocks for each
-of four held-out in-place changes (144 paired seeds per change). The blocks
+of four held-out in-place changes (144 paired seeds per change): gain and
+coupling; friction, load, and gain; a mixed physical and nonlinear change; and
+load, center-of-mass (COM), and gain. The blocks
 share the method, endpoint, and gate definitions but use disjoint seed sets,
 simulator randomization, and post-shift draws. Fixed-model, passive-update, and
 \method\ arms share 12 initial calibration commands, four signature
@@ -395,6 +420,11 @@ $(.14,\pm.08,\pm.15)$, and $(.10,\pm.10,\pm.22)$, where paired signs are
 matched. The inverse uses regularization .005, posterior-risk weight .01, and
 axis confidence weights $(1,.5,.5)$.
 
+Routes extend 2.85--3.60~m; the narrow corridors are 1.10--1.14~m wide, the
+smallest gate opening is 0.79~m, and collision tests use a 0.20~m footprint
+radius. These dimensions and the common dynamics randomization are fixed for
+all calibration arms.
+
 Every navigation arm uses the same fixed 50~Hz predictive base-height
 interlock, fail-closed command filter, and 10~Hz waypoint planner.
 
@@ -405,8 +435,9 @@ lateral, and yaw limits are 0.18~m/s, 0.14~m/s, and 0.25~rad/s. Success means
 entering the 0.25~m goal ball without collision or serious safety event before
 60~s. Arrival time is defined only on success; the primary failure-aware time
 estimand assigns 60~s to every failure. Navigation time excludes calibration,
-which is reported separately: the deterministic executed-command duration is
-31.2~s for a 12-trial method and 78.0~s for dense calibration. Marginal rates
+which is reported separately: acquisition takes 31.2~s for a 12-trial method
+and 78.0~s for dense calibration. Including the common eight-command validation
+gives 52.0 and 98.8~s, respectively. Marginal rates
 use two-sided exact Clopper--Pearson intervals. Paired continuous endpoints,
 mean ratios, and paired success/collision differences use 4,000 percentile
 resamples of common seed indices. The navigation margins were fixed at a 1.25
@@ -456,7 +487,8 @@ builders, and commands needed to reproduce every reported result.
   \centering
   \includegraphics[width=\textwidth]{figures/calibration_evidence.pdf}
   \caption{Calibration evidence. (a) Passive real-Go2 held-out RMSE for raw,
-  diagonal-affine, and coupled-affine commands. (b) Paired trials saved by task IVR;
+  diagonal-linear, diagonal-affine, coupled-linear, and coupled-affine
+  commands. (b) Paired trials saved by task IVR;
   bars are 95\% seed-bootstrap intervals. (c) Family-resolved time to the same
   joint target; every method reaches it in all 20 seeds per family. (d)
   Realized held-out task RMSE at matched trial budgets; bands are 95\%
@@ -485,7 +517,7 @@ falls from 0.08459 to 0.02569 and the yaw-to-lateral coefficient remains
 rather than active hardware efficiency.
 
 The synthetic benchmark isolates the acquisition rule
-(Fig.~\ref{fig:calibration}b). \method
+(Fig.~\ref{fig:calibration}b). \method{}
 reaches the joint target in 18.67 trials, versus 30.87 for LHS, 30.67 for
 random, 25.72 for Sobol, 23.00 for D-optimal, and 25.67 without task weighting.
 The respective savings are 39.52\%, 39.13\%, 27.41\%, 18.84\%, and 27.27\%;
@@ -517,8 +549,9 @@ Supplying exact heteroscedastic candidate noise changes its crossing from 20 to
 
 In closed-loop simulation (Fig.~\ref{fig:response}e), raw-to-calibrated
 RMSE is 0.15199 to 0.10635 for affine distortion, 0.15054 to 0.10282 for
-dead-zone distortion, 0.10741 to 0.09742 for low friction plus payload, and
-0.09554 to 0.07849 on rough terrain. Relative reductions span 9.30--31.70\%.
+dead-zone distortion, 0.10741 to 0.09742 for low friction with payload and COM
+offset, and 0.09554 to 0.07849 on rough terrain with payload and COM offset. Relative reductions
+span 9.30--31.70\%.
 The corresponding paired absolute-improvement intervals are [0.04290, 0.04780],
 [0.04495, 0.05002], [0.00981, 0.01017], and [0.01477, 0.01889]. All 20 paired
 seeds improve in each scenario.
@@ -533,16 +566,19 @@ are not physical safety certification.
 
 The stationary-monitor experiment produces 0/120 sequence alarms over 12,000
 valid trials; the two-sided exact 95\% upper bound is 0.0303. Under shift,
-detection is 143/144 for friction plus payload and gain recoupling and 144/144
-for mixed context and payload/COM. The lowest exact 95\% detection-rate bound is
+detection is 143/144 for the combined friction, load, and gain change and the
+gain-and-coupling change, and 144/144 for the physical-and-nonlinear change and
+the load, COM, and gain change. The
+lowest exact 95\% detection-rate bound is
 [0.9619, 0.9998]. \method\ recovers in 141/144 friction-plus-payload trials and 144/144
 for the other shifts; its lowest exact interval is [0.9403, 0.9957]. Worst p95
 detection and recovery delays are 3.9 and 9 trials, or 10.1~s of monitor-command
 time and 46.8~s for adaptation-plus-validation cycles under the fixed schedule.
 
-\method\ improves early RMSE over passive updating by 0.00936 for
-friction plus payload, 0.01053 for gain recoupling, 0.01847 for mixed context,
-and 0.01192 for payload/COM (Fig.~\ref{fig:recovery}f). Their paired 95\%
+\method\ improves early RMSE over passive updating by 0.00936 for the combined
+friction, load, and gain change, 0.01053 for the gain-and-coupling change,
+0.01847 for the physical-and-nonlinear change, and 0.01192 for the load, COM,
+and gain change (Fig.~\ref{fig:recovery}f). Their paired 95\%
 intervals are [0.00811, 0.01065], [0.00961, 0.01140], [0.01774, 0.01917], and
 [0.01092, 0.01291]. Its terminal RMSE ranges from 0.09762 to 0.11227; every
 upper interval endpoint is below 0.116 and the declared 0.14 absolute gate
@@ -566,13 +602,13 @@ than detection and updating alone.
   retains every failure as 60~s. (c) Matched-budget validation-RMSE reduction
   from task IVR relative to D-optimal and no-task IVR; bars are paired 95\%
   intervals. (d) \method/dense capped-time ratios and the declared 1.25
-  noninferiority margin. Every \method
+  noninferiority margin. Every \method{}
   collision count is 0/72.}
   \label{fig:navigation}
 \end{figure*}
 
 \method\ succeeds in 72/72 episodes on five maps and 70/72 on weighted arc,
-while raw commands succeed in 0/72 or 1/72 (Fig.~\ref{fig:navigation}a). Every \method
+while raw commands succeed in 0/72 or 1/72 (Fig.~\ref{fig:navigation}a). Every \method{}
 collision count is zero. The failure-aware 60-s capped-time gain over raw has
 95\% lower endpoints of 23.45--32.68~s (Fig.~\ref{fig:navigation}b). At the same
 12-trial budget, task IVR reduces command-validation RMSE over D-optimal by
@@ -583,7 +619,8 @@ The worst \method/dense capped-time ratio upper bound is 1.0736, below the 1.25
 margin, and every paired success-difference lower bound exceeds $-0.05$
 (Fig.~\ref{fig:navigation}d). The two weighted-arc timeouts are neither
 collisions nor serious events. Navigation excludes calibration: \method\ executes
-31.2~s of calibration commands versus 78.0~s for dense. Across 432 episodes it
+31.2~s of acquisition commands versus 78.0~s for dense, or 52.0 versus 98.8~s
+after common validation commands are included. Across 432 episodes it
 records 10 non-serious safety events and no serious event. Identical seeds,
 policy, planner, interlock, maps, and navigation logic isolate calibration in
 this simulator pipeline.
@@ -609,7 +646,8 @@ Hardware measurements are passive, same-day data from one Go2; active
 selection, recovery, and navigation use a pinned simulator and fixed policy.
 The compact basis targets steady response, not arbitrary history dependence,
 gait switching, or rapid transients. Active hardware evaluation must apply the
-same mechanism under gain/coupling, payload/COM, friction, and mixed shifts,
+same mechanism under isolated and compound interface, load, center-of-mass,
+and friction changes,
 with weighted-arc and offset-slalom navigation. That evidence is required for
 physical closed-loop and sim-to-real claims.
 
@@ -622,7 +660,6 @@ controlled synthetic and Isaac Lab experiments establish sample efficiency,
 early recovery, and downstream navigation. Active hardware execution is the
 remaining test of physical closed-loop transfer.
 
-\IEEEtriggeratref{10}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

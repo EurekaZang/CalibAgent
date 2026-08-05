@@ -144,7 +144,7 @@ def p1_values() -> tuple[list[str], np.ndarray]:
 def build_calibration_figure() -> list[Path]:
     p3 = load_json(P3)
     review = load_json(REVIEW_ANALYSIS)
-    fig, axes_grid = plt.subplots(3, 2, figsize=(7.05, 5.25), constrained_layout=True)
+    fig, axes_grid = plt.subplots(3, 2, figsize=(7.05, 4.60), constrained_layout=True)
     axes = axes_grid.ravel()
 
     # (a) Nested passive hardware models separate intercept and coupling.
@@ -468,7 +468,7 @@ def build_navigation_figure() -> list[Path]:
     ]
     method_labels = ["Raw", "Dense", "LHS", "Sobol", "D-opt", "No task", "CalibAgent"]
 
-    fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 3.45), constrained_layout=True)
+    fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 2.68), constrained_layout=True)
     axes = axes_grid.ravel()
     success = np.asarray(
         [

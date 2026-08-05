@@ -68,12 +68,12 @@ P6_CAPTURE_NAMES = [
 LABELS = {
     "tier_a_affine": "Affine",
     "tier_a_deadzone": "Dead zone",
-    "tier_b_friction_payload": "Friction + payload",
-    "tier_b_rough": "Rough terrain",
-    "confirm_friction_payload": "Friction + payload",
-    "confirm_gain_recoupling": "Gain recoupling",
-    "confirm_mixed_context": "Mixed context",
-    "confirm_payload_com_only": "Payload / COM",
+    "tier_b_friction_payload": "Friction + load + COM",
+    "tier_b_rough": "Rough + load + COM",
+    "confirm_friction_payload": "Friction + load + gain",
+    "confirm_gain_recoupling": "Gain + coupling",
+    "confirm_mixed_context": "Physical + nonlinear",
+    "confirm_payload_com_only": "Load + COM + gain",
 }
 
 
@@ -183,7 +183,7 @@ def build_p5() -> None:
     rows = {item["scenario"]: item for item in summary["scenarios"]}
     ordered = [rows[item["scenario_id"]] for item in p5_caps]
 
-    fig = plt.figure(figsize=(7.05, 3.20), constrained_layout=True)
+    fig = plt.figure(figsize=(7.05, 3.00), constrained_layout=True)
     outer = fig.add_gridspec(2, 1, height_ratios=[1.1, 0.9], hspace=0.20)
     top = outer[0].subgridspec(1, 4, wspace=0.25)
     bottom = outer[1].subgridspec(1, 2, wspace=0.34)
@@ -329,7 +329,7 @@ def build_p6() -> None:
     rows = {item["context"]: item for item in summary["contexts"]}
     ordered = [rows[str(item["scenario_id"]).removeprefix("confirm_")] for item in p6_caps]
 
-    fig = plt.figure(figsize=(7.05, 4.00), constrained_layout=True)
+    fig = plt.figure(figsize=(7.05, 3.85), constrained_layout=True)
     outer = fig.add_gridspec(3, 1, height_ratios=[0.92, 1.03, 0.38], hspace=0.24)
     top = outer[0].subgridspec(1, 4, wspace=0.25)
     middle = outer[1].subgridspec(1, 4, wspace=0.42)
@@ -409,7 +409,12 @@ def build_p6() -> None:
             )
     ax_matrix.set_xticks(
         np.arange(4),
-        ["Friction\n+ payload", "Gain shift", "Mixed shift", "Payload\n+ COM"],
+        [
+            "Friction,\nload,\ngain",
+            "Gain,\ncoupling",
+            "Physical,\nnonlinear",
+            "Load,\nCOM,\ngain",
+        ],
     )
     ax_matrix.set_yticks(
         np.arange(8),
@@ -452,7 +457,15 @@ def build_p6() -> None:
         lw=1.05,
     )
     ax_early.axvline(0, color=BLACK, lw=0.7)
-    ax_early.set_yticks(y, ["Friction + load", "Gain shift", "Mixed shift", "Payload + COM"])
+    ax_early.set_yticks(
+        y,
+        [
+            "Friction + load + gain",
+            "Gain + coupling",
+            "Physical + nonlinear",
+            "Load + COM + gain",
+        ],
+    )
     ax_early.invert_yaxis()
     ax_early.set_xlim(0, 0.0205)
     ax_early.set_xlabel("Passive $-$ CalibAgent RMSE")
