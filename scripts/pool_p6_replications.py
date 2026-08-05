@@ -45,7 +45,7 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     if not rows:
         raise ValueError(f"refusing to write empty CSV: {path}")
     with path.open("w", encoding="utf-8", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -391,7 +391,14 @@ def main() -> None:
             target_dir = destination / "blocks" / block_name / context
             target_dir.mkdir(parents=True)
             for filename in _COPIED_SCENARIO_ARTIFACTS:
-                shutil.copy2(source_dir / filename, target_dir / filename)
+                source_path = source_dir / filename
+                target_path = target_dir / filename
+                if source_path.suffix == ".csv":
+                    target_path.write_text(
+                        source_path.read_text(encoding="utf-8"), encoding="utf-8"
+                    )
+                else:
+                    shutil.copy2(source_path, target_path)
 
     (destination / "README.md").write_text(
         "# Pooled paired-signature confirmation\n\n"
