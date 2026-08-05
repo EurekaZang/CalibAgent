@@ -52,6 +52,22 @@
     {
       "path": "evidence/p6_strong_confirmatory/summary.json",
       "sha256": "cc3588338cdf5ec99a2ff56243275c87d9566b153760f3f2a23c904585ee5702"
+    },
+    {
+      "path": "evidence/recovery_selector_ablation/scenarios/ablate_friction_payload/recovery_curve.csv",
+      "sha256": "44e898f107d88ace0c114fbdc5c6a4fd848d93aacd621426ba81d0226cc765e2"
+    },
+    {
+      "path": "evidence/recovery_selector_ablation/scenarios/ablate_gain_recoupling/recovery_curve.csv",
+      "sha256": "b3dd423374de21161e459c7f6365c8fb1d05423b317feda9de6055b5eec806a3"
+    },
+    {
+      "path": "evidence/recovery_selector_ablation/scenarios/ablate_mixed_context/recovery_curve.csv",
+      "sha256": "e6aa73b49086c8e26d70c39c27b7b13276a13f392c2c2879f3b8f5e5ba56943d"
+    },
+    {
+      "path": "evidence/recovery_selector_ablation/scenarios/ablate_payload_com/recovery_curve.csv",
+      "sha256": "93d714dd5929c640adabefce5e0b69fea8717ba62c292ce2f689bc36751e032b"
     }
   ],
   "constraint": "Trajectory panels use registered capture overlays; effect panels use frozen multi-seed summaries. No values are digitized from prior raster figures."

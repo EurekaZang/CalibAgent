@@ -1,0 +1,265 @@
+{
+  "detection_rate": 1.0,
+  "detection_rate_ci95": [
+    0.8842966917779722,
+    1.0
+  ],
+  "finite": true,
+  "full_final_rmse_ci95": [
+    0.1178414346298683,
+    0.1285745733410685
+  ],
+  "full_final_rmse_mean": 0.12315657680049963,
+  "full_minus_passive_final_rmse_ci95": [
+    0.01718329474600192,
+    0.026327232084640835
+  ],
+  "full_minus_passive_final_rmse_mean": 0.021799714225790728,
+  "full_recovery_rate": 1.0,
+  "full_recovery_rate_ci95": [
+    0.8842966917779722,
+    1.0
+  ],
+  "full_vs_frozen_final_improvement_ci95": [
+    0.01788594414810175,
+    0.022516691764211567
+  ],
+  "full_vs_frozen_final_improvement_mean": 0.020223806432133215,
+  "full_vs_frozen_win_rate": 1.0,
+  "full_vs_passive_early_rmse_improvement_ci95": [
+    0.0064595265892644855,
+    0.011940451514275424
+  ],
+  "full_vs_passive_early_rmse_improvement_mean": 0.00909529499224836,
+  "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 9.313225746154785e-09,
+  "full_vs_passive_early_rmse_win_rate": 0.9666666666666667,
+  "maximum_abort_latency_s": 0.02,
+  "median_detection_delay_trials": 2.0,
+  "median_full_recovery_trials": 5.0,
+  "method_summaries": {
+    "frozen": {
+      "detection_rate": 1.0,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 6.0,
+      "method": "frozen",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 2.549999999999997,
+      "p95_recovery_trials": 7.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9666666666666667,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 75,
+      "scenario": "ablate_friction_payload",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.942962962962963,
+      "validation_window_trials": 4
+    },
+    "full": {
+      "detection_rate": 1.0,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 5.0,
+      "method": "full",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 2.549999999999997,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 1.0,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 75,
+      "scenario": "ablate_friction_payload",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.942962962962963,
+      "validation_window_trials": 4
+    },
+    "passive": {
+      "detection_rate": 1.0,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 5.0,
+      "method": "passive",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 2.549999999999997,
+      "p95_recovery_trials": 7.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 1.0,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 69,
+      "scenario": "ablate_friction_payload",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9474074074074074,
+      "validation_window_trials": 4
+    },
+    "recovery_d_opt": {
+      "detection_rate": 1.0,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 5.0,
+      "method": "recovery_d_opt",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 2.549999999999997,
+      "p95_recovery_trials": 7.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9666666666666667,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 57,
+      "scenario": "ablate_friction_payload",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9562962962962963,
+      "validation_window_trials": 4
+    },
+    "recovery_lhs": {
+      "detection_rate": 1.0,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 5.0,
+      "method": "recovery_lhs",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 2.549999999999997,
+      "p95_recovery_trials": 7.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9666666666666667,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 64,
+      "scenario": "ablate_friction_payload",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9511111111111111,
+      "validation_window_trials": 4
+    },
+    "recovery_no_task": {
+      "detection_rate": 1.0,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 5.0,
+      "method": "recovery_no_task",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 2.549999999999997,
+      "p95_recovery_trials": 7.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9666666666666667,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 64,
+      "scenario": "ablate_friction_payload",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9511111111111111,
+      "validation_window_trials": 4
+    },
+    "recovery_random": {
+      "detection_rate": 1.0,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 5.0,
+      "method": "recovery_random",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 2.549999999999997,
+      "p95_recovery_trials": 7.549999999999997,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 1.0,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 63,
+      "scenario": "ablate_friction_payload",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9518518518518518,
+      "validation_window_trials": 4
+    }
+  },
+  "methods": [
+    "frozen",
+    "passive",
+    "full",
+    "recovery_no_task",
+    "recovery_d_opt",
+    "recovery_lhs",
+    "recovery_random"
+  ],
+  "no_shift_false_alarm_rate": 0.0,
+  "no_shift_false_alarm_rate_ci95": [
+    0.0,
+    0.11570330822202779
+  ],
+  "num_seeds": 30,
+  "p95_detection_delay_trials": 2.549999999999997,
+  "p95_full_recovery_trials": 6.0,
+  "primary_recovery_horizon_trials": 9,
+  "recovery_selector_comparisons": {
+    "recovery_d_opt": {
+      "full_early_win_rate": 0.9333333333333333,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 6.51925802230835e-09,
+      "selector_final_rmse_mean": 0.12575304619320488,
+      "selector_minus_full_early_rmse_ci95": [
+        0.01226394170038374,
+        0.019150182143888014
+      ],
+      "selector_minus_full_early_rmse_mean": 0.0156880244998461,
+      "selector_recovery_rate": 0.9666666666666667
+    },
+    "recovery_lhs": {
+      "full_early_win_rate": 0.7666666666666667,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 0.000519084744155407,
+      "selector_final_rmse_mean": 0.11594800819056497,
+      "selector_minus_full_early_rmse_ci95": [
+        0.0031015302895686585,
+        0.010359923675167691
+      ],
+      "selector_minus_full_early_rmse_mean": 0.006702310700238577,
+      "selector_recovery_rate": 0.9666666666666667
+    },
+    "recovery_no_task": {
+      "full_early_win_rate": 0.9666666666666667,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 4.991888999938965e-07,
+      "selector_final_rmse_mean": 0.12032351487511368,
+      "selector_minus_full_early_rmse_ci95": [
+        0.0071506541906837815,
+        0.013903510378273488
+      ],
+      "selector_minus_full_early_rmse_mean": 0.010473266347542596,
+      "selector_recovery_rate": 0.9666666666666667
+    },
+    "recovery_random": {
+      "full_early_win_rate": 0.7333333333333333,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 0.0003989487886428833,
+      "selector_final_rmse_mean": 0.11292907005924144,
+      "selector_minus_full_early_rmse_ci95": [
+        0.003311620781817415,
+        0.011094517750237969
+      ],
+      "selector_minus_full_early_rmse_mean": 0.007348893468276698,
+      "selector_recovery_rate": 1.0
+    }
+  },
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 467,
+  "scenario": "ablate_friction_payload",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 0.942962962962963
+}

@@ -41,6 +41,36 @@ def _bootstrap_mean(values: np.ndarray, seed: int, draws: int = 4000) -> list[fl
     return [float(np.quantile(samples, 0.025)), float(np.quantile(samples, 0.975))]
 
 
+def _affine_prediction(
+    training_commands: np.ndarray,
+    training_targets: np.ndarray,
+    validation_commands: np.ndarray,
+    *,
+    diagonal: bool,
+    intercept: bool,
+) -> np.ndarray:
+    """Fit one nested linear model with the same ridge convention as M0/M1."""
+
+    prediction = np.empty((len(validation_commands), 3), dtype=np.float64)
+    for axis in range(3):
+        train = training_commands[:, axis, None] if diagonal else training_commands
+        validation = (
+            validation_commands[:, axis, None] if diagonal else validation_commands
+        )
+        if intercept:
+            train = np.column_stack([np.ones(len(train)), train])
+            validation = np.column_stack([np.ones(len(validation)), validation])
+        regularizer = 1e-8 * np.eye(train.shape[1])
+        if intercept:
+            regularizer[0, 0] = 0.0
+        coefficient = np.linalg.solve(
+            train.T @ train + regularizer,
+            train.T @ training_targets[:, axis],
+        )
+        prediction[:, axis] = validation @ coefficient
+    return prediction
+
+
 def _p1_analysis() -> dict[str, Any]:
     observations = [
         item
@@ -48,8 +78,16 @@ def _p1_analysis() -> dict[str, Any]:
         if item.valid
     ]
     sessions = sorted({item.context.session_id for item in observations})
-    residuals: dict[str, list[np.ndarray]] = {"raw": [], "m0": [], "m1": []}
+    nested_names = (
+        "raw",
+        "diagonal_linear",
+        "diagonal_affine",
+        "coupled_linear",
+        "coupled_affine",
+    )
+    residuals: dict[str, list[np.ndarray]] = {name: [] for name in nested_names}
     matrices: list[dict[str, Any]] = []
+    fold_rows: list[dict[str, Any]] = []
     for validation_session in sessions:
         training = [
             item for item in observations if item.context.session_id != validation_session
@@ -60,17 +98,45 @@ def _p1_analysis() -> dict[str, Any]:
         training_commands = np.vstack([item.command.as_array() for item in training])
         selected_indices = _selection_indices("lhs", training_commands, 30, 1701)
         selected = [training[int(index)] for index in selected_indices]
+        selected_commands = np.vstack([item.command.as_array() for item in selected])
+        selected_targets = np.vstack([item.mean_velocity for item in selected])
         commands = np.vstack([item.command.as_array() for item in validation])
         targets = np.vstack([item.mean_velocity for item in validation])
         m0 = LeastSquaresVelocityModel("M0_diagonal_affine").fit(selected)
         m1 = LeastSquaresVelocityModel("M1_full_affine").fit(selected)
         predictions = {
             "raw": commands,
-            "m0": np.vstack([m0.predict(command).mean for command in commands]),
-            "m1": np.vstack([m1.predict(command).mean for command in commands]),
+            "diagonal_linear": _affine_prediction(
+                selected_commands,
+                selected_targets,
+                commands,
+                diagonal=True,
+                intercept=False,
+            ),
+            "diagonal_affine": np.vstack(
+                [m0.predict(command).mean for command in commands]
+            ),
+            "coupled_linear": _affine_prediction(
+                selected_commands,
+                selected_targets,
+                commands,
+                diagonal=False,
+                intercept=False,
+            ),
+            "coupled_affine": np.vstack(
+                [m1.predict(command).mean for command in commands]
+            ),
         }
         for name, prediction in predictions.items():
-            residuals[name].append(prediction - targets)
+            residual = prediction - targets
+            residuals[name].append(residual)
+            fold_rows.append(
+                {
+                    "held_out_session": validation_session,
+                    "model": name,
+                    "rmse": float(np.sqrt(np.mean(residual**2))),
+                }
+            )
         coefficients = np.vstack(m1.coefficients_)
         matrices.append(
             {
@@ -89,18 +155,35 @@ def _p1_analysis() -> dict[str, Any]:
             {
                 "axis": label,
                 "raw_rmse": float(axis_rmse["raw"][axis]),
-                "m0_rmse": float(axis_rmse["m0"][axis]),
-                "m1_rmse": float(axis_rmse["m1"][axis]),
+                "m0_rmse": float(axis_rmse["diagonal_affine"][axis]),
+                "m1_rmse": float(axis_rmse["coupled_affine"][axis]),
                 "m1_vs_raw_reduction": float(
-                    1.0 - axis_rmse["m1"][axis] / axis_rmse["raw"][axis]
+                    1.0
+                    - axis_rmse["coupled_affine"][axis] / axis_rmse["raw"][axis]
                 ),
                 "m1_vs_m0_reduction": float(
-                    1.0 - axis_rmse["m1"][axis] / axis_rmse["m0"][axis]
+                    1.0
+                    - axis_rmse["coupled_affine"][axis]
+                    / axis_rmse["diagonal_affine"][axis]
                 ),
             }
         )
     pd.DataFrame(rows).to_csv(OUT / "p1_axis_metrics.csv", index=False)
-    return {"axis_metrics": rows, "fold_affine_models": matrices}
+    nested_rows = [
+        {
+            "model": name,
+            "pooled_rmse": float(np.sqrt(np.mean(np.vstack(residuals[name]) ** 2))),
+        }
+        for name in nested_names
+    ]
+    pd.DataFrame(fold_rows).to_csv(OUT / "p1_nested_fold_metrics.csv", index=False)
+    pd.DataFrame(nested_rows).to_csv(OUT / "p1_nested_models.csv", index=False)
+    return {
+        "axis_metrics": rows,
+        "fold_affine_models": matrices,
+        "nested_models": nested_rows,
+        "nested_fold_metrics": fold_rows,
+    }
 
 
 def _first_trial(group: pd.DataFrame, condition: np.ndarray, horizon: int) -> int:
@@ -326,6 +409,61 @@ def _p3_analysis() -> dict[str, Any]:
     pd.DataFrame(sensitivity_rows).to_csv(
         OUT / "p3_threshold_sensitivity.csv", index=False
     )
+    fixed_budget_rows: list[dict[str, Any]] = []
+    fixed_budget_comparisons: list[dict[str, Any]] = []
+    budgets = (12, 18, 24, 30)
+    fixed = trace[
+        trace["trial"].isin(budgets) & trace["method"].isin(methods)
+    ]
+    fixed_by_seed = fixed.groupby(
+        ["trial", "seed", "method"], as_index=False
+    )["rmse"].mean()
+    for budget in budgets:
+        current = fixed_by_seed[fixed_by_seed["trial"] == budget]
+        active = current[current["method"] == "active"].set_index("seed")
+        for method in methods:
+            values = current[current["method"] == method]["rmse"].to_numpy(
+                dtype=float
+            )
+            interval = _bootstrap_mean(
+                values, 61001 + 31 * budget + len(fixed_budget_rows)
+            )
+            fixed_budget_rows.append(
+                {
+                    "budget": budget,
+                    "method": method,
+                    "mean_heldout_rmse": float(np.mean(values)),
+                    "mean_heldout_rmse_ci95_lower": interval[0],
+                    "mean_heldout_rmse_ci95_upper": interval[1],
+                }
+            )
+            if method == "active":
+                continue
+            baseline = current[current["method"] == method].set_index("seed")
+            common = active.index.intersection(baseline.index)
+            improvement = (
+                baseline.loc[common, "rmse"].to_numpy(dtype=float)
+                - active.loc[common, "rmse"].to_numpy(dtype=float)
+            )
+            fixed_budget_comparisons.append(
+                {
+                    "budget": budget,
+                    "baseline": method,
+                    "mean_rmse_improvement": float(np.mean(improvement)),
+                    "rmse_improvement_ci95": _bootstrap_mean(
+                        improvement,
+                        62001 + 31 * budget + len(fixed_budget_comparisons),
+                    ),
+                    "active_win_count": int(np.sum(improvement > 0.0)),
+                    "paired_seeds": len(improvement),
+                }
+            )
+    pd.DataFrame(fixed_budget_rows).to_csv(
+        OUT / "p3_fixed_budget_rmse.csv", index=False
+    )
+    pd.DataFrame(fixed_budget_comparisons).to_csv(
+        OUT / "p3_fixed_budget_comparisons.csv", index=False
+    )
     binding_summary = (
         gate_frame.groupby(["method", "binding_gate"]).size().unstack(fill_value=0)
     )
@@ -354,6 +492,8 @@ def _p3_analysis() -> dict[str, Any]:
         "binding_gate_counts": binding_summary.to_dict(orient="index"),
         "disjoint_audit_summary": audit_summary,
         "threshold_sensitivity": sensitivity_rows,
+        "fixed_budget_rmse": fixed_budget_rows,
+        "fixed_budget_comparisons": fixed_budget_comparisons,
     }
 
 
@@ -415,6 +555,15 @@ def _p7_analysis() -> dict[str, Any]:
                     ][1],
                     "validation_rmse_reduction": comparison[
                         "b8_vs_baseline_validation_rmse_reduction_mean"
+                    ],
+                    "validation_rmse_reduction_ci95_lower": comparison[
+                        "b8_vs_baseline_validation_rmse_reduction_ci95"
+                    ][0],
+                    "validation_rmse_reduction_ci95_upper": comparison[
+                        "b8_vs_baseline_validation_rmse_reduction_ci95"
+                    ][1],
+                    "validation_rmse_win_rate": comparison[
+                        "b8_vs_baseline_validation_rmse_win_rate"
                     ],
                 }
             )

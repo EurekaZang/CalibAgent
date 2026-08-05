@@ -5,7 +5,7 @@
     "evidence/p1_real/baseline_metrics.csv": "cca6baff8464fd3a7d9a93586512fcc9afca519c286b14cb54ad8c15778b5aa8",
     "evidence/p3_main/paired_statistics.json": "25537ea2f64d2bca4b07282fcf91c9e9b5be6c5bd9e7ae10aad5646d751197c7",
     "evidence/p7_strong_confirmatory_v2/summary.json": "85590a56bef758ed8c2ad30300756c62ce3925eba18338d462b4d62042f6ca46",
-    "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json": "24210d690db6ddbb40a1384aa88e3814b5c0591b0d6118cc91c702fce73067d5"
+    "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json": "7ccb6a32d3af330a2071bbd47494ecc334c93c72c70497dd5454e78fd4bda406"
   },
   "notes": [
     "All plotted values are parsed from the listed frozen artifacts.",
@@ -13,10 +13,10 @@
     "P7 intervals are the registered intervals stored in summary.json."
   ],
   "outputs": {
-    "paper/figures/calibration_evidence.pdf": "8041a83a1dfb3407f4c2e239d70cae304342eb1df948c2eec22f44db5a7d73ff",
-    "paper/figures/calibration_evidence.png": "114d41e541406e35ee0c5e5f35bcdb7708cb86ed5f262d8ab9317d7aa7900fbd",
-    "paper/figures/navigation_results.pdf": "1dd4d5df12e2d9e3158299c3f51ff6c613d28e5e5d935e9de470af6a5604a16b",
-    "paper/figures/navigation_results.png": "ac59be205bd5e6def5e6cb2319147c65b60da30c0e57289274f153934fb51871"
+    "paper/figures/calibration_evidence.pdf": "583807e8e78fa50a26e8300e0e708451914f1d7a1ab5c0f7919c01a39f2f46d2",
+    "paper/figures/calibration_evidence.png": "8223b369ae6fff2e40d44f910bf132e43781f1cd8a9e084140144f1750237a38",
+    "paper/figures/navigation_results.pdf": "c22b9d62614b906e85d592c6fb56d94172e99ebd5eacc0f1a8b1029fb4225a60",
+    "paper/figures/navigation_results.png": "9652b4c601aabf49c8fa7c32a275a363d6b01fc9b8ff902c763bd49fd544c0ab"
   },
   "schema_version": "1.0"
 }

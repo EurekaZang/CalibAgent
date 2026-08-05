@@ -1,0 +1,50 @@
+[
+  {
+    "method": "recovery_d_opt",
+    "label": "D-opt",
+    "mean_selector_minus_task_ivr_rmse": 0.021922679323337784,
+    "ci95": [
+      0.02045970866611286,
+      0.023427236549422255
+    ],
+    "task_ivr_win_rate": 1.0,
+    "paired_seeds": 30,
+    "contexts_averaged_within_seed": 4
+  },
+  {
+    "method": "recovery_no_task",
+    "label": "No-task",
+    "mean_selector_minus_task_ivr_rmse": 0.015829562571768353,
+    "ci95": [
+      0.014180429737726407,
+      0.017611930842458455
+    ],
+    "task_ivr_win_rate": 1.0,
+    "paired_seeds": 30,
+    "contexts_averaged_within_seed": 4
+  },
+  {
+    "method": "recovery_lhs",
+    "label": "LHS",
+    "mean_selector_minus_task_ivr_rmse": 0.009374110107210431,
+    "ci95": [
+      0.006550199658934957,
+      0.012122540166055549
+    ],
+    "task_ivr_win_rate": 0.9,
+    "paired_seeds": 30,
+    "contexts_averaged_within_seed": 4
+  },
+  {
+    "method": "recovery_random",
+    "label": "Random",
+    "mean_selector_minus_task_ivr_rmse": 0.009856060131717878,
+    "ci95": [
+      0.006541844088256949,
+      0.013086045960182788
+    ],
+    "task_ivr_win_rate": 0.9,
+    "paired_seeds": 30,
+    "contexts_averaged_within_seed": 4
+  }
+]

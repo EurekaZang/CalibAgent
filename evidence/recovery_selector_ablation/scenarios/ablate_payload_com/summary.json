@@ -1,0 +1,265 @@
+{
+  "detection_rate": 0.9333333333333333,
+  "detection_rate_ci95": [
+    0.7792645984770381,
+    0.9918218655393437
+  ],
+  "finite": true,
+  "full_final_rmse_ci95": [
+    0.10761882702196285,
+    0.1195156838575136
+  ],
+  "full_final_rmse_mean": 0.1136672625453284,
+  "full_minus_passive_final_rmse_ci95": [
+    0.008053330889225174,
+    0.014714357608032814
+  ],
+  "full_minus_passive_final_rmse_mean": 0.011233003290401182,
+  "full_recovery_rate": 1.0,
+  "full_recovery_rate_ci95": [
+    0.8842966917779722,
+    1.0
+  ],
+  "full_vs_frozen_final_improvement_ci95": [
+    0.013499192016934917,
+    0.020760342671924316
+  ],
+  "full_vs_frozen_final_improvement_mean": 0.01682840472947713,
+  "full_vs_frozen_win_rate": 0.9333333333333333,
+  "full_vs_passive_early_rmse_improvement_ci95": [
+    0.008291767857670232,
+    0.013941204405838691
+  ],
+  "full_vs_passive_early_rmse_improvement_mean": 0.011198219345562034,
+  "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 4.988849443894224e-06,
+  "full_vs_passive_early_rmse_win_rate": 0.8666666666666667,
+  "maximum_abort_latency_s": 0.02,
+  "median_detection_delay_trials": 2.0,
+  "median_full_recovery_trials": 4.0,
+  "method_summaries": {
+    "frozen": {
+      "detection_rate": 0.9333333333333333,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "frozen",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 4.649999999999999,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9333333333333333,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 63,
+      "scenario": "ablate_payload_com",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9444444444444444,
+      "validation_window_trials": 4
+    },
+    "full": {
+      "detection_rate": 0.9333333333333333,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "full",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 4.649999999999999,
+      "p95_recovery_trials": 7.099999999999994,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 1.0,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 49,
+      "scenario": "ablate_payload_com",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9555555555555556,
+      "validation_window_trials": 4
+    },
+    "passive": {
+      "detection_rate": 0.9333333333333333,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "passive",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 4.649999999999999,
+      "p95_recovery_trials": 7.6499999999999915,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 1.0,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 53,
+      "scenario": "ablate_payload_com",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9525925925925925,
+      "validation_window_trials": 4
+    },
+    "recovery_d_opt": {
+      "detection_rate": 0.9333333333333333,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "recovery_d_opt",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 4.649999999999999,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9333333333333333,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 40,
+      "scenario": "ablate_payload_com",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9614814814814815,
+      "validation_window_trials": 4
+    },
+    "recovery_lhs": {
+      "detection_rate": 0.9333333333333333,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "recovery_lhs",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 4.649999999999999,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9666666666666667,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 49,
+      "scenario": "ablate_payload_com",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9540740740740741,
+      "validation_window_trials": 4
+    },
+    "recovery_no_task": {
+      "detection_rate": 0.9333333333333333,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "recovery_no_task",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 4.649999999999999,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9666666666666667,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 41,
+      "scenario": "ablate_payload_com",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9607407407407408,
+      "validation_window_trials": 4
+    },
+    "recovery_random": {
+      "detection_rate": 0.9333333333333333,
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 2.0,
+      "median_recovery_trials": 4.0,
+      "method": "recovery_random",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 30,
+      "p95_detection_delay_trials": 4.649999999999999,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.9666666666666667,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 41,
+      "scenario": "ablate_payload_com",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9607407407407408,
+      "validation_window_trials": 4
+    }
+  },
+  "methods": [
+    "frozen",
+    "passive",
+    "full",
+    "recovery_no_task",
+    "recovery_d_opt",
+    "recovery_lhs",
+    "recovery_random"
+  ],
+  "no_shift_false_alarm_rate": 0.0,
+  "no_shift_false_alarm_rate_ci95": [
+    0.0,
+    0.11570330822202779
+  ],
+  "num_seeds": 30,
+  "p95_detection_delay_trials": 4.649999999999999,
+  "p95_full_recovery_trials": 7.099999999999994,
+  "primary_recovery_horizon_trials": 9,
+  "recovery_selector_comparisons": {
+    "recovery_d_opt": {
+      "full_early_win_rate": 0.9333333333333333,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 1.8948097207904354e-06,
+      "selector_final_rmse_mean": 0.11816351894137744,
+      "selector_minus_full_early_rmse_ci95": [
+        0.012147475968560445,
+        0.01720778947120519
+      ],
+      "selector_minus_full_early_rmse_mean": 0.014718344693391592,
+      "selector_recovery_rate": 0.9333333333333333
+    },
+    "recovery_lhs": {
+      "full_early_win_rate": 0.6666666666666666,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 0.0017799123683381254,
+      "selector_final_rmse_mean": 0.11100035741563415,
+      "selector_minus_full_early_rmse_ci95": [
+        0.0018680975295514164,
+        0.009034722184180988
+      ],
+      "selector_minus_full_early_rmse_mean": 0.0055123199651152775,
+      "selector_recovery_rate": 0.9666666666666667
+    },
+    "recovery_no_task": {
+      "full_early_win_rate": 0.8333333333333334,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 4.0372501439017805e-06,
+      "selector_final_rmse_mean": 0.11285033579665546,
+      "selector_minus_full_early_rmse_ci95": [
+        0.008431506929409718,
+        0.01361964978203122
+      ],
+      "selector_minus_full_early_rmse_mean": 0.01103115413532631,
+      "selector_recovery_rate": 0.9666666666666667
+    },
+    "recovery_random": {
+      "full_early_win_rate": 0.7,
+      "full_vs_selector_early_wilcoxon_one_sided_p": 0.0022106368311125245,
+      "selector_final_rmse_mean": 0.11136789144900337,
+      "selector_minus_full_early_rmse_ci95": [
+        0.0023784609672989573,
+        0.009749709762399372
+      ],
+      "selector_minus_full_early_rmse_mean": 0.006176653508394144,
+      "selector_recovery_rate": 0.9666666666666667
+    }
+  },
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 336,
+  "scenario": "ablate_payload_com",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 0.9444444444444444
+}

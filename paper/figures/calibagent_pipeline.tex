@@ -37,7 +37,7 @@
   \node[robot, right=of safe] (robot) {Fixed locomotion\\controller + robot};
 
   \node[box, below=10mm of robot] (measure) {Robust steady-motion\\measurement $y,R$};
-  \node[model, left=of measure] (blr) {M2 Bayesian model\\$p(\Theta\mid\mathcal D)$};
+  \node[model, left=of measure] (blr) {Bayesian response model\\M1 / M2 basis};
   \node[guard, left=of blr] (stop) {Validated stopping\\+ hard budgets};
   \node[box, left=of stop] (inverse) {Constrained inverse\\task compensation};
 

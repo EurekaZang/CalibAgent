@@ -11,6 +11,7 @@ from typing import Any
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -18,6 +19,7 @@ CAPTURE_DIR = ROOT / "docs" / "assets" / "readme" / "isaac_sim"
 OUT = ROOT / "paper" / "figures"
 P5_SUMMARY = ROOT / "evidence" / "p5_main" / "summary.json"
 P6_SUMMARY = ROOT / "evidence" / "p6_strong_confirmatory" / "summary.json"
+SELECTOR_ROOT = ROOT / "evidence" / "recovery_selector_ablation"
 
 BLUE = "#0072B2"
 VERMILLION = "#D55E00"
@@ -289,10 +291,10 @@ def build_p6() -> None:
     rows = {item["scenario"]: item for item in summary["scenarios"]}
     ordered = [rows[item["scenario_id"]] for item in p6_caps]
 
-    fig = plt.figure(figsize=(7.05, 4.05), constrained_layout=True)
-    outer = fig.add_gridspec(2, 1, height_ratios=[1.05, 0.95], hspace=0.22)
+    fig = plt.figure(figsize=(7.05, 4.75), constrained_layout=True)
+    outer = fig.add_gridspec(3, 1, height_ratios=[1.05, 0.82, 0.42], hspace=0.24)
     top = outer[0].subgridspec(1, 4, wspace=0.25)
-    bottom = outer[1].subgridspec(1, 4, wspace=0.42)
+    middle = outer[1].subgridspec(1, 4, wspace=0.42)
     limits = ((-0.035, 0.225), (-0.32, 0.075))
     for index, capture in enumerate(p6_caps):
         ax = fig.add_subplot(top[0, index])
@@ -314,7 +316,7 @@ def build_p6() -> None:
                columnspacing=1.6, handlelength=1.7)
 
     # Exact shift design matrix.
-    ax_matrix = fig.add_subplot(bottom[0, 0:2])
+    ax_matrix = fig.add_subplot(middle[0, 0:2])
     all_texts, all_mags = [], []
     for capture in p6_caps:
         texts, mags = shift_cell_text(capture)
@@ -344,14 +346,14 @@ def build_p6() -> None:
     ax_matrix.set_yticks(np.arange(-0.5, 5, 1), minor=True)
     ax_matrix.grid(which="minor", color="white", linewidth=1.3)
     ax_matrix.tick_params(which="minor", bottom=False, left=False)
-    ax_matrix.set_title("e  Exact registered pre$\\to$post shifts", loc="left",
+    ax_matrix.set_title("e  Exact pre$\\to$post shifts", loc="left",
                         fontweight="bold")
 
     # Early active-recovery effect.
     y = np.arange(4)
     early = np.asarray([row["full_vs_passive_early_rmse_improvement_mean"] for row in ordered])
     early_ci = np.asarray([row["full_vs_passive_early_rmse_improvement_ci95"] for row in ordered])
-    ax_early = fig.add_subplot(bottom[0, 2])
+    ax_early = fig.add_subplot(middle[0, 2])
     ax_early.errorbar(
         early,
         y,
@@ -371,10 +373,77 @@ def build_p6() -> None:
     ax_early.set_title("f  Early recovery", loc="left", fontweight="bold")
     ax_early.grid(axis="x", color=LIGHT_GREY, lw=0.55)
 
+    # Recovery-selector ablation, averaged across contexts within paired seed.
+    methods = ["recovery_d_opt", "recovery_no_task", "recovery_lhs", "recovery_random"]
+    method_labels = ["D-opt", "No-task", "LHS", "Random"]
+    scenario_effects: list[pd.DataFrame] = []
+    for scenario_dir in sorted((SELECTOR_ROOT / "scenarios").iterdir()):
+        curve = pd.read_csv(scenario_dir / "recovery_curve.csv")
+        early = curve.loc[curve["recovery_trial"].between(4, 9)]
+        means = early.groupby(["seed", "method"], as_index=False)["rolling_rmse"].mean()
+        pivot = means.pivot(index="seed", columns="method", values="rolling_rmse")
+        rows = pd.DataFrame(
+            {method: pivot[method] - pivot["full"] for method in methods},
+            index=pivot.index,
+        )
+        scenario_effects.append(rows)
+    paired = sum(scenario_effects[1:], scenario_effects[0].copy()) / len(scenario_effects)
+    rng = np.random.default_rng(61337)
+    selector_rows: list[dict[str, Any]] = []
+    for method, label in zip(methods, method_labels, strict=True):
+        values = paired[method].to_numpy(dtype=float)
+        samples = np.mean(
+            rng.choice(values, size=(4000, len(values)), replace=True),
+            axis=1,
+        )
+        selector_rows.append(
+            {
+                "method": method,
+                "label": label,
+                "mean_selector_minus_task_ivr_rmse": float(np.mean(values)),
+                "ci95": [float(np.quantile(samples, 0.025)), float(np.quantile(samples, 0.975))],
+                "task_ivr_win_rate": float(np.mean(values > 0.0)),
+                "paired_seeds": len(values),
+                "contexts_averaged_within_seed": len(scenario_effects),
+            }
+        )
+    (OUT / "recovery_selector_effects.json").write_text(
+        json.dumps(selector_rows, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    selector_mean = np.asarray(
+        [row["mean_selector_minus_task_ivr_rmse"] for row in selector_rows],
+        dtype=float,
+    )
+    selector_ci = np.asarray([row["ci95"] for row in selector_rows], dtype=float)
+    selector_x = np.arange(len(methods))
+    ax_selector = fig.add_subplot(outer[2])
+    ax_selector.errorbar(
+        selector_x,
+        selector_mean,
+        yerr=np.vstack(
+            [selector_mean - selector_ci[:, 0], selector_ci[:, 1] - selector_mean]
+        ),
+        fmt="s",
+        color=VERMILLION,
+        ecolor=VERMILLION,
+        capsize=2.3,
+        markersize=3.6,
+        lw=1.05,
+    )
+    ax_selector.axhline(0, color=BLACK, lw=0.7)
+    ax_selector.set_xticks(selector_x, method_labels)
+    ax_selector.set_xlim(-0.45, 3.45)
+    ax_selector.set_ylim(0.0, 0.026)
+    ax_selector.set_ylabel("Selector $-$ task IVR RMSE")
+    ax_selector.set_title("h  Recovery-selector ablation (four contexts averaged within paired seed)",
+                          loc="left", fontweight="bold")
+    ax_selector.grid(axis="y", color=LIGHT_GREY, lw=0.55)
+
     # Absolute terminal accuracy.
     terminal = np.asarray([row["full_final_rmse_mean"] for row in ordered])
     terminal_ci = np.asarray([row["full_final_rmse_ci95"] for row in ordered])
-    ax_terminal = fig.add_subplot(bottom[0, 3])
+    ax_terminal = fig.add_subplot(middle[0, 3])
     ax_terminal.errorbar(
         terminal,
         y,
@@ -395,21 +464,15 @@ def build_p6() -> None:
     ax_terminal.grid(axis="x", color=LIGHT_GREY, lw=0.55)
     ax_terminal.text(0.1395, 3.35, "0.14", ha="right", va="bottom", color=ORANGE,
                      fontsize=6.2)
-    ax_terminal.text(
-        0.02,
-        0.02,
-        "0/72 pre-shift alarms\nper context; upper 95% = .050",
-        transform=ax_terminal.transAxes,
-        ha="left",
-        va="bottom",
-        fontsize=5.5,
-    )
     finish(fig, "p6_simulation_shift")
 
 
 def write_manifest() -> None:
     sources = [CAPTURE_DIR / name for name in P5_CAPTURE_NAMES + P6_CAPTURE_NAMES]
     sources.extend([P5_SUMMARY, P6_SUMMARY])
+    sources.extend(
+        sorted((SELECTOR_ROOT / "scenarios").glob("*/recovery_curve.csv"))
+    )
     manifest = {
         "schema_version": 1,
         "figures": {

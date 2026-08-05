@@ -118,7 +118,8 @@ def p1_values() -> tuple[list[str], np.ndarray]:
 def build_calibration_figure() -> list[Path]:
     p3 = load_json(P3)
     review = load_json(REVIEW_ANALYSIS)
-    fig, axes = plt.subplots(1, 3, figsize=(7.05, 2.35), constrained_layout=True)
+    fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 4.45), constrained_layout=True)
+    axes = axes_grid.ravel()
 
     # (a) Passive hardware model comparison.
     labels, values = p1_values()
@@ -250,6 +251,59 @@ def build_calibration_figure() -> list[Path]:
     )
     panel_label(axes[2], "c")
 
+    # (d) Realized held-out loss at fixed budgets.  Unlike the primary stopping
+    # endpoint, this comparison does not reward the acquisition rule for
+    # directly reducing its own uncertainty objective.
+    fixed_rows = review["p3"]["fixed_budget_rmse"]
+    fixed_index = {
+        (int(row["budget"]), row["method"]): row for row in fixed_rows
+    }
+    budgets = np.asarray([12, 18, 24, 30])
+    fixed_methods = ["lhs", "d_opt", "active_no_task", "active"]
+    fixed_labels = ["LHS", "D-opt", "No task", "Task IVR"]
+    fixed_colors = [GREY, "#6F8FAF", CYAN, VERMILLION]
+    fixed_markers = ["s", "^", "D", "o"]
+    for method, label, color, marker in zip(
+        fixed_methods,
+        fixed_labels,
+        fixed_colors,
+        fixed_markers,
+        strict=True,
+    ):
+        means = np.asarray(
+            [fixed_index[(int(budget), method)]["mean_heldout_rmse"] for budget in budgets]
+        )
+        lower = np.asarray(
+            [
+                fixed_index[(int(budget), method)]["mean_heldout_rmse_ci95_lower"]
+                for budget in budgets
+            ]
+        )
+        upper = np.asarray(
+            [
+                fixed_index[(int(budget), method)]["mean_heldout_rmse_ci95_upper"]
+                for budget in budgets
+            ]
+        )
+        axes[3].plot(
+            budgets,
+            means,
+            marker=marker,
+            markersize=4.0,
+            linewidth=1.1,
+            color=color,
+            label=label,
+        )
+        axes[3].fill_between(budgets, lower, upper, color=color, alpha=0.10, linewidth=0)
+    axes[3].set_xticks(budgets)
+    axes[3].set_xlabel("Fixed calibration budget (trials)")
+    axes[3].set_ylabel("Held-out task RMSE")
+    axes[3].set_ylim(0.010, 0.068)
+    axes[3].grid(color=LIGHT_GREY, linewidth=0.55)
+    axes[3].legend(frameon=False, ncol=2, loc="upper right", columnspacing=0.7)
+    axes[3].set_title("Fixed-budget realized error")
+    panel_label(axes[3], "d")
+
     return finish(fig, "calibration_evidence")
 
 
@@ -320,54 +374,56 @@ def build_navigation_figure() -> list[Path]:
     )
     panel_label(axes[1], "b")
 
-    matched_methods = ["B2_lhs", "B3_sobol", "B4_d_opt", "B5_active_no_task"]
-    matched_labels = ["LHS", "Sobol", "D-opt", "No task"]
-    matched_ratio = np.asarray(
-        [
+    # (c) The same physics runs also contain a matched-budget task-command
+    # validation endpoint.  This panel isolates acquisition quality before the
+    # navigation success ceiling compresses method differences.
+    review = load_json(REVIEW_ANALYSIS)
+    matched_rows = review["p7"]["matched_controls"]
+    matched_index = {(row["map"], row["baseline"]): row for row in matched_rows}
+    offsets = [-0.10, 0.10]
+    for baseline, label, color, marker, offset in zip(
+        ["B4_d_opt", "B5_active_no_task"],
+        ["D-opt", "No task"],
+        [BLUE, VERMILLION],
+        ["o", "D"],
+        offsets,
+        strict=True,
+    ):
+        values = np.asarray(
+            [matched_index[(name, baseline)]["validation_rmse_reduction"] for name in map_order]
+        )
+        lower = np.asarray(
             [
-                row["matched_baseline_comparisons"][method][
-                    "b8_to_baseline_completion_time_ratio"
-                ]
-                for method in matched_methods
+                matched_index[(name, baseline)]["validation_rmse_reduction_ci95_lower"]
+                for name in map_order
             ]
-            for row in scenarios
-        ]
-    )
-    matched_upper = np.asarray(
-        [
+        )
+        upper = np.asarray(
             [
-                row["matched_baseline_comparisons"][method][
-                    "b8_to_baseline_completion_time_ratio_ci95"
-                ][1]
-                for method in matched_methods
+                matched_index[(name, baseline)]["validation_rmse_reduction_ci95_upper"]
+                for name in map_order
             ]
-            for row in scenarios
-        ]
-    )
-    matched_image = axes[2].imshow(
-        matched_ratio,
-        vmin=0.90,
-        vmax=1.10,
-        cmap="RdBu_r",
-        aspect="auto",
-    )
-    axes[2].set_xticks(np.arange(len(matched_methods)), matched_labels, rotation=25, ha="right")
-    axes[2].set_yticks(np.arange(len(map_labels)), map_labels)
-    for i in range(len(map_labels)):
-        for j in range(len(matched_labels)):
-            axes[2].text(
-                j,
-                i,
-                f"{matched_ratio[i, j]:.2f}\n({matched_upper[i, j]:.2f})",
-                ha="center",
-                va="center",
-                fontsize=5.6,
-                color=BLACK,
-            )
-    matched_bar = fig.colorbar(matched_image, ax=axes[2], fraction=0.046, pad=0.03)
-    matched_bar.set_label("Full / control", fontsize=7)
-    matched_bar.ax.tick_params(labelsize=6)
-    axes[2].set_title("Matched-budget capped time (upper CI)")
+        )
+        axes[2].errorbar(
+            values,
+            y + offset,
+            xerr=np.vstack([values - lower, upper - values]),
+            fmt=marker,
+            color=color,
+            ecolor=color,
+            capsize=2.0,
+            markersize=4.0,
+            linewidth=1.0,
+            label=label,
+        )
+    axes[2].axvline(0.0, color=BLACK, linewidth=0.7)
+    axes[2].set_yticks(y, map_labels)
+    axes[2].invert_yaxis()
+    axes[2].set_xlim(-0.02, 0.18)
+    axes[2].set_xlabel("Full task-RMSE reduction vs control")
+    axes[2].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
+    axes[2].legend(frameon=False, loc="lower right")
+    axes[2].set_title("Matched-budget task validation")
     panel_label(axes[2], "c")
 
     ratio = np.asarray([row["b8_to_b1_mean_completion_time_ratio"] for row in scenarios])

@@ -1,0 +1,16 @@
+held_out_session,model,rmse
+go2-session-01,raw,0.06465276042234927
+go2-session-01,diagonal_linear,0.04890216787159987
+go2-session-01,diagonal_affine,0.0470288929667011
+go2-session-01,coupled_linear,0.03547851495791336
+go2-session-01,coupled_affine,0.02888003377854208
+go2-session-02,raw,0.06517466519966811
+go2-session-02,diagonal_linear,0.04619547275962867
+go2-session-02,diagonal_affine,0.045163728380833074
+go2-session-02,coupled_linear,0.03283268540643884
+go2-session-02,coupled_affine,0.03157767028329579
+go2-session-03,raw,0.06826753144468081
+go2-session-03,diagonal_linear,0.049660483606831826
+go2-session-03,diagonal_affine,0.044674101461044245
+go2-session-03,coupled_linear,0.03707489225868225
+go2-session-03,coupled_affine,0.02973866595682843
