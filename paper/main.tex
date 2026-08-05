@@ -326,6 +326,14 @@ also survive Holm correction ($p_{\mathrm{adj}}\leq4.77\times10^{-6}$).
 Intervals for trials saved use 5,000 percentile resamples of paired seeds;
 fixed-budget error intervals use 4,000.
 
+Task-distribution sensitivity freezes every acquisition and re-evaluates the
+resulting posteriors on a new 1,024-command Sobol grid. Besides the declared
+mixture, it changes the component weights to forward-heavy $(.8,.1,.1)$,
+left-heavy $(.1,.8,.1)$, and right-heavy $(.1,.1,.8)$, then replaces the
+mixture by a uniform measure over the full safe envelope. No command is
+reselected. This distinguishes robustness to navigation-family reweighting
+from a support-expanding deployment change.
+
 \subsection{Closed-Loop Simulation and Safety Evaluation}
 
 All physics experiments use Isaac Lab v2.3.2 at commit \texttt{37ddf62}, Isaac
@@ -439,7 +447,11 @@ to reproduce every reported result.
   bars are 95\% seed-bootstrap intervals. (c) Family-resolved time to the same
   joint target; every method reaches it in all 20 seeds per family. (d)
   Realized held-out task RMSE at matched trial budgets; bands are 95\%
-  paired-seed bootstrap intervals.}
+  paired-seed bootstrap intervals. (e) Frozen-acquisition performance under
+  task-distribution mismatch at 24 trials; positive control-minus-task-IVR
+  values favor task IVR. (f) Task-IVR error relative to the declared measure;
+  the uniform full-envelope negative control crosses the pre-specified 2$\times$
+  sensitivity gate.}
   \label{fig:calibration}
 \end{figure*}
 
@@ -492,6 +504,19 @@ mean held-out RMSE 0.02143, 0.01684, and 0.01420. The respective paired
 improvements are 0.00392, 0.00431, and 0.00466 over D-optimal design and
 0.00881, 0.00545, and 0.00598 over no-task IVR; all six 95\% intervals exclude
 zero. At 12 trials, task IVR does not yet separate from those two controls.
+
+Within the navigation task family, the frozen design remains effective under
+weight mismatch (Fig.~\ref{fig:calibration}e). At 24 trials, forward-heavy and
+right-heavy evaluation preserve positive intervals against all three controls.
+Left-heavy evaluation preserves advantages over no-task IVR (0.00571,
+[0.00300, 0.00835]) and LHS (0.00734, [0.00407, 0.01080]); its D-optimal
+contrast is 0.00202 with an interval crossing zero, but becomes positive by 30
+trials. The full-envelope uniform negative control reverses the ordering:
+task-IVR RMSE is higher by 0.02699 than no-task IVR, 0.02923 than D-optimal,
+and 0.01421 than LHS at 24 trials. Its error is 3.21 times the declared-task
+error (Fig.~\ref{fig:calibration}f). Task weighting therefore tolerates large
+mixture reweighting, but a deployment support expansion requires revising the
+task measure or switching to a general-purpose design.
 
 The uncertainty gate is binding in all 60 active conditions, as expected for
 an uncertainty-directed design; mean accuracy-only crossing occurs at 13.55,
@@ -613,7 +638,11 @@ exposed command interface needs coupled calibration, whether task weighting
 changes which trials are valuable, and whether held-out command accuracy
 preserves navigation outcomes. No-task and D-optimal controls isolate task
 weighting in the acquisition benchmark; candidate-noise and threshold sweeps
-preserve that ordering. In navigation, dense and matched-budget controls
+preserve that ordering. The mismatch analysis further shows that this benefit
+survives navigation-family reweighting but is not uniform over an undeclared
+full-envelope task. This is the intended behavior of a goal-oriented design:
+the planner must receive an updated task measure when deployment support
+changes. In navigation, dense and matched-budget controls
 establish downstream noninferiority, while the raw arm exposes the consequence
 of leaving the command interface uncalibrated.
 

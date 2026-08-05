@@ -20,11 +20,31 @@ OUT.mkdir(parents=True, exist_ok=True)
 P1_FOLDS = ROOT / "evidence/p1_real/baseline_fold_metrics.csv"
 P1_POOLED = ROOT / "evidence/p1_real/baseline_metrics.csv"
 P3 = ROOT / "evidence/p3_main/paired_statistics.json"
+P1_NESTED = (
+    ROOT / "paper/process/phase4_artifacts/reviewer_analysis/p1_nested_models.csv"
+)
+P1_NESTED_FOLDS = (
+    ROOT / "paper/process/phase4_artifacts/reviewer_analysis/p1_nested_fold_metrics.csv"
+)
 REVIEW_ANALYSIS = (
     ROOT / "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json"
 )
 P7 = ROOT / "evidence/p7_strong_confirmatory_v2/summary.json"
-INPUTS = [P1_FOLDS, P1_POOLED, P3, REVIEW_ANALYSIS, P7]
+MISMATCH_COMPARISONS = ROOT / "evidence/task_distribution_mismatch/comparisons.csv"
+MISMATCH_RATIOS = (
+    ROOT / "evidence/task_distribution_mismatch/task_ivr_mismatch_ratios.csv"
+)
+INPUTS = [
+    P1_FOLDS,
+    P1_POOLED,
+    P1_NESTED,
+    P1_NESTED_FOLDS,
+    P3,
+    REVIEW_ANALYSIS,
+    P7,
+    MISMATCH_COMPARISONS,
+    MISMATCH_RATIOS,
+]
 
 BLUE = "#0072B2"
 CYAN = "#56B4E9"
@@ -73,9 +93,9 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def panel_label(ax: plt.Axes, label: str) -> None:
+def panel_label(ax: plt.Axes, label: str, x: float = -0.12) -> None:
     ax.text(
-        -0.12,
+        x,
         1.13,
         label,
         transform=ax.transAxes,
@@ -118,39 +138,58 @@ def p1_values() -> tuple[list[str], np.ndarray]:
 def build_calibration_figure() -> list[Path]:
     p3 = load_json(P3)
     review = load_json(REVIEW_ANALYSIS)
-    fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 4.45), constrained_layout=True)
+    fig, axes_grid = plt.subplots(3, 2, figsize=(7.05, 6.45), constrained_layout=True)
     axes = axes_grid.ravel()
 
-    # (a) Passive hardware model comparison.
-    labels, values = p1_values()
-    x = np.arange(len(labels))
-    width = 0.23
-    styles = [
-        (GREY, "///", "Raw"),
-        (CYAN, "\\\\", "M0 diagonal"),
-        (BLUE, "", "M1 coupled"),
+    # (a) Nested passive hardware models separate intercept and coupling.
+    with P1_NESTED.open(encoding="utf-8") as handle:
+        nested = {row["model"]: float(row["pooled_rmse"]) for row in csv.DictReader(handle)}
+    with P1_NESTED_FOLDS.open(encoding="utf-8") as handle:
+        fold_rows = list(csv.DictReader(handle))
+    model_order = [
+        "raw",
+        "diagonal_linear",
+        "diagonal_affine",
+        "coupled_linear",
+        "coupled_affine",
     ]
-    for i, (color, hatch, name) in enumerate(styles):
-        axes[0].bar(
-            x + (i - 1) * width,
-            values[i],
-            width,
-            label=name,
-            color=color,
-            edgecolor=BLACK,
-            linewidth=0.55,
-            hatch=hatch,
+    model_labels = ["Raw", "Diag.\nlinear", "Diag.\naffine", "Coupled\nlinear", "Coupled\naffine"]
+    model_colors = [GREY, "#B8CDD9", CYAN, "#4D8FC2", BLUE]
+    x = np.arange(len(model_order))
+    axes[0].bar(
+        x,
+        [nested[model] for model in model_order],
+        0.68,
+        color=model_colors,
+        edgecolor=BLACK,
+        linewidth=0.55,
+        zorder=2,
+    )
+    for session_index, session in enumerate(
+        ["go2-session-01", "go2-session-02", "go2-session-03"]
+    ):
+        indexed = {
+            row["model"]: float(row["rmse"])
+            for row in fold_rows
+            if row["held_out_session"] == session
+        }
+        axes[0].scatter(
+            x + (session_index - 1) * 0.08,
+            [indexed[model] for model in model_order],
+            s=13,
+            facecolors="white",
+            edgecolors=BLACK,
+            linewidths=0.55,
+            zorder=3,
         )
-    axes[0].set_xticks(x, labels)
+    axes[0].set_xticks(x, model_labels)
     axes[0].set_ylabel("Held-out velocity RMSE")
-    axes[0].set_ylim(0, 0.092)
+    axes[0].set_ylim(0, 0.075)
     axes[0].grid(axis="y", color=LIGHT_GREY, linewidth=0.55, zorder=0)
-    axes[0].legend(frameon=False, ncol=1, loc="upper right", columnspacing=0.8,
-                   handlelength=1.8)
-    axes[0].set_title("Passive Go2 model check")
+    axes[0].set_title("Passive Go2 nested model check")
     axes[0].text(
-        3,
-        values[2, 3] + 0.003,
+        4,
+        nested["coupled_affine"] + 0.003,
         "-54.5% vs raw",
         ha="center",
         va="bottom",
@@ -242,11 +281,11 @@ def build_calibration_figure() -> list[Path]:
     axes[2].set_title("Family-resolved efficiency")
     axes[2].text(
         0.98,
-        0.03,
+        0.96,
         "20 seeds/family; all reached",
         transform=axes[2].transAxes,
         ha="right",
-        va="bottom",
+        va="top",
         fontsize=6.3,
     )
     panel_label(axes[2], "c")
@@ -303,6 +342,99 @@ def build_calibration_figure() -> list[Path]:
     axes[3].legend(frameon=False, ncol=2, loc="upper right", columnspacing=0.7)
     axes[3].set_title("Fixed-budget realized error")
     panel_label(axes[3], "d")
+
+    # (e) Distribution-mismatch effect at the 24-trial robustness budget.
+    with MISMATCH_COMPARISONS.open(encoding="utf-8") as handle:
+        mismatch_rows = list(csv.DictReader(handle))
+    distribution_order = [
+        "declared",
+        "forward_heavy",
+        "left_heavy",
+        "right_heavy",
+        "broad_uniform",
+    ]
+    distribution_labels = ["Declared", "Forward", "Left", "Right", "Broad uniform"]
+    y = np.arange(len(distribution_order))
+    for baseline, label, color, marker, offset in zip(
+        ["active_no_task", "d_opt", "lhs"],
+        ["No task", "D-opt", "LHS"],
+        [CYAN, BLUE, GREY],
+        ["D", "o", "s"],
+        [-0.16, 0.0, 0.16],
+        strict=True,
+    ):
+        indexed = {
+            row["distribution"]: row
+            for row in mismatch_rows
+            if int(row["budget"]) == 24 and row["baseline"] == baseline
+        }
+        means = np.asarray(
+            [float(indexed[item]["mean_baseline_minus_task_ivr_rmse"]) for item in distribution_order]
+        )
+        lower = np.asarray([float(indexed[item]["ci95_lower"]) for item in distribution_order])
+        upper = np.asarray([float(indexed[item]["ci95_upper"]) for item in distribution_order])
+        axes[4].errorbar(
+            means,
+            y + offset,
+            xerr=np.vstack([means - lower, upper - means]),
+            fmt=marker,
+            color=color,
+            ecolor=color,
+            capsize=2.0,
+            markersize=3.8,
+            linewidth=1.0,
+            label=label,
+        )
+    axes[4].axvline(0.0, color=BLACK, linewidth=0.7)
+    axes[4].set_yticks(y, distribution_labels)
+    axes[4].invert_yaxis()
+    axes[4].set_xlim(-0.038, 0.018)
+    axes[4].set_xlabel("Control $-$ task IVR RMSE")
+    axes[4].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
+    axes[4].legend(frameon=False, ncol=3, loc="lower right", columnspacing=0.6)
+    axes[4].set_title("Task-distribution mismatch (24 trials)")
+    panel_label(axes[4], "e")
+
+    # (f) Task-IVR error inflation under the same frozen acquisitions.
+    with MISMATCH_RATIOS.open(encoding="utf-8") as handle:
+        ratio_rows = list(csv.DictReader(handle))
+    ratio_index: dict[tuple[str, int], list[float]] = {}
+    for row in ratio_rows:
+        ratio_index.setdefault((row["distribution"], int(row["budget"])), []).append(
+            float(row["task_ivr_mismatch_to_declared_rmse_ratio"])
+        )
+    rng = np.random.default_rng(74131)
+    for budget, color, marker in zip([18, 24, 30], [CYAN, VERMILLION, BLUE], ["s", "o", "D"], strict=True):
+        means, lowers, uppers = [], [], []
+        for distribution in distribution_order:
+            values = np.asarray(ratio_index[(distribution, budget)], dtype=float)
+            samples = np.mean(
+                rng.choice(values, size=(4000, len(values)), replace=True), axis=1
+            )
+            means.append(float(np.mean(values)))
+            lowers.append(float(np.quantile(samples, 0.025)))
+            uppers.append(float(np.quantile(samples, 0.975)))
+        mean_array = np.asarray(means)
+        axes[5].errorbar(
+            np.arange(len(distribution_order)),
+            mean_array,
+            yerr=np.vstack([mean_array - np.asarray(lowers), np.asarray(uppers) - mean_array]),
+            color=color,
+            marker=marker,
+            markersize=3.8,
+            linewidth=1.0,
+            capsize=1.8,
+            label=f"{budget} trials",
+        )
+    axes[5].axhline(1.0, color=BLACK, linewidth=0.7)
+    axes[5].axhline(2.0, color=ORANGE, linestyle="--", linewidth=0.9, label="2x gate")
+    axes[5].set_xticks(np.arange(len(distribution_order)), ["Decl.", "Fwd", "Left", "Right", "Broad"])
+    axes[5].set_ylabel("Task-IVR RMSE / declared-task RMSE")
+    axes[5].set_ylim(0.75, 3.55)
+    axes[5].grid(axis="y", color=LIGHT_GREY, linewidth=0.55)
+    axes[5].legend(frameon=False, ncol=2, loc="upper left", columnspacing=0.6)
+    axes[5].set_title("Frozen-acquisition sensitivity")
+    panel_label(axes[5], "f", x=0.0)
 
     return finish(fig, "calibration_evidence")
 

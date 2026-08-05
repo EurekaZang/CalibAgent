@@ -1,0 +1,42 @@
+{
+  "analysis": "task_distribution_mismatch",
+  "artifacts": {
+    "README.md": {
+      "bytes": 795,
+      "path": "README.md",
+      "sha256": "5c52bd03eeb89555b5dc24c487890157e6f4d4ddc0f5cc8968f7aade67847c6d"
+    },
+    "comparisons.csv": {
+      "bytes": 4351,
+      "path": "comparisons.csv",
+      "sha256": "4cc50b71928801087ffd09b5a68aced749ba1ca724e1e2de9f0bc2757168cc1a"
+    },
+    "manifest.json": {
+      "bytes": 1121,
+      "path": "manifest.json",
+      "sha256": "05bcb050fc0073fee1ee853dcf3261e0ac32dcd184f8268edcf5646d7a0c7fba"
+    },
+    "per_condition.csv": {
+      "bytes": 213223,
+      "path": "per_condition.csv",
+      "sha256": "3e8a27499df70370e179ebccf905befc5ca0cd27221517057dce268c5295b866"
+    },
+    "resolved_config.json": {
+      "bytes": 1731,
+      "path": "resolved_config.json",
+      "sha256": "fd77e9fa2a37034c64be7fb5ea0964b0cc795b35600e935cc11f737570d80658"
+    },
+    "summary.json": {
+      "bytes": 14436,
+      "path": "summary.json",
+      "sha256": "3b8fe8d1434bd9b41cb07a51db5765888f8680c3a4d96c918b2974beaa4fd6aa"
+    },
+    "task_ivr_mismatch_ratios.csv": {
+      "bytes": 10796,
+      "path": "task_ivr_mismatch_ratios.csv",
+      "sha256": "3da33e7167de3b80870dabab30697a1313e6c6ce868a3a76a1feda97fe7ad906"
+    }
+  },
+  "schema_version": "1.0",
+  "verdict": "NO_GO"
+}
