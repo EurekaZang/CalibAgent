@@ -1,0 +1,134 @@
+experiment_role: supplemental_null
+protocol_frozen_utc: "2026-08-05T22:30:00Z"
+output_dir: outputs/long_null_monitor
+
+isaaclab:
+  tag: v2.3.2
+  commit: 37ddf626871758333d6ed89cf64ad702aef127d0
+  isaac_sim_version_prefix: "5.1.0"
+  physics_backend: physx
+
+vectorization:
+  num_seeds: 30
+  simulator_seed: 1760240
+  seeds:
+    - 13101
+    - 13102
+    - 13103
+    - 13104
+    - 13105
+    - 13106
+    - 13107
+    - 13108
+    - 13109
+    - 13110
+    - 13111
+    - 13112
+    - 13113
+    - 13114
+    - 13115
+    - 13116
+    - 13117
+    - 13118
+    - 13119
+    - 13120
+    - 13121
+    - 13122
+    - 13123
+    - 13124
+    - 13125
+    - 13126
+    - 13127
+    - 13128
+    - 13129
+    - 13130
+
+# The generic shift runner continues briefly after the null window so that its
+# artifact contract remains unchanged. Only context_stage=pre_shift contributes
+# to this experiment's endpoints.
+methods: [frozen, passive, full]
+trial:
+  pre_calibration_trials: 12
+  pre_monitor_trials: 100
+  shift_monitor_trials: 1
+  recovery_budget_trials: 12
+  dense_budget_trials: 30
+  validation_window: 4
+  primary_recovery_horizon_trials: 9
+  warmup_s: 0.50
+  ramp_in_s: 0.30
+  settle_s: 0.60
+  measure_s: 0.70
+  ramp_out_s: 0.50
+  sample_rate_hz: 50.0
+
+detector:
+  reference_nis: 1.0
+  allowance: 0.50
+  alarm_threshold: 4.0
+  minimum_positive_evidence: 3
+  evidence_window_trials: 5
+  minimum_dwell_trials: 3
+
+adaptation:
+  posterior_inflation_factor: 8.0
+  target_rmse_multiplier: 1.30
+  target_rmse_floor: 0.075
+  target_rmse_ceiling: 0.140
+  model_prior_scale: 0.01
+  stop_updates_after_recovery: true
+  invalid_window_rmse_penalty: 0.25
+
+safety:
+  min_base_height_m: 0.15
+  max_base_height_m: 0.65
+  max_coupled_load: 0.80
+
+checkpoints:
+  flat:
+    url: https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt
+    sha256: 47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439
+
+scenarios:
+  - id: stationary_nominal
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: affine_high
+    post_distortion: affine_high
+    post_seed_offset: 310000
+    pre_physics: {static_friction: 0.84, dynamic_friction: 0.66, payload_add_kg: 0.0, com_offset_x_m: 0.0}
+    post_physics: {static_friction: 0.84, dynamic_friction: 0.66, payload_add_kg: 0.0, com_offset_x_m: 0.0}
+  - id: stationary_low_friction
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: affine_low
+    post_distortion: affine_low
+    post_seed_offset: 310000
+    pre_physics: {static_friction: 0.50, dynamic_friction: 0.38, payload_add_kg: 0.5, com_offset_x_m: 0.0}
+    post_physics: {static_friction: 0.50, dynamic_friction: 0.38, payload_add_kg: 0.5, com_offset_x_m: 0.0}
+  - id: stationary_payload_com
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: affine_low
+    post_distortion: affine_low
+    post_seed_offset: 310000
+    pre_physics: {static_friction: 0.72, dynamic_friction: 0.55, payload_add_kg: 2.0, com_offset_x_m: -0.020}
+    post_physics: {static_friction: 0.72, dynamic_friction: 0.55, payload_add_kg: 2.0, com_offset_x_m: -0.020}
+  - id: stationary_mixed_nuisance
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: mixed_low
+    post_distortion: mixed_low
+    post_seed_offset: 310000
+    pre_physics: {static_friction: 0.55, dynamic_friction: 0.40, payload_add_kg: 1.5, com_offset_x_m: 0.015}
+    post_physics: {static_friction: 0.55, dynamic_friction: 0.40, payload_add_kg: 1.5, com_offset_x_m: 0.015}
+
+publication_gates:
+  minimum_contexts: 4
+  minimum_seeds_per_context: 30
+  minimum_monitor_trials_per_sequence: 100
+  maximum_false_alarm_sequence_rate: 0.05
+  maximum_false_alarm_sequence_rate_ci95_upper: 0.05
+  minimum_valid_observation_ratio: 0.95
+  maximum_serious_safety_events: 0
+  maximum_abort_latency_s: 0.04
