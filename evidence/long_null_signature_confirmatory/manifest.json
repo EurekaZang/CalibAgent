@@ -1,0 +1,212 @@
+{
+  "artifacts": {
+    "per_sequence.csv": {
+      "path": "per_sequence.csv",
+      "sha256": "5d7eff5f19390c7ecbbbfbe4d071fa7cb36c6383aa9f313a01f161566890e709"
+    },
+    "resolved_config.json": {
+      "path": "resolved_config.json",
+      "sha256": "349aadbe39296a40d6afe76bd51064e26f196bb3a0bac562eda70fe1caa31f81"
+    },
+    "scenarios/signature_stationary_low_friction/full/launch_command.json": {
+      "path": "scenarios/signature_stationary_low_friction/full/launch_command.json",
+      "sha256": "13f4f46ec3192f37bd5e515fe2c328d72c9636a5eef9007ed28a79a471123ada"
+    },
+    "scenarios/signature_stationary_low_friction/full/launch_config.json": {
+      "path": "scenarios/signature_stationary_low_friction/full/launch_config.json",
+      "sha256": "a82b0f3cfe7b12b58381f43fc8c5a699e1e60a2a956b828e02f2a3be6c343ce4"
+    },
+    "scenarios/signature_stationary_low_friction/full/monitor_metrics.csv": {
+      "path": "scenarios/signature_stationary_low_friction/full/monitor_metrics.csv",
+      "sha256": "f5d5e4789326a3b17d1cd62d4a442d608e94831f1fcd257b13539c54bfab5436"
+    },
+    "scenarios/signature_stationary_low_friction/full/per_seed_metrics.csv": {
+      "path": "scenarios/signature_stationary_low_friction/full/per_seed_metrics.csv",
+      "sha256": "3f99368801ef6bd38a835bbdb6e7a3fb46fb3c7ccab89370c52ec7ace42a1941"
+    },
+    "scenarios/signature_stationary_low_friction/full/pose_trace.csv.gz": {
+      "path": "scenarios/signature_stationary_low_friction/full/pose_trace.csv.gz",
+      "sha256": "9e10ccbdf02d7ba9464c9a0e40709a5c418a8004bdd740dedf8a892ff664ef89"
+    },
+    "scenarios/signature_stationary_low_friction/full/recovery_curve.csv": {
+      "path": "scenarios/signature_stationary_low_friction/full/recovery_curve.csv",
+      "sha256": "48c74bbb7d3cd8195152dd0ad12b6054499d0d2022767c2f0f543012ffb6fe90"
+    },
+    "scenarios/signature_stationary_low_friction/full/recovery_metrics.csv": {
+      "path": "scenarios/signature_stationary_low_friction/full/recovery_metrics.csv",
+      "sha256": "613d90e27502733c693e8b822a331604a5033144090ac10878942957d3ac02fc"
+    },
+    "scenarios/signature_stationary_low_friction/full/scenario_config.json": {
+      "path": "scenarios/signature_stationary_low_friction/full/scenario_config.json",
+      "sha256": "a82b0f3cfe7b12b58381f43fc8c5a699e1e60a2a956b828e02f2a3be6c343ce4"
+    },
+    "scenarios/signature_stationary_low_friction/full/shift_events.json": {
+      "path": "scenarios/signature_stationary_low_friction/full/shift_events.json",
+      "sha256": "7b122eadd8765f6ef883e59807afafc61ef0fe7a2cef92fdfe8bf8b7e351b9fd"
+    },
+    "scenarios/signature_stationary_low_friction/full/simulator.log": {
+      "path": "scenarios/signature_stationary_low_friction/full/simulator.log",
+      "sha256": "ea08edcbd2f26552070dc8a99355efa490dff9f4834d272c87857a65ac3541bb"
+    },
+    "scenarios/signature_stationary_low_friction/full/summary.json": {
+      "path": "scenarios/signature_stationary_low_friction/full/summary.json",
+      "sha256": "7c13a9a36bba7d999b1727ad93e3cb440de958381b64bbc35a57e107e85c912b"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/launch_command.json": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/launch_command.json",
+      "sha256": "4c30dffe3188d989131e0aa55ea8e2e8e5049fb891152bc965928d94abf9754c"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/launch_config.json": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/launch_config.json",
+      "sha256": "86072ad83993dd41b1338d31a08a70b1ab063aa41c60560c4221b4459f3d79a0"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/monitor_metrics.csv": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/monitor_metrics.csv",
+      "sha256": "abc0f7791a475c1174c88af760a92707f7d52a6f5a91b26f0196b979ed2ebc94"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/per_seed_metrics.csv": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/per_seed_metrics.csv",
+      "sha256": "22f8653fda8c4e8beac832015cc54d0f1efa17d8e9adbdcaa56ca3744cf70732"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/pose_trace.csv.gz": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/pose_trace.csv.gz",
+      "sha256": "6c12c3379fa1e866258410cb7c97ecebea0ab25702a2e3947dc811855f76cfb8"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/recovery_curve.csv": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/recovery_curve.csv",
+      "sha256": "4fb41144cfdec88bf1eb0d6ad39ab6f2fc85b987922be5b0d85b0beec9ff8f13"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/recovery_metrics.csv": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/recovery_metrics.csv",
+      "sha256": "eda2ba73cc15a2a27ec28979acf5dac5136c9b3848e5d014e56c7fc7b5f277a1"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/scenario_config.json": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/scenario_config.json",
+      "sha256": "86072ad83993dd41b1338d31a08a70b1ab063aa41c60560c4221b4459f3d79a0"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/shift_events.json": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/shift_events.json",
+      "sha256": "daabb7e132e3051b2d3f38b43145b9c25af375c8f29b462132484113a7c78db9"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/simulator.log": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/simulator.log",
+      "sha256": "107afe4c21a7260498e9869caabe7aacc9a9afaff30e172fa6d886be5d19e3d9"
+    },
+    "scenarios/signature_stationary_mixed_nuisance/full/summary.json": {
+      "path": "scenarios/signature_stationary_mixed_nuisance/full/summary.json",
+      "sha256": "710fdf5feb0b5d290639c79f3c75bc7db24449b26caaf161ebd565fbfa4e4694"
+    },
+    "scenarios/signature_stationary_nominal/full/launch_command.json": {
+      "path": "scenarios/signature_stationary_nominal/full/launch_command.json",
+      "sha256": "cea93476e7dbdfd627af7b46583df65a81e1095db0ed726dd7098652d6bbb2b2"
+    },
+    "scenarios/signature_stationary_nominal/full/launch_config.json": {
+      "path": "scenarios/signature_stationary_nominal/full/launch_config.json",
+      "sha256": "8a64abdf1588b2278558fdae85cf1f671fecc9afe6418a639c026e55abaeccf3"
+    },
+    "scenarios/signature_stationary_nominal/full/monitor_metrics.csv": {
+      "path": "scenarios/signature_stationary_nominal/full/monitor_metrics.csv",
+      "sha256": "92d104c860ec24ba2169d730cfe8072a30db1a5b2d694c25d89b5633bc014a87"
+    },
+    "scenarios/signature_stationary_nominal/full/per_seed_metrics.csv": {
+      "path": "scenarios/signature_stationary_nominal/full/per_seed_metrics.csv",
+      "sha256": "048bb3d5ff32c7feb2d2a1c190f993fcb2e5dc5ac0c5f75a1258987eb2bf26b0"
+    },
+    "scenarios/signature_stationary_nominal/full/pose_trace.csv.gz": {
+      "path": "scenarios/signature_stationary_nominal/full/pose_trace.csv.gz",
+      "sha256": "0ed546134a89e8eb9f6cad1d41a1c2fcdedd3b57d2a673251ff33ea000b5f799"
+    },
+    "scenarios/signature_stationary_nominal/full/recovery_curve.csv": {
+      "path": "scenarios/signature_stationary_nominal/full/recovery_curve.csv",
+      "sha256": "301fae88a316717e80c44cb4a9c31010be3db9016b813851ce5aa4a23fa4742e"
+    },
+    "scenarios/signature_stationary_nominal/full/recovery_metrics.csv": {
+      "path": "scenarios/signature_stationary_nominal/full/recovery_metrics.csv",
+      "sha256": "410721fdfec491253b2b6322c0bcefb87dc6d6784a1775a880f6e1e8ccc63aca"
+    },
+    "scenarios/signature_stationary_nominal/full/scenario_config.json": {
+      "path": "scenarios/signature_stationary_nominal/full/scenario_config.json",
+      "sha256": "8a64abdf1588b2278558fdae85cf1f671fecc9afe6418a639c026e55abaeccf3"
+    },
+    "scenarios/signature_stationary_nominal/full/shift_events.json": {
+      "path": "scenarios/signature_stationary_nominal/full/shift_events.json",
+      "sha256": "bd52cadca50bebb2e9f33978295807c66446d3564220ebed22e1cdef1c43dc97"
+    },
+    "scenarios/signature_stationary_nominal/full/simulator.log": {
+      "path": "scenarios/signature_stationary_nominal/full/simulator.log",
+      "sha256": "dc389050610147a508b7ad7bba26b019106c13a9127b7d09b7cb1fab2f58cf5e"
+    },
+    "scenarios/signature_stationary_nominal/full/summary.json": {
+      "path": "scenarios/signature_stationary_nominal/full/summary.json",
+      "sha256": "92b90c266f1ab402de93c60dcb5543a2a62fce22275e2dd7e9431127ed9e76db"
+    },
+    "scenarios/signature_stationary_payload_com/full/launch_command.json": {
+      "path": "scenarios/signature_stationary_payload_com/full/launch_command.json",
+      "sha256": "6e326f4b70c42b338cee97763f85412c2e8678b762982bc172c0fe3f778a19f5"
+    },
+    "scenarios/signature_stationary_payload_com/full/launch_config.json": {
+      "path": "scenarios/signature_stationary_payload_com/full/launch_config.json",
+      "sha256": "2a095fd012e7d3a83f0c5c5f29286900f04f1ad3303b039d198c16d35a0a8457"
+    },
+    "scenarios/signature_stationary_payload_com/full/monitor_metrics.csv": {
+      "path": "scenarios/signature_stationary_payload_com/full/monitor_metrics.csv",
+      "sha256": "f216eebf53eb46fd12b72f0d4bcab2b8d38c31b7b62601b671aa781bbc5a146c"
+    },
+    "scenarios/signature_stationary_payload_com/full/per_seed_metrics.csv": {
+      "path": "scenarios/signature_stationary_payload_com/full/per_seed_metrics.csv",
+      "sha256": "3f2c03bd2f4cff9aa950e983e3036666d13822c6d2cb8d4bb499e3c3b2084184"
+    },
+    "scenarios/signature_stationary_payload_com/full/pose_trace.csv.gz": {
+      "path": "scenarios/signature_stationary_payload_com/full/pose_trace.csv.gz",
+      "sha256": "df224dd6dce11c53fec103c9b1f7330a3e5039005859b88043248f77d617af45"
+    },
+    "scenarios/signature_stationary_payload_com/full/recovery_curve.csv": {
+      "path": "scenarios/signature_stationary_payload_com/full/recovery_curve.csv",
+      "sha256": "29a29234828625bcff69e86fa1875f4ded22ad9dad8f553378342a275959d750"
+    },
+    "scenarios/signature_stationary_payload_com/full/recovery_metrics.csv": {
+      "path": "scenarios/signature_stationary_payload_com/full/recovery_metrics.csv",
+      "sha256": "8583e9981f0cefffef3f7eda652b3a08aa6ca8f2dcf67fde7692f2fc51addb72"
+    },
+    "scenarios/signature_stationary_payload_com/full/scenario_config.json": {
+      "path": "scenarios/signature_stationary_payload_com/full/scenario_config.json",
+      "sha256": "2a095fd012e7d3a83f0c5c5f29286900f04f1ad3303b039d198c16d35a0a8457"
+    },
+    "scenarios/signature_stationary_payload_com/full/shift_events.json": {
+      "path": "scenarios/signature_stationary_payload_com/full/shift_events.json",
+      "sha256": "cfba6d8ac6051c0ceee35b23186b7e4a1218eff7504b86276745c5d261d0267a"
+    },
+    "scenarios/signature_stationary_payload_com/full/simulator.log": {
+      "path": "scenarios/signature_stationary_payload_com/full/simulator.log",
+      "sha256": "701fcc2cc47ac8701fc9ba5d7ac73425ecdfbebd4721611321fa63ead9f4a2bb"
+    },
+    "scenarios/signature_stationary_payload_com/full/summary.json": {
+      "path": "scenarios/signature_stationary_payload_com/full/summary.json",
+      "sha256": "a3921d742b23a16e36223cad1be79e00e92c02b66c0b36f732402d8da2b50117"
+    },
+    "summary.json": {
+      "path": "summary.json",
+      "sha256": "c9bb07f3be18e627fcd4579712bd7c8c045a9c08dea324c589b6285f60db6529"
+    }
+  },
+  "backend": "isaaclab_physx_go2_long_null_monitor",
+  "checkpoints": {
+    "flat": {
+      "sha256": "47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439",
+      "url": "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt"
+    }
+  },
+  "config_path": "configs/experiments/long_null_signature_confirmatory.yaml",
+  "config_sha256": "18decdb49893501b0ef406fe9f29123f858d961e4fc3dfaebfc90dc06e0a7fa4",
+  "git_commit": "a5a1d95c0d17c3529fe200e5e6183cd4e7263f5f",
+  "resumed": false,
+  "reused_complete_contexts": [],
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "schema_version": "1.0"
+}

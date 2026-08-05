@@ -1,0 +1,115 @@
+{
+  "checks": {
+    "context_coverage": true,
+    "exposure_length": true,
+    "false_alarm_confidence_bound": true,
+    "false_alarm_rate": true,
+    "safety": true,
+    "seed_coverage": true,
+    "valid_observations": true
+  },
+  "context_count": 4,
+  "contexts": [
+    {
+      "false_alarm_sequence_rate": 0.0,
+      "false_alarm_sequence_rate_ci95": [
+        0.0,
+        0.11570330822202779
+      ],
+      "false_alarm_sequences": 0,
+      "legacy_false_alarm_sequence_rate": 0.23333333333333334,
+      "legacy_false_alarm_sequences": 7,
+      "maximum_abort_latency_s": 0.0,
+      "maximum_cusum": 74.1733436513202,
+      "maximum_signature_distance": 0.0,
+      "mean_normalized_nis": 1.587027782001188,
+      "minimum_valid_observation_ratio": 1.0,
+      "monitor_trials": 3000,
+      "scenario": "signature_stationary_nominal",
+      "sequences": 30,
+      "serious_safety_events": 0
+    },
+    {
+      "false_alarm_sequence_rate": 0.0,
+      "false_alarm_sequence_rate_ci95": [
+        0.0,
+        0.11570330822202779
+      ],
+      "false_alarm_sequences": 0,
+      "legacy_false_alarm_sequence_rate": 0.3,
+      "legacy_false_alarm_sequences": 9,
+      "maximum_abort_latency_s": 0.0,
+      "maximum_cusum": 43.897312437580965,
+      "maximum_signature_distance": 0.0,
+      "mean_normalized_nis": 1.4411503868714852,
+      "minimum_valid_observation_ratio": 1.0,
+      "monitor_trials": 3000,
+      "scenario": "signature_stationary_low_friction",
+      "sequences": 30,
+      "serious_safety_events": 0
+    },
+    {
+      "false_alarm_sequence_rate": 0.0,
+      "false_alarm_sequence_rate_ci95": [
+        0.0,
+        0.11570330822202779
+      ],
+      "false_alarm_sequences": 0,
+      "legacy_false_alarm_sequence_rate": 0.03333333333333333,
+      "legacy_false_alarm_sequences": 1,
+      "maximum_abort_latency_s": 0.02,
+      "maximum_cusum": 31.69246142285365,
+      "maximum_signature_distance": 0.0,
+      "mean_normalized_nis": 1.1773497815499216,
+      "minimum_valid_observation_ratio": 1.0,
+      "monitor_trials": 3000,
+      "scenario": "signature_stationary_payload_com",
+      "sequences": 30,
+      "serious_safety_events": 0
+    },
+    {
+      "false_alarm_sequence_rate": 0.0,
+      "false_alarm_sequence_rate_ci95": [
+        0.0,
+        0.11570330822202779
+      ],
+      "false_alarm_sequences": 0,
+      "legacy_false_alarm_sequence_rate": 0.9333333333333333,
+      "legacy_false_alarm_sequences": 28,
+      "maximum_abort_latency_s": 0.0,
+      "maximum_cusum": 113.6899130368754,
+      "maximum_signature_distance": 0.479691563859272,
+      "mean_normalized_nis": 1.9420793757091854,
+      "minimum_valid_observation_ratio": 1.0,
+      "monitor_trials": 3000,
+      "scenario": "signature_stationary_mixed_nuisance",
+      "sequences": 30,
+      "serious_safety_events": 0
+    }
+  ],
+  "detector_mode": "paired_signature",
+  "false_alarm_sequence_rate": 0.0,
+  "false_alarm_sequence_rate_ci95": [
+    0.0,
+    0.03027297257742007
+  ],
+  "false_alarm_sequences": 0,
+  "legacy_false_alarm_sequence_rate": 0.375,
+  "legacy_false_alarm_sequences": 45,
+  "maximum_abort_latency_s": 0.02,
+  "minimum_valid_observation_ratio": 1.0,
+  "monitor_trials_per_sequence": 100,
+  "runtime": {
+    "gpu_and_driver": "NVIDIA GeForce RTX 5090, 580.173.02",
+    "isaac_python_version": "3.11.13",
+    "isaac_sim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+    "isaaclab_commit": "37ddf626871758333d6ed89cf64ad702aef127d0",
+    "isaaclab_describe": "v2.3.2"
+  },
+  "schema_version": "1.0",
+  "sequence_count": 120,
+  "total_monitor_command_time_s": 31200.0,
+  "total_monitor_trials": 12000,
+  "total_serious_safety_events": 0,
+  "verdict": "GO"
+}

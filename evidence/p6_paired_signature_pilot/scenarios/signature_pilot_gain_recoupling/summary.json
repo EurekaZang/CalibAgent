@@ -1,0 +1,131 @@
+{
+  "detection_rate": 0.25,
+  "detection_rate_ci95": [
+    0.03185402624994424,
+    0.6508557944128242
+  ],
+  "finite": true,
+  "full_final_rmse_ci95": [
+    0.11727348868352315,
+    0.13794341970414176
+  ],
+  "full_final_rmse_mean": 0.12819885822612156,
+  "full_minus_passive_final_rmse_ci95": [
+    0.0,
+    0.01575704040126201
+  ],
+  "full_minus_passive_final_rmse_mean": 0.006342977410947002,
+  "full_recovery_rate": 0.625,
+  "full_recovery_rate_ci95": [
+    0.24486321636655167,
+    0.9147665858627464
+  ],
+  "full_vs_frozen_final_improvement_ci95": [
+    0.0,
+    0.021464398990899827
+  ],
+  "full_vs_frozen_final_improvement_mean": 0.00868815970646224,
+  "full_vs_frozen_win_rate": 0.25,
+  "full_vs_passive_early_rmse_improvement_ci95": [
+    -0.00023645833575064272,
+    0.0015613371728643403
+  ],
+  "full_vs_passive_early_rmse_improvement_mean": 0.0004416262790378992,
+  "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 0.32736042300928847,
+  "full_vs_passive_early_rmse_win_rate": 0.125,
+  "maximum_abort_latency_s": 0.0,
+  "median_detection_delay_trials": 3.0,
+  "median_full_recovery_trials": 6.0,
+  "method_summaries": {
+    "frozen": {
+      "detection_rate": 0.25,
+      "detector_mode": "paired_signature",
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.0,
+      "median_detection_delay_trials": 3.0,
+      "median_recovery_trials": 6.0,
+      "method": "frozen",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 8,
+      "p95_detection_delay_trials": 3.0,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.375,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 0,
+      "scenario": "signature_pilot_gain_recoupling",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 1.0,
+      "validation_window_trials": 4
+    },
+    "full": {
+      "detection_rate": 0.25,
+      "detector_mode": "paired_signature",
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.0,
+      "median_detection_delay_trials": 3.0,
+      "median_recovery_trials": 6.0,
+      "method": "full",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 8,
+      "p95_detection_delay_trials": 3.0,
+      "p95_recovery_trials": 7.6,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.625,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 0,
+      "scenario": "signature_pilot_gain_recoupling",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 1.0,
+      "validation_window_trials": 4
+    },
+    "passive": {
+      "detection_rate": 0.25,
+      "detector_mode": "paired_signature",
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.0,
+      "median_detection_delay_trials": 3.0,
+      "median_recovery_trials": 6.0,
+      "method": "passive",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 8,
+      "p95_detection_delay_trials": 3.0,
+      "p95_recovery_trials": 7.8,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.625,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 0,
+      "scenario": "signature_pilot_gain_recoupling",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 1.0,
+      "validation_window_trials": 4
+    }
+  },
+  "methods": [
+    "frozen",
+    "passive",
+    "full"
+  ],
+  "no_shift_false_alarm_rate": 0.0,
+  "no_shift_false_alarm_rate_ci95": [
+    0.0,
+    0.3694166475528192
+  ],
+  "num_seeds": 8,
+  "p95_detection_delay_trials": 3.0,
+  "p95_full_recovery_trials": 7.6,
+  "primary_recovery_horizon_trials": 9,
+  "recovery_selector_comparisons": {},
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 0,
+  "scenario": "signature_pilot_gain_recoupling",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 1.0
+}

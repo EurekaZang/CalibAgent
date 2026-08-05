@@ -1,0 +1,23 @@
+{
+  "detection_rate": 0.375,
+  "detector_mode": "paired_signature",
+  "finite": true,
+  "invalid_window_rmse_penalty": 0.25,
+  "maximum_abort_latency_s": 0.02,
+  "median_detection_delay_trials": 4.0,
+  "median_recovery_trials": 6.0,
+  "method": "passive",
+  "no_shift_false_alarm_rate": 0.0,
+  "num_seeds": 8,
+  "p95_detection_delay_trials": 4.0,
+  "p95_recovery_trials": 8.7,
+  "primary_recovery_horizon_trials": 9,
+  "recovery_rate": 0.875,
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 13,
+  "scenario": "signature_pilot_payload_com_only",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 0.9527777777777777,
+  "validation_window_trials": 4
+}

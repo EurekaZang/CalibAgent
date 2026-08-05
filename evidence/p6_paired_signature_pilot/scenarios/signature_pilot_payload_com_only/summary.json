@@ -1,0 +1,131 @@
+{
+  "detection_rate": 0.375,
+  "detection_rate_ci95": [
+    0.08523341413725356,
+    0.7551367836334484
+  ],
+  "finite": true,
+  "full_final_rmse_ci95": [
+    0.10588167388055408,
+    0.1333616921728544
+  ],
+  "full_final_rmse_mean": 0.11976222102122347,
+  "full_minus_passive_final_rmse_ci95": [
+    0.0010420853536285413,
+    0.015115862038381798
+  ],
+  "full_minus_passive_final_rmse_mean": 0.007183830788297091,
+  "full_recovery_rate": 0.875,
+  "full_recovery_rate_ci95": [
+    0.4734903291247935,
+    0.9968402764687481
+  ],
+  "full_vs_frozen_final_improvement_ci95": [
+    0.0028606650643589297,
+    0.018945012851572813
+  ],
+  "full_vs_frozen_final_improvement_mean": 0.009505015461157312,
+  "full_vs_frozen_win_rate": 0.375,
+  "full_vs_passive_early_rmse_improvement_ci95": [
+    0.0013086704045977091,
+    0.008980654225279007
+  ],
+  "full_vs_passive_early_rmse_improvement_mean": 0.004648878686525382,
+  "full_vs_passive_early_rmse_wilcoxon_one_sided_p": 0.05440471502027284,
+  "full_vs_passive_early_rmse_win_rate": 0.375,
+  "maximum_abort_latency_s": 0.02,
+  "median_detection_delay_trials": 4.0,
+  "median_full_recovery_trials": 6.0,
+  "method_summaries": {
+    "frozen": {
+      "detection_rate": 0.375,
+      "detector_mode": "paired_signature",
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 4.0,
+      "median_recovery_trials": 6.0,
+      "method": "frozen",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 8,
+      "p95_detection_delay_trials": 4.0,
+      "p95_recovery_trials": 6.0,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.625,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 15,
+      "scenario": "signature_pilot_payload_com_only",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9472222222222222,
+      "validation_window_trials": 4
+    },
+    "full": {
+      "detection_rate": 0.375,
+      "detector_mode": "paired_signature",
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 4.0,
+      "median_recovery_trials": 6.0,
+      "method": "full",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 8,
+      "p95_detection_delay_trials": 4.0,
+      "p95_recovery_trials": 7.399999999999999,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.875,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 14,
+      "scenario": "signature_pilot_payload_com_only",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.95,
+      "validation_window_trials": 4
+    },
+    "passive": {
+      "detection_rate": 0.375,
+      "detector_mode": "paired_signature",
+      "finite": true,
+      "invalid_window_rmse_penalty": 0.25,
+      "maximum_abort_latency_s": 0.02,
+      "median_detection_delay_trials": 4.0,
+      "median_recovery_trials": 6.0,
+      "method": "passive",
+      "no_shift_false_alarm_rate": 0.0,
+      "num_seeds": 8,
+      "p95_detection_delay_trials": 4.0,
+      "p95_recovery_trials": 8.7,
+      "primary_recovery_horizon_trials": 9,
+      "recovery_rate": 0.875,
+      "recovery_to_dense_budget_ratio": 0.4,
+      "safety_aborts": 13,
+      "scenario": "signature_pilot_payload_com_only",
+      "schema_version": "1.0",
+      "serious_safety_events": 0,
+      "valid_observation_ratio": 0.9527777777777777,
+      "validation_window_trials": 4
+    }
+  },
+  "methods": [
+    "frozen",
+    "passive",
+    "full"
+  ],
+  "no_shift_false_alarm_rate": 0.0,
+  "no_shift_false_alarm_rate_ci95": [
+    0.0,
+    0.3694166475528192
+  ],
+  "num_seeds": 8,
+  "p95_detection_delay_trials": 4.0,
+  "p95_full_recovery_trials": 7.399999999999999,
+  "primary_recovery_horizon_trials": 9,
+  "recovery_selector_comparisons": {},
+  "recovery_to_dense_budget_ratio": 0.4,
+  "safety_aborts": 42,
+  "scenario": "signature_pilot_payload_com_only",
+  "schema_version": "1.0",
+  "serious_safety_events": 0,
+  "valid_observation_ratio": 0.9472222222222222
+}

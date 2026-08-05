@@ -1,0 +1,123 @@
+{
+  "adaptation": {
+    "invalid_window_rmse_penalty": 0.25,
+    "model_prior_scale": 0.01,
+    "posterior_inflation_factor": 8.0,
+    "stop_updates_after_recovery": true,
+    "target_rmse_ceiling": 0.14,
+    "target_rmse_floor": 0.075,
+    "target_rmse_multiplier": 1.3
+  },
+  "checkpoint": "flat",
+  "detector": {
+    "alarm_threshold": 4.0,
+    "allowance": 0.5,
+    "component_scales": [
+      0.14,
+      0.08,
+      0.18
+    ],
+    "distance_threshold": 0.7,
+    "evidence_window_trials": 4,
+    "minimum_dwell_trials": 2,
+    "minimum_positive_evidence": 2,
+    "mode": "paired_signature",
+    "monitor_commands": [
+      [
+        -0.2,
+        0.0,
+        -0.2
+      ],
+      [
+        -0.2,
+        0.0,
+        0.2
+      ],
+      [
+        0.12,
+        -0.1,
+        -0.15
+      ],
+      [
+        0.12,
+        0.1,
+        0.15
+      ]
+    ],
+    "reference_nis": 1.0,
+    "signature_baseline_trials": 4
+  },
+  "id": "signature_stationary_payload_com",
+  "methods": [
+    "full"
+  ],
+  "post_distortion": "affine_low",
+  "post_physics": {
+    "com_offset_x_m": -0.02,
+    "dynamic_friction": 0.55,
+    "payload_add_kg": 2.0,
+    "static_friction": 0.72
+  },
+  "post_seed_offset": 410000,
+  "pre_distortion": "affine_low",
+  "pre_physics": {
+    "com_offset_x_m": -0.02,
+    "dynamic_friction": 0.55,
+    "payload_add_kg": 2.0,
+    "static_friction": 0.72
+  },
+  "safety": {
+    "max_base_height_m": 0.65,
+    "max_coupled_load": 0.8,
+    "min_base_height_m": 0.15
+  },
+  "seeds": [
+    14101,
+    14102,
+    14103,
+    14104,
+    14105,
+    14106,
+    14107,
+    14108,
+    14109,
+    14110,
+    14111,
+    14112,
+    14113,
+    14114,
+    14115,
+    14116,
+    14117,
+    14118,
+    14119,
+    14120,
+    14121,
+    14122,
+    14123,
+    14124,
+    14125,
+    14126,
+    14127,
+    14128,
+    14129,
+    14130
+  ],
+  "simulator_seed": 1860242,
+  "task": "Isaac-Velocity-Flat-Unitree-Go2-Play-v0",
+  "trial": {
+    "dense_budget_trials": 30,
+    "measure_s": 0.7,
+    "pre_calibration_trials": 12,
+    "pre_monitor_trials": 100,
+    "primary_recovery_horizon_trials": 9,
+    "ramp_in_s": 0.3,
+    "ramp_out_s": 0.5,
+    "recovery_budget_trials": 12,
+    "sample_rate_hz": 50.0,
+    "settle_s": 0.6,
+    "shift_monitor_trials": 1,
+    "validation_window": 4,
+    "warmup_s": 0.5
+  }
+}

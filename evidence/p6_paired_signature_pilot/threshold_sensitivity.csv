@@ -1,0 +1,10 @@
+distance_threshold,detected_shift_sequences,total_shift_sequences,false_alarm_sequences,total_null_sequences
+0.20,32,32,1,120
+0.25,32,32,1,120
+0.30,32,32,0,120
+0.35,32,32,0,120
+0.40,32,32,0,120
+0.45,31,32,0,120
+0.50,27,32,0,120
+0.60,23,32,0,120
+0.70,15,32,0,120
