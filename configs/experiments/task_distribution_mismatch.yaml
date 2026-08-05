@@ -1,0 +1,32 @@
+experiment_role: posthoc_distribution_shift_sensitivity
+analysis_declared_utc: "2026-08-05T22:00:00Z"
+source_config: evidence/p3_main/resolved_config.json
+source_trace: evidence/p3_main/trial_trace.csv
+output_dir: outputs/task_distribution_mismatch
+methods: [active, active_no_task, d_opt, lhs]
+baselines: [active_no_task, d_opt, lhs]
+budgets: [18, 24, 30]
+evaluation_grid_size: 1024
+evaluation_grid_seed: 73031
+bootstrap_draws: 4000
+bootstrap_seed: 73103
+task_centers:
+  - [0.55, 0.0, 0.0]
+  - [0.30, 0.0, 0.70]
+  - [0.30, 0.0, -0.70]
+task_scales:
+  - [0.14, 0.08, 0.18]
+  - [0.12, 0.08, 0.16]
+  - [0.12, 0.08, 0.16]
+distributions:
+  - {id: declared, mixture_weights: [0.50, 0.25, 0.25]}
+  - {id: forward_heavy, mixture_weights: [0.80, 0.10, 0.10]}
+  - {id: left_heavy, mixture_weights: [0.10, 0.80, 0.10]}
+  - {id: right_heavy, mixture_weights: [0.10, 0.10, 0.80]}
+  - {id: broad_uniform, uniform: true}
+gates:
+  robustness_budget: 24
+  maximum_task_ivr_mismatch_to_declared_rmse_ratio: 2.0
+  minimum_distributions_beating_lhs_ci95_lower: 4
+  declared_advantage_budget: 18
+  require_declared_advantage_ci95_lower_over_all_baselines: true
