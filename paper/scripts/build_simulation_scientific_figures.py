@@ -468,7 +468,7 @@ def build_p6() -> None:
     )
     ax_early.invert_yaxis()
     ax_early.set_xlim(0, 0.0205)
-    ax_early.set_xlabel("Passive $-$ CalibAgent RMSE")
+    ax_early.set_xlabel("Passive $-$ GAUGE RMSE")
     ax_early.set_title("f  Early recovery", loc="left", fontweight="bold")
     ax_early.grid(axis="x", color=LIGHT_GREY, lw=0.55)
 

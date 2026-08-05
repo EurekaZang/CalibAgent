@@ -19,8 +19,8 @@
   "outputs": {
     "paper/figures/calibration_evidence.pdf": "da64095d9e8fdc4c34c17bb7a9f106a687e50547efa9db94a3f64ac0f819ef48",
     "paper/figures/calibration_evidence.png": "b3e2fb9eb189c950b871aadf8bc156d393f8a2787e352c1151704f50c62e77b2",
-    "paper/figures/navigation_results.pdf": "f3b9c7df56fc59e86a642a7222aa761ce64629db56fa5f65def7552d40f8a851",
-    "paper/figures/navigation_results.png": "c4c7585f875a37b9fa3c38ac09e9d1bf8037cb39da45706cf258e30e09b86ca1"
+    "paper/figures/navigation_results.pdf": "fb839841da066deeb7d7628ca81286df6a117cc7bc84d63b9169dbeee92d5dd4",
+    "paper/figures/navigation_results.png": "dbcbbaa123ac8ba670f0b9c6214ca77094ba1e9601f7c46fb59b54cbf4371282"
   },
   "schema_version": "1.0"
 }

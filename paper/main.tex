@@ -7,11 +7,10 @@
 \usepackage{xcolor}
 \usepackage{url}
 
-\newcommand{\method}{\textsc{CalibAgent}}
+\newcommand{\method}{GAUGE}
 \newcommand{\vect}[1]{\boldsymbol{#1}}
 
-\title{CalibAgent: Task-Aware Active Calibration and Shift Recovery\\
-for Quadruped Velocity Commands}
+\title{GAUGE: Bridging the Command--Motion Gap in Black-Box Quadrupeds}
 
 \author{Anonymous Authors}
 
@@ -24,8 +23,10 @@ for Quadruped Velocity Commands}
 Commercial and learned quadruped controllers often expose a planar velocity
 command while hiding the dynamics that map commands to realized motion.
 Payload, surface, controller, and estimator changes can therefore preserve
-balance yet distort navigation. We present \method, an active calibration layer
-for this opaque interface. A Bayesian command-to-motion model represents
+balance yet distort navigation. We present \method\ (Goal-Aware
+Uncertainty-Guided Exploration), a task-aware active calibration and
+shift-recovery layer for opaque quadruped velocity interfaces. A Bayesian
+command-to-motion model represents
 cross-axis coupling and asymmetric response, and a task-weighted integrated
 variance objective selects commands for a declared deployment distribution.
 Hard authorization, validation stopping, bounded inverse compensation, and
@@ -587,19 +588,6 @@ than detection and updating alone.
 
 \subsection{Navigation Consequence}
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.97\textwidth]{figures/navigation_results.pdf}
-  \caption{Held-out simulator navigation (72 seeds/cell). (a) Success
-  rate. (b) Paired raw-minus-\method\ gain in the 60-s capped-time estimand, which
-  retains every failure as 60~s. (c) Matched-budget validation-RMSE reduction
-  from task IVR relative to D-optimal and no-task IVR; bars are paired 95\%
-  intervals. (d) \method/dense capped-time ratios and the declared 1.25
-  noninferiority margin. Every \method{}
-  collision count is 0/72.}
-  \label{fig:navigation}
-\end{figure*}
-
 \method\ succeeds in 72/72 episodes on five maps and 70/72 on weighted arc,
 while raw commands succeed in 0/72 or 1/72 (Fig.~\ref{fig:navigation}a). Every \method{}
 collision count is zero. The failure-aware 60-s capped-time gain over raw has
@@ -617,6 +605,19 @@ after common validation commands are included. Across 432 episodes it
 records 10 non-serious safety events and no serious event. Identical seeds,
 policy, planner, interlock, maps, and navigation logic isolate calibration in
 this simulator pipeline.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.97\textwidth]{figures/navigation_results.pdf}
+  \caption{Held-out simulator navigation (72 seeds/cell). (a) Success
+  rate. (b) Paired raw-minus-\method\ gain in the 60-s capped-time estimand, which
+  retains every failure as 60~s. (c) Matched-budget validation-RMSE reduction
+  from task IVR relative to D-optimal and no-task IVR; bars are paired 95\%
+  intervals. (d) \method/dense capped-time ratios and the declared 1.25
+  noninferiority margin. Every \method{}
+  collision count is 0/72.}
+  \label{fig:navigation}
+\end{figure*}
 
 \section{Discussion and Limitations}
 

@@ -7,10 +7,10 @@ reviewer identities.
 
 ## Paper basic information
 
-- Title: *CalibAgent: Task-Aware Active Calibration and Shift Recovery for Quadruped Velocity Commands*
+- Title: *GAUGE: Bridging the Command–Motion Gap in Black-Box Quadrupeds*
 - Language: English
-- Abstract length: approximately 183 words
-- Full-text length: approximately 3,915 PDF words across 6 pages
+- Abstract length: approximately 239 words
+- Full-text length: approximately 6,111 PDF words across 8 pages
 - References: 18
 - Target venue: IEEE International Conference on Robotics and Automation (ICRA)
 
@@ -23,7 +23,7 @@ reviewer identities.
 | Research paradigm | Quantitative experimental systems research |
 | Methodology | Bayesian regression and sequential design evaluated with passive hardware data, controlled synthetic experiments, fault injection, and paired physics simulation |
 | Target tier | Top-tier robotics conference. The scope and evidence ladder target ICRA; active hardware validation remains the decisive readiness gate. |
-| Paper maturity | Revised first submission draft. Structure, figures, citations, and numerical claims are complete for P1--P7; P8 hardware results are pending. |
+| Paper maturity | Revised anonymous submission draft. Structure, figures, citations, and numerical claims are complete for the current simulation evidence; active hardware evaluation remains planned. |
 
 ## Venue positioning
 

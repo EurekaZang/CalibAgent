@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build publication figures from frozen CalibAgent evidence artifacts."""
+"""Build publication figures from frozen GAUGE evidence artifacts."""
 
 from __future__ import annotations
 
@@ -466,7 +466,7 @@ def build_navigation_figure() -> list[Path]:
         "B5_active_no_task",
         "B8_full",
     ]
-    method_labels = ["Raw", "Dense", "LHS", "Sobol", "D-opt", "No task", "CalibAgent"]
+    method_labels = ["Raw", "Dense", "LHS", "Sobol", "D-opt", "No task", "GAUGE"]
 
     fig, axes_grid = plt.subplots(2, 2, figsize=(7.05, 2.68), constrained_layout=True)
     axes = axes_grid.ravel()
@@ -507,7 +507,7 @@ def build_navigation_figure() -> list[Path]:
     axes[1].axvline(0, color=BLACK, linewidth=0.7)
     axes[1].set_yticks(y, map_labels)
     axes[1].invert_yaxis()
-    axes[1].set_xlabel("Raw - CalibAgent capped-time gain (s)")
+    axes[1].set_xlabel("Raw - GAUGE capped-time gain (s)")
     axes[1].set_xlim(20, 37)
     axes[1].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
     axes[1].set_title("Failure-aware time gain")
@@ -568,7 +568,7 @@ def build_navigation_figure() -> list[Path]:
     axes[2].set_yticks(y, map_labels)
     axes[2].invert_yaxis()
     axes[2].set_xlim(-0.02, 0.18)
-    axes[2].set_xlabel("CalibAgent task-RMSE reduction vs control")
+    axes[2].set_xlabel("GAUGE task-RMSE reduction vs control")
     axes[2].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
     axes[2].legend(frameon=False, loc="lower right")
     axes[2].set_title("Matched-budget task validation")
@@ -591,7 +591,7 @@ def build_navigation_figure() -> list[Path]:
     axes[3].axvline(1.25, color=VERMILLION, linestyle="--", linewidth=1.0, label="NI margin")
     axes[3].set_yticks(y, map_labels)
     axes[3].invert_yaxis()
-    axes[3].set_xlabel("CalibAgent / dense capped-time ratio")
+    axes[3].set_xlabel("GAUGE / dense capped-time ratio")
     axes[3].set_xlim(0.88, 1.27)
     axes[3].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
     axes[3].legend(frameon=False, loc="lower right")
@@ -601,7 +601,7 @@ def build_navigation_figure() -> list[Path]:
     fig.text(
         0.5,
         -0.015,
-        "All CalibAgent collision counts were 0/72 on every map.",
+        "All GAUGE collision counts were 0/72 on every map.",
         ha="center",
         fontsize=7,
     )

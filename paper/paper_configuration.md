@@ -1,4 +1,4 @@
-# CalibAgent ICRA 2027 paper configuration
+# GAUGE ICRA 2027 paper configuration
 
 Status: **CONFIRMED BY AUTHOR ON 2026-08-05**
 
@@ -9,8 +9,8 @@ including text, figures, acknowledgments, and references.
 
 ## Proposed identity
 
-- Working title: **CalibAgent: Task-Aware Active Calibration and Shift Recovery
-  for Quadruped Velocity Commands**
+- Working title: **GAUGE: Bridging the Command–Motion Gap in Black-Box
+  Quadrupeds**
 - Article type: contributed conference paper
 - Target venue: IEEE International Conference on Robotics and Automation
   (ICRA 2027)
@@ -33,7 +33,7 @@ navigation after structured domain shifts?
 
 ## Central claim
 
-CalibAgent combines uncertainty-aware command-to-motion modeling,
+GAUGE combines uncertainty-aware command-to-motion modeling,
 task-weighted integrated variance reduction, independently enforced safety and
 stopping rules, and shift-triggered active recovery. The existing evidence
 supports sample-efficient calibration, bounded simulator recovery, and

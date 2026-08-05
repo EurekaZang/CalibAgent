@@ -51,7 +51,7 @@ def test_rendered_manuscript_uses_public_language() -> None:
     if executable is None:
         pytest.skip("pdftotext is required for the rendered-manuscript language audit")
     result = subprocess.run(
-        [executable, "-layout", str(PAPER / "main.pdf"), "-"],
+        [executable, "-raw", str(PAPER / "main.pdf"), "-"],
         check=True,
         capture_output=True,
         text=True,
@@ -63,3 +63,25 @@ def test_public_figure_filenames_do_not_encode_experiment_phases() -> None:
     names = [path.name for path in (PAPER / "figures").iterdir() if path.is_file()]
     coded = sorted(name for name in names if re.match(r"^[pP]\d+", name))
     assert not coded, f"phase-coded reader-facing figure filenames: {coded}"
+
+
+def test_rendered_manuscript_uses_gauge_consistently() -> None:
+    executable = shutil.which("pdftotext")
+    if executable is None:
+        pytest.skip("pdftotext is required for the rendered-manuscript naming audit")
+    result = subprocess.run(
+        [executable, "-raw", str(PAPER / "main.pdf"), "-"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    rendered = re.sub(r"\s+", " ", result.stdout)
+    rendered = re.sub(r"(?<=\w)- (?=\w)", "-", rendered)
+    assert "CalibAgent" not in rendered
+    assert "GAUGE: Bridging the Command\N{EN DASH}Motion Gap in Black-Box Quadrupeds" in rendered
+    assert (
+        "We present GAUGE (Goal-Aware Uncertainty-Guided Exploration), a task-aware "
+        "active calibration and shift-recovery layer for opaque quadruped velocity "
+        "interfaces."
+        in rendered
+    )
