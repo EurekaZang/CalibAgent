@@ -31,7 +31,7 @@
 \pagestyle{empty}
 \centering
 \begin{tikzpicture}[node distance=6mm and 7mm]
-  \node[model] (task) {Frozen task grid\\$\{g_j,w_j\}$};
+  \node[model] (task) {Declared task grid\\$\{g_j,w_j\}$};
   \node[model, right=of task] (acq) {Task-weighted IVR\\rank safe candidates};
   \node[guard, right=of acq] (safe) {Hard safety filter\\calibration + navigation};
   \node[robot, right=of safe] (robot) {Fixed locomotion\\controller + robot};
