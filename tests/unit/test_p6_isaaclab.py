@@ -9,9 +9,11 @@ from typing import Any
 import pytest
 
 from calibagent.eval.p6_isaaclab import (
+    _REQUIRED_METHOD_ARTIFACTS,
     P6BenchmarkConfig,
     _aggregate_method_outputs,
     _as_bool,
+    _method_artifacts_complete,
     _scenario_payload,
     _write_csv_rows,
     evaluate_p6_summaries,
@@ -234,6 +236,19 @@ def test_p6_csv_helpers_fail_closed_on_invalid_values(tmp_path: Path) -> None:
         _write_csv_rows(tmp_path / "empty.csv", [])
     with pytest.raises(ValueError, match="serialized boolean"):
         _as_bool("not-a-boolean")
+
+
+def test_p6_resume_requires_the_complete_artifact_contract(tmp_path: Path) -> None:
+    assert not _method_artifacts_complete(tmp_path)
+    for name in _REQUIRED_METHOD_ARTIFACTS:
+        path = tmp_path / name
+        if name in {"summary.json", "scenario_config.json"}:
+            path.write_text('{"complete": true}', encoding="utf-8")
+        else:
+            path.write_bytes(b"evidence")
+    assert _method_artifacts_complete(tmp_path)
+    (tmp_path / "summary.json").write_text("{}", encoding="utf-8")
+    assert not _method_artifacts_complete(tmp_path)
 
 
 def test_p6_config_rejects_invalid_evidence_contracts() -> None:

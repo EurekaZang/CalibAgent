@@ -23,12 +23,18 @@ def main() -> None:
         type=Path,
         default=Path("outputs/p5_cache"),
     )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="reuse method directories only when every required artifact is complete",
+    )
     args = parser.parse_args()
     summary = run_p6_suite(
         args.config.resolve(),
         args.workspace.resolve(),
         args.isaaclab_root.resolve(),
         args.checkpoint_cache.resolve(),
+        resume=args.resume,
     )
     print(json.dumps(summary, indent=2, sort_keys=True))
     if summary["verdict"] != "GO":

@@ -573,17 +573,50 @@ def _aggregate_method_outputs(
     return aggregate
 
 
+_REQUIRED_METHOD_ARTIFACTS = (
+    "summary.json",
+    "monitor_metrics.csv",
+    "recovery_metrics.csv",
+    "per_seed_metrics.csv",
+    "recovery_curve.csv",
+    "pose_trace.csv.gz",
+    "shift_events.json",
+    "scenario_config.json",
+)
+
+
+def _method_artifacts_complete(method_output: Path) -> bool:
+    """Accept a resumable method result only when its full contract is present."""
+
+    if any(
+        not (method_output / name).is_file()
+        or (method_output / name).stat().st_size == 0
+        for name in _REQUIRED_METHOD_ARTIFACTS
+    ):
+        return False
+    try:
+        summary = json.loads((method_output / "summary.json").read_text(encoding="utf-8"))
+        scenario = json.loads(
+            (method_output / "scenario_config.json").read_text(encoding="utf-8")
+        )
+    except (json.JSONDecodeError, OSError):
+        return False
+    return isinstance(summary, dict) and bool(summary) and isinstance(scenario, dict)
+
+
 def run_p6_suite(
     config_path: Path,
     workspace: Path,
     isaaclab_root: Path,
     checkpoint_cache: Path,
+    *,
+    resume: bool = False,
 ) -> dict[str, Any]:
     root = workspace.resolve()
     isaaclab = isaaclab_root.resolve()
     config = P6BenchmarkConfig.from_yaml(config_path.resolve())
     output = (root / config.output_dir).resolve()
-    if output.exists() and any(output.iterdir()):
+    if output.exists() and any(output.iterdir()) and not resume:
         raise FileExistsError(f"refusing to overwrite non-empty P6 output: {output}")
     _require_clean_repository(root, "CalibAgent")
     _require_clean_repository(isaaclab, "Isaac Lab")
@@ -619,13 +652,17 @@ def run_p6_suite(
     environment["PYTHONUNBUFFERED"] = "1"
     environment["PYTHONPATH"] = os.pathsep.join(str(path) for path in source_paths)
     summaries: list[dict[str, Any]] = []
+    reused_methods: list[str] = []
     for index, scenario in enumerate(config.scenarios):
         scenario_id = str(scenario["id"])
         scenario_output = output / "scenarios" / scenario_id
-        scenario_output.mkdir(parents=True)
+        scenario_output.mkdir(parents=True, exist_ok=resume)
         for method in config.methods:
             method_output = scenario_output / method
-            method_output.mkdir()
+            if resume and _method_artifacts_complete(method_output):
+                reused_methods.append(f"{scenario_id}/{method}")
+                continue
+            method_output.mkdir(exist_ok=resume)
             payload_path = method_output / "launch_config.json"
             payload_path.write_text(
                 json.dumps(
@@ -657,17 +694,11 @@ def run_p6_suite(
                 result.stdout + result.stderr,
                 encoding="utf-8",
             )
-            required = (
-                "summary.json",
-                "monitor_metrics.csv",
-                "recovery_metrics.csv",
-                "per_seed_metrics.csv",
-                "recovery_curve.csv",
-                "pose_trace.csv.gz",
-                "shift_events.json",
-                "scenario_config.json",
-            )
-            missing = [name for name in required if not (method_output / name).is_file()]
+            missing = [
+                name
+                for name in _REQUIRED_METHOD_ARTIFACTS
+                if not (method_output / name).is_file()
+            ]
             if result.returncode != 0 or missing:
                 raise RuntimeError(
                     f"P6 scenario {scenario_id}/{method} failed "
@@ -695,6 +726,8 @@ def run_p6_suite(
         "git_commit": _git_value(root, "rev-parse", "HEAD"),
         "config_path": str(config_path.resolve().relative_to(root)),
         "config_sha256": file_sha256(config_path),
+        "resumed": resume,
+        "reused_complete_methods": reused_methods,
         "runtime": runtime,
         "checkpoints": {
             alias: {
