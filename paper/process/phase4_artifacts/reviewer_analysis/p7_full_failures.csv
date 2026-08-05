@@ -1,0 +1,3 @@
+map,seed,collision,completion_time_s,final_goal_distance_m,serious_safety_event
+replicate_weighted_arc,10558,False,60.0,0.5646251544207057,False
+replicate_weighted_arc,10572,False,60.0,0.5667013504412527,False

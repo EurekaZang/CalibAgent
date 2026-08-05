@@ -185,7 +185,7 @@ def run_one(
     observation_rng = np.random.default_rng(seed + 50000)
     model = BayesianBasisModel(transformer, config.prior_scale, list(config.assumed_noise_variance))
     seed_commands = _seed_design(config.seed_design_count)
-    active_methods = {"active", "active_no_task", "d_opt"}
+    active_methods = {"active", "active_noise_aware", "active_no_task", "d_opt"}
     passive = (
         None
         if method in active_methods
@@ -212,9 +212,22 @@ def run_one(
         if trial < len(seed_commands):
             command = seed_commands[trial]
             source = "seed_design"
-        elif method in {"active", "active_no_task"}:
-            planning_task = task if method == "active" else uniform_task
-            candidate = planner.propose(model, planning_task, history, k=1)[0]
+        elif method in {"active", "active_noise_aware", "active_no_task"}:
+            planning_task = task if method != "active_no_task" else uniform_task
+            candidate_measurement_variance = None
+            if method == "active_noise_aware":
+                candidate_variance = distortion.noise_std(pool.commands) ** 2
+                candidate_measurement_variance = np.maximum(
+                    candidate_variance - distortion.base_noise_std**2,
+                    0.0,
+                )
+            candidate = planner.propose(
+                model,
+                planning_task,
+                history,
+                k=1,
+                candidate_measurement_variance=candidate_measurement_variance,
+            )[0]
             command = candidate.command.as_array()
             candidate_score = candidate.score
             candidate_information = candidate.information_gain

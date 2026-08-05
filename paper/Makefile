@@ -5,6 +5,7 @@ LATEXMK ?= latexmk
 all: simulation-audit main.pdf
 
 figures:
+	../.venv/bin/python scripts/build_review_analyses.py
 	../.venv/bin/python scripts/build_paper_figures.py
 	../.venv/bin/python scripts/build_simulation_scientific_figures.py
 	bash /home/eureka/.codex/skills/research-figure/scripts/compile_tikz.sh figures/calibagent_pipeline.tex 300

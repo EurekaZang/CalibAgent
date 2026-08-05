@@ -1,0 +1,13 @@
+family,method,method_label,mean_trials,target_rate,mean_trials_ci95,active_trials_saved,active_trials_saved_ci95
+affine,active,Task IVR,18.0,1.0,"[18.0, 18.0]",,
+affine,lhs,LHS,27.85,1.0,"[26.4, 29.35]",9.85,"[8.4, 11.35]"
+affine,d_opt,D-optimal,19.0,1.0,"[19.0, 19.0]",1.0,"[1.0, 1.0]"
+affine,active_no_task,No-task IVR,23.0,1.0,"[23.0, 23.0]",5.0,"[5.0, 5.0]"
+deadzone,active,Task IVR,18.0,1.0,"[18.0, 18.0]",,
+deadzone,lhs,LHS,27.85,1.0,"[26.4, 29.35]",9.85,"[8.35, 11.25]"
+deadzone,d_opt,D-optimal,19.0,1.0,"[19.0, 19.0]",1.0,"[1.0, 1.0]"
+deadzone,active_no_task,No-task IVR,23.0,1.0,"[23.0, 23.0]",5.0,"[5.0, 5.0]"
+heteroscedastic,active,Task IVR,20.0,1.0,"[20.0, 20.0]",,
+heteroscedastic,lhs,LHS,36.9,1.0,"[35.0, 38.85125000000001]",16.9,"[15.0, 18.9]"
+heteroscedastic,d_opt,D-optimal,31.0,1.0,"[31.0, 31.0]",11.0,"[11.0, 11.0]"
+heteroscedastic,active_no_task,No-task IVR,31.0,1.0,"[31.0, 31.0]",11.0,"[11.0, 11.0]"

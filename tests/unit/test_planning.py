@@ -100,3 +100,19 @@ def test_information_scores_equal_direct_formula() -> None:
             score += weights @ reduction
         expected.append(score)
     np.testing.assert_allclose(actual, expected)
+
+
+def test_candidate_measurement_variance_demotes_noisy_candidate() -> None:
+    model, pool = line_problem()
+    task = TaskDistribution.uniform(pool.commands)
+    measurement_variance = np.zeros((len(pool.commands), 3), dtype=np.float64)
+    endpoint = int(np.argmax(pool.commands[:, 0]))
+    measurement_variance[endpoint] = 1e6
+    selected = IntegratedVariancePlanner(pool).propose(
+        model,
+        task,
+        [],
+        k=1,
+        candidate_measurement_variance=measurement_variance,
+    )[0]
+    assert selected.command.vx != pool.commands[endpoint, 0]

@@ -49,11 +49,20 @@ class IntegratedVariancePlanner:
         covariances: NDArray[np.float64],
         noise_variance: NDArray[np.float64],
     ) -> NDArray[np.float64]:
+        noise = np.asarray(noise_variance, dtype=np.float64)
+        if noise.shape == (3,):
+            candidate_noise = np.broadcast_to(noise, (len(candidate_features), 3))
+        elif noise.shape == (len(candidate_features), 3):
+            candidate_noise = noise
+        else:
+            raise ValueError("noise_variance must have shape (3,) or (n_candidates, 3)")
+        if np.any(~np.isfinite(candidate_noise)) or np.any(candidate_noise <= 0.0):
+            raise ValueError("candidate noise variances must be finite and positive")
         scores = np.zeros(len(candidate_features))
         for axis in range(3):
             covariance = covariances[axis]
             cross = task_features @ covariance @ candidate_features.T
-            denominator = noise_variance[axis] + np.einsum(
+            denominator = candidate_noise[:, axis] + np.einsum(
                 "ni,ij,nj->n", candidate_features, covariance, candidate_features
             )
             scores += np.sum(task_weights[:, None] * cross**2, axis=0) / np.maximum(
@@ -79,6 +88,7 @@ class IntegratedVariancePlanner:
         task_distribution: TaskDistribution,
         history: Sequence[NDArray[np.floating[Any]] | VelocityCommand],
         k: int = 1,
+        candidate_measurement_variance: NDArray[np.floating[Any]] | None = None,
     ) -> list[Candidate]:
         if self.candidate_pool is None:
             raise RuntimeError("candidate_pool is required")
@@ -106,6 +116,27 @@ class IntegratedVariancePlanner:
             disallowed |= np.min(distances, axis=1) < self.duplicate_distance
 
         covariances = posterior.posterior_covariances
+        if candidate_measurement_variance is None:
+            total_candidate_noise = np.broadcast_to(
+                posterior.noise_variance,
+                (len(commands), 3),
+            ).copy()
+        else:
+            measurement_variance = np.asarray(
+                candidate_measurement_variance,
+                dtype=np.float64,
+            )
+            if measurement_variance.shape != (len(commands), 3):
+                raise ValueError(
+                    "candidate_measurement_variance must have shape (n_candidates, 3)"
+                )
+            if np.any(~np.isfinite(measurement_variance)) or np.any(
+                measurement_variance < 0.0
+            ):
+                raise ValueError(
+                    "candidate measurement variances must be finite and nonnegative"
+                )
+            total_candidate_noise = posterior.noise_variance + measurement_variance
         selected: list[Candidate] = []
         for rank in range(k):
             information = self._information_scores(
@@ -113,7 +144,7 @@ class IntegratedVariancePlanner:
                 task_features,
                 task_distribution.weights,
                 covariances,
-                posterior.noise_variance,
+                total_candidate_noise,
             )
             score = information - cost
             score[disallowed] = -np.inf
@@ -135,7 +166,9 @@ class IntegratedVariancePlanner:
                 distance = np.linalg.norm(normalized - normalized[index], axis=1)
                 disallowed |= distance < self.duplicate_distance
             covariances = self._fantasy_covariance_update(
-                covariances, candidate_features[index], posterior.noise_variance
+                covariances,
+                candidate_features[index],
+                total_candidate_noise[index],
             )
             if rank == 0:
                 self.last_diagnostics = PlannerDiagnostics(
