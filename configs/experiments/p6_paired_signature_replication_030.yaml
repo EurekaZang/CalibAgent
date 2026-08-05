@@ -1,0 +1,89 @@
+experiment_role: main
+protocol_frozen_utc: "2026-08-05T21:30:00Z"
+output_dir: outputs/p6_paired_signature_replication_030
+
+isaaclab: {tag: v2.3.2, commit: 37ddf626871758333d6ed89cf64ad702aef127d0, isaac_sim_version_prefix: "5.1.0", physics_backend: physx}
+vectorization:
+  num_seeds: 72
+  simulator_seed: 2460240
+  seeds: [20101, 20102, 20103, 20104, 20105, 20106, 20107, 20108, 20109, 20110, 20111, 20112, 20113, 20114, 20115, 20116, 20117, 20118, 20119, 20120, 20121, 20122, 20123, 20124, 20125, 20126, 20127, 20128, 20129, 20130, 20131, 20132, 20133, 20134, 20135, 20136, 20137, 20138, 20139, 20140, 20141, 20142, 20143, 20144, 20145, 20146, 20147, 20148, 20149, 20150, 20151, 20152, 20153, 20154, 20155, 20156, 20157, 20158, 20159, 20160, 20161, 20162, 20163, 20164, 20165, 20166, 20167, 20168, 20169, 20170, 20171, 20172]
+
+methods: [frozen, passive, full]
+trial: {pre_calibration_trials: 12, pre_monitor_trials: 4, shift_monitor_trials: 5, recovery_budget_trials: 12, dense_budget_trials: 30, validation_window: 4, primary_recovery_horizon_trials: 9, warmup_s: 0.50, ramp_in_s: 0.30, settle_s: 0.60, measure_s: 0.70, ramp_out_s: 0.50, sample_rate_hz: 50.0}
+detector:
+  mode: paired_signature
+  component_scales: [0.14, 0.08, 0.18]
+  distance_threshold: 0.30
+  minimum_positive_evidence: 2
+  evidence_window_trials: 4
+  minimum_dwell_trials: 2
+  signature_baseline_trials: 4
+  monitor_commands: [[-0.20, 0.00, -0.20], [-0.20, 0.00, 0.20], [0.12, -0.10, -0.15], [0.12, 0.10, 0.15]]
+  reference_nis: 1.0
+  allowance: 0.50
+  alarm_threshold: 4.0
+adaptation: {posterior_inflation_factor: 8.0, target_rmse_multiplier: 1.30, target_rmse_floor: 0.075, target_rmse_ceiling: 0.140, model_prior_scale: 0.01, stop_updates_after_recovery: true, invalid_window_rmse_penalty: 0.25}
+safety: {min_base_height_m: 0.15, max_base_height_m: 0.65, max_coupled_load: 0.80}
+checkpoints:
+  flat:
+    url: https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1/Isaac/IsaacLab/PretrainedCheckpoints/rsl_rl/Isaac-Velocity-Flat-Unitree-Go2-v0/checkpoint.pt
+    sha256: 47ccb2046ec3064257997f879c62d64217b937713c30d827883b2c2f40c50439
+
+# Independent replication: seed block, simulator seed, and post-shift draws are
+# disjoint from detector development and the first 72-seed confirmation.
+scenarios:
+  - id: replication030_gain_recoupling
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: affine_high
+    post_distortion: affine_low
+    post_seed_offset: 720000
+    pre_physics: {static_friction: 0.84, dynamic_friction: 0.66, payload_add_kg: 0.0, com_offset_x_m: 0.0}
+    post_physics: {static_friction: 0.84, dynamic_friction: 0.66, payload_add_kg: 0.0, com_offset_x_m: 0.0}
+  - id: replication030_friction_payload
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: affine_high
+    post_distortion: affine_low
+    post_seed_offset: 720000
+    pre_physics: {static_friction: 0.92, dynamic_friction: 0.74, payload_add_kg: 0.0, com_offset_x_m: 0.0}
+    post_physics: {static_friction: 0.28, dynamic_friction: 0.22, payload_add_kg: 2.8, com_offset_x_m: 0.028}
+  - id: replication030_mixed_context
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: affine_high
+    post_distortion: mixed_low
+    post_seed_offset: 720000
+    pre_physics: {static_friction: 0.80, dynamic_friction: 0.62, payload_add_kg: 0.0, com_offset_x_m: 0.0}
+    post_physics: {static_friction: 0.42, dynamic_friction: 0.31, payload_add_kg: 2.2, com_offset_x_m: -0.022}
+  - id: replication030_payload_com_only
+    task: Isaac-Velocity-Flat-Unitree-Go2-Play-v0
+    checkpoint: flat
+    pre_distortion: affine_high
+    post_distortion: affine_low
+    post_seed_offset: 720000
+    pre_physics: {static_friction: 0.72, dynamic_friction: 0.55, payload_add_kg: 0.0, com_offset_x_m: 0.0}
+    post_physics: {static_friction: 0.72, dynamic_friction: 0.55, payload_add_kg: 3.0, com_offset_x_m: -0.032}
+
+publication_gates:
+  minimum_scenarios: 4
+  minimum_seeds_per_scenario: 72
+  maximum_no_shift_false_alarm_rate: 0.05
+  minimum_detection_rate: 0.95
+  maximum_median_detection_delay_trials: 5.0
+  maximum_p95_detection_delay_trials: 5.0
+  minimum_full_recovery_rate: 0.95
+  maximum_median_recovery_trials: 10.0
+  maximum_p95_recovery_trials: 12.0
+  maximum_recovery_to_dense_budget_ratio: 0.40
+  minimum_full_vs_frozen_improvement_ci95_lower: 0.0
+  minimum_full_win_rate: 0.90
+  minimum_full_vs_passive_early_rmse_improvement_ci95_lower: 0.0
+  maximum_full_vs_passive_early_rmse_p: 0.01
+  maximum_full_final_rmse_ci95_upper: 0.140
+  maximum_no_shift_false_alarm_rate_ci95_upper: 0.05
+  minimum_detection_rate_ci95_lower: 0.90
+  minimum_full_recovery_rate_ci95_lower: 0.90
+  minimum_valid_observation_ratio: 0.85
+  maximum_serious_safety_events: 0
+  maximum_abort_latency_s: 0.04
