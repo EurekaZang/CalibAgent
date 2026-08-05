@@ -20,11 +20,7 @@ from calibagent.core.planning.d_optimal import DOptimalPlanner
 from calibagent.core.planning.ivr import IntegratedVariancePlanner
 from calibagent.core.planning.samplers import latin_hypercube, random_uniform
 from calibagent.core.planning.task import TaskDistribution
-from calibagent.core.safety import (
-    HardSafetyFilter,
-    SafetyEnvelope,
-    filter_candidates_by_forward_cap,
-)
+from calibagent.core.safety import HardSafetyFilter, SafetyEnvelope
 from calibagent.core.shift import (
     DomainShiftConfig,
     DomainShiftDetector,
@@ -426,16 +422,6 @@ def run_p6_scenario(
             return signature_detectors[key].latched
         return legacy_detectors[key].latched
 
-    contextual_forward_cap = float(
-        payload["safety"].get("forward_cap_after_base_height_abort", np.inf)
-    )
-    forward_caps = {key: float("inf") for key in slots}
-
-    def context_filtered(key: tuple[str, int], candidates: list[Candidate]) -> list[Candidate]:
-        if np.isfinite(forward_caps[key]):
-            return filter_candidates_by_forward_cap(candidates, forward_caps[key])
-        return candidates
-
     inflation = float(payload["adaptation"]["posterior_inflation_factor"])
     trial_cfg = dict(payload["trial"])
     monitor_rows: list[dict[str, Any]] = []
@@ -727,7 +713,6 @@ def run_p6_scenario(
                         histories[key],
                         k=min(12, len(planners[key].candidate_pool.commands)),
                     )
-                    candidates = context_filtered(key, candidates)
                     desired[index], used_fallback = _safe_candidate_or_stop(
                         candidates,
                         safe_filter,
@@ -742,7 +727,6 @@ def run_p6_scenario(
                         histories[key],
                         k=min(12, len(planners[key].candidate_pool.commands)),
                     )
-                    candidates = context_filtered(key, candidates)
                     desired[index], used_fallback = _safe_candidate_or_stop(
                         candidates,
                         safe_filter,
@@ -758,7 +742,6 @@ def run_p6_scenario(
                         histories[key],
                         k=min(12, len(pool.commands)),
                     )
-                    candidates = context_filtered(key, candidates)
                     desired[index], used_fallback = _safe_candidate_or_stop(
                         candidates,
                         safe_filter,
@@ -827,10 +810,6 @@ def run_p6_scenario(
                 if observation.safety_events:
                     safety_aborts += 1
                     serious_events += int("SIM_TERMINATION" in "|".join(observation.safety_events))
-                    if "BASE_HEIGHT_LIMIT" in observation.safety_events and np.isfinite(
-                        contextual_forward_cap
-                    ):
-                        forward_caps[key] = min(forward_caps[key], contextual_forward_cap)
             validation_command = _VALIDATION_COMMANDS[
                 (recovery_trial - 1) % len(_VALIDATION_COMMANDS)
             ]
