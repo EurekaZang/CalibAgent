@@ -21,7 +21,12 @@ from calibagent.core.planning.ivr import IntegratedVariancePlanner
 from calibagent.core.planning.samplers import latin_hypercube, random_uniform
 from calibagent.core.planning.task import TaskDistribution
 from calibagent.core.safety import HardSafetyFilter, SafetyEnvelope
-from calibagent.core.shift import DomainShiftConfig, DomainShiftDetector
+from calibagent.core.shift import (
+    DomainShiftConfig,
+    DomainShiftDetector,
+    PairedSignatureConfig,
+    PairedSignatureDetector,
+)
 from calibagent.interfaces.types import Candidate, PriorState, RobotState, VelocityCommand
 from calibagent.sim import CommandDistortion, make_distortion_parameters
 from calibagent_sim.policy import load_actor
@@ -357,10 +362,27 @@ def run_p6_scenario(
         if key[0] in {"recovery_random", "recovery_lhs"}
     }
     histories: dict[tuple[str, int], list[np.ndarray]] = {key: [] for key in slots}
+    detector_payload = dict(payload["detector"])
+    detector_mode = str(detector_payload.get("mode", "cusum_nis"))
+    if detector_mode not in {"cusum_nis", "paired_signature"}:
+        raise ValueError(f"unsupported P6 detector mode: {detector_mode}")
+    cusum_payload = dict(detector_payload)
+    if detector_mode == "paired_signature":
+        cusum_payload.update(
+            {
+                "minimum_positive_evidence": int(
+                    detector_payload.get("legacy_minimum_positive_evidence", 3)
+                ),
+                "evidence_window_trials": int(
+                    detector_payload.get("legacy_evidence_window_trials", 5)
+                ),
+                "minimum_dwell_trials": int(detector_payload.get("legacy_minimum_dwell_trials", 3)),
+            }
+        )
     detector_settings = DomainShiftConfig(
         **{
             key: value
-            for key, value in dict(payload["detector"]).items()
+            for key, value in cusum_payload.items()
             if key
             in {
                 "reference_nis",
@@ -372,7 +394,34 @@ def run_p6_scenario(
             }
         }
     )
-    detectors = {key: DomainShiftDetector(detector_settings) for key in slots}
+    legacy_detectors = {key: DomainShiftDetector(detector_settings) for key in slots}
+    signature_detectors: dict[tuple[str, int], PairedSignatureDetector] = {}
+    if detector_mode == "paired_signature":
+        signature_settings = PairedSignatureConfig(
+            component_scales=tuple(float(item) for item in detector_payload["component_scales"]),
+            distance_threshold=float(detector_payload["distance_threshold"]),
+            minimum_positive_evidence=int(detector_payload["minimum_positive_evidence"]),
+            evidence_window_trials=int(detector_payload["evidence_window_trials"]),
+            minimum_dwell_trials=int(detector_payload["minimum_dwell_trials"]),
+        )
+        signature_detectors = {key: PairedSignatureDetector(signature_settings) for key in slots}
+    monitor_commands = np.asarray(
+        detector_payload.get("monitor_commands", _VALIDATION_COMMANDS),
+        dtype=np.float64,
+    )
+    if monitor_commands.ndim != 2 or monitor_commands.shape[1] != 3:
+        raise ValueError("P6 monitor commands must have shape (n, 3)")
+    if not np.all(np.isfinite(monitor_commands)):
+        raise ValueError("P6 monitor commands must be finite")
+    baseline_trials = int(detector_payload.get("signature_baseline_trials", len(monitor_commands)))
+    if detector_mode == "paired_signature" and baseline_trials != len(monitor_commands):
+        raise ValueError("paired-signature baseline must cover every monitor command once")
+
+    def detector_latched(key: tuple[str, int]) -> bool:
+        if detector_mode == "paired_signature":
+            return signature_detectors[key].latched
+        return legacy_detectors[key].latched
+
     inflation = float(payload["adaptation"]["posterior_inflation_factor"])
     trial_cfg = dict(payload["trial"])
     monitor_rows: list[dict[str, Any]] = []
@@ -452,7 +501,8 @@ def run_p6_scenario(
                     safety_aborts += 1
                     serious_events += int("SIM_TERMINATION" in "|".join(observation.safety_events))
         for trial in range(1, int(trial_cfg["pre_monitor_trials"]) + 1):
-            command = _VALIDATION_COMMANDS[(trial - 1) % len(_VALIDATION_COMMANDS)]
+            signature_id = (trial - 1) % len(monitor_commands)
+            command = monitor_commands[signature_id]
             desired = np.tile(command, (len(slots), 1))
             predictions = _predict_rows(models, slots, desired)
             observations = _execute(
@@ -471,12 +521,30 @@ def run_p6_scenario(
                 prediction, covariance = predictions[index]
                 residual = observation.mean_velocity - prediction
                 all_valid.append(observation.valid)
-                detection = detectors[key].update(
+                legacy_detection = legacy_detectors[key].update(
                     residual,
                     covariance + observation.covariance,
                     trial=trial,
                 )
-                false_alarms[key] |= detection.alarm
+                signature_distance = float("nan")
+                selected_alarm = legacy_detection.alarm
+                if detector_mode == "paired_signature":
+                    selected_alarm = False
+                    if trial <= baseline_trials:
+                        if not observation.valid:
+                            raise RuntimeError(
+                                f"invalid paired-signature commissioning observation: {key}"
+                            )
+                        signature_detectors[key].prime(signature_id, residual)
+                    elif observation.valid:
+                        signature_detection = signature_detectors[key].update(
+                            signature_id,
+                            residual,
+                            trial=trial - baseline_trials,
+                        )
+                        signature_distance = signature_detection.distance
+                        selected_alarm = signature_detection.alarm
+                false_alarms[key] |= selected_alarm
                 if observation.valid:
                     pre_residuals[key].append(residual)
                 monitor_rows.append(
@@ -495,9 +563,11 @@ def run_p6_scenario(
                         "predicted_vx": prediction[0],
                         "predicted_vy": prediction[1],
                         "predicted_wz": prediction[2],
-                        "normalized_nis": detection.normalized_nis,
-                        "cusum": detection.statistic,
-                        "alarm": detection.alarm,
+                        "normalized_nis": legacy_detection.normalized_nis,
+                        "cusum": legacy_detection.statistic,
+                        "legacy_alarm": legacy_detection.alarm,
+                        "signature_distance": signature_distance,
+                        "alarm": selected_alarm,
                         "valid": observation.valid,
                         "safety_events": "|".join(observation.safety_events),
                     }
@@ -536,7 +606,8 @@ def run_p6_scenario(
             1,
             int(trial_cfg["shift_monitor_trials"]) + 1,
         ):
-            command = _VALIDATION_COMMANDS[(shift_trial - 1) % len(_VALIDATION_COMMANDS)]
+            signature_id = (shift_trial - 1) % len(monitor_commands)
+            command = monitor_commands[signature_id]
             desired = np.tile(command, (len(slots), 1))
             predictions = _predict_rows(models, slots, desired)
             observations = _execute(
@@ -555,14 +626,26 @@ def run_p6_scenario(
                 prediction, covariance = predictions[index]
                 residual = observation.mean_velocity - prediction
                 all_valid.append(observation.valid)
-                detection = detectors[key].update(
+                legacy_detection = legacy_detectors[key].update(
                     residual,
                     covariance + observation.covariance,
                     trial=pre_monitor_count + shift_trial,
                 )
+                signature_distance = float("nan")
+                selected_alarm = legacy_detection.alarm
+                if detector_mode == "paired_signature":
+                    selected_alarm = False
+                    if observation.valid:
+                        signature_detection = signature_detectors[key].update(
+                            signature_id,
+                            residual,
+                            trial=max(0, pre_monitor_count - baseline_trials) + shift_trial,
+                        )
+                        signature_distance = signature_detection.distance
+                        selected_alarm = signature_detection.alarm
                 if observation.valid:
                     shifted_residuals[key].append(residual)
-                if detection.alarm:
+                if selected_alarm:
                     detection_delay[key] = shift_trial
                     if key[0] != "frozen":
                         models[key].inflate_posterior(inflation)
@@ -582,9 +665,11 @@ def run_p6_scenario(
                         "predicted_vx": prediction[0],
                         "predicted_vy": prediction[1],
                         "predicted_wz": prediction[2],
-                        "normalized_nis": detection.normalized_nis,
-                        "cusum": detection.statistic,
-                        "alarm": detection.alarm,
+                        "normalized_nis": legacy_detection.normalized_nis,
+                        "cusum": legacy_detection.statistic,
+                        "legacy_alarm": legacy_detection.alarm,
+                        "signature_distance": signature_distance,
+                        "alarm": selected_alarm,
                         "valid": observation.valid,
                         "safety_events": "|".join(observation.safety_events),
                     }
@@ -621,7 +706,7 @@ def run_p6_scenario(
                 if stopped:
                     desired[index] = 0.0
                     sources.append("stopped_after_recovery")
-                elif key[0] == "full" and detectors[key].latched:
+                elif key[0] == "full" and detector_latched(key):
                     candidates = planners[key].propose(
                         models[key],
                         task,
@@ -635,7 +720,7 @@ def run_p6_scenario(
                         zero_history,
                     )
                     sources.append("active_safe_stop" if used_fallback else "active")
-                elif key[0] == "recovery_no_task" and detectors[key].latched:
+                elif key[0] == "recovery_no_task" and detector_latched(key):
                     candidates = planners[key].propose(
                         models[key],
                         no_task,
@@ -651,7 +736,7 @@ def run_p6_scenario(
                     sources.append(
                         "active_no_task_safe_stop" if used_fallback else "active_no_task"
                     )
-                elif key[0] == "recovery_d_opt" and detectors[key].latched:
+                elif key[0] == "recovery_d_opt" and detector_latched(key):
                     candidates = d_optimal[key].propose(
                         models[key],
                         histories[key],
@@ -663,10 +748,8 @@ def run_p6_scenario(
                         neutral_state,
                         zero_history,
                     )
-                    sources.append(
-                        "d_optimal_safe_stop" if used_fallback else "d_optimal"
-                    )
-                elif key[0] in {"recovery_random", "recovery_lhs"} and detectors[key].latched:
+                    sources.append("d_optimal_safe_stop" if used_fallback else "d_optimal")
+                elif key[0] in {"recovery_random", "recovery_lhs"} and detector_latched(key):
                     desired[index] = recovery_sequences[key][recovery_trial - 1]
                     sources.append(key[0].removeprefix("recovery_"))
                 else:
@@ -695,7 +778,7 @@ def run_p6_scenario(
                 )
                 if (
                     key[0] in adaptive_methods
-                    and detectors[key].latched
+                    and detector_latched(key)
                     and observation.valid
                     and update_enabled
                 ):
@@ -836,6 +919,7 @@ def run_p6_scenario(
         "schema_version": "1.0",
         "scenario": payload["id"],
         "method": method,
+        "detector_mode": detector_mode,
         "num_seeds": len(seeds),
         "no_shift_false_alarm_rate": float(
             np.mean([bool(row["false_alarm"]) for row in per_seed_rows])

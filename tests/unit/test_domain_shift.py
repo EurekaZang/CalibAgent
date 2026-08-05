@@ -5,7 +5,12 @@ import pytest
 
 from calibagent.core.models.bayesian import BayesianBasisModel
 from calibagent.core.models.features import BasisTransformer
-from calibagent.core.shift import DomainShiftConfig, DomainShiftDetector
+from calibagent.core.shift import (
+    DomainShiftConfig,
+    DomainShiftDetector,
+    PairedSignatureConfig,
+    PairedSignatureDetector,
+)
 from calibagent.interfaces.types import PriorState
 
 
@@ -25,10 +30,7 @@ def test_cusum_ignores_isolated_outlier_and_detects_persistent_shift() -> None:
         for trial in range(1, 5)
     ]
     outlier = detector.update(np.asarray([4.0, 0.0, 0.0]), covariance, trial=5)
-    recovery = [
-        detector.update(np.zeros(3), covariance, trial=trial)
-        for trial in range(6, 11)
-    ]
+    recovery = [detector.update(np.zeros(3), covariance, trial=trial) for trial in range(6, 11)]
     shifted = [
         detector.update(np.asarray([3.0, 3.0, 3.0]), covariance, trial=trial)
         for trial in range(11, 14)
@@ -128,3 +130,39 @@ def test_posterior_inflation_preserves_mean_and_scales_covariance() -> None:
     assert model.posterior_version == version + 1
     with pytest.raises(ValueError, match="> 1"):
         model.inflate_posterior(1.0)
+
+
+def test_paired_signature_rejects_bias_and_latches_on_repeated_change() -> None:
+    detector = PairedSignatureDetector(
+        PairedSignatureConfig(
+            component_scales=(0.1, 0.1, 0.2),
+            distance_threshold=0.7,
+            minimum_positive_evidence=2,
+            evidence_window_trials=4,
+            minimum_dwell_trials=2,
+        )
+    )
+    detector.prime(0, np.asarray([0.3, -0.2, 0.1]))
+    detector.prime(1, np.asarray([-0.1, 0.2, -0.2]))
+
+    nominal = detector.update(0, np.asarray([0.31, -0.21, 0.11]), trial=1)
+    first_change = detector.update(1, np.asarray([0.02, 0.2, -0.2]), trial=2)
+    second_change = detector.update(0, np.asarray([0.42, -0.2, 0.1]), trial=3)
+
+    assert not nominal.alarm
+    assert not first_change.alarm
+    assert second_change.alarm
+    assert detector.latched
+    assert detector.reference_count == 2
+
+
+def test_paired_signature_requires_unique_reference_and_ordered_trials() -> None:
+    detector = PairedSignatureDetector()
+    detector.prime(0, np.zeros(3))
+    with pytest.raises(ValueError, match="more than once"):
+        detector.prime(0, np.ones(3))
+    detector.update(0, np.zeros(3), trial=1)
+    with pytest.raises(ValueError, match="increase strictly"):
+        detector.update(0, np.zeros(3), trial=1)
+    with pytest.raises(ValueError, match="no commissioning reference"):
+        detector.update(2, np.zeros(3), trial=2)

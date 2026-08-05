@@ -54,6 +54,16 @@ def _sequence_rows(
         if trials != list(range(1, expected_trials + 1)):
             raise ValueError(f"incomplete null-monitor sequence for {scenario}/{seed}")
         alarms = [int(row["monitor_trial"]) for row in ordered if _strict_bool(row["alarm"])]
+        legacy_alarms = [
+            int(row["monitor_trial"])
+            for row in ordered
+            if _strict_bool(row.get("legacy_alarm", row["alarm"]))
+        ]
+        signature_distances = [
+            float(row["signature_distance"])
+            for row in ordered
+            if row.get("signature_distance", "") not in {"", "nan", "NaN"}
+        ]
         summaries.append(
             {
                 "scenario": scenario,
@@ -61,7 +71,10 @@ def _sequence_rows(
                 "monitor_trials": len(ordered),
                 "false_alarm": bool(alarms),
                 "first_alarm_trial": alarms[0] if alarms else 0,
+                "legacy_false_alarm": bool(legacy_alarms),
+                "legacy_first_alarm_trial": legacy_alarms[0] if legacy_alarms else 0,
                 "maximum_cusum": max(float(row["cusum"]) for row in ordered),
+                "maximum_signature_distance": max(signature_distances, default=0.0),
                 "mean_normalized_nis": float(
                     np.mean([float(row["normalized_nis"]) for row in ordered])
                 ),
@@ -184,9 +197,8 @@ def run_long_null_suite(
             raise ValueError(f"seed coverage mismatch for {scenario_id}")
         all_sequences.extend(sequences)
         alarm_count = sum(bool(row["false_alarm"]) for row in sequences)
-        method_summary = json.loads(
-            (method_output / "summary.json").read_text(encoding="utf-8")
-        )
+        legacy_alarm_count = sum(bool(row["legacy_false_alarm"]) for row in sequences)
+        method_summary = json.loads((method_output / "summary.json").read_text(encoding="utf-8"))
         context_summaries.append(
             {
                 "scenario": scenario_id,
@@ -197,10 +209,15 @@ def run_long_null_suite(
                 "false_alarm_sequence_rate_ci95": list(
                     clopper_pearson_interval(alarm_count, len(sequences))
                 ),
+                "legacy_false_alarm_sequences": legacy_alarm_count,
+                "legacy_false_alarm_sequence_rate": legacy_alarm_count / len(sequences),
                 "minimum_valid_observation_ratio": min(
                     float(row["valid_observation_ratio"]) for row in sequences
                 ),
                 "maximum_cusum": max(float(row["maximum_cusum"]) for row in sequences),
+                "maximum_signature_distance": max(
+                    float(row["maximum_signature_distance"]) for row in sequences
+                ),
                 "mean_normalized_nis": float(
                     np.mean([float(row["mean_normalized_nis"]) for row in sequences])
                 ),
@@ -211,6 +228,7 @@ def run_long_null_suite(
     _write_csv(output / "per_sequence.csv", all_sequences)
 
     alarm_count = sum(bool(row["false_alarm"]) for row in all_sequences)
+    legacy_alarm_count = sum(bool(row["legacy_false_alarm"]) for row in all_sequences)
     sequence_count = len(all_sequences)
     interval = list(clopper_pearson_interval(alarm_count, sequence_count))
     gates = config.publication_gates
@@ -233,8 +251,7 @@ def run_long_null_suite(
         <= float(gates["maximum_false_alarm_sequence_rate"]),
         "false_alarm_confidence_bound": interval[1]
         <= float(gates["maximum_false_alarm_sequence_rate_ci95_upper"]),
-        "valid_observations": minimum_valid
-        >= float(gates["minimum_valid_observation_ratio"]),
+        "valid_observations": minimum_valid >= float(gates["minimum_valid_observation_ratio"]),
         "safety": serious <= int(gates["maximum_serious_safety_events"])
         and maximum_abort <= float(gates["maximum_abort_latency_s"]),
     }
@@ -249,11 +266,14 @@ def run_long_null_suite(
         "context_count": len(context_summaries),
         "sequence_count": sequence_count,
         "monitor_trials_per_sequence": expected_trials,
+        "detector_mode": str(config.detector.get("mode", "cusum_nis")),
         "total_monitor_trials": sum(int(row["monitor_trials"]) for row in context_summaries),
         "total_monitor_command_time_s": expected_trials * sequence_count * trial_duration,
         "false_alarm_sequences": alarm_count,
         "false_alarm_sequence_rate": alarm_count / sequence_count,
         "false_alarm_sequence_rate_ci95": interval,
+        "legacy_false_alarm_sequences": legacy_alarm_count,
+        "legacy_false_alarm_sequence_rate": legacy_alarm_count / sequence_count,
         "minimum_valid_observation_ratio": minimum_valid,
         "total_serious_safety_events": serious,
         "maximum_abort_latency_s": maximum_abort,

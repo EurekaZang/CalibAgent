@@ -75,12 +75,8 @@ class P6BenchmarkConfig:
         if len(seeds) != len(set(seeds)):
             raise ValueError("P6 seeds must be unique")
         required_methods = {"frozen", "passive", "full"}
-        if not required_methods <= set(self.methods) or len(self.methods) != len(
-            set(self.methods)
-        ):
-            raise ValueError(
-                "P6 requires unique frozen/passive/full controls"
-            )
+        if not required_methods <= set(self.methods) or len(self.methods) != len(set(self.methods)):
+            raise ValueError("P6 requires unique frozen/passive/full controls")
         if self.experiment_role == "main" and self.methods != (
             "frozen",
             "passive",
@@ -101,27 +97,50 @@ class P6BenchmarkConfig:
             self.trial["dense_budget_trials"]
         ):
             raise ValueError("P6 recovery budget exceeds 40% of dense")
+        detector_mode = str(self.detector.get("mode", "cusum_nis"))
+        if detector_mode not in {"cusum_nis", "paired_signature"}:
+            raise ValueError("P6 detector mode is unsupported")
         minimum_evidence = int(self.detector["minimum_positive_evidence"])
         evidence_window = int(self.detector["evidence_window_trials"])
-        if minimum_evidence < 3:
+        if detector_mode == "cusum_nis" and minimum_evidence < 3:
             raise ValueError("P6 detector must reject isolated/two-sample outliers")
+        if detector_mode == "paired_signature" and minimum_evidence < 2:
+            raise ValueError("P6 paired detector must reject isolated changes")
         if evidence_window < minimum_evidence:
             raise ValueError("P6 detector evidence window is too short")
+        if detector_mode == "paired_signature":
+            commands = np.asarray(self.detector["monitor_commands"], dtype=np.float64)
+            scales = np.asarray(self.detector["component_scales"], dtype=np.float64)
+            baseline_trials = int(self.detector["signature_baseline_trials"])
+            if commands.ndim != 2 or commands.shape[1] != 3 or len(commands) < 2:
+                raise ValueError("P6 paired detector requires at least two 3-D commands")
+            if len(np.unique(commands, axis=0)) != len(commands):
+                raise ValueError("P6 paired detector monitor commands must be unique")
+            if scales.shape != (3,) or np.any(scales <= 0.0):
+                raise ValueError("P6 paired detector component scales are invalid")
+            if baseline_trials != len(commands):
+                raise ValueError("P6 paired detector baseline must cover every command once")
+            if int(self.trial["pre_monitor_trials"]) < baseline_trials:
+                raise ValueError("P6 pre-monitor window cannot prime paired signatures")
+            linear_load = np.linalg.norm(commands[:, :2], axis=1) / 0.45
+            coupled_load = linear_load + np.abs(commands[:, 2]) / 0.70
+            if np.any(coupled_load > float(self.safety["max_coupled_load"])):
+                raise ValueError("P6 paired detector monitor command violates safe load")
         primary_horizon = int(
             self.trial.get(
                 "primary_recovery_horizon_trials",
                 self.trial["recovery_budget_trials"],
             )
         )
-        if not int(self.trial["validation_window"]) <= primary_horizon <= int(
-            self.trial["recovery_budget_trials"]
+        if (
+            not int(self.trial["validation_window"])
+            <= primary_horizon
+            <= int(self.trial["recovery_budget_trials"])
         ):
             raise ValueError("P6 primary recovery horizon must contain a complete window")
         if self.adaptation.get("stop_updates_after_recovery", False) not in {True, False}:
             raise ValueError("P6 stop_updates_after_recovery must be boolean")
-        invalid_penalty = float(
-            self.adaptation.get("invalid_window_rmse_penalty", 1.0)
-        )
+        invalid_penalty = float(self.adaptation.get("invalid_window_rmse_penalty", 1.0))
         if not np.isfinite(invalid_penalty) or invalid_penalty <= float(
             self.adaptation["target_rmse_ceiling"]
         ):
@@ -371,8 +390,7 @@ def _aggregate_method_outputs(
             min(
                 int(row["recovery_trial"])
                 for row in curves
-                if str(row["method"]) == "full"
-                and np.isfinite(float(row["rolling_rmse"]))
+                if str(row["method"]) == "full" and np.isfinite(float(row["rolling_rmse"]))
             ),
         )
     )
@@ -383,9 +401,7 @@ def _aggregate_method_outputs(
         )
     )
     primary_trials = tuple(range(start_trial, primary_horizon + 1))
-    invalid_window_penalty = float(
-        summaries["full"].get("invalid_window_rmse_penalty", 1.0)
-    )
+    invalid_window_penalty = float(summaries["full"].get("invalid_window_rmse_penalty", 1.0))
     full_early = np.asarray(
         [
             np.mean(
@@ -439,9 +455,7 @@ def _aggregate_method_outputs(
         full_improvement = selector_early - full_early
         selector_rows = [indexed[(method, seed)] for seed in seeds]
         selector_comparisons[method] = {
-            "selector_minus_full_early_rmse_mean": float(
-                np.mean(full_improvement)
-            ),
+            "selector_minus_full_early_rmse_mean": float(np.mean(full_improvement)),
             "selector_minus_full_early_rmse_ci95": _bootstrap_mean_ci(
                 full_improvement,
                 simulator_seed + 1201 + 20 * offset,
@@ -480,9 +494,7 @@ def _aggregate_method_outputs(
             "passive_final_rmse": float(indexed[("passive", seed)]["final_rmse"]),
             "full_final_rmse": float(indexed[("full", seed)]["final_rmse"]),
             "full_minus_passive_final_rmse": -passive_improvements[index],
-            "passive_recovery_trials": float(
-                indexed[("passive", seed)]["recovery_trials"]
-            ),
+            "passive_recovery_trials": float(indexed[("passive", seed)]["recovery_trials"]),
             "full_recovery_trials": float(indexed[("full", seed)]["recovery_trials"]),
         }
         for index, seed in enumerate(seeds)
@@ -498,15 +510,11 @@ def _aggregate_method_outputs(
             clopper_pearson_interval(false_alarm_count, len(seeds))
         ),
         "detection_rate": float(full_summary["detection_rate"]),
-        "detection_rate_ci95": list(
-            clopper_pearson_interval(detection_count, len(seeds))
-        ),
+        "detection_rate_ci95": list(clopper_pearson_interval(detection_count, len(seeds))),
         "median_detection_delay_trials": float(full_summary["median_detection_delay_trials"]),
         "p95_detection_delay_trials": float(full_summary["p95_detection_delay_trials"]),
         "full_recovery_rate": float(np.mean([_as_bool(row["recovered"]) for row in full_rows])),
-        "full_recovery_rate_ci95": list(
-            clopper_pearson_interval(recovery_count, len(seeds))
-        ),
+        "full_recovery_rate_ci95": list(clopper_pearson_interval(recovery_count, len(seeds))),
         "median_full_recovery_trials": (
             float(np.median(full_recovered)) if full_recovered else float("inf")
         ),
@@ -521,24 +529,18 @@ def _aggregate_method_outputs(
         ),
         "full_vs_frozen_win_rate": float(np.mean(improvements > 0.0)),
         "primary_recovery_horizon_trials": primary_horizon,
-        "full_vs_passive_early_rmse_improvement_mean": float(
-            np.mean(early_improvements)
-        ),
+        "full_vs_passive_early_rmse_improvement_mean": float(np.mean(early_improvements)),
         "full_vs_passive_early_rmse_improvement_ci95": _bootstrap_mean_ci(
             early_improvements,
             simulator_seed + 313,
         ),
-        "full_vs_passive_early_rmse_win_rate": float(
-            np.mean(early_improvements > 0.0)
-        ),
+        "full_vs_passive_early_rmse_win_rate": float(np.mean(early_improvements > 0.0)),
         "full_vs_passive_early_rmse_wilcoxon_one_sided_p": _paired_wilcoxon_less(
             full_early,
             passive_early,
         ),
         "recovery_selector_comparisons": selector_comparisons,
-        "full_minus_passive_final_rmse_mean": float(
-            np.mean(-passive_improvements)
-        ),
+        "full_minus_passive_final_rmse_mean": float(np.mean(-passive_improvements)),
         "full_minus_passive_final_rmse_ci95": _bootstrap_mean_ci(
             -passive_improvements,
             simulator_seed + 317,
@@ -589,16 +591,13 @@ def _method_artifacts_complete(method_output: Path) -> bool:
     """Accept a resumable method result only when its full contract is present."""
 
     if any(
-        not (method_output / name).is_file()
-        or (method_output / name).stat().st_size == 0
+        not (method_output / name).is_file() or (method_output / name).stat().st_size == 0
         for name in _REQUIRED_METHOD_ARTIFACTS
     ):
         return False
     try:
         summary = json.loads((method_output / "summary.json").read_text(encoding="utf-8"))
-        scenario = json.loads(
-            (method_output / "scenario_config.json").read_text(encoding="utf-8")
-        )
+        scenario = json.loads((method_output / "scenario_config.json").read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return False
     return isinstance(summary, dict) and bool(summary) and isinstance(scenario, dict)
@@ -695,9 +694,7 @@ def run_p6_suite(
                 encoding="utf-8",
             )
             missing = [
-                name
-                for name in _REQUIRED_METHOD_ARTIFACTS
-                if not (method_output / name).is_file()
+                name for name in _REQUIRED_METHOD_ARTIFACTS if not (method_output / name).is_file()
             ]
             if result.returncode != 0 or missing:
                 raise RuntimeError(
