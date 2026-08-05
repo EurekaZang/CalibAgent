@@ -22,7 +22,7 @@ from calibagent.core.planning.samplers import latin_hypercube, random_uniform
 from calibagent.core.planning.task import TaskDistribution
 from calibagent.core.safety import HardSafetyFilter, SafetyEnvelope
 from calibagent.core.shift import DomainShiftConfig, DomainShiftDetector
-from calibagent.interfaces.types import PriorState, RobotState, VelocityCommand
+from calibagent.interfaces.types import Candidate, PriorState, RobotState, VelocityCommand
 from calibagent.sim import CommandDistortion, make_distortion_parameters
 from calibagent_sim.policy import load_actor
 from calibagent_sim.runner import (
@@ -307,6 +307,24 @@ def _predict_rows(
 def _rmse(residuals: list[np.ndarray]) -> float:
     values = np.asarray(residuals, dtype=np.float64)
     return float(np.sqrt(np.mean(values**2)))
+
+
+def _safe_candidate_or_stop(
+    candidates: list[Candidate],
+    safe_filter: HardSafetyFilter,
+    neutral_state: RobotState,
+    zero_history: list[VelocityCommand],
+) -> tuple[np.ndarray, bool]:
+    """Return the first authorized candidate or a shared zero-command fallback."""
+
+    decision = safe_filter.select_first_safe(
+        candidates,
+        neutral_state,
+        zero_history,
+    )
+    if decision.accepted and decision.command is not None:
+        return decision.command.as_array(), False
+    return np.zeros(3, dtype=np.float64), True
 
 
 def run_p6_scenario(
@@ -610,15 +628,13 @@ def run_p6_scenario(
                         histories[key],
                         k=min(12, len(planners[key].candidate_pool.commands)),
                     )
-                    decision = safe_filter.select_first_safe(
+                    desired[index], used_fallback = _safe_candidate_or_stop(
                         candidates,
+                        safe_filter,
                         neutral_state,
                         zero_history,
                     )
-                    if not decision.accepted or decision.command is None:
-                        raise RuntimeError(f"no safe P6 recovery candidate: {key}")
-                    desired[index] = decision.command.as_array()
-                    sources.append("active")
+                    sources.append("active_safe_stop" if used_fallback else "active")
                 elif key[0] == "recovery_no_task" and detectors[key].latched:
                     candidates = planners[key].propose(
                         models[key],
@@ -626,30 +642,30 @@ def run_p6_scenario(
                         histories[key],
                         k=min(12, len(planners[key].candidate_pool.commands)),
                     )
-                    decision = safe_filter.select_first_safe(
+                    desired[index], used_fallback = _safe_candidate_or_stop(
                         candidates,
+                        safe_filter,
                         neutral_state,
                         zero_history,
                     )
-                    if not decision.accepted or decision.command is None:
-                        raise RuntimeError(f"no safe no-task recovery candidate: {key}")
-                    desired[index] = decision.command.as_array()
-                    sources.append("active_no_task")
+                    sources.append(
+                        "active_no_task_safe_stop" if used_fallback else "active_no_task"
+                    )
                 elif key[0] == "recovery_d_opt" and detectors[key].latched:
                     candidates = d_optimal[key].propose(
                         models[key],
                         histories[key],
                         k=min(12, len(pool.commands)),
                     )
-                    decision = safe_filter.select_first_safe(
+                    desired[index], used_fallback = _safe_candidate_or_stop(
                         candidates,
+                        safe_filter,
                         neutral_state,
                         zero_history,
                     )
-                    if not decision.accepted or decision.command is None:
-                        raise RuntimeError(f"no safe D-optimal recovery candidate: {key}")
-                    desired[index] = decision.command.as_array()
-                    sources.append("d_optimal")
+                    sources.append(
+                        "d_optimal_safe_stop" if used_fallback else "d_optimal"
+                    )
                 elif key[0] in {"recovery_random", "recovery_lhs"} and detectors[key].latched:
                     desired[index] = recovery_sequences[key][recovery_trial - 1]
                     sources.append(key[0].removeprefix("recovery_"))

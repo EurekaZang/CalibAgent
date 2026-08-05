@@ -28,20 +28,21 @@ command while hiding the dynamics that map commands to realized motion.
 Payload, surface, controller, and estimator changes can therefore preserve
 balance yet distort navigation. We present \method, an active calibration layer
 for this opaque interface. A Bayesian command-to-motion model represents
-cross-axis coupling and asymmetric response; a task-weighted integrated
-variance objective selects informative commands for the intended deployment
-distribution. Hard safety checks, validation-based stopping, constrained
-inverse compensation, and residual-triggered recovery remain separate from the
-learned acquisition score. On 183 passive Unitree Go2 trials, a coupled affine
-model reduces held-out velocity RMSE by 54.5\% relative to raw commands. In
-registered synthetic experiments, task weighting reaches joint accuracy and
-uncertainty targets in 18.67 trials, saving 39.5\% against Latin hypercube
-sampling and 18.8\% against D-optimal design. Pinned Isaac Lab experiments show
-9.3--31.7\% held-out RMSE reduction, faster early recovery under four shifts,
-and successful budgeted navigation across six prospectively frozen maps. These
-results establish the calibration and recovery mechanism under the registered
-conditions; active hardware calibration and navigation are reserved for the
-planned real-robot study.
+cross-axis coupling and asymmetric response, and a task-weighted integrated
+variance objective selects commands for a declared deployment distribution.
+Hard authorization, validation stopping, bounded inverse compensation, and
+residual-triggered recovery remain separate from acquisition. On 183 passive
+Unitree Go2 trials, a coupled affine map reduces held-out velocity RMSE by
+54.5\% relative to raw commands. Across registered synthetic families, task
+weighting reaches a joint accuracy--uncertainty target in 18.67 trials, saving
+39.5\% over Latin hypercube sampling and 18.8\% over D-optimal design. A
+candidate-noise oracle sensitivity changes the heteroscedastic result by one
+trial without changing the method ranking. Pinned Isaac Lab experiments show
+9.3--31.7\% held-out RMSE reduction, positive early-recovery effects under
+four shifts with no pre-shift alarms, and failure-aware navigation
+noninferiority across six prospectively frozen maps. The evidence establishes
+the active mechanism in registered simulation and the model need on passive
+hardware; the frozen active-hardware study remains to be executed.
 \end{abstract}
 
 \section{Introduction}
@@ -80,15 +81,20 @@ reactivates calibration when predictive residuals indicate a shift.
 
 This paper makes four contributions. First, it formulates the opaque
 command-to-motion interface as a compact Bayesian regression with coupled,
-asymmetric features and per-trial measurement uncertainty. Second, it derives
-an exact task-weighted integrated variance reduction (IVR) score for sequential
-command selection. Third, it separates statistical learning from hard safety,
-validated stopping, and bounded shift recovery. Fourth, it evaluates the chain
-from model need to downstream navigation using passive Go2 data, controlled
-synthetic families, fault injection, pinned physics simulation, and a retained
-failed confirmation followed by a disjoint prospective replication. The
-current hardware evidence is passive; real online calibration, shift recovery,
-and navigation remain outside the reported results.
+asymmetric features and per-trial measurement uncertainty. Second, it gives
+the conditional one-step task-weighted integrated variance reduction (IVR)
+score and a safe finite-pool sequential design. Third, it composes acquisition
+with hard authorization, validation stopping, constrained inversion, and
+latched shift recovery without allowing statistical value to relax an
+execution limit. Fourth, it evaluates the full argument from physical model
+need to downstream navigation using passive Go2 data, controlled synthetic
+families, fault injection, pinned physics simulation, and a retained failed
+confirmation followed by a disjoint prospective replication. The
+methodological contribution is this task-measure-to-command design and its
+closed-loop operational composition; the regression, optimal-design update,
+and change detector remain individually recognizable components. The current
+hardware evidence is passive, and the active hardware protocol is frozen but
+not included in the reported results.
 
 \begin{figure*}[t]
   \centering
@@ -126,8 +132,13 @@ goal-oriented Bayesian design, which minimizes uncertainty in a downstream
 quantity of interest \cite{attia2018goal}. Greedy information selection also
 has established connections to near-optimal sensor placement
 \cite{krause2008sensor}. \method\ uses a related predictive objective, but its
-design variable is a safety-filtered velocity command and its quantity of
-interest is the realized velocity over a frozen deployment distribution.
+design variable is a safety-filtered velocity command, its integration measure
+is the planner-facing command distribution, and its posterior is consumed by
+the same bounded inverse and change detector. In optimal-design terminology,
+Eq.~\eqref{eq:ivr} is a sequential Bayesian I/V-optimal criterion specialized
+to a multi-output command interface. Its contribution is the task-measure-to-
+command specialization, the separation of statistical selection from hard
+authorization, and the end-to-end calibration--recovery evidence.
 
 \subsection{Legged Command Models and Adaptation}
 
@@ -167,11 +178,15 @@ posterior.
 \subsection{Bayesian Command-to-Motion Model}
 
 Let $\vect{y}\in\mathbb{R}^3$ denote the measured steady velocity for command
-$\vect{u}$. A fixed basis $\vect{\phi}(\vect{u})$ contains an intercept, the
-three command axes, pairwise products, and positive/negative hinge terms for
-each axis. The affine M1 variant uses only the intercept and command axes; M2
-adds the coupled and hinge features. Feature statistics are fitted once on a
-predeclared command reference, never on held-out outcomes.
+$\vect{u}$. M1 uses $[1,v_x,v_y,\omega_z]$. M2 has 13 terms: M1, the three
+pairwise products, and
+$[v_k-\tau_k]_+,[-v_k-\tau_k]_+$ for each axis, with
+$\vect{\tau}=[0.15,0.10,0.25]$. The non-intercept columns are standardized once
+on a predeclared safe command pool, never on observations or held-out outcomes.
+P1 and P7 use the four-term M1; P3, P5, and P6 use M2. P5--P7 initialize the
+linear projection to the identity interface and regularize deviations with the
+frozen prior in Table~\ref{tab:protocol}; consequently, the 12-trial P7 fit is a
+four-parameter-per-output affine update, not an underdetermined M2 fit.
 
 For output axis $a$, the model is
 \begin{equation}
@@ -180,7 +195,8 @@ For output axis $a$, the model is
  \epsilon_a\sim\mathcal{N}(0,\sigma_a^2+r_a),
  \label{eq:model}
 \end{equation}
-where $r_a$ is the observation covariance diagonal. Given prior
+where $r_a$ is the measurement-pipeline covariance diagonal and $\sigma_a^2$
+is the frozen process variance. Given prior
 $\mathcal{N}(\vect{m}_{a0},\vect{\Sigma}_{a0})$, sequential updates use
 \begin{align}
  \vect{\Lambda}_a &\leftarrow \vect{\Lambda}_a+
@@ -196,29 +212,43 @@ The predictive mean is $\mu_a(\vect{u})=\vect{m}_a^\top\vect{\phi}(\vect{u})$,
 and the predictive variance is
 $\vect{\phi}^\top\vect{\Sigma}_a\vect{\phi}+\sigma_a^2$. Independent output
 posteriors keep the online update small while coupled input features represent
-cross-axis response.
+cross-axis response. Aggregate error uses
+$\|\vect{e}\|_W^2=\vect{e}^\top W^\top W\vect{e}$ with
+$W=\operatorname{diag}((1\,\mathrm{m\,s^{-1}})^{-1},
+(1\,\mathrm{m\,s^{-1}})^{-1},(1\,\mathrm{rad\,s^{-1}})^{-1})$; this is
+numerically the registered equal-axis convention. Axiswise errors are reported
+alongside the scalar score.
 
 \subsection{Task-Weighted Active Selection}
 
 A frozen task distribution is represented by grid commands
 $\{\vect{g}_j\}_{j=1}^{G}$ and normalized weights $w_j$. For candidate
-$\vect{c}$, the posterior covariance update is independent of the unknown
-outcome. The exact reduction in weighted epistemic variance is therefore
+$\vect{c}$, let $\tilde r_a(\vect{c})$ denote measurement variance available
+at planning time. A Sherman--Morrison update gives the outcome-independent,
+conditional one-step reduction in weighted epistemic variance:
 \begin{equation}
  \mathcal{I}(\vect{c})=
  \sum_{a=1}^{3}\sum_{j=1}^{G} w_j
  \frac{\left(\vect{\phi}(\vect{g}_j)^\top\vect{\Sigma}_a
  \vect{\phi}(\vect{c})\right)^2}
- {\sigma_a^2+\vect{\phi}(\vect{c})^\top\vect{\Sigma}_a
+ {\sigma_a^2+\tilde r_a(\vect{c})+
+ \vect{\phi}(\vect{c})^\top\vect{\Sigma}_a
  \vect{\phi}(\vect{c})}.
  \label{eq:ivr}
 \end{equation}
-The planner maximizes $\mathcal{I}(\vect{c})-\lambda_r R(\vect{c})-
-\lambda_d D(\vect{c})$ over a finite command pool after excluding commands too
-close to prior trials. Greedy batches use covariance-only fantasy updates, so
-no unobserved target is imputed. The registered main planner uses 512
-candidates, an eight-command seed design, a 400-point task grid, and a 0.025
-normalized duplicate radius.
+The registered planner sets $\tilde r_a=0$ because a future trial covariance is
+not observed before execution; Eq.~\eqref{eq:update} still uses its realized
+$r_a$. When a candidate-noise predictor is available, the implementation
+accepts its nonnegative $\tilde r_a(\vect{c})$. The supplemental oracle
+sensitivity supplies the known synthetic value. The planner maximizes
+$\mathcal{I}(\vect{c})-\lambda_r R(\vect{c})-\lambda_dD(\vect{c})$, where
+$R$ is normalized command magnitude and $D$ is normalized linear execution
+distance, over a bounded finite pool; the hard filter authorizes a candidate
+only after statistical ranking. P3 freezes both coefficients at
+zero to isolate IVR. Greedy batches use covariance-only fantasy updates, so no
+unobserved target is imputed. P3 uses 256 candidates, a six-command seed
+design, a 256-point task grid, a disjoint 400-point evaluation grid, and a
+0.025 normalized duplicate radius.
 
 \subsection{Safety, Stopping, Compensation, and Shift Recovery}
 
@@ -236,8 +266,8 @@ valid held-out accuracy. Trial, time, distance, and battery budgets take
 priority. For deployment, the inverse compensator searches the same bounded
 candidate set and minimizes
 \begin{equation}
- \|\vect{\mu}(\vect{u})-\vect{v}^{*}\|_2^2+\lambda
- \|\vect{u}-\vect{v}^{*}\|_2^2+\rho\sum_a s_a^2(\vect{u}),
+ \|W(\vect{\mu}(\vect{u})-\vect{v}^{*})\|_2^2+\lambda
+ \|W(\vect{u}-\vect{v}^{*})\|_2^2+\rho\sum_a s_a^2(\vect{u}),
  \label{eq:inverse}
 \end{equation}
 then passes the selected command through the hard filter.
@@ -251,43 +281,76 @@ and starts a capped recovery budget. Normal stopping resumes after recovery.
 
 \section{Experimental Protocol}
 
-The evaluation follows a staged evidence ladder. P1 contains 183 valid passive
-Unitree Go2 trials from three 61-trial sessions. Livox MID360 FAST-LIO/global
-localization provides the reference pose. Each complete session is held out in
-turn; training budgets are 30 trials for sampled designs and 122 for the dense
-reference. P1 tests model structure, not online active execution.
+The evaluation follows a staged evidence ladder; Table~\ref{tab:protocol}
+states the inferential unit, partitions, timing, and gates. P1 contains 183
+valid passive Unitree Go2 trials in three 61-trial sessions. Livox MID360
+FAST-LIO/global localization supplies the reference pose. Each complete session
+is held out once; 30 selected trials train sampled designs and the other 122
+form the dense reference. P1 tests physical model structure, not active
+execution.
 
-P3 supplies the controlled sample-efficiency test. Twenty independent seeds
-span affine, dead-zone, and heteroscedastic families. Family conditions are
-averaged within seed, so the inferential sample size is 20 rather than 60.
-Controls are random, Latin hypercube (LHS), Sobol, Bayesian D-optimal,
-active-without-task, and a 256-command dense oracle. The target jointly requires
-held-out RMSE and epistemic uncertainty. Paired effects use 4,000-sample seed
-bootstrap intervals and one-sided paired Wilcoxon tests.
+P3 is a controlled sample-efficiency benchmark. Twenty independent seeds span
+affine, dead-zone, and heteroscedastic repeated conditions; inference first
+averages families within seed. Candidate, task, and evaluation Sobol sets use
+independent seeds 31013, 11003, and 23011. The evaluation grid is an offline
+ground-truth benchmark and never enters acquisition. A second 1,024-command
+audit grid (seed 43019) evaluates each posterior once at its primary crossing.
+Controls are random, LHS, Sobol, Bayesian D-optimal, no-task IVR, and a
+256-command oracle. P4 then replays the 60 frozen active traces through the
+operational stopping rule and injects proposal/state faults.
 
-P4 replays the frozen active trajectories through the stopping rule and injects
-proposal and runtime faults. P5--P7 run in Isaac Lab v2.3.2 at commit
-\texttt{37ddf62} with Isaac Sim 5.1.0-rc.19 and PhysX
-\cite{mittal2025isaaclab}. P5 contains four scenarios with 20 paired seeds,
-12 active trials, and eight validation commands; Fig.~\ref{fig:p5scenes}
-shows the four registered simulator contexts. P6 contains four held-out
-in-place shifts, 72 paired seeds per shift, and frozen, passive-update, and full
-active-recovery controls (Fig.~\ref{fig:p6scenes}). P7 contains six disjoint
-maps, seven calibration methods, and 72 new paired seeds per map: 3,024
-navigation episodes. Figure~\ref{fig:p7maps} shows all six registered maps.
-Dense uses 30 trials; LHS,
-Sobol, D-optimal, no-task, and full use 12. Every method shares the frozen
-waypoint follower and map-specific planner hash. Rate endpoints use exact
-binomial intervals; continuous paired endpoints use 4,000-sample bootstrap
-intervals.
+P5--P7 use Isaac Lab v2.3.2 at commit \texttt{37ddf62}, Isaac Sim
+5.1.0-rc.19, and PhysX \cite{mittal2025isaaclab}. P5 tests four response
+contexts with 20 paired seeds. P6 tests four held-out in-place shifts with 72
+paired seeds and frozen, passive-update, and full-recovery controls. Its first
+four monitor trials are a no-shift null; the registered early window is
+recovery trials 4--9. P7 has six disjoint maps, seven methods, and 72 new paired
+seeds per map (3,024 episodes). All arms share the same controller checkpoint,
+50~Hz monitor and interlock, 10~Hz waypoint follower, map geometry, seed, and
+planner-configuration hash; only calibration differs. Rate endpoints use exact
+binomial intervals and continuous paired endpoints use 4,000-sample seed
+bootstrap intervals.
+
+\begin{table*}[t]
+\caption{Frozen experiment and endpoint specification. A ``trial'' is one
+constant body-frame command followed by one steady-motion observation. All
+budgets include their seed commands.}
+\label{tab:protocol}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{@{}p{0.055\textwidth}p{0.15\textwidth}p{0.20\textwidth}p{0.25\textwidth}p{0.285\textwidth}@{}}
+\toprule
+Stage & Independent unit & Model and budget & Partition / timing & Primary endpoint and frozen rule \\
+\midrule
+P1 & Acquisition session ($n=3$) & M0/M1; sampled 30, dense 122 & Whole-session holdout; ramp/settle/measure/ramp-out $=0.6/0.8/2.0/0.6$~s & Held-out three-axis and per-axis RMSE; sampled M1 versus raw and M0 \\
+P3 & Seed ($n=20$); three repeated families & M2 (13 terms); six-command seed; horizon 160 & Candidate/task/evaluation/audit sets mutually seeded; outcomes never enter design & First trial with RMSE $\leq0.04$ and integrated epistemic variance $\leq0.0015$; 20-seed paired inference \\
+P4 & Frozen P3 trace ($n=60$); injected case & Three-confirmation stop; 300 proposal hazards; 160 sampled-state faults & Bounds $|v_x|\leq0.75$, $|v_y|\leq0.45$, $|\omega_z|\leq1.2$; monitor period 20~ms & No premature stop; overshoot; rejection/reason coverage. Timing is software decision latency, not actuation latency \\
+P5 & Paired simulator seed ($n=20$/context) & M2, identity-projection prior scale 0.01; 12 trials & 8 fixed validation commands; $1.0/0.4/0.8/1.0/1.0$~s trial phases & Raw versus calibrated held-out RMSE; paired absolute effect \\
+P6 & Paired simulator seed ($n=72$/shift) & M2, identity-projection prior scale 0.01; 12 pre-calibration + 12 recovery & 4 no-shift + 5 shifted monitor trials; four-command rolling validation; $0.5/0.3/0.6/0.7/0.5$~s phases & False alarm; detection/recovery; passive-minus-full mean RMSE over trials 4--9; terminal upper interval $<0.14$ \\
+P7 & Paired simulator seed ($n=72$/map) & M1 (4 terms), identity prior scale 0.10; full/controls 12, dense 30 & 8 fixed calibration-validation commands; 60~s navigation timeout; 0.25~m waypoint/goal radius & Success and collision; 60-s capped completion time (every failure $=60$~s); success and time noninferiority both required \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The P7 command envelope is
+$v_x\in[-0.40,0.40]$~m/s, $v_y\in[-0.30,0.30]$~m/s, and
+$\omega_z\in[-0.70,0.70]$~rad/s, with linear norm at most 0.45~m/s. Cruise,
+lateral, and yaw limits are 0.18~m/s, 0.14~m/s, and 0.25~rad/s. Success means
+entering the 0.25~m goal ball without collision or serious safety event before
+60~s. Arrival time is defined only on success; the primary failure-aware time
+estimand assigns 60~s to every failure. Navigation time excludes calibration,
+which is reported separately: the deterministic executed-command duration is
+31.2~s for a 12-trial method and 78.0~s for dense calibration.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/p5_simulation_response.pdf}
   \caption{P5 registered simulation responses and closed-loop calibration.
   (a)--(d) Body-displacement trajectories for two validation probes at display
-  seed 5301; diamonds and circles denote the common start and measured
-  endpoints. (e) Raw and calibrated held-out velocity RMSE across 20 paired
+  seed 5301; colored curves are measured, dashed gray curves and crosses are
+  the ideal response to the declared command/timing, and diamonds mark the
+  common start. (e) Raw and calibrated held-out velocity RMSE across 20 paired
   seeds; labels give relative reduction. (f) Seed-paired absolute improvement
   with 95\% 4,000-sample bootstrap intervals. The trajectories are qualitative
   examples; all inference uses the registered paired summaries.}
@@ -298,13 +361,15 @@ intervals.
   \centering
   \includegraphics[width=\textwidth]{figures/p6_simulation_shift.pdf}
   \caption{P6 registered held-out shifts and active recovery. (a)--(d)
-  Body-displacement trajectories for the same validation probes at display
-  seed 10101. (e) Exact pre$\rightarrow$post static and dynamic friction,
+  Measured body-displacement trajectories and dashed ideal command responses
+  for the same validation probes at display seed 10101. (e) Exact
+  pre$\rightarrow$post static and dynamic friction,
   payload, fore--aft COM, and command-map settings; color intensity encodes
   within-row shift magnitude. (f) Full-method improvement over passive
   updating in the registered early window. (g) Full-method terminal RMSE and
   the frozen 0.14 gate. Error bars are paired 95\% 4,000-sample bootstrap
-  intervals over 72 seeds per shift.}
+  intervals over 72 seeds per shift; the detector produced 0/72 pre-shift
+  alarms in each context (exact upper bound 0.050).}
   \label{fig:p6scenes}
 \end{figure*}
 
@@ -314,9 +379,9 @@ intervals.
   \centering
   \includegraphics[width=\textwidth]{figures/calibration_evidence.pdf}
   \caption{Calibration evidence. (a) Passive real-Go2 held-out RMSE for raw,
-  diagonal M0, and coupled M1 commands. (b) Paired trials saved by the
-  task-weighted active method; bars are 95\% seed-bootstrap intervals for the
-  paired difference.}
+  diagonal M0, and coupled M1 commands. (b) Paired trials saved by task IVR;
+  bars are 95\% seed-bootstrap intervals. (c) Family-resolved time to the same
+  joint target; every method reaches it in all 20 seeds per family.}
   \label{fig:calibration}
 \end{figure*}
 
@@ -328,8 +393,32 @@ commands to 0.04563 for diagonal M0 and 0.03009 for coupled M1. M1 therefore
 reduces error by 54.45\% versus raw commands and 34.07\% versus M0. The three
 held-out-session M1 values are 0.02888, 0.03158, and 0.02974. The 30-trial LHS
 M1 result is 3.33\% above the 122-trial dense reference (0.02912). These data
-support a coupled correction for this robot and acquisition day; they do not
-measure active hardware efficiency.
+support a coupled correction for this robot and acquisition day. Axiswise raw
+to M1 RMSE is 0.04879 to 0.02587 for $v_x$, 0.08459 to 0.02569 for $v_y$, and
+0.05960 to 0.03723 for $\omega_z$. The M1-over-M0 gain is concentrated in
+lateral motion (60.2\%); $v_x$ changes by $-0.4\%$ and $\omega_z$ by 1.0\%.
+Table~\ref{tab:p1matrix} shows why: yaw-to-lateral coupling remains
+0.119--0.129 in every complete-session holdout. The result measures passive
+hardware model need, not active hardware efficiency.
+
+\begin{table}[t]
+\caption{P1 M1 gain/coupling matrix. Entries are the mean and range over the
+three leave-one-session-out fits; rows are realized axes and columns are
+command axes.}
+\label{tab:p1matrix}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & $v_x$ & $v_y$ & $\omega_z$ \\
+\midrule
+$v_x$ & .884 [.878,.890] & .015 [-.005,.043] & -.004 [-.006,-.002] \\
+$v_y$ & .021 [.017,.025] & .653 [.629,.667] & .125 [.119,.129] \\
+$\omega_z$ & -.001 [-.007,.003] & -.051 [-.076,-.019] & .914 [.906,.926] \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 P3 isolates the acquisition rule (Fig.~\ref{fig:calibration}b). The full method
 reaches the joint target in 18.67 trials, compared with 30.87 for LHS, 30.67
@@ -337,8 +426,29 @@ for random, 25.72 for Sobol, 23.00 for D-optimal, and 25.67 without task
 weighting. Reductions are 39.52\%, 39.13\%, 27.41\%, 18.84\%, and 27.27\%,
 respectively; all one-sided paired Wilcoxon tests give
 $p=9.54\times10^{-7}$. The primary LHS comparison saves 12.20 trials with a
-95\% interval of [10.73, 13.73]. Final active RMSE is 0.008462, 6.90\% above
+95\% interval of [10.73, 13.73]. Horizon-end active RMSE is 0.008462, 6.90\% above
 the dense oracle's 0.007916, and 95\% predictive coverage is 94.14\%.
+
+The uncertainty gate is binding in all 60 active conditions, as expected for
+an uncertainty-directed design; mean accuracy-only crossing occurs at 13.55,
+6.40, and 8.80 trials for affine, dead-zone, and heteroscedastic families.
+Figure~\ref{fig:calibration}c therefore reports every family separately. Task
+IVR requires 18, 18, and 20 trials, versus 19, 19, and 31 for D-optimal and 23,
+23, and 31 without task weights. On the disjoint post-hoc audit grid, active
+posterior RMSE at the primary crossing is 0.01796, 0.02069, and 0.02315; its
+axiswise 95\% coverage ranges from 0.917 to 0.955. Across the nine combinations
+of RMSE thresholds $\{.03,.04,.05\}$ and uncertainty thresholds
+$\{.001,.0015,.002\}$, task IVR saves at least 3.33 trials over D-optimal, 6.00
+over no-task IVR, and 10.03 over LHS, with a positive paired difference for
+every seed. Thus the result is not an artifact of a single threshold.
+
+The candidate-noise sensitivity addresses the conditional variance in
+Eq.~\eqref{eq:ivr}. In the heteroscedastic family, the registered fixed-noise
+planner reaches the target in 20 trials; an oracle supplied the exact
+candidate-dependent excess variance and reaches it in 21. Their crossing RMSEs
+are 0.02332 and 0.02320. Both retain an 11-trial advantage over D-optimal and
+no-task IVR. Candidate-noise modeling changes one command in the crossing
+budget but does not explain the method ranking.
 
 In closed-loop P5 simulation (Fig.~\ref{fig:p5scenes}e), raw-to-calibrated
 RMSE is 0.15199 to 0.10635 for affine distortion, 0.15054 to 0.10282 for
@@ -352,18 +462,25 @@ seeds improve in each scenario.
 
 P4 records no premature stop across 60 trajectories. Median and p95 overshoot
 after the oracle target are both two trials. The hard filter rejects 300/300
-registered hazards and 0/20 safe controls; the runtime monitor catches all 160
-fault injections with a maximum recorded detection latency of 0~ms. These are
-software replay and fault-injection results, not physical safety certification.
+registered hazards and 0/20 safe controls; its sampled-state monitor rejects
+all 160 hazardous calls at the call in which the invalid state is presented.
+The earlier 0~ms log value is therefore a software decision timestamp, not a
+sensor-to-actuator latency measurement. In P5--P7, where the monitor runs
+against physics state at 50~Hz, the maximum recorded abort interval is 20~ms.
+Neither result is physical safety certification.
 
-Across the four P6 shifts, the full method improves early RMSE over passive
+Across the four P6 no-shift windows, the full detector produces 0/72 alarms per
+context; each exact 95\% upper bound is 0.04994. Across the subsequent shifts,
+the full method improves early RMSE over passive
 updating by 0.00761 for friction plus payload, 0.00974 for gain recoupling,
 0.01691 for mixed context, and 0.01012 for payload/COM
 (Fig.~\ref{fig:p6scenes}f). Their 95\% intervals are [0.00537, 0.00981], [0.00804,
 0.01145], [0.01536, 0.01848], and [0.00825, 0.01194]. Detection succeeds in
 72/72 seeds for three shifts and 71/72 for payload/COM; full recovery succeeds
 in 72/72 for every shift. Worst p95 detection and recovery delays are four and
-six trials. Full terminal RMSE ranges from 0.10898 to 0.12241, with every upper
+six trials, corresponding to at most 10.4~s of monitor-command time and 31.2~s
+for six adaptation-plus-validation cycles under the frozen trial schedule.
+Full terminal RMSE ranges from 0.10898 to 0.12241, with every upper
 interval endpoint below 0.126 (Fig.~\ref{fig:p6scenes}g). Passive updating can be
 competitive at the terminal window, so the supported contrast is the
 registered early-recovery effect.
@@ -374,30 +491,43 @@ The first P7 strong confirmation did not pass. Full-method success was 68/72 on
 one map and 50/72 on another, and some completion-time ratio interval upper
 bounds reached 1.347. Trace inspection exposed a 10~Hz guard blind interval in
 which base height could cross the hard limit between planner ticks. A 50~Hz
-predictive height interlock was developed, frozen, and evaluated on six new
-maps and seeds. No result from the failed confirmation or intervening pilots is
-pooled with the replication.
+predictive height interlock was developed, frozen, and applied to every arm in
+the prospective replication. The six maps, new seeds, common policy, and
+planner configuration hash \texttt{9affe07d9231} were then frozen. No result
+from the failed confirmation or intervening pilots is pooled with the
+replication.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/navigation_results.pdf}
-  \caption{P7 prospective simulator replication. (a) Success rate for six maps
-  and seven methods (72 seeds/cell). (b) Paired completion-time gain of full
-  calibration over raw control. (c) Full/dense time ratio with paired 95\%
-  intervals; the registered noninferiority margin is 1.25. Every B8 collision
-  count is 0/72.}
+  \caption{P7 prospective simulator replication (72 seeds/cell). (a) Success
+  rate. (b) Paired raw-minus-full gain in the 60-s capped-time estimand, which
+  retains every failure as 60~s. (c) Full/matched-budget mean capped-time
+  ratios; parentheses give paired 95\% interval upper bounds. (d) Full/dense
+  ratios and the registered 1.25 noninferiority margin. Every full-method
+  collision count is 0/72.}
   \label{fig:navigation}
 \end{figure*}
 
-In the disjoint replication, B8 succeeds in 72/72 episodes on five maps and
-70/72 on weighted arc (Fig.~\ref{fig:navigation}a); every B8 collision count is
-zero. Paired B8-versus-raw completion-time gains have lower interval endpoints
-from 23.453 to 32.675~s (Fig.~\ref{fig:navigation}b). The worst B8/dense mean
-time-ratio interval upper bound is 1.0736, below the registered 1.25 margin, and
-the worst ratio upper bound against any matched-budget control is 1.0901
-(Fig.~\ref{fig:navigation}c). Because planner hashes and seeds are matched, the
-comparison isolates command calibration within the frozen simulator pipeline.
-It does not establish hardware navigation or sim-to-real transfer.
+In the disjoint replication, Full succeeds in 72/72 episodes on five maps and
+70/72 on weighted arc (Fig.~\ref{fig:navigation}a), while raw commands succeed
+in 0/72 or 1/72. Every Full collision count is zero. The primary time estimand
+retains all episodes by assigning the 60~s cap to every failure; arrival time
+among successes is only a diagnostic. Paired raw-minus-Full capped-time gains
+have lower interval endpoints from 23.453 to 32.675~s
+(Fig.~\ref{fig:navigation}b). The worst Full/dense mean-ratio interval upper
+bound is 1.0736, below the registered 1.25 margin, and the largest upper bound
+against any 12-trial matched-budget control is 1.0901
+(Fig.~\ref{fig:navigation}c). The paired success-difference lower bound also
+exceeds the registered $-0.05$ margin in every comparison. The two Full
+failures are weighted-arc timeouts, not collisions or serious safety events;
+their final goal distances are 0.565 and 0.567~m.
+
+Navigation time excludes calibration. Full requires 31.2~s of deterministic
+command execution versus 78.0~s for dense calibration; matched-budget controls
+have the same 31.2~s budget. Identical seeds, policy, planner, interlock, maps,
+and navigation logic isolate calibration inside this simulator pipeline. The
+active-hardware protocol tests the corresponding physical navigation claim.
 
 \section{Discussion and Limitations}
 
@@ -405,25 +535,36 @@ The experiments separate three questions that are often conflated. P1 asks
 whether the exposed command interface needs coupled calibration. P3 asks
 whether task weighting changes which trials are valuable. P7 asks whether a
 calibration that looks accurate on held-out commands also preserves navigation
-outcomes. The no-task and D-optimal controls show that the P3 gain is not merely
-generic active learning, while the P7 protocol prevents validation RMSE from
-rescuing a failed downstream endpoint.
+outcomes. The no-task and D-optimal controls isolate task weighting in P3;
+candidate-noise and threshold sweeps preserve that ordering. In P7, the dense
+and matched-budget controls establish downstream noninferiority, while the raw
+arm exposes the consequence of leaving the command interface uncalibrated.
 
-The evidence has a clear hardware boundary. P1 is passive, same-day data from
-one Go2 in one environment. P5--P7 use a pinned simulator and fixed policy. The
-compact steady-response basis does not represent arbitrary history dependence,
-gait switching, rapid transients, or shifts outside the registered families.
-The planned P8 study must therefore execute active calibration on hardware,
-apply gain/coupling, payload/COM, friction, and mixed shifts, and test navigation
-on weighted-arc and offset-slalom courses. Until those data pass their frozen
-gates, the present result is a simulator-validated calibration and recovery
-architecture supported by passive hardware model evidence.
+The P3 joint stopping time is uncertainty-limited in all 60 active conditions.
+This identifies the measured efficiency as faster acquisition of posterior
+confidence, rather than earlier satisfaction of the accuracy gate alone. The
+independently seeded 400-point evaluation set supplies the online accuracy
+gate, and the additional 1,024-point audit verifies RMSE and axiswise coverage
+at the recorded crossing. P6 similarly separates monitoring from recovery:
+four pre-shift monitor commands measure false alarms, shifted monitor commands
+measure detection, and trials 4--9 measure the registered early-recovery
+effect. The null exposure supports the reported per-context false-alarm bound;
+long-duration nuisance alarms remain a hardware endpoint.
+
+P1 is passive, same-day data from one Go2 in one environment. P5--P7 use a
+pinned simulator and fixed policy. The compact steady-response basis targets
+the steady command interface; arbitrary history dependence, gait switching,
+rapid transients, and shifts outside the registered families require a richer
+model. The frozen P8 study executes active calibration on hardware, applies
+gain/coupling, payload/COM, friction, and mixed shifts, and tests navigation on
+weighted-arc and offset-slalom courses. Those experiments complete the active
+hardware and sim-to-real evidence layer of the same stated mechanism.
 
 \section{Conclusion}
 
 \method\ calibrates the high-level velocity interface of a fixed quadruped
 controller by directing trials toward task-relevant predictive uncertainty.
-The approach combines a coupled Bayesian model, exact IVR acquisition, hard
+The approach combines a coupled Bayesian model, conditional IVR acquisition, hard
 safety filtering, validated stopping, constrained inverse compensation, and
 latched shift recovery. Passive Go2 measurements establish the need for a
 coupled map; registered synthetic and Isaac Lab experiments establish sample

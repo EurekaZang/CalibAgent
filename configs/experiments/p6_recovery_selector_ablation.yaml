@@ -2,8 +2,9 @@
 # review. Detection, latching, covariance inflation, budgets, safety logic,
 # shift construction, and validation are identical across adaptive arms.
 experiment_role: supplemental
-protocol_frozen_utc: "2026-08-05T18:45:00Z"
-output_dir: outputs/p6_recovery_selector_ablation
+protocol_frozen_utc: "2026-08-05T18:22:30Z"
+execution_revision: safety_rejection_uses_shared_zero_command_fallback
+output_dir: outputs/p6_recovery_selector_ablation_v2
 
 isaaclab:
   tag: v2.3.2

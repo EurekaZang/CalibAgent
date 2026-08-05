@@ -13,10 +13,10 @@
     "P7 intervals are the registered intervals stored in summary.json."
   ],
   "outputs": {
-    "paper/figures/calibration_evidence.pdf": "1c1255914dcd47754da1ca8914f7ade7cd8b2e35f829333bb1b1a550114b864f",
-    "paper/figures/calibration_evidence.png": "22c304f038d2126621d374c02dee3bd413610971e5d2e6dc140cec2f63dd0dd3",
-    "paper/figures/navigation_results.pdf": "a7ae4ac1f54f1d9f799f28496aaa6e76da1b32281d54416991a965d3df5a9bef",
-    "paper/figures/navigation_results.png": "4f2c7129da76b2708aa24463444f1af9ba27d5c3624b3463c28d89b8dffb0081"
+    "paper/figures/calibration_evidence.pdf": "208dbbcc2c0f3be06bdfe489681126dfaf337d0b214cebc11a86be0fcf7a4062",
+    "paper/figures/calibration_evidence.png": "114d41e541406e35ee0c5e5f35bcdb7708cb86ed5f262d8ab9317d7aa7900fbd",
+    "paper/figures/navigation_results.pdf": "2bd637b14228816c0bbd6f0ab38cdab54a2411d069d06e626de3c32f99890037",
+    "paper/figures/navigation_results.png": "ac59be205bd5e6def5e6cb2319147c65b60da30c0e57289274f153934fb51871"
   },
   "schema_version": "1.0"
 }

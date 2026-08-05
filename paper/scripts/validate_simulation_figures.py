@@ -15,7 +15,6 @@ import re
 import struct
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "docs" / "assets" / "readme" / "isaac_sim"
 MAIN_TEX = ROOT / "paper" / "main.tex"

@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE_DIR = ROOT / "docs" / "assets" / "readme" / "isaac_sim"
 OUT = ROOT / "paper" / "figures"
@@ -104,10 +103,55 @@ def draw_response_axis(
     limits: tuple[tuple[float, float], tuple[float, float]],
 ) -> None:
     overlays = {item["probe_name"]: item for item in capture["capture_only_visualization_overlays"]}
+    probes = {
+        item["response_probe"]["name"]: item["response_probe"]
+        for item in capture["source_frames"]
+    }
     names = ["coupled_response", "forward_turn_response"]
     colors = [BLUE, VERMILLION]
-    for name, color in zip(names, colors):
+    for name, color in zip(names, colors, strict=True):
         points = np.asarray(overlays[name]["sampled_xy_m"], dtype=float)
+        probe = probes[name]
+        command = np.asarray(probe["desired_command"], dtype=float)
+        counts = probe["profile_phase_counts"]
+        ramp = np.linspace(0.0, 1.0, int(counts["0"]), endpoint=True)
+        scales = np.concatenate(
+            [
+                np.zeros(int(counts["-1"])),
+                ramp,
+                np.ones(int(counts["1"]) + int(counts["2"])),
+            ]
+        )
+        dt = float(probe["step_dt_s"])
+        ideal = np.zeros((len(scales), 3), dtype=float)
+        for step in range(1, len(scales)):
+            vx, vy, wz = command * scales[step - 1]
+            yaw = ideal[step - 1, 2]
+            ideal[step, 0] = ideal[step - 1, 0] + dt * (
+                np.cos(yaw) * vx - np.sin(yaw) * vy
+            )
+            ideal[step, 1] = ideal[step - 1, 1] + dt * (
+                np.sin(yaw) * vx + np.cos(yaw) * vy
+            )
+            ideal[step, 2] = yaw + dt * wz
+        ax.plot(
+            ideal[:, 0],
+            ideal[:, 1],
+            color=GREY,
+            lw=0.9,
+            ls="--",
+            alpha=0.85,
+            zorder=1,
+        )
+        ax.scatter(
+            ideal[-1, 0],
+            ideal[-1, 1],
+            s=18,
+            marker="x",
+            color=GREY,
+            linewidth=0.9,
+            zorder=3,
+        )
         ax.plot(points[:, 0], points[:, 1], color=color, lw=1.45, zorder=2)
         ax.scatter(points[0, 0], points[0, 1], s=12, marker="D", color=BLACK, zorder=3)
         ax.scatter(points[-1, 0], points[-1, 1], s=20, marker="o", color=color,
@@ -156,8 +200,10 @@ def build_p5() -> None:
                          label=r"Probe 7: $[0.35,0.00,0.50]$"),
         mpl.lines.Line2D([], [], color=BLACK, lw=0, marker="D", markersize=3,
                          label="Start"),
+        mpl.lines.Line2D([], [], color=GREY, lw=0.9, ls="--", marker="x",
+                         markersize=3, label="Ideal command response"),
     ]
-    fig.legend(handles=handles, loc="outside upper center", ncol=3, frameon=False,
+    fig.legend(handles=handles, loc="outside upper center", ncol=4, frameon=False,
                columnspacing=1.3, handlelength=1.7)
 
     # Paired raw-to-calibrated RMSE.
@@ -261,8 +307,10 @@ def build_p6() -> None:
                          label=r"Probe 2: $[0.20,-0.18,-0.30]$"),
         mpl.lines.Line2D([], [], color=VERMILLION, lw=1.5, marker="o", markersize=3.5,
                          label=r"Probe 7: $[0.35,0.00,0.50]$"),
+        mpl.lines.Line2D([], [], color=GREY, lw=0.9, ls="--", marker="x",
+                         markersize=3, label="Ideal command response"),
     ]
-    fig.legend(handles=handles, loc="outside upper center", ncol=2, frameon=False,
+    fig.legend(handles=handles, loc="outside upper center", ncol=3, frameon=False,
                columnspacing=1.6, handlelength=1.7)
 
     # Exact shift design matrix.
@@ -347,6 +395,15 @@ def build_p6() -> None:
     ax_terminal.grid(axis="x", color=LIGHT_GREY, lw=0.55)
     ax_terminal.text(0.1395, 3.35, "0.14", ha="right", va="bottom", color=ORANGE,
                      fontsize=6.2)
+    ax_terminal.text(
+        0.02,
+        0.02,
+        "0/72 pre-shift alarms\nper context; upper 95% = .050",
+        transform=ax_terminal.transAxes,
+        ha="left",
+        va="bottom",
+        fontsize=5.5,
+    )
     finish(fig, "p6_simulation_shift")
 
 
