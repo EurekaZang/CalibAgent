@@ -8,7 +8,7 @@ export SOURCE_DATE_EPOCH
 
 RAW_PDF := $(BUILD_DIR)/main.pdf
 PAPER_INPUTS := main.tex references.bib ieeeconf.cls \
-	figures/calibagent_pipeline.pdf \
+	figures/GAUGE.drawo.png \
 	figures/calibration_evidence.pdf \
 	figures/closed_loop_response.pdf \
 	figures/shift_recovery_results.pdf \
@@ -24,8 +24,6 @@ figures:
 	$(PYTHON) scripts/build_paper_figures.py
 	$(PYTHON) scripts/build_simulation_scientific_figures.py
 	$(PYTHON) scripts/build_real_navigation_figure.py
-	$(LATEXMK) -pdf -interaction=nonstopmode -halt-on-error -outdir=figures figures/calibagent_pipeline.tex
-	pdftoppm -png -singlefile -r 300 figures/calibagent_pipeline.pdf figures/calibagent_pipeline
 
 simulation-audit: figures
 	$(PYTHON) scripts/validate_simulation_figures.py
