@@ -8,5 +8,6 @@ __pycache__/
 *.egg-info/
 outputs/
 /data/
+/paper/main/
 build/
 dist/
