@@ -20,31 +20,18 @@
     8.36,
     9.2
   ],
-  "exposure_opacities": [
-    0.28,
-    0.34,
-    0.4,
-    0.46,
-    0.52,
-    0.58,
-    0.64,
-    0.7,
-    0.76,
-    0.82,
-    0.88
-  ],
-  "exposure_transparencies": [
-    0.72,
-    0.66,
-    0.6,
-    0.54,
-    0.48,
-    0.42,
-    0.36,
-    0.3,
-    0.24,
-    0.18,
-    0.12
+  "exposure_brightness_factors": [
+    1.0,
+    0.972,
+    0.944,
+    0.916,
+    0.888,
+    0.86,
+    0.832,
+    0.804,
+    0.776,
+    0.748,
+    0.72
   ],
   "algorithm": {
     "background_frame_count": 31,
@@ -52,8 +39,12 @@
     "minimum_component_area_px": 180,
     "mask_dilation_iterations": 2,
     "mask_feather_sigma_px": 1.15,
-    "time_encoding": "opacity increases linearly; transparency decreases with elapsed time",
+    "time_encoding": "brightness decreases linearly with elapsed time; foreground-mask opacity is fixed",
     "common_center_crop_height_px": 506,
+    "common_horizontal_crop_px": [
+      0,
+      1560
+    ],
     "panel_gap_px": 12
   },
   "sources": {
@@ -142,8 +133,8 @@
   },
   "output": {
     "path": "paper/figures/real_dclp_long_exposure.png",
-    "sha256": "c6b6874927a97f53a7bfc5839c57b18b62cd14510ece9ff074b7cdc5e20002df",
-    "width": 3852,
+    "sha256": "fb1762ff86b62a8788b3aabeadcd06270753020b51f4723d538ca81b969f557d",
+    "width": 3132,
     "height": 506
   }
 }

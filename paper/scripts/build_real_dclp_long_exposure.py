@@ -3,10 +3,10 @@
 
 The output contains no drawn trajectory, recoloring, or geometric annotation.
 For each run, a temporal-median background is estimated from uniformly sampled
-frames.  Robot appearances at matched elapsed times are then alpha-composited
-where they differ from that background.  Transparency decreases monotonically
-with elapsed time, so later poses appear more opaque.  The direct-command run
-is placed on the left and the GAUGE-compensated run on the right.
+frames.  Robot appearances at matched elapsed times are then composited where
+they differ from that background.  Only brightness encodes time: later poses
+are darker, while the foreground-mask opacity is time invariant.  The direct-
+command run is placed on the left and the GAUGE-compensated run on the right.
 """
 
 from __future__ import annotations
@@ -31,12 +31,14 @@ MANIFEST = ROOT / "evidence" / "paper_figure_provenance" / "real_dclp_long_expos
 
 BACKGROUND_FRAME_COUNT = 31
 EXPOSURE_TIMESTAMPS_S = tuple(np.linspace(0.8, 9.2, 11).round(3))
-EXPOSURE_OPACITIES = tuple(np.linspace(0.28, 0.88, len(EXPOSURE_TIMESTAMPS_S)).round(3))
+EXPOSURE_BRIGHTNESS = tuple(np.linspace(1.0, 0.72, len(EXPOSURE_TIMESTAMPS_S)).round(3))
 DIFFERENCE_THRESHOLD = 15.0
 MIN_COMPONENT_AREA_PX = 180
 MASK_DILATION_ITERATIONS = 2
 MASK_FEATHER_SIGMA_PX = 1.15
 PANEL_GAP_PX = 12
+PANEL_CROP_LEFT_PX = 0
+PANEL_CROP_RIGHT_PX = 1560
 
 
 def sha256(path: Path) -> str:
@@ -149,12 +151,17 @@ def build_panel(
 ) -> tuple[np.ndarray, list[float]]:
     background, background_timestamps = temporal_background(path, duration_s, target_height)
     canvas = background.astype(np.float32)
-    for timestamp_s, opacity in zip(EXPOSURE_TIMESTAMPS_S, EXPOSURE_OPACITIES, strict=True):
+    for timestamp_s, brightness in zip(
+        EXPOSURE_TIMESTAMPS_S,
+        EXPOSURE_BRIGHTNESS,
+        strict=True,
+    ):
         if timestamp_s >= duration_s:
             raise ValueError(f"exposure timestamp {timestamp_s} exceeds {path.name}")
         frame = center_crop_height(decode_frame(path, float(timestamp_s)), target_height)
-        alpha = (float(opacity) * foreground_mask(frame, background))[..., None]
-        canvas = frame.astype(np.float32) * alpha + canvas * (1.0 - alpha)
+        mask = foreground_mask(frame, background)[..., None]
+        darkened_frame = frame.astype(np.float32) * float(brightness)
+        canvas = darkened_frame * mask + canvas * (1.0 - mask)
     return np.clip(canvas, 0, 255).astype(np.uint8), background_timestamps
 
 
@@ -179,6 +186,14 @@ def build() -> dict[str, object]:
         float(gauge_info["duration_s"]),
         target_height,
     )
+
+    source_width = int(direct_info["width"])
+    if not 0 <= PANEL_CROP_LEFT_PX < PANEL_CROP_RIGHT_PX <= source_width:
+        raise ValueError("invalid shared horizontal crop")
+    direct_panel = direct_panel[:, PANEL_CROP_LEFT_PX:PANEL_CROP_RIGHT_PX]
+    gauge_panel = gauge_panel[:, PANEL_CROP_LEFT_PX:PANEL_CROP_RIGHT_PX]
+    if direct_panel.shape != gauge_panel.shape:
+        raise ValueError("cropped panels must have identical dimensions")
 
     gap = np.full((target_height, PANEL_GAP_PX, 3), 255, dtype=np.uint8)
     composite = np.concatenate((direct_panel, gap, gauge_panel), axis=1)
@@ -205,16 +220,18 @@ def build() -> dict[str, object]:
         ),
         "panel_order": ["direct_command", "gauge"],
         "exposure_timestamps_s": [float(value) for value in EXPOSURE_TIMESTAMPS_S],
-        "exposure_opacities": [float(value) for value in EXPOSURE_OPACITIES],
-        "exposure_transparencies": [round(1.0 - float(value), 3) for value in EXPOSURE_OPACITIES],
+        "exposure_brightness_factors": [float(value) for value in EXPOSURE_BRIGHTNESS],
         "algorithm": {
             "background_frame_count": BACKGROUND_FRAME_COUNT,
             "difference_threshold_rgb_rms": DIFFERENCE_THRESHOLD,
             "minimum_component_area_px": MIN_COMPONENT_AREA_PX,
             "mask_dilation_iterations": MASK_DILATION_ITERATIONS,
             "mask_feather_sigma_px": MASK_FEATHER_SIGMA_PX,
-            "time_encoding": "opacity increases linearly; transparency decreases with elapsed time",
+            "time_encoding": (
+                "brightness decreases linearly with elapsed time; foreground-mask opacity is fixed"
+            ),
             "common_center_crop_height_px": target_height,
+            "common_horizontal_crop_px": [PANEL_CROP_LEFT_PX, PANEL_CROP_RIGHT_PX],
             "panel_gap_px": PANEL_GAP_PX,
         },
         "sources": {
