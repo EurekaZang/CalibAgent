@@ -326,6 +326,10 @@ planner \cite{zhang2025drldclp} with either direct velocity commands or the
 frozen \method\ inverse between planner and robot. Two static-obstacle scenes
 and one crossing-pedestrian scene are each repeated five times per condition;
 matched-time frames, source video, and exact extraction times are retained.
+A separate fixed-camera static layout is retained as two full-run videos and
+visualized by compositing the robot at identical elapsed times over a temporal-
+median background. This visualization is qualitative and is excluded from all
+statistical endpoints.
 
 \begin{figure*}[t]
   \centering
@@ -516,6 +520,20 @@ this simulator pipeline.
   \label{fig:realnav}
 \end{figure*}
 
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.99\textwidth]{figures/real_dclp_long_exposure.png}
+  \caption{Long-exposure visualization of a matched-layout real-Go2 run with
+  the fixed DRL-DCLP planner. Left: direct velocity commands. Right: DRL-DCLP
+  followed by \method\ command compensation. Each panel composites the robot
+  at the same 11 elapsed times from 0.8 to 9.2~s over an independently
+  estimated temporal-median background. Pose transparency decreases
+  monotonically with elapsed time, so later poses are more opaque. No path,
+  annotation, or geometry is drawn; the images provide qualitative motion
+  context rather than a pixel-derived endpoint.}
+  \label{fig:realnav-long}
+\end{figure*}
+
 \subsection{Physical Navigation Consequence}
 
 At equal elapsed times, direct commands produce visible stop-and-correct motion
@@ -523,7 +541,10 @@ and contact at static obstacles, while \method\ advances with less hesitation
 and contact (Fig.~\ref{fig:realnav}a--b). Compensation also clears the pedestrian
 crossing earlier (Fig.~\ref{fig:realnav}c). Across five repetitions per
 condition, every scene improves in hesitation, contact, or both. The fixed
-planner isolates the effect of planner-facing command compensation.
+planner isolates the effect of planner-facing command compensation. The
+full-run long exposures provide a complementary view at matched wall-clock
+times (Fig.~\ref{fig:realnav-long}): repeated poses remain visible rather than
+being reduced to a selected frame pair.
 
 \section{Discussion and Limitations}
 
