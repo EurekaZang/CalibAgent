@@ -113,6 +113,35 @@ def test_p8_nav_route_phase_runs_only_selected_route(tmp_path: Path) -> None:
     assert episodes[0]["route_order"] == "B"
 
 
+def test_p8_overwrite_replaces_only_the_exact_run_directory(tmp_path: Path) -> None:
+    run_dir = tmp_path / "replace_me"
+    run_dir.mkdir()
+    sentinel = run_dir / "stale.txt"
+    sentinel.write_text("stale", encoding="utf-8")
+    sibling = tmp_path / "keep_me"
+    sibling.mkdir()
+
+    runtime = P8Runtime(
+        load_config(ROOT / "configs/p8/nav.yaml"),
+        "replace_me",
+        tmp_path,
+        backend_name="fake",
+        overwrite=True,
+        auto_continue=True,
+        max_units=1,
+    )
+    try:
+        result = runtime.run_nav(
+            blocks=["NAV_BLOCK_01"], methods=["B0_raw"], routes=["A"]
+        )
+    finally:
+        runtime.close()
+
+    assert result["units_executed"] == 1
+    assert not sentinel.exists()
+    assert sibling.is_dir()
+
+
 def test_navigation_goal_requires_explicit_reached_and_geometric_arrival() -> None:
     goal = {"x": 2.0, "y": 3.0}
     near = {"x": 2.1, "y": 3.1}

@@ -27,6 +27,7 @@ def _runtime(args):  # type: (argparse.Namespace) -> P8Runtime
         backend_name=args.backend,
         arm=args.arm,
         resume=args.resume,
+        overwrite=args.overwrite,
         auto_continue=args.auto_continue,
         max_units=args.max_units,
     )
@@ -40,7 +41,13 @@ def _add_run_arguments(parser):  # type: (argparse.ArgumentParser) -> None
     parser.add_argument(
         "--arm", action="store_true", help="Publish nonzero direct Unitree Sport Move requests"
     )
-    parser.add_argument("--resume", action="store_true")
+    existing_run = parser.add_mutually_exclusive_group()
+    existing_run.add_argument("--resume", action="store_true")
+    existing_run.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Delete an existing run directory with this exact run ID and start from zero",
+    )
     parser.add_argument("--auto-continue", action="store_true")
     parser.add_argument("--max-units", type=int, default=None)
     parser.add_argument("--blocks", default="all")

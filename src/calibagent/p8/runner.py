@@ -95,20 +95,39 @@ class P8Runtime:
         backend_name="fake",
         arm=False,
         resume=False,
+        overwrite=False,
         auto_continue=False,
         max_units=None,
     ):
-        # type: (ResolvedConfig, str, Path, str, bool, bool, bool, Optional[int]) -> None
+        # type: (ResolvedConfig, str, Path, str, bool, bool, bool, bool, Optional[int]) -> None
         self.config = config
         self.run_id = run_id
-        self.output_root = output_root
+        self.output_root = output_root.expanduser().resolve()
         self.backend_name = backend_name
-        self.run_dir = output_root / run_id
+        if not run_id or Path(run_id).name != run_id or run_id in (".", ".."):
+            raise ValueError("run ID must be one non-empty directory name")
+        self.run_dir = (self.output_root / run_id).resolve()
+        try:
+            self.run_dir.relative_to(self.output_root)
+        except ValueError as exc:
+            raise ValueError("run directory must be directly inside output root") from exc
+        if resume and overwrite:
+            raise ValueError("--resume and --overwrite are mutually exclusive")
         self.code_commit = git_commit(Path(__file__).resolve().parents[3])
         self.code_migration = None
         self.config_migration = None
-        if self.run_dir.exists() and not resume:
-            raise FileExistsError(f"run directory exists; use --resume: {self.run_dir}")
+        if self.run_dir.exists():
+            if overwrite:
+                if not self.run_dir.is_dir() or self.run_dir.is_symlink():
+                    raise RuntimeError(
+                        "refusing to overwrite a non-directory or symbolic-link run path: "
+                        f"{self.run_dir}"
+                    )
+                shutil.rmtree(self.run_dir)
+            elif not resume:
+                raise FileExistsError(
+                    f"run directory exists; use --resume or --overwrite: {self.run_dir}"
+                )
         self.previous_manifest = {}
         manifest_path = self.run_dir / "manifest.json"
         if manifest_path.is_file():
