@@ -30,6 +30,9 @@ case "${1:-}" in
     if ! tmux has-session -t "${LOC_SESSION}" 2>/dev/null; then
       tmux new-session -d -s "${LOC_SESSION}" "cd /home/unitree/ws_localization && exec ./run_localization.sh norviz 2>&1 | tee '${LOG_DIR}/localization.log'"
       started_localization=1
+      # Let Livox discovery and its startup backlog settle before the strict
+      # timestamp check; the checker intentionally does not accept stale data.
+      sleep 8
     fi
     bash -lc "${ros_env}; /usr/bin/python3 '${HEALTH}' --topic /livox/lidar_pc2 --type sensor_msgs/msg/PointCloud2 --duration 12 --min-rate 10 --min-count 30 --max-age-ms 120"
     bash -lc "${ros_env}; /usr/bin/python3 '${HEALTH}' --topic /Odometry --type nav_msgs/msg/Odometry --duration 5 --min-rate 10 --min-count 30 --max-age-ms 120"
