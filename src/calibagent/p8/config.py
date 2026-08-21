@@ -137,6 +137,7 @@ def validate_config(config):  # type: (ResolvedConfig) -> Dict[str, Any]
 
     if protocol == "nav":
         required = (
+            "runtime_stack",
             "topic_map",
             "reference_extrinsic",
             "candidate_pool",
@@ -179,6 +180,7 @@ def validate_config(config):  # type: (ResolvedConfig) -> Dict[str, Any]
         }
     elif protocol == "shift":
         required = (
+            "runtime_stack",
             "topic_map",
             "reference_extrinsic",
             "candidate_pool",

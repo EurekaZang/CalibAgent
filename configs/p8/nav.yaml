@@ -4,6 +4,7 @@ robot:
   model: unitree_go2_edu
   geometry_m: {length_front: 0.42, length_rear: 0.42, width: 0.372}
 files:
+  runtime_stack: runtime_stack.sha256
   topic_map: topic_map.yaml
   reference_extrinsic: reference_extrinsic.yaml
   candidate_pool: commands/candidate_pool.csv
@@ -52,3 +53,6 @@ recording:
 fake:
   dynamics_matrix: [[0.82, 0.03, 0.02], [0.01, 0.78, -0.02], [0.02, 0.01, 0.86]]
   dynamics_bias: [0.01, -0.005, 0.008]
+runtime_artifacts:
+  prior_map: /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+  reloc_db: /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db

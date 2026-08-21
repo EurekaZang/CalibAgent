@@ -1,6 +1,7 @@
 """Complete P8-NAV and P8-SHIFT experiment state machines."""
 
 import contextlib
+import hashlib
 import json
 import shutil
 import time
@@ -39,6 +40,35 @@ def _utc():  # type: () -> str
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 
+def _hash_runtime_path(path):  # type: (Path) -> Dict[str, Any]
+    path = path.expanduser().resolve()
+    if not path.exists():
+        raise FileNotFoundError("runtime artifact not found: {}".format(path))
+    digest = hashlib.sha256()
+    files = [path] if path.is_file() else sorted(item for item in path.rglob("*") if item.is_file())
+    total_size = 0
+    for item in files:
+        relative = item.name if path.is_file() else item.relative_to(path).as_posix()
+        digest.update(relative.encode("utf-8") + b"\0")
+        with item.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+                total_size += len(chunk)
+    return {
+        "path": str(path),
+        "sha256": digest.hexdigest(),
+        "file_count": len(files),
+        "size_bytes": total_size,
+    }
+
+
+def _runtime_artifact_hashes(payload):  # type: (Dict[str, Any]) -> Dict[str, Dict[str, Any]]
+    return {
+        str(name): _hash_runtime_path(Path(value))
+        for name, value in payload.get("runtime_artifacts", {}).items()
+    }
+
+
 class P8Runtime:
     def __init__(
         self,
@@ -55,6 +85,7 @@ class P8Runtime:
         self.config = config
         self.run_id = run_id
         self.output_root = output_root
+        self.backend_name = backend_name
         self.run_dir = output_root / run_id
         if self.run_dir.exists() and not resume:
             raise FileExistsError(f"run directory exists; use --resume: {self.run_dir}")
@@ -64,6 +95,12 @@ class P8Runtime:
             self.previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             if self.previous_manifest.get("config_hash") != self.config.config_hash:
                 raise RuntimeError("resume config hash differs from run manifest")
+        self.runtime_artifacts = (
+            _runtime_artifact_hashes(self.config.payload) if backend_name == "ros" else {}
+        )
+        previous_runtime = self.previous_manifest.get("runtime_artifacts")
+        if previous_runtime is not None and previous_runtime != self.runtime_artifacts:
+            raise RuntimeError("resume runtime map/relocation artifacts differ from run manifest")
         self.recorder = RunRecorder(self.run_dir, run_id)
         self.resume = bool(resume)
         self.auto_continue = bool(auto_continue)
@@ -73,7 +110,6 @@ class P8Runtime:
         topic_payload = read_yaml(config.files["topic_map"])
         payload["topics"] = topic_payload["topics"]
         payload["quality"] = dict(payload.get("quality", {}))
-        self.backend_name = backend_name
         self.backend = (
             FakeBackend(payload, self.recorder.trace)
             if backend_name == "fake"
@@ -134,6 +170,7 @@ class P8Runtime:
                 "backend": self.backend_name,
                 "armed": self.arm,
                 "robot": self.config.payload.get("robot", {}),
+                "runtime_artifacts": self.runtime_artifacts,
                 "command_chain": "DCLP planner -> optional CalibAgent calibration transform -> direct Unitree Sport Move",
                 "locomotion_interventions": [],
             }

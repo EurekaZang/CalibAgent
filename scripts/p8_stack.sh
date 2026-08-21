@@ -18,6 +18,7 @@ case "${1:-}" in
     if pgrep -f 'go2_zmq_sport_client.py' >/dev/null; then
       echo "Another Go2 actuator client is running. Stop the existing DCLP run first." >&2; exit 1
     fi
+    sha256sum --check "${ROOT}/configs/p8/runtime_stack.sha256"
     started_localization=0
     cleanup_failed_start() {
       tmux kill-session -t "${SESSION}" 2>/dev/null || true

@@ -67,6 +67,9 @@ configs/p8/
 ```
 
 配置加载后输出 resolved config 和全部输入文件 SHA-256。
+`runtime_stack.sha256` 在启动时核对 MID360/Fast-LIO2/DCLP 的已验收脚本、二进制和模型；
+每个 ROS run 的 manifest 还会递归记录先验 PCD 与 relocation DB 的内容 hash，resume
+时若地图发生变化会拒绝把两版地图混入同一 run。
 
 ## 5. CLI
 
