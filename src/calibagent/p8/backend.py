@@ -120,6 +120,22 @@ class FakeBackend:
         self.trace.write(dict(identity, event="fake_trial", **result))
         return result
 
+    def converge_route_start(self, identity, route):
+        # type: (Dict[str, Any], Dict[str, Any]) -> Dict[str, Any]
+        start = route["start_pose"]
+        result = {
+            "position_error_m": 0.0,
+            "yaw_error_deg": 0.0,
+            "reference_age_ms": 0.0,
+            "scan_age_ms": 0.0,
+            "stable_samples": 20,
+            "x": float(start["x"]),
+            "y": float(start["y"]),
+            "yaw": float(start["yaw"]),
+        }
+        self.trace.write(dict(identity, event="fake_route_start_localization", **result))
+        return result
+
     def run_navigation(self, identity, route, model, transform, raw_method, timeout_s):
         # type: (Dict[str, Any], Dict[str, Any], Any, Any, bool, float) -> Dict[str, Any]
         desired_commands = route.get(
@@ -152,6 +168,9 @@ class FakeBackend:
             "status": "SUCCESS",
             "terminal_reason": "reached",
             "success": True,
+            "route_reached": True,
+            "data_quality_valid": True,
+            "data_quality_reason": "",
             "collision": False,
             "duration_s": min(1.0, timeout_s),
             "path_length_m": path,
@@ -159,6 +178,7 @@ class FakeBackend:
             "route_goal_count": len(route.get("waypoints", [])) + 1,
             "waypoints_reached": len(route.get("waypoints", [])),
             "trace_ticks": len(desired_commands),
+            "planned_action_rate_hz": 25.0,
             "max_scan_age_ms": 0.0,
             "max_reference_age_ms": 0.0,
             "max_sent_action_age_ms": 0.0,
@@ -188,7 +208,7 @@ class Go2RosBackend:
     def __init__(self, config, trace, arm=False):  # type: (Dict[str, Any], Any, bool) -> None
         try:
             import rclpy
-            from geometry_msgs.msg import Point, PoseStamped, Twist
+            from geometry_msgs.msg import Point, PoseStamped, PoseWithCovarianceStamped, Twist
             from nav_msgs.msg import Odometry
             from rclpy.node import Node
             from rclpy.qos import HistoryPolicy, QoSProfile, ReliabilityPolicy
@@ -203,6 +223,7 @@ class Go2RosBackend:
         self._rclpy = rclpy
         self._Request = Request
         self._PoseStamped = PoseStamped
+        self._PoseWithCovarianceStamped = PoseWithCovarianceStamped
         self._Point = Point
         self.config = config
         self.trace = trace
@@ -239,6 +260,9 @@ class Go2RosBackend:
                 self.command_pub = self.create_publisher(Request, topics["sport_request"], 10)
                 self.goal_pub = self.create_publisher(PoseStamped, topics["goal"], 10)
                 self.relative_goal_pub = self.create_publisher(Point, topics["relative_goal"], 10)
+                self.initial_pose_pub = self.create_publisher(
+                    PoseWithCovarianceStamped, topics.get("initial_pose", "/initialpose"), 10
+                )
 
             def _reference(self, message):
                 receive = time.time()
@@ -477,6 +501,128 @@ class Go2RosBackend:
         message.pose.orientation.z = math.sin(half)
         message.pose.orientation.w = math.cos(half)
         self.node.goal_pub.publish(message)
+
+    def converge_route_start(self, identity, route):
+        # type: (Dict[str, Any], Dict[str, Any]) -> Dict[str, Any]
+        """Set and verify localization at a route start without commanding locomotion."""
+        if "start_pose" not in route:
+            raise RuntimeError("navigation route has no start_pose")
+        self.wait_inputs(float(self.config.get("input_wait_s", 10.0)), require_planned=False)
+
+        start = route["start_pose"]
+        target_x = float(start["x"])
+        target_y = float(start["y"])
+        target_yaw = float(start["yaw"])
+        frame = str(route.get("frame", "map"))
+        navigation = self.config.get("navigation", {})
+        quality = self.config.get("quality", {})
+        timeout_s = float(navigation.get("start_localization_timeout_s", 20.0))
+        position_tolerance = float(
+            navigation.get("start_position_tolerance_m", 0.10)
+        )
+        yaw_tolerance_deg = float(navigation.get("start_yaw_tolerance_deg", 3.0))
+        stable_samples_required = int(navigation.get("start_stable_samples", 20))
+        max_reference_age_ms = float(quality.get("max_reference_age_ms", 120.0))
+        max_scan_age_ms = float(quality.get("max_scan_age_ms", 120.0))
+
+        message = self._PoseWithCovarianceStamped()
+        message.header.frame_id = frame
+        message.pose.pose.position.x = target_x
+        message.pose.pose.position.y = target_y
+        message.pose.pose.position.z = float(start.get("z", 0.0))
+        message.pose.pose.orientation.z = math.sin(0.5 * target_yaw)
+        message.pose.pose.orientation.w = math.cos(0.5 * target_yaw)
+        message.pose.covariance[0] = 0.04
+        message.pose.covariance[7] = 0.04
+        message.pose.covariance[35] = 0.02
+        for _ in range(5):
+            message.header.stamp = self.node.get_clock().now().to_msg()
+            self.node.initial_pose_pub.publish(message)
+            time.sleep(0.1)
+
+        self.trace.write(
+            dict(
+                identity,
+                event="route_start_localization_requested",
+                target={"x": target_x, "y": target_y, "yaw": target_yaw},
+                position_tolerance_m=position_tolerance,
+                yaw_tolerance_deg=yaw_tolerance_deg,
+                stable_samples_required=stable_samples_required,
+                timestamp=time.time(),
+            )
+        )
+
+        deadline = time.monotonic() + timeout_s
+        last_sequence = -1
+        stable_samples = 0
+        last_observation = None
+        while time.monotonic() < deadline:
+            snapshot = self.snapshot()
+            reference = snapshot["reference"]
+            scan = snapshot["scan"]
+            if not reference or not scan or int(reference["sequence"]) == last_sequence:
+                time.sleep(0.01)
+                continue
+            last_sequence = int(reference["sequence"])
+            now_wall = time.time()
+            reference_age_ms = float(reference["age_ms"]) + max(
+                0.0, (now_wall - float(reference["receive"])) * 1000.0
+            )
+            scan_age_ms = float(scan["age_ms"]) + max(
+                0.0, (now_wall - float(scan["receive"])) * 1000.0
+            )
+            position_error = math.hypot(
+                float(reference["x"]) - target_x,
+                float(reference["y"]) - target_y,
+            )
+            signed_yaw_error_deg = math.atan2(
+                math.sin(float(reference["yaw"]) - target_yaw),
+                math.cos(float(reference["yaw"]) - target_yaw),
+            ) * 180.0 / math.pi
+            yaw_error_deg = abs(signed_yaw_error_deg)
+            last_observation = {
+                "position_error_m": position_error,
+                "yaw_error_deg": yaw_error_deg,
+                "yaw_correction_deg": -signed_yaw_error_deg,
+                "reference_age_ms": reference_age_ms,
+                "scan_age_ms": scan_age_ms,
+                "stable_samples": stable_samples,
+                "x": float(reference["x"]),
+                "y": float(reference["y"]),
+                "yaw": float(reference["yaw"]),
+            }
+            valid = (
+                position_error <= position_tolerance
+                and yaw_error_deg <= yaw_tolerance_deg
+                and reference_age_ms <= max_reference_age_ms
+                and scan_age_ms <= max_scan_age_ms
+            )
+            stable_samples = stable_samples + 1 if valid else 0
+            last_observation["stable_samples"] = stable_samples
+            if stable_samples >= stable_samples_required:
+                self.trace.write(
+                    dict(
+                        identity,
+                        event="route_start_localization_converged",
+                        timestamp=time.time(),
+                        **last_observation,
+                    )
+                )
+                return last_observation
+
+        self.trace.write(
+            dict(
+                identity,
+                event="route_start_localization_failed",
+                timestamp=time.time(),
+                observation=last_observation,
+            )
+        )
+        raise RuntimeError(
+            "route-start localization did not converge within {:.1f}s: {}".format(
+                timeout_s, last_observation
+            )
+        )
 
     def run_navigation(self, identity, route, model, transform, raw_method, timeout_s):
         # type: (Dict[str, Any], Dict[str, Any], Any, Any, bool, float) -> Dict[str, Any]

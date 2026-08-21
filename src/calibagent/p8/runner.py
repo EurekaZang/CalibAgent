@@ -106,14 +106,26 @@ class P8Runtime:
         self.run_dir = output_root / run_id
         self.code_commit = git_commit(Path(__file__).resolve().parents[3])
         self.code_migration = None
+        self.config_migration = None
         if self.run_dir.exists() and not resume:
             raise FileExistsError(f"run directory exists; use --resume: {self.run_dir}")
         self.previous_manifest = {}
         manifest_path = self.run_dir / "manifest.json"
         if manifest_path.is_file():
             self.previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            if self.previous_manifest.get("config_hash") != self.config.config_hash:
-                raise RuntimeError("resume config hash differs from run manifest")
+            previous_config_hash = self.previous_manifest.get("config_hash")
+            if previous_config_hash != self.config.config_hash:
+                if _run_has_completed_units(self.run_dir):
+                    raise RuntimeError(
+                        "resume config hash differs after completed experimental units; use the "
+                        "original configuration"
+                    )
+                self.config_migration = {
+                    "from_hash": previous_config_hash,
+                    "to_hash": self.config.config_hash,
+                    "reason": "technical fix before the first valid experimental unit",
+                    "timestamp": _utc(),
+                }
             previous_commit = self.previous_manifest.get("git_commit")
             if previous_commit and previous_commit != self.code_commit:
                 if _run_has_completed_units(self.run_dir):
@@ -191,6 +203,9 @@ class P8Runtime:
         code_history = list(previous.get("code_history", []))
         if self.code_migration is not None:
             code_history.append(self.code_migration)
+        config_history = list(previous.get("config_history", []))
+        if self.config_migration is not None:
+            config_history.append(self.config_migration)
         manifest = dict(previous)
         manifest.update(
             {
@@ -201,6 +216,7 @@ class P8Runtime:
                 "last_opened_at": _utc(),
                 "git_commit": self.code_commit,
                 "code_history": code_history,
+                "config_history": config_history,
                 "config_hash": self.config.config_hash,
                 "input_hashes": self.config.hashes,
                 "backend": self.backend_name,
@@ -536,10 +552,23 @@ class P8Runtime:
                     planned_unit_id = f"{base_id}_NAV_{map_id}"
                     if self._completed_episode_row(planned_unit_id, routes[map_id]) is not None:
                         continue
-                    self._pause(f"Place the robot at the marked start for {block_id}/{map_id}.")
                     attempt_id = self.recorder.attempt_id(planned_unit_id, "episode")
                     identity = dict(
                         base, planned_unit_id=planned_unit_id, attempt_id=attempt_id, map_id=map_id
+                    )
+                    self._pause(
+                        f"Place the robot at the marked start for {block_id}/{map_id}. "
+                        "First confirmation triggers localization only."
+                    )
+                    start_localization = self.backend.converge_route_start(
+                        identity, routes[map_id]
+                    )
+                    self._pause(
+                        "Route-start localization converged: position error "
+                        "{:.3f} m, yaw error {:.2f} deg. Second confirmation starts DCLP.".format(
+                            float(start_localization["position_error_m"]),
+                            float(start_localization["yaw_error_deg"]),
+                        )
                     )
                     summary = self.backend.run_navigation(
                         identity,
@@ -555,6 +584,11 @@ class P8Runtime:
                         posterior_path=str(final_posterior),
                         bag_path=bag.path,
                         created_at=_utc(),
+                        start_pose_error_m=start_localization["position_error_m"],
+                        start_yaw_error_deg=start_localization["yaw_error_deg"],
+                        start_reference_age_ms=start_localization["reference_age_ms"],
+                        start_scan_age_ms=start_localization["scan_age_ms"],
+                        start_stable_samples=start_localization["stable_samples"],
                         **summary,
                     )
                     self.recorder.episodes.append(row)
