@@ -182,11 +182,16 @@ shift 参数在正式数据前由配置文件固定。每个 sequence 只施加�
 | recovery | 12 | `passive/full` 更新，`frozen` 不更新 |
 | interleaved validation | 12 | 否 |
 
-一个 sequence 有 45 个进入主分析的 motion trials。每个 shift 执行 20 个完整 paired
-blocks，每个 block 包含三个 method，因此总计：
+一个 sequence 有 45 个进入主分析的 motion trials。每个 shift 执行 3 个完整 paired
+blocks，每个 block 包含三个 method；三个 block 轮换 method 的执行位置，因此总计：
 
-- 4 shifts × 20 blocks × 3 methods = 240 sequences；
-- 240 × 45 = 10,800 motion trials。
+- 4 shifts × 3 blocks × 3 methods = 36 sequences；
+- 36 × 45 = 1,620 motion trials；
+- 36 × 2 = 72 个 context restore checks（不进入主 endpoint）。
+
+这里的 block 是实机重复单位，主要分析保留 paired block 原始值和效应量。`n=3` 只支持
+实机可行性和大效应比较，不把 sequence 内的 trial 伪装成独立重复。若后续需要对小效应
+给出高精度置信区间，应另立扩展计划，不能在看到当前结果后选择性增加某个 method 的 block。
 
 12 个 recovery step 全部执行。每个 recovery step 后立即执行对应 held-out validation，
 用于得到随 recovery step 变化的 RMSE 曲线。
@@ -207,7 +212,8 @@ context，不能把受 shift 影响的状态带入下一个 method。
 - 有效 observation 比例。
 
 主要比较是 `full` 相对 `passive` 的 paired early/terminal RMSE，以及 `full` 的
-detection/recovery 结果。每个 shift 的 `n=20`，不能把四个 shift 合并成 `n=80`。
+detection/recovery 结果。每个 shift 的 `n=3`，不能把四个 shift 合并成 `n=12`，也不能
+把同一 sequence 内的 trial 当作独立重复。
 
 ## 5. 数据记录与目录
 

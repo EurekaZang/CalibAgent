@@ -142,7 +142,7 @@ def write_schedules():
         )
         writer.writeheader()
         for shift_id in shift_ids:
-            for block in range(20):
+            for block in range(3):
                 order = shift_methods[block % 3 :] + shift_methods[: block % 3]
                 block_id = f"SHIFT_BLOCK_{block + 1:02d}"
                 for position, method in enumerate(order, start=1):

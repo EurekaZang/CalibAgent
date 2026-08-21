@@ -17,7 +17,7 @@ files:
   shift_schedule: schedules/shift_blocks.csv
   shift_definitions: shift_definitions.yaml
 design:
-  blocks_per_shift: 20
+  blocks_per_shift: 3
   methods: [frozen, passive, full]
   shifts: [R1_command_gain_coupling, R2_payload_com, R3_surface_friction, R4_mixed_context]
 trial_profile:

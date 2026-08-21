@@ -37,10 +37,10 @@ def test_p8_frozen_protocol_counts_and_balancing() -> None:
     }
     shift = validate_config(load_config(ROOT / "configs/p8/shift.yaml"))
     assert shift["expected"] == {
-        "schedule_rows": 240,
-        "sequences": 240,
-        "motion_trials": 10800,
-        "restore_checks": 480,
+        "schedule_rows": 36,
+        "sequences": 36,
+        "motion_trials": 1620,
+        "restore_checks": 72,
     }
 
 
