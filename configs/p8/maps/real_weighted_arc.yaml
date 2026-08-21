@@ -4,11 +4,11 @@ frame: map
 prior_map: /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
 timeout_s: 60.0
 goal_radius_m: 0.25
-start_pose: {x: 0.525053, y: -1.878999, yaw: -1.316557}
+start_pose: {x: 3.471463, y: 0.122054, yaw: 0.217153}
 waypoints:
-  - {x: 0.676626, y: -3.247516, yaw: -1.536119}
-  - {x: 1.185200, y: -4.828643, yaw: -1.113008}
-  - {x: 2.507954, y: -6.498310, yaw: -0.744222}
-goal_pose: {x: 4.283933, y: -8.122968, yaw: -0.622023}
+  - {x: 4.844659, y: 0.222781, yaw: -0.002409}
+  - {x: 6.443556, y: 0.672381, yaw: 0.420702}
+  - {x: 8.161119, y: 1.932318, yaw: 0.789488}
+goal_pose: {x: 9.850510, y: 3.646837, yaw: 0.911687}
 obstacle_geometry_source: frozen_prior_map_and_physical_floor_marks
 fake_desired_commands: [[0.22, 0.0, -0.15], [0.26, 0.0, -0.10], [0.20, 0.0, 0.0]]
