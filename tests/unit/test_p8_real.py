@@ -59,6 +59,31 @@ def test_p8_nav_fake_end_to_end(tmp_path: Path) -> None:
     assert analyze(run_dir)["protocol"] == "nav"
 
 
+def test_p8_nav_max_units_stops_between_formal_routes(tmp_path: Path) -> None:
+    runtime = P8Runtime(
+        load_config(ROOT / "configs/p8/nav.yaml"),
+        "nav_route_a_only",
+        tmp_path,
+        backend_name="fake",
+        auto_continue=True,
+        max_units=9,
+    )
+    try:
+        result = runtime.run_nav(blocks=["NAV_BLOCK_01"], methods=["B0_raw"])
+    finally:
+        runtime.close()
+    assert result["completed_trials"] == 8
+    assert result["completed_episodes"] == 1
+    episodes = list(
+        csv.DictReader(
+            (tmp_path / "nav_route_a_only" / "navigation_episodes.csv").open(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert [row["map_id"] for row in episodes] == ["real_offset_slalom"]
+
+
 def test_p8_shift_fake_complete_sequence_and_method_isolation(tmp_path: Path) -> None:
     runtime = P8Runtime(
         load_config(ROOT / "configs/p8/shift.yaml"),

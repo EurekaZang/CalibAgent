@@ -494,6 +494,8 @@ class P8Runtime:
                 if self._limit_reached():
                     continue
                 for letter in schedule_row["route_order"]:
+                    if self._limit_reached():
+                        break
                     map_id = map_by_letter[letter]
                     planned_unit_id = f"{base_id}_NAV_{map_id}"
                     if planned_unit_id in self.recorder.completed("episode"):
