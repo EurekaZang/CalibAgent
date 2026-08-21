@@ -144,9 +144,13 @@
       ]
     }
   },
+  "postprocessing": {
+    "operation": "Yellow collision callout added to the direct-command panel",
+    "scope": "Annotation only; composited robot poses and the GAUGE panel are unchanged"
+  },
   "output": {
     "path": "paper/figures/real_dclp_long_exposure.png",
-    "sha256": "f01365d85d7f8098483b4acc3f53f6af9f37527ca8101f7c444df57a0ff52bbb",
+    "sha256": "d133ee813175285de4f372c407a92f4ed54acdb5fbb1dcb97a31871c21955ed6",
     "width": 3132,
     "height": 506
   }
