@@ -10,9 +10,14 @@ RAW_PDF := $(BUILD_DIR)/main.pdf
 PAPER_INPUTS := main.tex references.bib ieeeconf.cls \
 	figures/GAUGE.drawo.png \
 	figures/calibration_evidence.pdf \
-	figures/closed_loop_response.pdf \
 	figures/shift_recovery_results.pdf \
 	figures/navigation_results.pdf \
+	figures/map_s_bend.png \
+	figures/map_offset_slalom.png \
+	figures/map_narrow_lane.png \
+	figures/map_double_chicane.png \
+	figures/map_weighted_arc.png \
+	figures/map_extended_lane.png \
 	figures/real_dclp_long_exposure.png
 
 .PHONY: all clean figures simulation-audit compliance-audit
@@ -23,7 +28,6 @@ figures:
 	$(PYTHON) scripts/build_review_analyses.py
 	$(PYTHON) scripts/build_paper_figures.py
 	$(PYTHON) scripts/build_simulation_scientific_figures.py
-	$(PYTHON) scripts/build_real_dclp_long_exposure.py
 
 simulation-audit: figures
 	$(PYTHON) scripts/validate_simulation_figures.py

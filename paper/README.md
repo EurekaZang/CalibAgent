@@ -19,6 +19,12 @@ submission artifact at `main.pdf`, embeds all fonts, downsamples raster images
 to the PaperPlaza resolutions, linearizes the PDF, and runs the compliance
 audit.
 
+The checked-in `real_dclp_long_exposure.png` is the final, provenance-locked
+physical comparison used in Fig. 1 and is intentionally not overwritten by
+`make`. The companion `build_real_dclp_long_exposure.py` script emits an
+unannotated `_base.png`; the final yellow collision callout and its output hash
+are recorded in `evidence/paper_figure_provenance/real_dclp_long_exposure.json`.
+
 To rebuild only the manuscript and its submission PDF:
 
 ```bash

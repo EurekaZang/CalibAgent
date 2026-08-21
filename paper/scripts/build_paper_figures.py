@@ -38,6 +38,7 @@ P1_NESTED_FOLDS = (
 )
 REVIEW_ANALYSIS = ROOT / "paper/process/phase4_artifacts/reviewer_analysis/reviewer_analysis.json"
 P7 = ROOT / "evidence/p7_strong_confirmatory_v2/summary.json"
+P5 = ROOT / "evidence/p5_main/summary.json"
 MISMATCH_COMPARISONS = ROOT / "evidence/task_distribution_mismatch/comparisons.csv"
 MISMATCH_RATIOS = ROOT / "evidence/task_distribution_mismatch/task_ivr_mismatch_ratios.csv"
 INPUTS = [
@@ -46,6 +47,7 @@ INPUTS = [
     P1_NESTED,
     P1_NESTED_FOLDS,
     P3,
+    P5,
     REVIEW_ANALYSIS,
     P7,
     MISMATCH_COMPARISONS,
@@ -444,6 +446,256 @@ def build_calibration_figure() -> list[Path]:
     return finish(fig, "calibration_evidence")
 
 
+def build_calibration_story_figure() -> list[Path]:
+    """Build the five-panel claim figure used by the ICRA narrative."""
+    p3 = load_json(P3)
+    p5 = load_json(P5)
+    review = load_json(REVIEW_ANALYSIS)
+    fig = plt.figure(figsize=(7.05, 4.05))
+    grid = fig.add_gridspec(
+        2,
+        6,
+        height_ratios=[0.96, 1.04],
+        left=0.075,
+        right=0.99,
+        bottom=0.10,
+        top=0.94,
+        hspace=0.70,
+        wspace=1.05,
+    )
+    axes = [
+        fig.add_subplot(grid[0, 0:3]),
+        fig.add_subplot(grid[0, 3:6]),
+        fig.add_subplot(grid[1, 0:2]),
+        fig.add_subplot(grid[1, 2:4]),
+        fig.add_subplot(grid[1, 4:6]),
+    ]
+
+    # (a) Nested passive-hardware models separate intercept and coupling.
+    with P1_NESTED.open(encoding="utf-8") as handle:
+        nested = {row["model"]: float(row["pooled_rmse"]) for row in csv.DictReader(handle)}
+    with P1_NESTED_FOLDS.open(encoding="utf-8") as handle:
+        fold_rows = list(csv.DictReader(handle))
+    model_order = [
+        "raw",
+        "diagonal_linear",
+        "diagonal_affine",
+        "coupled_linear",
+        "coupled_affine",
+    ]
+    model_labels = ["Raw", "Diag.\nlinear", "Diag.\naffine", "Coupled\nlinear", "Coupled\naffine"]
+    model_colors = [GREY, "#B8CDD9", CYAN, "#4D8FC2", BLUE]
+    x = np.arange(len(model_order))
+    axes[0].bar(
+        x,
+        [nested[model] for model in model_order],
+        0.68,
+        color=model_colors,
+        edgecolor=BLACK,
+        linewidth=0.55,
+        zorder=2,
+    )
+    for session_index, session in enumerate(["go2-session-01", "go2-session-02", "go2-session-03"]):
+        indexed = {
+            row["model"]: float(row["rmse"])
+            for row in fold_rows
+            if row["held_out_session"] == session
+        }
+        axes[0].scatter(
+            x + (session_index - 1) * 0.08,
+            [indexed[model] for model in model_order],
+            s=12,
+            facecolors="white",
+            edgecolors=BLACK,
+            linewidths=0.5,
+            zorder=3,
+        )
+    axes[0].set_xticks(x, model_labels)
+    axes[0].set_ylabel("Held-out velocity RMSE")
+    axes[0].set_ylim(0, 0.075)
+    axes[0].grid(axis="y", color=LIGHT_GREY, linewidth=0.55, zorder=0)
+    axes[0].set_title("Passive Go2 model need")
+    axes[0].text(
+        4,
+        nested["coupled_affine"] + 0.003,
+        "-54.5% vs raw",
+        ha="center",
+        va="bottom",
+        fontsize=6.6,
+        color=BLUE,
+        fontweight="bold",
+    )
+    panel_label(axes[0], "a")
+
+    # (b) Closed-loop Isaac effects use paired multi-seed summaries.
+    p5_order = [
+        "tier_a_affine",
+        "tier_a_deadzone",
+        "tier_b_friction_payload",
+        "tier_b_rough",
+    ]
+    p5_labels = ["Affine", "Dead zone", "Friction + load + COM", "Rough + load + COM"]
+    p5_rows = {row["scenario"]: row for row in p5["scenarios"]}
+    p5_means = np.asarray([p5_rows[name]["paired_absolute_improvement_mean"] for name in p5_order])
+    p5_cis = np.asarray([p5_rows[name]["paired_absolute_improvement_ci95"] for name in p5_order])
+    p5_y = np.arange(len(p5_order))
+    axes[1].errorbar(
+        p5_means,
+        p5_y,
+        xerr=np.vstack([p5_means - p5_cis[:, 0], p5_cis[:, 1] - p5_means]),
+        fmt="o",
+        color=GREEN,
+        ecolor=GREEN,
+        capsize=2.4,
+        markersize=4.2,
+        linewidth=1.05,
+    )
+    axes[1].axvline(0, color=BLACK, linewidth=0.7)
+    axes[1].set_yticks(p5_y, p5_labels)
+    axes[1].tick_params(axis="y", labelsize=6.3)
+    axes[1].invert_yaxis()
+    axes[1].set_xlim(0, 0.052)
+    axes[1].set_xlabel("Raw $-$ calibrated RMSE")
+    axes[1].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
+    axes[1].set_title("Isaac paired calibration effect")
+    panel_label(axes[1], "b", x=-0.16)
+
+    # (c) Paired trial savings directly compare acquisition rules.
+    comparisons = [
+        ("LHS", "active_vs_lhs"),
+        ("Random", "active_vs_random"),
+        ("Sobol", "active_vs_sobol"),
+        ("D-opt", "active_vs_d_opt"),
+        ("No task", "active_vs_active_no_task"),
+    ]
+    saved = np.asarray([p3[key]["mean_paired_trials_saved"] for _, key in comparisons])
+    saved_ci = np.asarray([p3[key]["paired_trials_saved_ci95"] for _, key in comparisons])
+    saved_y = np.arange(len(comparisons))
+    axes[2].errorbar(
+        saved,
+        saved_y,
+        xerr=np.vstack([saved - saved_ci[:, 0], saved_ci[:, 1] - saved]),
+        fmt="o",
+        color=BLUE,
+        ecolor=BLUE,
+        capsize=2.2,
+        markersize=4.0,
+        linewidth=1.0,
+    )
+    axes[2].axvline(0, color=BLACK, linewidth=0.7)
+    axes[2].set_yticks(saved_y, [name for name, _ in comparisons])
+    axes[2].tick_params(axis="y", labelsize=6.2)
+    axes[2].invert_yaxis()
+    axes[2].set_xlim(-0.5, 15.0)
+    axes[2].set_xlabel("Trials saved by task IVR")
+    axes[2].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
+    axes[2].set_title("Task-weighted efficiency")
+    axes[2].text(
+        0.98,
+        0.03,
+        "Mean crossing: 18.67",
+        transform=axes[2].transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=6.1,
+    )
+    panel_label(axes[2], "c", x=-0.20)
+
+    # (d) Realized task error prevents the uncertainty objective from grading itself.
+    fixed_rows = review["p3"]["fixed_budget_rmse"]
+    fixed_index = {(int(row["budget"]), row["method"]): row for row in fixed_rows}
+    budgets = np.asarray([12, 18, 24, 30])
+    for method, label, color, marker in zip(
+        ["lhs", "d_opt", "active_no_task", "active"],
+        ["LHS", "D-opt", "No task", "Task IVR"],
+        [GREY, "#6F8FAF", CYAN, VERMILLION],
+        ["s", "^", "D", "o"],
+        strict=True,
+    ):
+        means = np.asarray([fixed_index[(int(b), method)]["mean_heldout_rmse"] for b in budgets])
+        lower = np.asarray(
+            [fixed_index[(int(b), method)]["mean_heldout_rmse_ci95_lower"] for b in budgets]
+        )
+        upper = np.asarray(
+            [fixed_index[(int(b), method)]["mean_heldout_rmse_ci95_upper"] for b in budgets]
+        )
+        axes[3].plot(
+            budgets,
+            means,
+            marker=marker,
+            markersize=3.4,
+            linewidth=1.0,
+            color=color,
+            label=label,
+        )
+        axes[3].fill_between(budgets, lower, upper, color=color, alpha=0.10, linewidth=0)
+    axes[3].set_xticks(budgets)
+    axes[3].set_xlabel("Calibration budget (trials)")
+    axes[3].set_ylabel("Held-out task RMSE")
+    axes[3].tick_params(axis="both", labelsize=6.1)
+    axes[3].set_ylim(0.010, 0.068)
+    axes[3].grid(color=LIGHT_GREY, linewidth=0.55)
+    axes[3].legend(frameon=False, ncol=2, loc="upper right", columnspacing=0.5)
+    axes[3].set_title("Fixed-budget realized error")
+    panel_label(axes[3], "d", x=-0.20)
+
+    # (e) Frozen acquisitions expose both transfer and the broad-support boundary.
+    with MISMATCH_COMPARISONS.open(encoding="utf-8") as handle:
+        mismatch_rows = list(csv.DictReader(handle))
+    distributions = ["declared", "forward_heavy", "left_heavy", "right_heavy", "broad_uniform"]
+    distribution_labels = ["Declared", "Forward", "Left", "Right", "Broad uniform"]
+    mismatch_y = np.arange(len(distributions))
+    for baseline, label, color, marker, offset in zip(
+        ["active_no_task", "d_opt", "lhs"],
+        ["No task", "D-opt", "LHS"],
+        [CYAN, BLUE, GREY],
+        ["D", "o", "s"],
+        [-0.16, 0.0, 0.16],
+        strict=True,
+    ):
+        indexed = {
+            row["distribution"]: row
+            for row in mismatch_rows
+            if int(row["budget"]) == 24 and row["baseline"] == baseline
+        }
+        means = np.asarray(
+            [float(indexed[item]["mean_baseline_minus_task_ivr_rmse"]) for item in distributions]
+        )
+        lower = np.asarray([float(indexed[item]["ci95_lower"]) for item in distributions])
+        upper = np.asarray([float(indexed[item]["ci95_upper"]) for item in distributions])
+        axes[4].errorbar(
+            means,
+            mismatch_y + offset,
+            xerr=np.vstack([means - lower, upper - means]),
+            fmt=marker,
+            color=color,
+            ecolor=color,
+            capsize=1.8,
+            markersize=3.3,
+            linewidth=0.95,
+            label=label,
+        )
+    axes[4].axvline(0, color=BLACK, linewidth=0.7)
+    axes[4].set_yticks(mismatch_y, distribution_labels)
+    axes[4].tick_params(axis="y", labelsize=6.0)
+    axes[4].invert_yaxis()
+    axes[4].set_xlim(-0.038, 0.018)
+    axes[4].set_xlabel("Control $-$ task IVR RMSE")
+    axes[4].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
+    axes[4].legend(
+        frameon=False,
+        ncol=1,
+        loc="upper left",
+        bbox_to_anchor=(0.01, 0.90),
+        fontsize=5.6,
+        handletextpad=0.3,
+    )
+    axes[4].set_title("Task-distribution mismatch")
+    panel_label(axes[4], "e", x=-0.23)
+
+    return finish(fig, "calibration_evidence")
+
+
 def build_navigation_figure() -> list[Path]:
     p7 = load_json(P7)
     map_order = [
@@ -483,7 +735,7 @@ def build_navigation_figure() -> list[Path]:
         for j in range(success.shape[1]):
             value = success[i, j]
             color = "white" if value < 0.55 else "black"
-            axes[0].text(j, i, f"{value:.2f}", ha="center", va="center", fontsize=5.7, color=color)
+            axes[0].text(j, i, f"{value:.2f}", ha="center", va="center", fontsize=6.1, color=color)
     cbar = fig.colorbar(image, ax=axes[0], fraction=0.046, pad=0.03)
     cbar.set_label("Success rate", fontsize=7)
     cbar.ax.tick_params(labelsize=6)
@@ -570,7 +822,7 @@ def build_navigation_figure() -> list[Path]:
     axes[2].set_xlim(-0.02, 0.18)
     axes[2].set_xlabel("GAUGE task-RMSE reduction vs control")
     axes[2].grid(axis="x", color=LIGHT_GREY, linewidth=0.55)
-    axes[2].legend(frameon=False, loc="lower right")
+    axes[2].legend(frameon=False, loc="lower left")
     axes[2].set_title("Matched-budget task validation")
     panel_label(axes[2], "c")
 
@@ -617,7 +869,7 @@ def main() -> None:
             ROOT / "docs" / "assets" / "readme" / "isaac_sim" / source_name,
             OUT / target_name,
         )
-    outputs = build_calibration_figure() + build_navigation_figure()
+    outputs = build_calibration_story_figure() + build_navigation_figure()
     script_path = Path(__file__).resolve()
     manifest = {
         "schema_version": "1.0",

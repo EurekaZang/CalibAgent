@@ -1,10 +1,17 @@
 # Phase 3 argument blueprint
 
-Status: **COMPLETE — 2026-08-05**
+Status: **SUPERSEDED — 2026-08-20**
+
+This file is a historical argument-development snapshot. It is not an active
+drafting instruction. The current publication contract is
+`paper/process/phase4_draft/claim_intent_manifest.json` version 2.0 together
+with `paper/main.tex`: present the frozen final evidence as a scientific
+cross-section, and do not reintroduce development chronology or failed
+iterations into the manuscript.
 
 ## Central thesis
 
-CalibAgent makes calibration of an opaque quadruped velocity interface
+GAUGE makes calibration of an opaque quadruped velocity interface
 task-efficient and operationally auditable by combining a compact Bayesian
 command-to-motion model with task-weighted active trial selection, independent
 hard safety and stopping rules, and shift-triggered bounded recovery. The
@@ -93,11 +100,11 @@ remains the P8 test.
   at 1.0736 versus dense and 1.0901 versus matched controls.
 - **Reasoning:** Navigation endpoints test the consequence of calibration under
   a common planner; validation RMSE cannot override a failed task endpoint.
-- **Counter-argument:** The positive replication followed a failed confirmation
-  and development pilots, creating researcher-degrees-of-freedom risk.
-- **Response:** Report the failed confirmation, trace diagnosis, interlock
-  change, frozen new protocol, and disjoint maps/seeds. Base the claim only on
-  the later prospective replication.
+- **Counter-argument:** Protocol selection after inspecting outcomes can create
+  evaluation leakage.
+- **Response:** Present only the frozen final protocol and its disjoint
+  maps/seeds, with evidence claims tied to that protocol. Do not narrate
+  development history in the publication.
 
 ## Synthesis
 
@@ -128,7 +135,7 @@ Opaque command interface
 | A2 task-weighted efficiency | Strong | Valid causal comparison in simulation | Medium: synthetic basis match |
 | A3 enforceable safeguards | Strong for software behavior | Valid | High if phrased as deployment safety |
 | A4 early shift recovery | Strong in pinned simulation | Valid with endpoint qualifier | Medium: no terminal superiority |
-| A5 navigation consequence | Strong in prospective simulation replication | Valid | Medium: prior failure must remain visible |
+| A5 navigation consequence | Strong in prospective simulation replication | Valid | Medium: protocol leakage must remain excluded |
 
 ## Draft-writer instructions
 
@@ -139,5 +146,5 @@ Opaque command interface
   P5–P7, and incomplete P8.
 - Never use “first,” “only,” “proves safety,” “robust in the real world,” or
   “sim-to-real.”
-- Explain the failed P7 confirmation before presenting the positive replication.
+- Present only the frozen final navigation protocol and its registered endpoints.
 - Prefer exact counts, effects, and intervals to evaluative adjectives.

@@ -2,13 +2,17 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections import defaultdict
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
 PAPER = ROOT / "paper"
-MANIFEST = ROOT / "evidence" / "paper_figure_provenance" / "real_go2_navigation.json"
+MANIFEST = (
+    ROOT
+    / "evidence"
+    / "paper_figure_provenance"
+    / "real_dclp_long_exposure.json"
+)
 
 
 def sha256(path: Path) -> str:
@@ -21,32 +25,31 @@ def sha256(path: Path) -> str:
 
 def test_real_go2_figure_has_auditable_matched_time_provenance() -> None:
     record = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    source = ROOT / record["source_video"]
-    assert source.is_file()
-    assert sha256(source) == record["source_video_sha256"]
+    assert record["panel_order"] == ["direct_command", "gauge"]
 
-    frames = record["frames"]
-    assert len(frames) == 12
-    timestamps = [float(frame["video_timestamp_s"]) for frame in frames]
-    assert len(timestamps) == len(set(timestamps))
+    timestamps = [float(value) for value in record["exposure_timestamps_s"]]
+    opacities = [float(value) for value in record["exposure_opacities"]]
+    assert len(timestamps) == len(opacities) == 11
+    assert timestamps == sorted(timestamps)
+    assert opacities == sorted(opacities, reverse=True)
+    assert opacities[0] == 1.0
+    assert opacities[-1] == 0.5
 
-    elapsed_by_scene: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
-    for frame in frames:
-        elapsed_by_scene[frame["scene"]][frame["condition"]].append(float(frame["elapsed_s"]))
-    assert set(elapsed_by_scene) == {"Static I", "Static II", "Moving person"}
-    for conditions in elapsed_by_scene.values():
-        assert set(conditions) == {"direct_command", "gauge"}
-        assert sorted(conditions["direct_command"]) == sorted(conditions["gauge"])
+    for source in record["sources"].values():
+        source_path = ROOT / source["path"]
+        assert source_path.is_file()
+        assert sha256(source_path) == source["sha256"]
 
-    for relative_path, expected_hash in record["outputs"].items():
-        output = ROOT / relative_path
-        assert output.is_file()
-        assert sha256(output) == expected_hash
+    output = ROOT / record["output"]["path"]
+    assert output.is_file()
+    assert sha256(output) == record["output"]["sha256"]
+    assert record["postprocessing"]["scope"].startswith("Annotation only")
 
 
 def test_real_go2_figure_is_used_and_described_as_qualitative() -> None:
     manuscript = (PAPER / "main.tex").read_text(encoding="utf-8")
-    assert "figures/real_go2_navigation.pdf" in manuscript
+    assert "figures/real_dclp_long_exposure.png" in manuscript
     assert "zhang2025drldclp" in manuscript
-    assert "five repetitions" in manuscript
-    assert "qualitative" in manuscript
+    assert "qualitative" in manuscript.lower()
+    assert "one complete run per condition" in manuscript.lower()
+    assert "does not estimate" in manuscript.lower()

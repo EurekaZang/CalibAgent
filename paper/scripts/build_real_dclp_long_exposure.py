@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build an auditable long-exposure comparison from two real-Go2 videos.
+"""Build the auditable, unannotated base for the real-Go2 comparison.
 
 The output contains no drawn trajectory, recoloring, or geometric annotation.
 For each run, a temporal-median background is estimated from uniformly sampled
@@ -27,8 +27,8 @@ ROOT = Path(__file__).resolve().parents[2]
 PAPER = ROOT / "paper"
 DIRECT_VIDEO = PAPER / "figures" / "uncalib.mp4"
 GAUGE_VIDEO = PAPER / "figures" / "calib.mp4"
-OUTPUT = PAPER / "figures" / "real_dclp_long_exposure.png"
-MANIFEST = ROOT / "evidence" / "paper_figure_provenance" / "real_dclp_long_exposure.json"
+OUTPUT = PAPER / "figures" / "real_dclp_long_exposure_base.png"
+MANIFEST = ROOT / "evidence" / "paper_figure_provenance" / "real_dclp_long_exposure_base.json"
 
 BACKGROUND_FRAME_COUNT = 31
 EXPOSURE_TIMESTAMPS_S = tuple(np.linspace(0.8, 9.2, 11).round(3))
