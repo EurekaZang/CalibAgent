@@ -644,20 +644,54 @@ class Go2RosBackend:
             final_distance = math.hypot(
                 float(goal["x"]) - float(final_ref["x"]), float(goal["y"]) - float(final_ref["y"])
             )
+        duration_s = time.monotonic() - start
+        max_scan_age = max(scan_ages) if scan_ages else float("inf")
+        max_reference_age = max(reference_ages) if reference_ages else float("inf")
+        max_action_age = max(action_ages) if action_ages else float("inf")
+        planned_action_rate = ticks / max(duration_s, 1e-9)
+        quality = self.config.get("quality", {})
+        quality_reasons = []
+        if max_scan_age > float(quality.get("max_scan_age_ms", 80.0)):
+            quality_reasons.append("scan age exceeded data-quality threshold")
+        if max_reference_age > float(quality.get("max_reference_age_ms", 80.0)):
+            quality_reasons.append("reference age exceeded data-quality threshold")
+        if max_action_age > float(
+            quality.get("max_planned_action_receive_age_ms", 80.0)
+        ):
+            quality_reasons.append("planned-action age exceeded data-quality threshold")
+        if planned_action_rate < float(
+            quality.get("min_planned_action_rate_hz", 20.0)
+        ):
+            quality_reasons.append("planned-action rate below data-quality threshold")
+        data_quality_valid = not quality_reasons
+        route_reached = success and not collision
+        overall_success = route_reached and data_quality_valid
         return {
-            "status": "SUCCESS" if success else "RESULT",
-            "terminal_reason": terminal,
-            "success": success and not collision,
+            "status": (
+                "SUCCESS"
+                if overall_success
+                else "INVALID"
+                if route_reached
+                else "RESULT"
+            ),
+            "terminal_reason": (
+                terminal if data_quality_valid else "data_quality_invalid"
+            ),
+            "success": overall_success,
+            "route_reached": route_reached,
+            "data_quality_valid": data_quality_valid,
+            "data_quality_reason": "; ".join(quality_reasons),
             "collision": collision,
-            "duration_s": time.monotonic() - start,
+            "duration_s": duration_s,
             "path_length_m": path_length,
             "final_goal_distance_m": final_distance,
             "route_goal_count": len(route_goals),
             "waypoints_reached": goal_index if success else min(goal_index, len(route_goals) - 1),
             "trace_ticks": ticks,
-            "max_scan_age_ms": max(scan_ages) if scan_ages else float("nan"),
-            "max_reference_age_ms": max(reference_ages) if reference_ages else float("nan"),
-            "max_sent_action_age_ms": max(action_ages) if action_ages else float("nan"),
+            "planned_action_rate_hz": planned_action_rate,
+            "max_scan_age_ms": max_scan_age,
+            "max_reference_age_ms": max_reference_age,
+            "max_sent_action_age_ms": max_action_age,
         }
 
     def io_check(self, duration_s):  # type: (float) -> Dict[str, Any]

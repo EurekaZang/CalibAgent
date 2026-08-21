@@ -267,6 +267,7 @@ class P8Runtime:
             try:
                 consistent = bool(
                     row.get("success", "").lower() in ("1", "true")
+                    and row.get("data_quality_valid", "").lower() in ("1", "true")
                     and row.get("collision", "").lower() not in ("1", "true")
                     and row.get("terminal_reason") == "reached"
                     and int(row.get("route_goal_count", "")) == expected_goal_count
@@ -558,6 +559,14 @@ class P8Runtime:
                     )
                     self.recorder.episodes.append(row)
                     self.units += 1
+                    if not summary.get("data_quality_valid", False):
+                        raise RuntimeError(
+                            "episode {} failed data quality ({}); "
+                            "fix the data chain and resume the same run-id".format(
+                                planned_unit_id,
+                                summary.get("data_quality_reason", "unknown reason"),
+                            )
+                        )
         return {
             "run_id": self.run_id,
             "run_dir": str(self.run_dir),
