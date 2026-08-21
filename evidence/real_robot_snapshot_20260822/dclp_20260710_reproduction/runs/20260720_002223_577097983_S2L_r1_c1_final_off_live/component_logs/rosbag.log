@@ -1,0 +1,10 @@
+[INFO] [1784478174.481111504] [rosbag2_storage]: Opened database '/home/unitree/qyw/dclp_20260710_reproduction/runs/20260720_002223_577097983_S2L_r1_c1_final_off_live/rosbag/rosbag_0.db3' for READ_WRITE.
+[INFO] [1784478174.530930529] [rosbag2_transport]: Listening for topics...
+[INFO] [1784478174.535108408] [rosbag2_transport]: Subscribed to topic '/scan'
+[INFO] [1784478174.537400115] [rosbag2_transport]: Subscribed to topic '/nav_status'
+[INFO] [1784478174.540245693] [rosbag2_transport]: Subscribed to topic '/sportmodestate'
+[INFO] [1784478174.542674947] [rosbag2_transport]: Subscribed to topic '/go2_policy/cmd_vel'
+[INFO] [1784478174.545747871] [rosbag2_transport]: Subscribed to topic '/odom'
+[INFO] [1784478174.547533233] [rosbag2_transport]: Subscribed to topic '/dclp_relative_goal'
+[INFO] [1784478174.548681968] [rosbag2_transport]: All requested topics are subscribed. Stopping discovery...
+[INFO] [1784478219.418108241] [rclcpp]: signal_handler(signal_value=2)

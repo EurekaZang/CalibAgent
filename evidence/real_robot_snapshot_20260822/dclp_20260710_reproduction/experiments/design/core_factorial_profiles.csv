@@ -1,0 +1,13 @@
+compensation,guard,speed,geometry,profile
+off,na,final,final,c1_final_off
+off,na,final,old,c7_final_off_old_geometry
+off,na,pre_reduction,final,c8_final_off_pre_speed
+off,na,pre_reduction,old,c9_final_off_pre_speed_old_geometry
+on,on,final,final,h9_final_on
+on,on,final,old,c3_final_on_old_geometry
+on,on,pre_reduction,final,c4_final_on_pre_speed
+on,on,pre_reduction,old,c10_final_on_pre_speed_old_geometry
+on,off,final,final,c2_final_on_raw
+on,off,final,old,c11_final_on_raw_old_geometry
+on,off,pre_reduction,final,c12_final_on_raw_pre_speed
+on,off,pre_reduction,old,c13_final_on_raw_pre_speed_old_geometry

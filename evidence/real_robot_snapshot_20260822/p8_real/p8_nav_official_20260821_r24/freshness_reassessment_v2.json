@@ -1,0 +1,69 @@
+{
+  "applied": true,
+  "backup_csv": "/home/unitree/lly/p8_real/p8_nav_official_20260821_r24/navigation_episodes.before_freshness_v2.csv",
+  "created_at": "2026-08-21T15:20:39Z",
+  "episodes": [
+    {
+      "bag": {
+        "database": "/home/unitree/lly/p8_real/p8_nav_official_20260821_r24/bags/NAV_BLOCK_01_B6_random_part_01/NAV_BLOCK_01_B6_random_part_01_0.db3",
+        "planned_action": {
+          "frames": 672,
+          "max_active_hold_gap_ms": 69.03767585754395,
+          "max_receive_gap_ms": 69.03767585754395,
+          "rate_hz": 23.349480232858557
+        },
+        "reference": {
+          "frames": 576,
+          "max_receive_gap_ms": 74.12195205688477,
+          "max_source_age_ms": 89.82959199999999,
+          "rate_hz": 20.013840199593048
+        },
+        "scan": {
+          "frames": 575,
+          "max_receive_gap_ms": 63.78650665283203,
+          "max_source_age_ms": 61.976139999999994,
+          "rate_hz": 19.979093949246533
+        },
+        "window_s": 28.780083894729614
+      },
+      "collision": false,
+      "diagnostics": {
+        "max_all_action_receive_age_ms": 14.519453048706055,
+        "max_reference_action_age_ms": 138.01813125610352
+      },
+      "metrics": {
+        "max_active_action_receive_age_ms": 11.151552200317383,
+        "max_active_action_receive_gap_ms": 69.03767585754395,
+        "max_planned_action_receive_gap_ms": 69.03767585754395,
+        "max_reference_receive_gap_ms": 74.12195205688477,
+        "max_reference_source_age_ms": 89.82959199999999,
+        "max_scan_age_ms": 99.04885292053223,
+        "max_scan_receive_gap_ms": 63.78650665283203,
+        "planned_action_rate_hz": 23.349480232858557,
+        "reference_rate_hz": 20.013840199593048,
+        "scan_rate_hz": 19.979093949246533
+      },
+      "new_status": "SUCCESS",
+      "old_status": "INVALID",
+      "planned_unit_id": "NAV_BLOCK_01_B6_random_NAV_real_offset_slalom",
+      "quality_reasons": [],
+      "route_reached": true
+    }
+  ],
+  "quality_thresholds": {
+    "max_planned_action_gap_ms": 120.0,
+    "max_planned_action_receive_age_ms": 80.0,
+    "max_reference_age_ms": 120.0,
+    "max_reference_gap_ms": 120.0,
+    "max_scan_age_ms": 120.0,
+    "max_scan_gap_ms": 120.0,
+    "min_planned_action_rate_hz": 20.0,
+    "min_reference_rate_hz": 10.0,
+    "min_scan_rate_hz": 15.0
+  },
+  "rule_version": "p8_navigation_freshness_v2",
+  "run_dir": "/home/unitree/lly/p8_real/p8_nav_official_20260821_r24",
+  "source_csv": "/home/unitree/lly/p8_real/p8_nav_official_20260821_r24/navigation_episodes.csv",
+  "source_csv_sha256": "9027e7322fdfa1a1e1ac73f54ee07066d456d38e2e9c70f2c29e76b768405ad0",
+  "updated_csv_sha256": "e51b6f56a125d219ba0ff1ccb66a99743479bcbee75ae49eae7af465c4689577"
+}

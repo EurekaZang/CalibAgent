@@ -1,0 +1,9 @@
+free_thresh: 0.25
+image: control_smoke_20260821.pgm
+negate: 0
+occupied_thresh: 0.65
+origin:
+- -9.390687942504883
+- -14.081972122192383
+- 0.0
+resolution: 0.05

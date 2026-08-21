@@ -1,0 +1,6 @@
+COMPENSATE=0
+GOAL_TIMEOUT_SEC=60
+MAX_HEIGHT=1.00
+MIN_HEIGHT=0.20
+MODEL_PATH=/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth
+RECORD_ROSBAG=1

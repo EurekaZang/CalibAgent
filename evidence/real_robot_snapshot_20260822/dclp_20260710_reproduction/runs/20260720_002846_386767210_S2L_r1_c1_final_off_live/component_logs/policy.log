@@ -1,0 +1,62 @@
+[INFO] [1784478556.699622161] [dclp_go2_policy_ros2]: trajectory log enabled: /home/unitree/qyw/dclp_20260710_reproduction/runs/20260720_002846_386767210_S2L_r1_c1_final_off_live/trajectory/trajectory.csv (rate=2.00 Hz)
+[INFO] [1784478556.707869555] [dclp_go2_policy_ros2]: Go2 DCLP policy ready: backend={"action_dim": 2, "backend_type": "pth", "checkpoint_meta": {"T": 1010000, "episode": 16356, "test_time": 101}, "deterministic_rule": "highest_weight_component_tanh_mu", "device": "cpu", "model_path": "/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth", "obs_dim": 548, "policy_id": "V1_41lambda1_101.pth"} scan=/scan odom=/odom goal=/move_base_simple/goal rel_goal=/dclp_relative_goal global=odom zmq=tcp://*:5596 rate=20.0Hz scan_stamp_timeout=0.30s experiment=20260720_002846_386767210_S2L_r1_c1_final_off_live profile=c1_final_off compensation=off mapping=range limiter=last_cmd_dt config={"accel_limiter_mode":"last_cmd_dt","action_mapping_mode":"range","backend":{"action_dim":2,"backend_type":"pth","checkpoint_meta":{"T":1010000,"episode":16356,"test_time":101},"deterministic_rule":"highest_weight_component_tanh_mu","device":"cpu","model_path":"/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth","obs_dim":548,"policy_id":"V1_41lambda1_101.pth"},"cap_angular":1.5708,"cap_linear":1.5,"compensation_available":true,"compensation_mode":"off","compensation_source":"/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/velocity_compensation.py","compensation_source_sha256":"53f5318dde1c9965c6c7177ae72e8200b85b26c8b9143ecb9dcc5d356a458000","control_period_sec":0.02,"control_rate_hz":20.0,"dclp_length1":0.504,"dclp_length2":0.504,"dclp_width":0.4464,"deploy_core_source":"/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/dclp_deploy_core.py","deploy_core_source_sha256":"df6c78b263454c8bf8fb616de9dff7d268f6f48fe40127c299dd56455464e7de","experiment_id":"20260720_002846_386767210_S2L_r1_c1_final_off_live","experiment_profile":"c1_final_off","floor_angular":0.0,"floor_linear":0.0,"goal_topic":"/move_base_simple/goal","max_angular":0.83776,"max_angular_acc":3.0,"max_linear":0.9,"max_linear_acc":3.0,"min_angular":0.27928,"min_linear":0.29997,"model_path":"/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth","model_sha256":"dacaf9fc45da536ae6b45cdbedc949370b7828fac4cadcf40ebedabc4080c452","odom_topic":"/odom","pid":20913,"policy_source":"/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/dclp_go2_policy_ros2.py","policy_source_sha256":"66d8558d2f68a7caef976ef59ba74070b99af27b8fe4af35b8b0dc6a68228997","relative_goal_topic":"/dclp_relative_goal","scan_topic":"/scan","schema_version":1,"speed_scale":1.0,"straighten_front_clear_angle":0.35,"straighten_front_clear_range":1.2,"straighten_front_goal_angle":0.0,"straighten_front_goal_w_limit":0.0,"trajectory_log_path":"/home/unitree/qyw/dclp_20260710_reproduction/runs/20260720_002846_386767210_S2L_r1_c1_final_off_live/trajectory/trajectory.csv","written_at":"2026-07-20T00:29:16"}
+[INFO] [1784478556.711115174] [dclp_go2_policy_ros2]: received first scan: frame=base_link beams=1081
+[INFO] [1784478556.712773088] [dclp_go2_policy_ros2]: received first odom: frame=odom child=base_link
+[WARN] [1784478556.758346885] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1784478558.758598899] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1784478560.808358156] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1784478562.858377477] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1784478564.858608535] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1784478566.859101426] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1784478568.859206941] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1784478570.908734220] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[INFO] [1784478572.491185009] [dclp_go2_policy_ros2]: received relative goal: right=0.000 forward=4.000 -> global=(4.010, -0.128) frame=odom
+[INFO] [1784478572.516997474] [dclp_go2_policy_ros2]: ⏱ v=0.051 w=-0.051 dist=4.00 | total=8.9ms (tf=0.2 feat=0.4 infer=2.6 conv=4.2) | e2e_scan→cmd=41.4ms | cov=90/90
+[INFO] [1784478573.015753824] [dclp_go2_policy_ros2]: ⏱ v=0.900 w=-0.612 dist=3.91 | total=7.3ms (tf=0.1 feat=0.3 infer=2.6 conv=2.6) | e2e_scan→cmd=40.1ms | cov=90/90
+[INFO] [1784478573.514079127] [dclp_go2_policy_ros2]: ⏱ v=0.876 w=-0.312 dist=3.62 | total=6.2ms (tf=0.1 feat=0.3 infer=2.4 conv=2.3) | e2e_scan→cmd=39.6ms | cov=90/90
+[INFO] [1784478574.014890026] [dclp_go2_policy_ros2]: ⏱ v=-0.439 w=-0.616 dist=3.37 | total=6.6ms (tf=0.1 feat=0.4 infer=2.6 conv=2.5) | e2e_scan→cmd=39.2ms | cov=90/90
+[INFO] [1784478574.514371062] [dclp_go2_policy_ros2]: ⏱ v=-0.081 w=-0.128 dist=3.48 | total=6.3ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=36.8ms | cov=90/90
+[INFO] [1784478575.014103565] [dclp_go2_policy_ros2]: ⏱ v=0.746 w=0.174 dist=3.49 | total=6.2ms (tf=0.1 feat=0.3 infer=2.4 conv=2.4) | e2e_scan→cmd=39.4ms | cov=90/90
+[INFO] [1784478575.514902484] [dclp_go2_policy_ros2]: ⏱ v=-0.533 w=-0.493 dist=3.35 | total=6.6ms (tf=0.1 feat=0.4 infer=2.6 conv=2.4) | e2e_scan→cmd=39.3ms | cov=90/90
+[INFO] [1784478576.016502713] [dclp_go2_policy_ros2]: ⏱ v=-0.693 w=-0.469 dist=3.46 | total=8.2ms (tf=0.2 feat=0.4 infer=2.6 conv=2.5) | e2e_scan→cmd=41.2ms | cov=90/90
+[INFO] [1784478576.515445830] [dclp_go2_policy_ros2]: ⏱ v=0.807 w=0.292 dist=3.54 | total=6.9ms (tf=0.2 feat=0.4 infer=2.6 conv=2.6) | e2e_scan→cmd=41.1ms | cov=90/90
+[INFO] [1784478577.014754497] [dclp_go2_policy_ros2]: ⏱ v=0.686 w=-0.552 dist=3.45 | total=6.6ms (tf=0.1 feat=0.4 infer=2.6 conv=2.5) | e2e_scan→cmd=40.3ms | cov=90/90
+[INFO] [1784478577.519301639] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.165 dist=3.38 | total=7.2ms (tf=0.2 feat=0.4 infer=2.7 conv=2.5) | e2e_scan→cmd=63.6ms | cov=90/90
+[INFO] [1784478578.014743549] [dclp_go2_policy_ros2]: ⏱ v=0.900 w=0.832 dist=3.39 | total=6.4ms (tf=0.1 feat=0.4 infer=2.5 conv=2.4) | e2e_scan→cmd=40.0ms | cov=90/90
+[INFO] [1784478578.514326805] [dclp_go2_policy_ros2]: ⏱ v=0.900 w=0.828 dist=3.32 | total=6.3ms (tf=0.1 feat=0.4 infer=2.4 conv=2.4) | e2e_scan→cmd=38.7ms | cov=90/90
+[INFO] [1784478579.013909102] [dclp_go2_policy_ros2]: ⏱ v=0.900 w=0.793 dist=3.13 | total=6.0ms (tf=0.1 feat=0.3 infer=2.4 conv=2.2) | e2e_scan→cmd=38.4ms | cov=90/90
+[INFO] [1784478579.514540503] [dclp_go2_policy_ros2]: ⏱ v=0.900 w=0.698 dist=2.90 | total=6.2ms (tf=0.1 feat=0.4 infer=2.5 conv=2.3) | e2e_scan→cmd=39.0ms | cov=90/90
+[INFO] [1784478580.014337345] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.569 dist=2.63 | total=6.0ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=38.8ms | cov=90/90
+[INFO] [1784478580.514144309] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.478 dist=2.34 | total=6.3ms (tf=0.1 feat=0.4 infer=2.4 conv=2.4) | e2e_scan→cmd=38.6ms | cov=90/90
+[INFO] [1784478581.014398522] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.481 dist=2.03 | total=6.4ms (tf=0.1 feat=0.3 infer=2.4 conv=2.2) | e2e_scan→cmd=38.8ms | cov=90/90
+[INFO] [1784478581.515754257] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.296 dist=1.71 | total=7.3ms (tf=0.2 feat=0.4 infer=2.6 conv=2.5) | e2e_scan→cmd=40.0ms | cov=90/90
+[INFO] [1784478582.014044790] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.256 dist=1.40 | total=6.0ms (tf=0.1 feat=0.3 infer=2.4 conv=2.2) | e2e_scan→cmd=38.3ms | cov=90/90
+[INFO] [1784478582.514706812] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.433 dist=1.08 | total=6.5ms (tf=0.1 feat=0.4 infer=2.5 conv=2.5) | e2e_scan→cmd=39.9ms | cov=90/90
+[INFO] [1784478583.013975374] [dclp_go2_policy_ros2]: ⏱ v=0.898 w=0.446 dist=0.75 | total=6.0ms (tf=0.1 feat=0.3 infer=2.4 conv=2.2) | e2e_scan→cmd=38.4ms | cov=90/90
+[INFO] [1784478583.514658078] [dclp_go2_policy_ros2]: ⏱ v=0.898 w=0.616 dist=0.43 | total=6.4ms (tf=0.1 feat=0.3 infer=2.5 conv=2.4) | e2e_scan→cmd=39.0ms | cov=90/90
+[WARN] [1784478583.608881776] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478585.609655131] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478587.658815859] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478589.659676592] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478591.708758718] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478593.708914341] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478595.709142121] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478597.758940194] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478599.759049015] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478601.759509037] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478603.809095255] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478605.859489117] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478607.859410585] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478609.909227350] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478611.958778429] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478613.959884781] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478615.962074123] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478618.009043345] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478620.059358413] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478622.109061529] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478624.109351317] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478626.159115114] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478628.159846059] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478630.209096745] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478632.258928444] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1784478634.308790893] [dclp_go2_policy_ros2]: DCLP stop: goal reached

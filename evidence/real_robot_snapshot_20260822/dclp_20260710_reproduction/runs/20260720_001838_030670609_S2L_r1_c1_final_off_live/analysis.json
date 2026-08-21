@@ -1,0 +1,42 @@
+{
+  "angular_peak_abs": 0.831868,
+  "angular_rms": 0.5188799634803796,
+  "angular_sign_flips": 9,
+  "compensation_mode": "off",
+  "direct_goal_distance_m": 3.9999903980416,
+  "duration_sec": 13.142,
+  "experiment_id": "20260720_001838_030670609_S2L_r1_c1_final_off_live",
+  "guard": {
+    "angular_accept_fraction": null,
+    "angular_reasons": {},
+    "both_accept_fraction": null,
+    "evaluated_rows": 0,
+    "linear_accept_fraction": null,
+    "linear_reasons": {}
+  },
+  "hard_cap_angular_fraction": 0.0,
+  "hard_cap_linear_fraction": 0.0,
+  "max_abs_lateral_deviation_m": 1.222706712053746,
+  "min_pooled_range_m": 0.260107,
+  "negative_linear_command_count": 4,
+  "no_collision_success": false,
+  "operator_outcome": {
+    "battery_end_percent": "",
+    "battery_start_percent": "",
+    "contact_obstacle": "unknown",
+    "external_safety_stop": "unknown",
+    "held_goal_for_1s": "unknown",
+    "manual_stop": "unknown",
+    "notes": "",
+    "start_position_error_cm": "",
+    "start_yaw_error_deg": "",
+    "timeout": "unknown",
+    "video_file": ""
+  },
+  "path_efficiency": 0.6501616317673495,
+  "path_length_m": 6.152301524112293,
+  "profile": "c1_final_off",
+  "reached": true,
+  "run_dir": "/home/unitree/qyw/dclp_20260710_reproduction/runs/20260720_001838_030670609_S2L_r1_c1_final_off_live",
+  "samples_navigating": 25
+}

@@ -1,0 +1,17 @@
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.04Hz age_ms recent_avg=21.5 recent_max=21.9 last=21.4 all_max=22.9 frame=livox_frame points=4032 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=49.98Hz age_ms recent_avg=24.4 recent_max=26.2 last=24.9 all_max=26.2 frame=base_link beams=1081 valid=980 valid_beams recent_min=972 p50=983 all_min=953 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.04Hz age_ms recent_avg=21.2 recent_max=21.5 last=20.7 all_max=27.4 frame=livox_frame points=4032 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=50.00Hz age_ms recent_avg=24.2 recent_max=24.7 last=24.4 all_max=25.2 frame=base_link beams=1081 valid=982 valid_beams recent_min=970 p50=980 all_min=959 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.01Hz age_ms recent_avg=20.9 recent_max=22.3 last=20.4 all_max=23.1 frame=livox_frame points=4032 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=49.99Hz age_ms recent_avg=23.2 recent_max=24.6 last=24.6 all_max=25.3 frame=base_link beams=1081 valid=979 valid_beams recent_min=961 p50=979 all_min=957 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=49.99Hz age_ms recent_avg=21.4 recent_max=21.9 last=21.4 all_max=23.0 frame=livox_frame points=4032 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=50.02Hz age_ms recent_avg=24.3 recent_max=24.9 last=24.2 all_max=26.3 frame=base_link beams=1081 valid=981 valid_beams recent_min=975 p50=981 all_min=952 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.00Hz age_ms recent_avg=21.5 recent_max=22.2 last=21.6 all_max=22.6 frame=livox_frame points=4032 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=50.00Hz age_ms recent_avg=23.9 recent_max=24.5 last=23.8 all_max=25.4 frame=base_link beams=1081 valid=966 valid_beams recent_min=959 p50=982 all_min=949 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.03Hz age_ms recent_avg=21.3 recent_max=21.5 last=21.2 all_max=22.3 frame=livox_frame points=4128 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=49.98Hz age_ms recent_avg=24.1 recent_max=24.9 last=24.6 all_max=25.0 frame=base_link beams=1081 valid=982 valid_beams recent_min=966 p50=982 all_min=957 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.02Hz age_ms recent_avg=21.0 recent_max=22.1 last=22.1 all_max=22.2 frame=livox_frame points=4128 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=49.99Hz age_ms recent_avg=23.2 recent_max=24.3 last=23.5 all_max=28.1 frame=base_link beams=1081 valid=978 valid_beams recent_min=961 p50=979 all_min=960 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.01Hz age_ms recent_avg=20.6 recent_max=21.2 last=21.2 all_max=27.7 frame=livox_frame points=4032 
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=50.04Hz age_ms recent_avg=23.6 recent_max=24.4 last=23.7 all_max=25.5 frame=base_link beams=1081 valid=975 valid_beams recent_min=951 p50=978 all_min=950 zero=0
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=50.02Hz age_ms recent_avg=21.1 recent_max=21.5 last=20.5 all_max=22.5 frame=livox_frame points=3840 

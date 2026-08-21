@@ -1,0 +1,9 @@
+free_thresh: 0.25
+image: p8_20260805.pgm
+negate: 0
+occupied_thresh: 0.65
+origin:
+- -12.269311904907227
+- -34.175941467285156
+- 0.0
+resolution: 0.05

@@ -1,0 +1,25 @@
+[INFO] [1784481457.364122222] [livox_lidar_publisher]: Livox Ros Driver2 Version: 1.2.4
+[INFO] [1784481457.364891842] [livox_lidar_publisher]: Data Source is raw lidar.
+[INFO] [1784481457.364943042] [livox_lidar_publisher]: Config file : /home/unitree/project/ros2_ws/install/livox_ros_driver2/share/livox_ros_driver2/config/MID360_config.json
+LdsLidar *GetInstance
+config lidar type: 8
+successfully parse base config, counts: 1
+[INFO] [1784481457.369802042] [livox_lidar_publisher]: Init lds lidar success!
+GetFreeIndex key:livox_lidar_343648448.
+Init queue, real query size:64.
+Lidar[0] storage queue size: 51
+set pcl data type, handle: 343648448, data type: 1
+set scan pattern, handle: 343648448, scan pattern: 0
+begin to change work mode to 'Normal', handle: 343648448
+successfully set data type, handle: 343648448, set_bit: 2
+successfully set pattern mode, handle: 343648448, set_bit: 0
+successfully set lidar attitude, ip: 192.168.123.20
+successfully change work mode, handle: 343648448
+successfully enable Livox Lidar imu, ip: 192.168.123.20
+[INFO] [1784481460.370575401] [livox_lidar_publisher]: livox/imu publish use imu format
+[INFO] [1784481460.372002197] [livox_lidar_publisher]: livox/lidar publish use PointCloud2 format
+[INFO] [1784481520.516408297] [rclcpp]: signal_handler(signal_value=2)
+DistributeImuData is RequestExit
+DistributeImuData is RequestExit
+Livox Lidar SDK Deinit completely!
+lddc destory!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -1,0 +1,22 @@
+schema: calibagent.p8.map.v1
+map_id: real_offset_slalom
+frame: map
+prior_map: /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+timeout_s: 60.0
+goal_radius_m: 0.25
+layout_id: p8_go2_20260821_route_a
+layout_reference: A_START_base_link_center_and_forward_arrow
+start_pose: {x: 3.033715, y: -2.451296, yaw: 1.376449}
+waypoints:
+  - {x: 2.694219, y: -0.794667, yaw: 1.762849}
+  - {x: 4.685474, y: 0.589450, yaw: 0.983755}
+  - {x: 3.493805, y: 2.501405, yaw: 1.728728}
+  - {x: 5.304137, y: 3.979683, yaw: 0.720844}
+goal_pose: {x: 4.702639, y: 5.924940, yaw: 1.357241}
+obstacle_geometry_source: measured_from_A_START_physical_floor_marks
+obstacles:
+  - {obstacle_id: O1, forward_m: 1.56, lateral_m: 0.0, x: 3.334992, y: -0.920665}
+  - {obstacle_id: O2, forward_m: 3.30, lateral_m: 0.0, x: 3.671031, y: 0.786578}
+  - {obstacle_id: O3, forward_m: 4.95, lateral_m: 0.0, x: 3.989690, y: 2.405515}
+  - {obstacle_id: O4, forward_m: 6.75, lateral_m: 0.0, x: 4.337317, y: 4.171628}
+fake_desired_commands: [[0.25, 0.0, 0.10], [0.28, 0.0, -0.08], [0.20, 0.0, 0.0]]

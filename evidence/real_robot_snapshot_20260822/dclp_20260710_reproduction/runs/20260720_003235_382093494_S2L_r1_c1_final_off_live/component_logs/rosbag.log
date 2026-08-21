@@ -1,0 +1,11 @@
+[INFO] [1784478786.184233779] [rosbag2_storage]: Opened database '/home/unitree/qyw/dclp_20260710_reproduction/runs/20260720_003235_382093494_S2L_r1_c1_final_off_live/rosbag/rosbag_0.db3' for READ_WRITE.
+[INFO] [1784478786.217683611] [rosbag2_transport]: Listening for topics...
+[INFO] [1784478786.221826950] [rosbag2_transport]: Subscribed to topic '/scan'
+[INFO] [1784478786.227207437] [rosbag2_transport]: Subscribed to topic '/nav_status'
+[INFO] [1784478786.230105052] [rosbag2_transport]: Subscribed to topic '/sportmodestate'
+[INFO] [1784478786.232377003] [rosbag2_transport]: Subscribed to topic '/go2_policy/cmd_vel'
+[INFO] [1784478786.234908519] [rosbag2_transport]: Subscribed to topic '/odom'
+[INFO] [1784478786.236564792] [rosbag2_transport]: Subscribed to topic '/dclp_relative_goal'
+[WARN] [1784478786.237947612] [rosbag2_transport]: A new publisher for subscribed topic /scan was found offering RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT, but rosbag already subscribed requesting RMW_QOS_POLICY_RELIABILITY_RELIABLE. Messages from this new publisher will not be recorded.
+[INFO] [1784478786.238123493] [rosbag2_transport]: All requested topics are subscribed. Stopping discovery...
+[INFO] [1784478861.360794063] [rclcpp]: signal_handler(signal_value=2)

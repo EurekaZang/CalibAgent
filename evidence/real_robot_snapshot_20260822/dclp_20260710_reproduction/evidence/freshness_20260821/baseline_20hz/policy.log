@@ -1,0 +1,76 @@
+[INFO] [1787247592.666166941] [dclp_go2_policy_ros2]: trajectory log enabled: /home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/../trajectory_logs/trajectory_20260821_013952.csv (rate=2.00 Hz)
+[INFO] [1787247592.673241824] [dclp_go2_policy_ros2]: Go2 DCLP policy ready: backend={"action_dim": 2, "backend_type": "pth", "checkpoint_meta": {"T": 1010000, "episode": 16356, "test_time": 101}, "deterministic_rule": "highest_weight_component_tanh_mu", "device": "cpu", "model_path": "/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth", "obs_dim": 548, "policy_id": "V1_41lambda1_101.pth"} scan=/scan odom=/odom goal=/move_base_simple/goal rel_goal=/dclp_relative_goal global=odom zmq=tcp://*:5596 rate=20.0Hz scan_stamp_timeout=0.30s experiment=<unset> profile=<unset> compensation=off mapping=range limiter=last_cmd_dt config={"accel_limiter_mode":"last_cmd_dt","action_mapping_mode":"range","backend":{"action_dim":2,"backend_type":"pth","checkpoint_meta":{"T":1010000,"episode":16356,"test_time":101},"deterministic_rule":"highest_weight_component_tanh_mu","device":"cpu","model_path":"/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth","obs_dim":548,"policy_id":"V1_41lambda1_101.pth"},"cap_angular":1.5708,"cap_linear":1.5,"compensation_available":true,"compensation_mode":"off","compensation_source":"/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/velocity_compensation.py","compensation_source_sha256":"53f5318dde1c9965c6c7177ae72e8200b85b26c8b9143ecb9dcc5d356a458000","control_period_sec":0.02,"control_rate_hz":20.0,"dclp_length1":0.504,"dclp_length2":0.504,"dclp_width":0.4464,"deploy_core_source":"/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/dclp_deploy_core.py","deploy_core_source_sha256":"df6c78b263454c8bf8fb616de9dff7d268f6f48fe40127c299dd56455464e7de","experiment_id":"","experiment_profile":"","floor_angular":0.27928,"floor_linear":0.29997,"goal_topic":"/move_base_simple/goal","max_angular":0.83776,"max_angular_acc":3.0,"max_linear":0.9,"max_linear_acc":3.0,"min_angular":0.27928,"min_linear":0.29997,"model_path":"/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth","model_sha256":"dacaf9fc45da536ae6b45cdbedc949370b7828fac4cadcf40ebedabc4080c452","odom_topic":"/odom","pid":24972,"policy_source":"/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/dclp_go2_policy_ros2.py","policy_source_sha256":"66d8558d2f68a7caef976ef59ba74070b99af27b8fe4af35b8b0dc6a68228997","relative_goal_topic":"/dclp_relative_goal","scan_topic":"/scan","schema_version":1,"speed_scale":1.0,"straighten_front_clear_angle":0.35,"straighten_front_clear_range":1.2,"straighten_front_goal_angle":0.0,"straighten_front_goal_w_limit":0.0,"trajectory_log_path":"/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/../trajectory_logs/trajectory_20260821_013952.csv","written_at":"2026-08-21T01:39:52"}
+[INFO] [1787247592.676855285] [dclp_go2_policy_ros2]: received first scan: frame=base_link beams=1081
+[INFO] [1787247592.678606061] [dclp_go2_policy_ros2]: received first odom: frame=odom child=base_link
+[WARN] [1787247592.723738661] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247594.724062233] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247596.773667303] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247598.773663848] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247600.823651338] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247602.823732108] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247604.873703726] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247606.873769323] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[WARN] [1787247608.923663880] [dclp_go2_policy_ros2]: DCLP stop: waiting goal
+[INFO] [1787247609.049153511] [dclp_go2_policy_ros2]: received relative goal: right=0.000 forward=3.000 -> global=(3.021, 0.033) frame=odom
+[INFO] [1787247609.082487610] [dclp_go2_policy_ros2]: ⏱ v=0.073 w=-0.073 dist=3.00 | total=9.3ms (tf=0.2 feat=0.4 infer=2.7 conv=4.4) | e2e_scan→cmd=38.4ms | cov=90/90
+[INFO] [1787247609.579755729] [dclp_go2_policy_ros2]: ⏱ v=0.900 w=-0.451 dist=2.89 | total=6.5ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.7ms | cov=90/90
+[INFO] [1787247610.080426102] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=-0.149 dist=2.58 | total=7.1ms (tf=0.1 feat=0.4 infer=2.6 conv=2.4) | e2e_scan→cmd=36.3ms | cov=90/90
+[INFO] [1787247610.579278438] [dclp_go2_policy_ros2]: ⏱ v=0.898 w=0.136 dist=2.24 | total=6.0ms (tf=0.1 feat=0.3 infer=2.4 conv=2.2) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247611.079297043] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.145 dist=1.92 | total=6.1ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.2ms | cov=90/90
+[INFO] [1787247611.579208995] [dclp_go2_policy_ros2]: ⏱ v=-0.001 w=0.145 dist=1.65 | total=6.0ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=35.0ms | cov=90/90
+[INFO] [1787247612.079519976] [dclp_go2_policy_ros2]: ⏱ v=-0.019 w=0.401 dist=1.67 | total=6.3ms (tf=0.1 feat=0.3 infer=2.5 conv=2.4) | e2e_scan→cmd=35.3ms | cov=90/90
+[INFO] [1787247612.579328636] [dclp_go2_policy_ros2]: ⏱ v=-0.019 w=0.130 dist=1.69 | total=6.1ms (tf=0.1 feat=0.3 infer=2.4 conv=2.3) | e2e_scan→cmd=35.2ms | cov=90/90
+[INFO] [1787247613.079235158] [dclp_go2_policy_ros2]: ⏱ v=-0.019 w=0.129 dist=1.75 | total=6.1ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247613.579617552] [dclp_go2_policy_ros2]: ⏱ v=0.281 w=0.129 dist=1.78 | total=6.2ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.4ms | cov=90/90
+[INFO] [1787247614.080279034] [dclp_go2_policy_ros2]: ⏱ v=0.281 w=0.130 dist=1.71 | total=6.9ms (tf=0.1 feat=0.4 infer=2.7 conv=2.7) | e2e_scan→cmd=35.9ms | cov=90/90
+[INFO] [1787247614.579347227] [dclp_go2_policy_ros2]: ⏱ v=-0.619 w=0.614 dist=1.64 | total=6.1ms (tf=0.1 feat=0.4 infer=2.5 conv=2.2) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247615.079339372] [dclp_go2_policy_ros2]: ⏱ v=0.114 w=0.432 dist=1.82 | total=6.1ms (tf=0.1 feat=0.3 infer=2.4 conv=2.3) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247615.579439531] [dclp_go2_policy_ros2]: ⏱ v=0.749 w=0.410 dist=1.75 | total=6.2ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.2ms | cov=90/90
+[INFO] [1787247616.080018179] [dclp_go2_policy_ros2]: ⏱ v=0.895 w=-0.608 dist=1.50 | total=6.7ms (tf=0.1 feat=0.4 infer=2.7 conv=2.4) | e2e_scan→cmd=35.8ms | cov=90/90
+[INFO] [1787247616.580296244] [dclp_go2_policy_ros2]: ⏱ v=0.813 w=-0.662 dist=1.25 | total=6.8ms (tf=0.1 feat=0.4 infer=2.7 conv=2.6) | e2e_scan→cmd=35.9ms | cov=90/90
+[INFO] [1787247617.079529074] [dclp_go2_policy_ros2]: ⏱ v=0.745 w=-0.615 dist=0.97 | total=6.2ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.3ms | cov=90/90
+[INFO] [1787247617.579826286] [dclp_go2_policy_ros2]: ⏱ v=-0.456 w=0.034 dist=0.76 | total=6.1ms (tf=0.1 feat=0.4 infer=2.5 conv=2.3) | e2e_scan→cmd=35.6ms | cov=90/90
+[INFO] [1787247618.079515884] [dclp_go2_policy_ros2]: ⏱ v=-0.747 w=0.634 dist=0.89 | total=6.2ms (tf=0.1 feat=0.3 infer=2.6 conv=2.3) | e2e_scan→cmd=35.2ms | cov=90/90
+[INFO] [1787247618.580581015] [dclp_go2_policy_ros2]: ⏱ v=-0.573 w=0.475 dist=1.11 | total=6.7ms (tf=0.1 feat=0.4 infer=2.6 conv=2.6) | e2e_scan→cmd=36.3ms | cov=90/90
+[INFO] [1787247619.079872011] [dclp_go2_policy_ros2]: ⏱ v=0.883 w=-0.425 dist=1.26 | total=6.1ms (tf=0.1 feat=0.4 infer=2.5 conv=2.3) | e2e_scan→cmd=35.5ms | cov=90/90
+[INFO] [1787247619.580585710] [dclp_go2_policy_ros2]: ⏱ v=0.798 w=-0.323 dist=1.13 | total=6.7ms (tf=0.2 feat=0.4 infer=2.6 conv=2.6) | e2e_scan→cmd=36.3ms | cov=90/90
+[INFO] [1787247620.080963810] [dclp_go2_policy_ros2]: ⏱ v=-0.337 w=0.008 dist=0.92 | total=7.0ms (tf=0.2 feat=0.3 infer=2.8 conv=2.5) | e2e_scan→cmd=36.6ms | cov=90/90
+[INFO] [1787247620.579630311] [dclp_go2_policy_ros2]: ⏱ v=0.650 w=0.165 dist=1.00 | total=6.1ms (tf=0.1 feat=0.4 infer=2.4 conv=2.3) | e2e_scan→cmd=35.3ms | cov=90/90
+[INFO] [1787247621.081363720] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=-0.677 dist=0.93 | total=7.0ms (tf=0.2 feat=0.4 infer=2.7 conv=2.8) | e2e_scan→cmd=36.9ms | cov=90/90
+[INFO] [1787247621.580219072] [dclp_go2_policy_ros2]: ⏱ v=0.897 w=-0.687 dist=0.77 | total=6.5ms (tf=0.1 feat=0.4 infer=2.5 conv=2.5) | e2e_scan→cmd=36.0ms | cov=90/90
+[INFO] [1787247622.079331046] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=-0.837 dist=0.65 | total=6.0ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=34.9ms | cov=90/90
+[INFO] [1787247622.580324307] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=-0.837 dist=0.55 | total=6.8ms (tf=0.1 feat=0.3 infer=2.6 conv=2.4) | e2e_scan→cmd=36.0ms | cov=90/90
+[INFO] [1787247623.079349470] [dclp_go2_policy_ros2]: ⏱ v=0.898 w=-0.838 dist=0.56 | total=6.1ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=34.9ms | cov=90/90
+[INFO] [1787247623.579585038] [dclp_go2_policy_ros2]: ⏱ v=0.898 w=-0.838 dist=0.68 | total=6.3ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.2ms | cov=90/90
+[INFO] [1787247624.079174975] [dclp_go2_policy_ros2]: ⏱ v=0.895 w=-0.838 dist=0.84 | total=6.0ms (tf=0.1 feat=0.3 infer=2.4 conv=2.2) | e2e_scan→cmd=34.8ms | cov=90/90
+[INFO] [1787247624.579494429] [dclp_go2_policy_ros2]: ⏱ v=0.895 w=-0.838 dist=0.99 | total=6.0ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247625.079196733] [dclp_go2_policy_ros2]: ⏱ v=0.894 w=-0.838 dist=1.11 | total=6.0ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=34.7ms | cov=90/90
+[INFO] [1787247625.579223573] [dclp_go2_policy_ros2]: ⏱ v=0.895 w=-0.837 dist=1.24 | total=6.1ms (tf=0.1 feat=0.3 infer=2.6 conv=2.2) | e2e_scan→cmd=34.9ms | cov=90/90
+[INFO] [1787247626.079655043] [dclp_go2_policy_ros2]: ⏱ v=0.889 w=-0.836 dist=1.32 | total=6.2ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247626.579498875] [dclp_go2_policy_ros2]: ⏱ v=0.796 w=-0.812 dist=1.37 | total=5.9ms (tf=0.1 feat=0.4 infer=2.4 conv=2.2) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247627.079724903] [dclp_go2_policy_ros2]: ⏱ v=0.743 w=-0.733 dist=1.39 | total=6.0ms (tf=0.1 feat=0.4 infer=2.4 conv=2.2) | e2e_scan→cmd=35.2ms | cov=90/90
+[INFO] [1787247627.579635628] [dclp_go2_policy_ros2]: ⏱ v=0.143 w=-0.819 dist=1.37 | total=6.4ms (tf=0.1 feat=0.3 infer=2.6 conv=2.4) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247628.079863778] [dclp_go2_policy_ros2]: ⏱ v=-0.896 w=-0.768 dist=1.40 | total=6.5ms (tf=0.1 feat=0.3 infer=2.6 conv=2.5) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247628.579839443] [dclp_go2_policy_ros2]: ⏱ v=-0.430 w=-0.736 dist=1.61 | total=6.1ms (tf=0.1 feat=0.4 infer=2.5 conv=2.3) | e2e_scan→cmd=35.2ms | cov=90/90
+[INFO] [1787247629.079529207] [dclp_go2_policy_ros2]: ⏱ v=0.861 w=-0.814 dist=1.69 | total=6.0ms (tf=0.1 feat=0.3 infer=2.4 conv=2.2) | e2e_scan→cmd=35.1ms | cov=90/90
+[INFO] [1787247629.579577781] [dclp_go2_policy_ros2]: ⏱ v=0.088 w=-0.833 dist=1.46 | total=6.1ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=35.0ms | cov=90/90
+[INFO] [1787247630.079402505] [dclp_go2_policy_ros2]: ⏱ v=-0.511 w=-0.826 dist=1.50 | total=6.1ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=34.8ms | cov=90/90
+[INFO] [1787247630.579734718] [dclp_go2_policy_ros2]: ⏱ v=0.689 w=-0.582 dist=1.61 | total=6.2ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=35.3ms | cov=90/90
+[INFO] [1787247631.080340387] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.350 dist=1.42 | total=6.6ms (tf=0.1 feat=0.4 infer=2.5 conv=2.6) | e2e_scan→cmd=35.7ms | cov=90/90
+[INFO] [1787247631.579357470] [dclp_go2_policy_ros2]: ⏱ v=0.899 w=0.736 dist=1.18 | total=6.2ms (tf=0.1 feat=0.3 infer=2.5 conv=2.3) | e2e_scan→cmd=34.9ms | cov=90/90
+[INFO] [1787247632.079391055] [dclp_go2_policy_ros2]: ⏱ v=0.898 w=0.570 dist=0.91 | total=6.0ms (tf=0.1 feat=0.3 infer=2.5 conv=2.2) | e2e_scan→cmd=34.8ms | cov=90/90
+[INFO] [1787247632.581005496] [dclp_go2_policy_ros2]: ⏱ v=0.898 w=0.575 dist=0.64 | total=7.2ms (tf=0.1 feat=0.4 infer=2.6 conv=2.6) | e2e_scan→cmd=36.4ms | cov=90/90
+[INFO] [1787247633.081358402] [dclp_go2_policy_ros2]: ⏱ v=0.890 w=0.820 dist=0.43 | total=7.4ms (tf=0.1 feat=0.4 infer=2.6 conv=2.8) | e2e_scan→cmd=36.8ms | cov=90/90
+[WARN] [1787247633.224238065] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247635.274124601] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247637.323793634] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247639.324112832] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247641.323982606] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247643.373944900] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247645.373962539] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247647.424226020] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247649.473897033] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247651.473958600] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247653.524301217] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247655.573918942] [dclp_go2_policy_ros2]: DCLP stop: goal reached
+[WARN] [1787247657.574533999] [dclp_go2_policy_ros2]: DCLP stop: goal reached

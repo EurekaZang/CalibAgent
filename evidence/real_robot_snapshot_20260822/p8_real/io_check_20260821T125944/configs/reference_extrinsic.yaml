@@ -1,0 +1,8 @@
+schema: calibagent.p8.reference_extrinsic.v1
+reference_topic: /Odometry
+reference_frame: map
+reference_child_frame: base_link
+base_frame: base_link
+translation_m: [0.0, 0.0, 0.0]
+quaternion_xyzw: [0.0, 0.0, 0.0, 1.0]
+clock: ros_message_header

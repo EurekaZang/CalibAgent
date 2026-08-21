@@ -1,0 +1,3 @@
+Setup unitree ros2 environment
+[INFO] [1784476981.167662878] [go2_sport_odom_node]: Go2 odom node: /sportmodestate -> /odom, TF odom->base_link
+[INFO] [1784476981.169854809] [go2_sport_odom_node]: Go2 odom origin initialized

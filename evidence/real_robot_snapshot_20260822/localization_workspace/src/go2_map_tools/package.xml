@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>go2_map_tools</name>
+  <version>0.1.0</version>
+  <description>PCD to 2D occupancy grid projection for Go2 navigation</description>
+  <maintainer email="unitree@example.com">unitree</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

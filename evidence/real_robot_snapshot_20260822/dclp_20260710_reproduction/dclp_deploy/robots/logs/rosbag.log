@@ -1,0 +1,11 @@
+[INFO] [1787257566.901518720] [rosbag2_storage]: Opened database '/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/../bags/bag_20260821_042532/bag_20260821_042532_0.db3' for READ_WRITE.
+[INFO] [1787257566.918394159] [rosbag2_transport]: Listening for topics...
+[INFO] [1787257566.920934582] [rosbag2_transport]: Subscribed to topic '/scan'
+[INFO] [1787257566.924346658] [rosbag2_transport]: Subscribed to topic '/nav_status'
+[INFO] [1787257566.926689211] [rosbag2_transport]: Subscribed to topic '/go2_policy/cmd_vel'
+[INFO] [1787257566.929126938] [rosbag2_transport]: Subscribed to topic '/odom'
+[INFO] [1787257566.931177179] [rosbag2_transport]: Subscribed to topic '/dclp_relative_goal'
+[WARN] [1787257566.932651919] [rosbag2_transport]: A new publisher for subscribed topic /scan was found offering RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT, but rosbag already subscribed requesting RMW_QOS_POLICY_RELIABILITY_RELIABLE. Messages from this new publisher will not be recorded.
+[INFO] [1787257566.935693470] [rosbag2_transport]: Subscribed to topic '/sportmodestate'
+[INFO] [1787257566.935791622] [rosbag2_transport]: All requested topics are subscribed. Stopping discovery...
+[INFO] [1787257612.117329547] [rclcpp]: signal_handler(signal_value=2)

@@ -1,0 +1,20 @@
+[INFO] [1787254354.164006929] [livox_lidar_publisher]: Livox Ros Driver2 Version: 1.2.4
+[INFO] [1787254354.165108554] [livox_lidar_publisher]: Data Source is raw lidar.
+[INFO] [1787254354.165186060] [livox_lidar_publisher]: Config file : /home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/MID360_config_eth0_192_168_123_18.json
+LdsLidar *GetInstance
+config lidar type: 8
+successfully parse base config, counts: 1
+[INFO] [1787254354.171935819] [livox_lidar_publisher]: Init lds lidar success!
+GetFreeIndex key:livox_lidar_343648448.
+Init queue, real query size:64.
+Lidar[0] storage queue size: 51
+set pcl data type, handle: 343648448, data type: 1
+set scan pattern, handle: 343648448, scan pattern: 0
+begin to change work mode to 'Normal', handle: 343648448
+successfully set data type, handle: 343648448, set_bit: 2
+successfully set pattern mode, handle: 343648448, set_bit: 0
+successfully set lidar attitude, ip: 192.168.123.20
+successfully change work mode, handle: 343648448
+successfully enable Livox Lidar imu, ip: 192.168.123.20
+[INFO] [1787254357.172673030] [livox_lidar_publisher]: livox/imu publish use imu format
+[INFO] [1787254357.173562715] [livox_lidar_publisher]: livox/lidar publish use PointCloud2 format

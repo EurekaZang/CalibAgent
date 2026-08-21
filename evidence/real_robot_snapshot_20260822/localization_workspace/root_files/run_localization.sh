@@ -1,0 +1,73 @@
+#!/bin/bash
+# 栈 A: Livox + global_reloc + FAST-LIO(/loc_health) + nav_tf
+# 用法: ./run_localization.sh [地图.pcd] [norviz]
+# 调试: 本终端只跑定位; 稳定后在另一终端 ./run_nav2.sh
+
+set -e
+
+DEFAULT_MAP=/home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+DEFAULT_DB=/home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db
+PRIOR_MAP="$DEFAULT_MAP"
+DB_DIR="$DEFAULT_DB"
+RVIZ=false
+
+for arg in "$@"; do
+    if [ "$arg" = "norviz" ]; then
+        RVIZ=false  # 默认即如此; 保留兼容
+    elif [ "$arg" = "rviz" ]; then
+        RVIZ=true   # 定位栈也开自己的点云 RViz(看重定位对齐); 与 nav RViz 独立
+    elif [ -f "$arg" ]; then
+        PRIOR_MAP="$arg"
+    elif [ -n "$arg" ]; then
+        echo "错误: 找不到文件: $arg"
+        exit 1
+    fi
+done
+
+if [ ! -f "$PRIOR_MAP" ]; then
+    echo "错误: 先验地图不存在: $PRIOR_MAP"
+    exit 1
+fi
+if [ ! -f "$DB_DIR/poses.txt" ]; then
+    echo "错误: 重定位数据库不存在: $DB_DIR/poses.txt"
+    echo "请先: ./run_mapping.sh -> ./build_reloc_db.sh"
+    exit 1
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/setup_env.sh"
+go2_pre_reloc_cleanup
+LIVOX_CONFIG_PATH="$("$SCRIPT_DIR/prepare_mid360_config.sh")"
+
+LOG="/tmp/go2_localization.log"
+echo "============================================"
+echo " 栈 A: 定位 (Livox + global_reloc + FAST-LIO)"
+echo " PCD: $PRIOR_MAP"
+echo " DB:  $DB_DIR"
+echo " Livox config: $LIVOX_CONFIG_PATH"
+echo " 日志: $LOG"
+echo ""
+echo " RViz: $RVIZ (定位栈专属点云视图; nav RViz 在 run_nav2.sh)"
+echo " 验收: ros2 topic echo /loc_health"
+echo "       出现 READY|... 后, 另开终端 ./run_navigation.sh"
+echo ""
+echo " 提示: 移动时点云飘 -> 查日志 IMU GAP / Localization lost"
+echo "       丢失后会自动重定位(verify_period=2s); 跟踪 OK 才发 /cloud_registered"
+echo "============================================"
+
+# 定位栈专属 RViz(点云对齐视图, 与导航 RViz 独立进程)。
+if [ "$RVIZ" = true ] && [ -n "${DISPLAY:-}" ]; then
+    LOC_RVIZ_CFG="$(ros2 pkg prefix fast_lio)/share/fast_lio/rviz/fastlio_localization.rviz"
+    if [ -f "$LOC_RVIZ_CFG" ] && ! pgrep -f "rviz2 -d.*fastlio_localization.rviz" >/dev/null; then
+        setsid bash -c "
+          source '$SCRIPT_DIR/setup_env.sh'
+          exec rviz2 -d '$LOC_RVIZ_CFG'
+        " >/tmp/go2_loc_rviz.log 2>&1 < /dev/null &
+        echo "[RViz] 定位点云视图已启动 (日志 /tmp/go2_loc_rviz.log)"
+    fi
+fi
+
+ros2 launch go2_loc_bringup localization.launch.py \
+    prior_map:="$PRIOR_MAP" db_dir:="$DB_DIR" \
+    livox_config:="$LIVOX_CONFIG_PATH" 2>&1 | tee "$LOG"

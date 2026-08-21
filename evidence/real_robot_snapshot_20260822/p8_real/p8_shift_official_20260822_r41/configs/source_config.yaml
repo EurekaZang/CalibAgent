@@ -1,0 +1,59 @@
+schema: calibagent.p8.real.v1
+protocol: shift
+robot:
+  model: unitree_go2_edu
+  geometry_m: {length_front: 0.42, length_rear: 0.42, width: 0.372}
+files:
+  runtime_stack: runtime_stack.sha256
+  topic_map: topic_map.yaml
+  reference_extrinsic: reference_extrinsic.yaml
+  candidate_pool: commands/candidate_pool.csv
+  pre_calibration: commands/pre_calibration.csv
+  monitor_commands: commands/monitor_commands.csv
+  passive_recovery: commands/passive_recovery.csv
+  recovery_validation: commands/recovery_validation.csv
+  restore_checks: commands/restore_checks.csv
+  task_distribution: commands/task_distribution.csv
+  shift_schedule: schedules/shift_blocks.csv
+  shift_definitions: shift_definitions.yaml
+design:
+  blocks_per_shift: 3
+  methods: [frozen, passive, full]
+  shifts: [R1_command_gain_coupling, R2_payload_com, R3_surface_friction, R4_mixed_context]
+trial_profile:
+  ramp_in_s: 0.6
+  settle_s: 0.8
+  measure_s: 2.0
+  ramp_out_s: 0.6
+command_rate_hz: 50.0
+model:
+  feature_set: m2_affine_cross_hinge
+  prior_scale: 1.0
+  noise_variance: [0.0025, 0.0025, 0.005]
+calibration_transform:
+  type: discrete_bayesian_inverse
+  regularization: 0.02
+  risk_weight: 0.05
+detector:
+  type: standardized_residual_run
+  threshold: 3.5
+  consecutive: 2
+adaptation:
+  covariance_inflation: 4.0
+quality:
+  max_reference_age_ms: 120.0
+  max_scan_age_ms: 120.0
+  max_planned_action_receive_age_ms: 80.0
+  min_scan_rate_hz: 15.0
+  min_reference_rate_hz: 10.0
+  min_planned_action_rate_hz: 20.0
+input_wait_s: 15.0
+recording:
+  rosbag: true
+  bag_topics: [/scan, /Odometry, /sportmodestate, /p8/planned_cmd_vel, /nav_status, /p8/collision, /api/sport/request]
+fake:
+  dynamics_matrix: [[0.82, 0.03, 0.02], [0.01, 0.78, -0.02], [0.02, 0.01, 0.86]]
+  dynamics_bias: [0.01, -0.005, 0.008]
+runtime_artifacts:
+  prior_map: /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+  reloc_db: /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db

@@ -1,0 +1,93 @@
+/**:
+  ros__parameters:
+    db_dir: "/home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db"
+    map_pcd: "/home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd"
+    # 2D 导航图 yaml(可选); clip=false 时重定位只认 3D 点云+地面模型
+    clip_search_to_grid_map: false
+    grid_map_yaml: "/home/unitree/ws_localization/src/go2_loc_bringup/maps/scans.yaml"
+    top_k: 5
+    min_fitness: 0.35
+    yaw_search_steps: 36
+    xy_search_step: 1.0
+    xy_search_half_steps: 3
+    auto_publish_initialpose: true
+    reloc_retry_period: 8.0
+    # /Odometry 停流后不可继续用缓存点云宣称 tracking healthy；超过此时间自动重定位。
+    odom_lost_timeout: 3.0
+    # Relocalization runs only after odometry loss has stopped DCLP output.
+    # Accumulate a short stationary window so the non-repeating Mid360 pattern
+    # cannot move the estimated heading by several degrees between cold starts.
+    max_accum_frames: 5
+    # 绑架检测: 跟踪丢失/点云与地图不一致时自动重触发 global_reloc
+    verify_period: 2.0
+    verify_min_score: 0.45
+    verify_fail_limit: 3
+    # P8 route A starts at this marked pose. The anchor is advanced by each
+    # fresh /Odometry sample and is used only as a fast local GICP seed. If that
+    # local recovery fails, full-map relocalization is free to accept a distant
+    # geometrically verified pose (required after the robot is carried).
+    continuity:
+      enabled: true
+      startup_pose: [3.472749, -0.007214, 0.0, 0.340597]
+      max_translation: 2.5
+      max_yaw_deg: 90.0
+      # A mediocre local alignment must not suppress a better full-map match.
+      min_fitness: 0.85
+      # The last trusted pose is only an optimization seed. Every recovery
+      # must run registration again; it is never published as a pose by itself.
+    # 接受门槛: 拒绝 BBS3D 假阳性
+    accept:
+      min_gicp_fitness: 0.55
+      # 拟合度 >= 此值直接接受, 跳过 SC 距离/yaw 门(几何证据强于稀疏 SC 提示);
+      # 解决"狗离开建图原点后, 合法高拟合匹配被 SC 门误拒"导致永远重定位失败。
+      high_gicp_fitness: 0.85
+      sc_gate_enable: true
+      sc_gate_max_dist: 5.0
+    scan_context:
+      max_radius: 80.0
+      num_rings: 20
+      num_sectors: 60
+    # 官方 BBS3D (KOKIAOKI/3d_bbs): 全图 x,y,yaw 全局分支定界搜索, 内点计数最大化
+    # 注: Jetson Orin(CUDA11.4/sm_87) 上 gpu 内核评分异常(返回错误低分), 已实测改用 cpu 版(正常, ~0.3-2s)
+    # 失败时绝不回退 GICP(避免假阳性)
+    search:
+      mode: "expand_from_center"
+      # 建图起点在 kf#1 ≈ (0.43,-0.03), 不是数学原点 (0,0)
+      center: [0.43, -0.03]
+      ring_step: 3.0
+      max_radius: 0.0
+      # SC 置信时自动把搜索中心切到 top-1(比固定原点准得多)
+      use_sc_center_when_confident: true
+      # SC 描述子距离门: <=此值认为 SC 匹配可信, 交给 SC+GICP(全 yaw 搜索)处理。
+      # 0.25 太严(成功匹配常在 0.21~0.30), 会漏到 BBS3D ring 搜索导致朝向锁错。
+      sc_confident_max_dist: 0.35
+      sc_tight_radius: 1.5          # SC 置信时先在 hint 附近 1.5m 内搜
+      sc_confident_xy_gate: 1.2     # 置信时结果须在 hint 1.2m 内
+      sc_confident_yaw_gate_deg: 40.0
+      sc_gicp_first: true           # SC 置信时先局部 GICP 精修 hint, 再 fallback BBS3D
+      sc_direct_pose: false         # 不用裸 hint(走廊对称会假高分); 必须 GICP 精修
+      sc_direct_min_score: 0.70
+    ground_filter:
+      enable: true
+      z_min: -0.6
+      z_max: 0.5
+      cell: 1.0
+      min_points: 2
+      dilate_cells: 1
+    near_first_search:
+      candidate_radius: 5.0
+      expand_radii: [4.0, 10.0, 25.0]
+    bbs3d:
+      enable: true
+      min_level_res: 0.5             # 体素最细分辨率(m): 室内 0.5, 室外 1.0
+      max_level: 6                   # 分层层数(决定最粗搜索分辨率 = res*2^level)
+      tar_leaf_size: 0.1             # 地图降采样(m), 0 关闭
+      src_leaf_size: 0.5             # 扫描降采样(m), 越大越快
+      min_scan_range: 1.0            # 扫描裁剪近端(m)
+      max_scan_range: 40.0           # 扫描裁剪远端(m): 关键! 必须保证扫描落在地图内
+      search_margin: 2.0             # 2D 地图边界外扩(m), 给定位留余量
+      roll_pitch_range: 0.0          # roll/pitch 搜索半幅(rad); 地面机器人=0 只搜 yaw(更快更稳)
+      ground_z: 0.0                  # 地面机器人 z 中心(m), 建图原点处地面高度
+      z_search_range: 1.0            # z 搜索半幅(m): 只在地面附近搜, 去竖直混叠+提速
+      score_threshold_percentage: 0.5   # 内点比例阈值, 低于此判定失败(看日志百分比来调)
+      timeout_msec: 0                # 单次搜索超时(ms), 0=不限

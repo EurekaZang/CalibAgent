@@ -28,3 +28,10 @@ evidence/p1_real/raw_trials.csv binary -eol
 
 # Preserve the official IEEE conference class exactly as distributed (CRLF).
 paper/ieeeconf.cls binary -eol
+
+# Raw real-robot artifacts are retained byte-for-byte through Git LFS. Textual
+# manifests, traces, and metrics remain regular Git objects for reviewability.
+evidence/real_robot_snapshot_20260822/** binary -eol
+evidence/real_robot_snapshot_20260822/**/*.db3 filter=lfs diff=lfs merge=lfs -text
+evidence/real_robot_snapshot_20260822/localization_workspace/src/FAST_LIO/PCD/scans.pcd filter=lfs diff=lfs merge=lfs -text
+evidence/real_robot_snapshot_20260822/**/*.pth filter=lfs diff=lfs merge=lfs -text

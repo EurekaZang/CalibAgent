@@ -1,0 +1,28 @@
+# PCD -> 2D occupancy grid (Go2 室内)
+projection:
+  # 逐格本地地面去除: 每格各自取脚下最低点为地面, 只保留相对地面
+  # [obstacle_band_min, obstacle_band_max] 的点。抗建图漂移/地面不平,
+  # 地面点云能干净去除(优先于全局 ground_relative)。
+  local_ground: true        # 启用逐格高度差(ΔH)判障(策略二)
+  # 高度差判障核心阈值: 格内 z_max-z_min >= obstacle_dz 即判为竖直障碍。
+  # 墙/柱/桌腿(底点+高点)ΔH 大 -> 保留; 地面/斜坡(点都贴地)ΔH≈0 -> 放行。
+  # 该判据不靠点数门槛, 稀疏远墙也能完整投下来。
+  obstacle_dz: 0.25
+  # 兜底: 格内最高点相对全局地面至少这么高才算障碍(滤纯贴地噪声团)
+  obstacle_band_min: 0.20
+  obstacle_band_max: 1.60   # 悬空限高: 高于地面此值的点不投影(吊顶/管线)
+
+  # 备用: 全局地面切片(local_ground=false 时生效)
+  ground_relative: true
+  ground_band_min: 0.35
+  ground_band_max: 1.60
+
+  resolution: 0.05
+  # ΔH 判据下点数门槛只用于防单点噪声, 设很低以保留稀疏远墙
+  min_points_per_cell: 2
+  min_occupied_cells: 8      # 去碎斑(小一点别滤墙)
+  # 削墙=障碍格向内缩。1 格即可让门洞变宽又不打碎墙
+  wall_erosion_cells: 1
+
+  occupied_thresh: 0.65
+  free_thresh: 0.25

@@ -1,0 +1,19 @@
+scene_id: ""
+date: ""
+floor_surface: ""
+goal:
+  right_m: 0.0
+  forward_m: 4.0
+obstacles:
+  - id: ""
+    center_right_m: 0.0
+    center_forward_m: 2.0
+    width_m: 0.6
+    depth_m: 0.4
+    height_m: ""
+    yaw_deg: 0.0
+    material: "soft, lidar-visible"
+test_area_width_m: ""
+start_marker_photo: ""
+layout_photo: ""
+measurement_notes: ""

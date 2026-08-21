@@ -1,0 +1,15 @@
+schema: calibagent.p8.map.v1
+map_id: real_offset_slalom
+frame: map
+prior_map: /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+timeout_s: 60.0
+goal_radius_m: 0.25
+start_pose: {x: 0.147811, y: 0.014861, yaw: -0.242249}
+waypoints:
+  - {x: 1.818796, y: 0.274643, yaw: 0.144151}
+  - {x: 3.105978, y: -1.780604, yaw: -0.634943}
+  - {x: 5.072801, y: -0.681853, yaw: 0.110030}
+  - {x: 6.462698, y: -2.560893, yaw: -0.897854}
+goal_pose: {x: 8.434525, y: -2.053231, yaw: -0.261457}
+obstacle_geometry_source: frozen_prior_map_and_physical_floor_marks
+fake_desired_commands: [[0.25, 0.0, 0.10], [0.28, 0.0, -0.08], [0.20, 0.0, 0.0]]

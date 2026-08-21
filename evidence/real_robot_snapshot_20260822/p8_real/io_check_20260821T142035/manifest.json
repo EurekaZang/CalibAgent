@@ -1,0 +1,53 @@
+{
+  "armed": false,
+  "backend": "ros",
+  "code_history": [],
+  "command_chain": "DCLP planner -> optional CalibAgent calibration transform -> direct Unitree Sport Move",
+  "config_hash": "8d179352928657e76cf4df27a2c4d92bf391e0896e2d0f2f9603dc8d75502aff",
+  "created_at": "2026-08-21T06:20:36Z",
+  "git_commit": "1a127a6b4edc8adf35bf014a2ccd50b3c992e8af",
+  "input_hashes": {
+    "active_seed": "b1db8f125a4eb3436869ba6dfe491d7d0faa1634aa8ff6bb769a21141122e706",
+    "candidate_pool": "ffbae6c42b0e974ea786bb6c16385de9ae9ae344e87228318ace800e8fded092",
+    "config": "9575bbaa23da18c1e7dd4c9af0538ca4e09f2a611ca356785cfd5be05b9b0c45",
+    "dense_design": "59e629077d1fc7ae154f3ca37c09158b2850a3b8e8059d2e36b59daf88dabd8c",
+    "lhs_design": "f7d72a5d6a79c31a105fa298f406205613d656c0fde477d4f66243a21bb5b360",
+    "nav_schedule": "812e56a25c8cbf3522943e11409c24ed0eeb9d9501c960a0baba55c81ffaf728",
+    "random_design": "be53e574cad5cdb69cee5e56832b248890e82b93f8f33a671d145af9f4766d83",
+    "real_offset_slalom": "edd422a8ec49c5fa79443ca38d1f8deb0c95cc63319996de7a8716bfbab9342d",
+    "real_weighted_arc": "ff43a3f894d6f2a845b890316a35c7cbcaf00589d7079f309574998ab57c50ca",
+    "reference_extrinsic": "897788133eb1fd3f5bca79f06a657502fdab97128ab236d56541a80c5fc0e1fc",
+    "runtime_stack": "f444c1f766380c16ed6cfe86d5509404960c8b3ae8459018f4dd5d09ee991a02",
+    "sobol_design": "eee012564989efa79aecd5814fa79fffcd2c72a414f80f54565085d2e8398a5d",
+    "task_distribution": "b0cf6d0361e7ae88ee24a260f53c30f3a54daa996a534b9c89c1b9b40343995b",
+    "topic_map": "da0a78df55182612433448f8bb05bc7d3d52426383459598027aec772f20e497",
+    "validation_commands": "9ad77abb8b56b97c8fd2ca8ea94d00ff7d199ddd8cecfc1dd3dd3b82912fc3cf"
+  },
+  "last_opened_at": "2026-08-21T06:20:36Z",
+  "locomotion_interventions": [],
+  "protocol": "nav",
+  "robot": {
+    "geometry_m": {
+      "length_front": 0.42,
+      "length_rear": 0.42,
+      "width": 0.372
+    },
+    "model": "unitree_go2_edu"
+  },
+  "run_id": "io_check_20260821T142035",
+  "runtime_artifacts": {
+    "prior_map": {
+      "file_count": 1,
+      "path": "/home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd",
+      "sha256": "307322cb8a243397127e56591584bdd60dd6b503fec2e9465e0f835d6e3aef30",
+      "size_bytes": 184198173
+    },
+    "reloc_db": {
+      "file_count": 410,
+      "path": "/home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db",
+      "sha256": "27cd3d6651eef4a17235b48bd0e4c0f53b08266439a8116503abd76718fb8bb7",
+      "size_bytes": 21141967
+    }
+  },
+  "schema": "calibagent.p8.real.v1"
+}

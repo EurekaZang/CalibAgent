@@ -1,0 +1,11 @@
+schema: calibagent.p8.topics.v1
+topics:
+  mid360_cloud: /livox/lidar
+  scan: /scan
+  reference: /Odometry
+  planned_action: /p8/planned_cmd_vel
+  navigation_status: /nav_status
+  collision: /p8/collision
+  goal: /move_base_simple/goal
+  relative_goal: /dclp_relative_goal
+  sport_request: /api/sport/request

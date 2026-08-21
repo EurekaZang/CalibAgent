@@ -1,0 +1,54 @@
+{
+  "armed": true,
+  "backend": "ros",
+  "code_history": [],
+  "command_chain": "DCLP planner -> optional CalibAgent calibration transform -> direct Unitree Sport Move",
+  "config_hash": "8d179352928657e76cf4df27a2c4d92bf391e0896e2d0f2f9603dc8d75502aff",
+  "config_history": [],
+  "created_at": "2026-08-21T14:20:50Z",
+  "git_commit": "7631ba11731378ca22386d9b5a99dee72aaf3ffc",
+  "input_hashes": {
+    "active_seed": "b1db8f125a4eb3436869ba6dfe491d7d0faa1634aa8ff6bb769a21141122e706",
+    "candidate_pool": "ffbae6c42b0e974ea786bb6c16385de9ae9ae344e87228318ace800e8fded092",
+    "config": "9575bbaa23da18c1e7dd4c9af0538ca4e09f2a611ca356785cfd5be05b9b0c45",
+    "dense_design": "59e629077d1fc7ae154f3ca37c09158b2850a3b8e8059d2e36b59daf88dabd8c",
+    "lhs_design": "f7d72a5d6a79c31a105fa298f406205613d656c0fde477d4f66243a21bb5b360",
+    "nav_schedule": "812e56a25c8cbf3522943e11409c24ed0eeb9d9501c960a0baba55c81ffaf728",
+    "random_design": "be53e574cad5cdb69cee5e56832b248890e82b93f8f33a671d145af9f4766d83",
+    "real_offset_slalom": "7f7570859b994e6a8bbb373b980e4253966cd9cd8d4e36ba48c3fcb1b9c745c8",
+    "real_weighted_arc": "ff43a3f894d6f2a845b890316a35c7cbcaf00589d7079f309574998ab57c50ca",
+    "reference_extrinsic": "897788133eb1fd3f5bca79f06a657502fdab97128ab236d56541a80c5fc0e1fc",
+    "runtime_stack": "9b57f23fb1d8d722708a5031d47610121a37ae5545ae795f01b7468b2a82dbb0",
+    "sobol_design": "eee012564989efa79aecd5814fa79fffcd2c72a414f80f54565085d2e8398a5d",
+    "task_distribution": "b0cf6d0361e7ae88ee24a260f53c30f3a54daa996a534b9c89c1b9b40343995b",
+    "topic_map": "da0a78df55182612433448f8bb05bc7d3d52426383459598027aec772f20e497",
+    "validation_commands": "9ad77abb8b56b97c8fd2ca8ea94d00ff7d199ddd8cecfc1dd3dd3b82912fc3cf"
+  },
+  "last_opened_at": "2026-08-21T14:20:50Z",
+  "locomotion_interventions": [],
+  "protocol": "nav",
+  "robot": {
+    "geometry_m": {
+      "length_front": 0.42,
+      "length_rear": 0.42,
+      "width": 0.372
+    },
+    "model": "unitree_go2_edu"
+  },
+  "run_id": "p8_nav_official_20260821_r21",
+  "runtime_artifacts": {
+    "prior_map": {
+      "file_count": 1,
+      "path": "/home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd",
+      "sha256": "6574a2f21f5bad2b23bd0a65d296cb2fa4e339dce2e11b521dd793f428317a78",
+      "size_bytes": 147133213
+    },
+    "reloc_db": {
+      "file_count": 401,
+      "path": "/home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db",
+      "sha256": "10276790931a3a66d7051e8b43608eb7210af28ff4586ede787d8144dadc6980",
+      "size_bytes": 19881711
+    }
+  },
+  "schema": "calibagent.p8.real.v1"
+}

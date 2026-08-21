@@ -1,0 +1,70 @@
+#!/bin/bash
+# 一键启动 MID360 + FAST-LIO 实时建图
+# 用法: ./run_mapping.sh          # 开 RViz
+#       ./run_mapping.sh norviz   # 不开 RViz(机器狗本地无显示时用)
+#
+# 建图结束: 在本终端按一次 Ctrl-C, 地图会保存为:
+#   - ~/ws_localization/src/FAST_LIO/PCD/scans.pcd            (最新一张, 会被覆盖)
+#   - ~/ws_localization/src/FAST_LIO/PCD/map_<时间戳>.pcd     (本次存档, 不会被覆盖)
+
+set -e
+
+PCD_DIR=/home/unitree/ws_localization/src/FAST_LIO/PCD
+PCD_FILE=$PCD_DIR/scans.pcd
+START_TS=$(date +%s)
+
+# 脚本退出时(含 Ctrl-C)自动把本次新建的地图另存为带时间戳的副本
+archive_map() {
+    if [ -f "$PCD_FILE" ]; then
+        local mt
+        mt=$(stat -c %Y "$PCD_FILE" 2>/dev/null || echo 0)
+        if [ "$mt" -ge "$START_TS" ]; then
+            local ts out
+            ts=$(date +%Y%m%d_%H%M%S)
+            out=$PCD_DIR/map_$ts.pcd
+            cp "$PCD_FILE" "$out"
+            echo ""
+            echo ">>> 本次地图已存档为: $out"
+            echo ">>> 查看: pcl_viewer $out"
+            # 同时生成 CloudCompare 原生支持的 PLY(本机查看用)
+            local ply=${out%.pcd}.ply
+            if command -v pcl_pcd2ply &>/dev/null; then
+                pcl_pcd2ply -format 1 -use_camera 0 "$out" "$ply" >/dev/null 2>&1 \
+                    && echo ">>> 已生成 CloudCompare 可用文件: $ply"
+            fi
+        else
+            echo ""
+            echo ">>> 未检测到本次新地图(scans.pcd 未更新), 跳过存档。"
+            echo ">>> 可能是结束太快/雷达无数据, 请确认建图时有点云。"
+        fi
+    fi
+}
+trap archive_map EXIT
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/setup_env.sh"
+go2_kill_stack
+sleep 1
+
+RVIZ=true
+[ "$1" = "norviz" ] && RVIZ=false
+
+echo "============================================"
+echo " RMW = $RMW_IMPLEMENTATION"
+echo " 启动 MID360 + FAST-LIO 建图 (rviz=$RVIZ)"
+echo ""
+echo " 提示:"
+echo "  - 开终端选 foxy(1) 可以,但本脚本会自动配置宇树 DDS"
+echo "  - 启动后等 5~10 秒(IMU 初始化), RViz 才会出现点云"
+echo "  - RViz 看 CloudRegistered(/cloud_registered), 不是 /livox/lidar"
+echo "  - 结束只按一次 Ctrl-C, 等出现 'scan saved' 再关终端"
+echo "  - 建图同时导出关键帧到 PCD/reloc_db/ (供全局重定位)"
+echo "  - 建图后运行: ./build_reloc_db.sh  再 ./run_reloc_only.sh"
+echo ""
+echo " 地图保存位置:"
+echo "   $PCD_DIR/scans.pcd        (最新, 会覆盖)"
+echo "   $PCD_DIR/map_<时间戳>.pcd  (本次存档)"
+echo "============================================"
+
+ros2 launch go2_loc_bringup mapping.launch.py rviz:=$RVIZ

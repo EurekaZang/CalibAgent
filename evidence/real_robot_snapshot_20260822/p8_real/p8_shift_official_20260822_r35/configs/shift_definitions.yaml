@@ -1,0 +1,20 @@
+schema: calibagent.p8.shifts.v1
+shifts:
+  R1_command_gain_coupling:
+    implementation: hidden_command_transform
+    command_matrix: [[0.82, 0.00, 0.08], [0.00, 0.90, 0.00], [0.06, 0.00, 1.15]]
+  R2_payload_com:
+    implementation: physical_payload
+    mass_kg: 2.0
+    position_base_m: [0.12, 0.0, 0.18]
+    attachment_id: p8_payload_fixture_v1
+  R3_surface_friction:
+    implementation: physical_surface
+    material_id: commercial_rubber_mat_v1
+    lane_id: p8_surface_lane
+  R4_mixed_context:
+    implementation: fixed_combination
+    payload_mass_kg: 2.0
+    payload_position_base_m: [0.12, 0.0, 0.18]
+    material_id: commercial_rubber_mat_v1
+    task_profile: weighted_arc_goal_profile

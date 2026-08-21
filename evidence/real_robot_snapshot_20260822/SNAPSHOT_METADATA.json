@@ -1,0 +1,17 @@
+{
+  "active_map": "localization_workspace/src/FAST_LIO/PCD/scans.pcd",
+  "active_relocation_database": "localization_workspace/src/FAST_LIO/PCD/reloc_db",
+  "bytes_before_integrity_manifest": 2191264172,
+  "calibagent_commit": "8725653f19baa1825987c3cf1d00ea6f845edcdd",
+  "file_count_before_integrity_manifest": 3565,
+  "livox_ros_driver2_commit": "6b9356cadf77084619ba406e6a0eb41163b08039",
+  "pointcloud_to_laserscan_commit": "58d5b0659dc1f7db1b8745d1363b6163397797b8",
+  "schema": "calibagent.real_robot_snapshot.v1",
+  "snapshot_created_utc": "2026-08-21T17:31:28Z",
+  "source_roots": {
+    "dclp": "/home/unitree/qyw/dclp_20260710_reproduction",
+    "localization": "/home/unitree/ws_localization",
+    "p8_real": "/home/unitree/lly/p8_real",
+    "ros2": "/home/unitree/project/ros2_ws/src"
+  }
+}

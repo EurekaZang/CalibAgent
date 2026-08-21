@@ -1,0 +1,31 @@
+{
+  "backend": "ros",
+  "duration_s": 60.00132131576538,
+  "topics": {
+    "planned_action": {
+      "frames": 1500,
+      "max_gap_ms": 45.33743858337402,
+      "max_receive_age_ms": 45.33743858337402,
+      "rate_hz": 24.999449463888293,
+      "receive_age_ms_at_end": 7.982730865478516
+    },
+    "reference": {
+      "frames": 1200,
+      "max_age_ms": 108.56199264526367,
+      "max_gap_ms": 87.38350868225098,
+      "rate_hz": 19.999559571110634
+    },
+    "scan": {
+      "frames": 1200,
+      "max_age_ms": 108.2761287689209,
+      "max_gap_ms": 65.44303894042969,
+      "minimum_valid_beams": 679,
+      "range_max": 20.0,
+      "range_min": 0.25999999046325684,
+      "rate_hz": 19.999559571110634,
+      "valid_beams": 798,
+      "zero_valid_beam_frames": 0
+    }
+  },
+  "valid": true
+}

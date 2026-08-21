@@ -1,0 +1,2 @@
+[INFO] [1784481466.080702125] [static_transform_publisher_mnnbuuIy5TFHQGR2]: Spinning until killed publishing transform from 'base_link' to 'livox_frame'
+[INFO] [1784481519.257522138] [rclcpp]: signal_handler(signal_value=2)

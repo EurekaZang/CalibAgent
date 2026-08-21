@@ -1,0 +1,166 @@
+## DCLP Unitree Go2 + Livox MID360 deployment defaults.
+##
+## Keep this file as flat "key: scalar" YAML. load_params_env.sh maps these
+## values into ROS2 bringup, the DCLP policy node, the goal sequencer, and the
+## Unitree SportClient ZMQ bridge.
+
+# === Policy artifact / DCLP checkpoint ===
+# Main backend: PyTorch .pth checkpoint. Optional legacy backend: TensorFlow v1 checkpoint prefix.
+policy_backend: "pth"
+model_path: "/home/unitree/qyw/dclp_20260710_reproduction/models/dclp/V1_41lambda1_101.pth"
+policy_device: "cpu"
+gpu_mem_frac: 0.1
+policy_deterministic: true
+
+# === DCLP observation contract ===
+# Observation is 548-D:
+#   90 * [cos, sin, pooled_distance, length1, length2, width] + 8-tail.
+# DCLP training uses 90 min-pooled sectors over the 360 deg scan after transforming /scan into base_link.
+dclp_length1: 0.6048
+dclp_length2: 0.6048
+dclp_width: 0.53568
+scan_invalid_fill: 2.0
+
+# === Topics / frames ===
+scan_topic: "/scan"
+odom_topic: "/odom"
+cmd_vel_topic: "/go2_policy/cmd_vel"
+goal_topic: "/move_base_simple/goal"
+relative_goal_topic: "/dclp_relative_goal"
+status_topic: "/nav_status"
+goal_status_topic: "/goal_sequencer/status"
+base_frame: "base_link"
+global_frame: "odom"
+
+# === Go2 specific: Livox PointCloud2 -> LaserScan ===
+cloud_topic: "/livox/lidar"
+sport_topic: "/sportmodestate"
+odom_frame: "odom"
+livox_frame: "livox_frame"
+target_frame: "base_link"
+transform_tolerance: 1.0
+# Filter out floor/self returns before building /scan. With min_height=0.0
+# the MID360 often projects ground/leg returns as false close front obstacles,
+# which disables the straight-goal yaw suppressor even in an empty corridor.
+min_height: 0.20
+max_height: 1.00
+angle_min: -3.14159265359
+angle_max: 3.14159265359
+angle_increment: 0.005817764
+queue_size: 10
+scan_time: 0.1
+range_min: 0.26
+range_max: 20.0
+use_inf: 1
+
+# === Go2 specific: MID360 static TF base_link -> livox_frame ===
+tf_x: 0.1870
+tf_y: 0.0
+tf_z: 0.3603
+tf_qx: 0.0
+tf_qy: 0.113203
+tf_qz: 0.0
+tf_qw: 0.993572
+
+# === Trajectory logging ===
+trajectory_log_enabled: true
+trajectory_log_dir: "trajectory_logs"
+trajectory_log_basename: ""
+trajectory_log_rate_hz: 2.0
+
+# === Control / safety ===
+control_rate_hz: 5.0
+control_period_sec: 0.2
+scan_timeout: 0.7
+odom_timeout: 0.7
+tf_timeout: 0.05
+enabled_on_start: true
+policy_stop_when_reached: 1
+goal_reach_distance: 0.4
+min_obstacle_distance: 0.0
+policy_timing_warn_ms: 180.0
+scan_min_value: 0.2
+# The pth DCLP policy has a learned yaw bias near target_angle=0; in a clear
+# front corridor, suppress that bias so a straight relative goal drives forward.
+straighten_front_goal_angle: 0.0
+straighten_front_clear_angle: 0.35
+straighten_front_clear_range: 1.2
+straighten_front_goal_w_limit: 0.0
+
+# === DCLP normalized action -> cmd_vel ===
+# The .pth policy returns normalized [-1, 1] action. The node maps each
+# non-zero action magnitude from [0, 1] into [cmd_vel_*_min, max_*_speed],
+# preserves the action sign, then applies acceleration limits and hard caps.
+speed_scale: 1.0
+max_linear_speed: 0.90
+max_angular_speed: 0.83776
+max_linear_acc: 3.0
+max_angular_acc: 3.0
+cmd_vel_v_cap: 1.5
+cmd_vel_w_cap: 1.5708
+cmd_vel_v_min: 0.29997
+cmd_vel_w_min: 0.27928
+
+# === Runtime / ROS2 environment ===
+ros2_ws: "/home/unitree/project/ros2_ws"
+ros_distro_setup: "/opt/ros/foxy/setup.bash"
+unitree_ros2_setup: "/home/unitree/unitree_ros2/setup.sh"
+cyclonedds_config: "/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/cyclonedds_go2_eth0.xml"
+cyclonedds_uri: "/home/unitree/qyw/dclp_20260710_reproduction/dclp_deploy/robots/unitree_go2/cyclonedds_go2_eth0.xml"
+ros_log_dir: "/tmp/ros2_go2_logs"
+
+# === Conda env ===
+policy_python_bin: "/home/unitree/miniconda3/envs/go2/bin/python"
+
+# === Bringup behavior ===
+no_rviz: 0
+mid360_rviz: 0
+clean_existing: 1
+autolaunch_policy: 0
+autolaunch_uwb_goal: 0
+
+# === Policy controller ===
+policy_workdir: ""
+policy_script: ""
+policy_zmq_bind: "tcp://*:5596"
+
+# === Unitree sport client ===
+go2_conda_env: "go2"
+go2_iface: "auto"
+go2_zmq_endpoint: "tcp://192.168.123.222:5596"
+go2_recv_timeout_ms: 100
+go2_max_linear: 1.5
+go2_max_angular: 1.5708
+go2_allow_reverse: 1
+go2_disable_obstacle_avoid: 1
+go2_gait: "economic"
+go2_allow_gait_failure: 1
+go2_disable_joystick: 1
+go2_keep_joystick_disabled_on_exit: 0
+go2_allow_joystick_switch_failure: 0
+go2_force_api_remote_command: 1
+go2_keep_api_remote_command_on_exit: 0
+go2_sport_timeout: 5.0
+
+# === Goal sequencing ===
+auto_start: 1
+goal_timeout: 120
+stop_on_failure: 1
+start_policy: 1
+start_go2_zmq: 1
+
+# === UWB goal bridge ===
+uwb_ros_topic: "/uwbstate"
+uwb_odom_topic: "/odom"
+uwb_goal_topic: "/move_base_simple/goal"
+uwb_goal_frame: "odom"
+uwb_goal_rate_hz: 10.0
+uwb_stale_timeout: 1.5
+uwb_min_distance: 0.25
+uwb_max_distance: 20.0
+uwb_yaw_units: "auto"
+uwb_yaw_sign: 1.0
+uwb_reliability: "reliable"
+uwb_goal_position_epsilon: 0.05
+uwb_goal_yaw_epsilon: 0.05
+uwb_goal_republish_period: 0.2

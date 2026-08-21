@@ -1,0 +1,5 @@
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=49.98Hz age_ms recent_avg=21.4 recent_max=22.0 last=22.0 all_max=25.0 frame=livox_frame points=4128
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=50.02Hz age_ms recent_avg=23.3 recent_max=25.4 last=23.0 all_max=25.9 frame=base_link beams=1081
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=75 rate=50.01Hz age_ms recent_avg=21.5 recent_max=22.0 last=20.9 all_max=23.0 frame=livox_frame points=3936
+[0;32m[dclp_nav][0m   LaserScan /scan OK count=76 rate=50.00Hz age_ms recent_avg=23.2 recent_max=23.7 last=23.5 all_max=24.9 frame=base_link beams=1081
+[0;32m[dclp_nav][0m   MID360 /livox/lidar OK count=76 rate=49.98Hz age_ms recent_avg=21.5 recent_max=22.3 last=21.8 all_max=22.6 frame=livox_frame points=3936

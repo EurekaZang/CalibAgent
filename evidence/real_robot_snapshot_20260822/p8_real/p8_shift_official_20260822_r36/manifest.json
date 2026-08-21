@@ -1,0 +1,52 @@
+{
+  "armed": true,
+  "backend": "ros",
+  "code_history": [],
+  "command_chain": "DCLP planner -> optional CalibAgent calibration transform -> direct Unitree Sport Move",
+  "config_hash": "a1c97b7db4fbb5195682616815e54d5785f08afffb3473b598e30cd8c8a8b26d",
+  "config_history": [],
+  "created_at": "2026-08-21T16:56:35Z",
+  "git_commit": "ba1077ef92b8ffd26ae486893d40ed60fb1e7235",
+  "input_hashes": {
+    "candidate_pool": "ffbae6c42b0e974ea786bb6c16385de9ae9ae344e87228318ace800e8fded092",
+    "config": "b4b2bec2b31a1fe87045aa035f69698abe8dd0056fc49e6bf4c4d365db31d8af",
+    "monitor_commands": "b4389df3c21a7e3b15bef71b7a7d93b41478a17d6824c7e72642161dc10fcc7f",
+    "passive_recovery": "e11381d0ad6a5bbd06318a065dc50d57dd126d9b7622f82d0af3ef66ee0d940a",
+    "pre_calibration": "4764472408f6a18dd6c6dac52f96a06ac6677e8eac0ac4c3c8b7999d9bda1c95",
+    "recovery_validation": "6f1045e683b5bc1a37e564b8ba2ea9231d60368633dd4a0c460e899f9c1b2c6c",
+    "reference_extrinsic": "897788133eb1fd3f5bca79f06a657502fdab97128ab236d56541a80c5fc0e1fc",
+    "restore_checks": "8bd19a64db3eae93c63218611c1f009bb3d0450508784611f362e2ca360c2c54",
+    "runtime_stack": "9b57f23fb1d8d722708a5031d47610121a37ae5545ae795f01b7468b2a82dbb0",
+    "shift_definitions": "043d2d6431aab4bd36793bc8f81e099dca3ca1fb150043d42264e197b120f776",
+    "shift_schedule": "59945a3bef4948cff570ffe6e56b09034efed7ffb74762e3296e7143bcc87166",
+    "task_distribution": "b0cf6d0361e7ae88ee24a260f53c30f3a54daa996a534b9c89c1b9b40343995b",
+    "topic_map": "da0a78df55182612433448f8bb05bc7d3d52426383459598027aec772f20e497"
+  },
+  "last_opened_at": "2026-08-21T16:56:35Z",
+  "locomotion_interventions": [],
+  "protocol": "shift",
+  "robot": {
+    "geometry_m": {
+      "length_front": 0.42,
+      "length_rear": 0.42,
+      "width": 0.372
+    },
+    "model": "unitree_go2_edu"
+  },
+  "run_id": "p8_shift_official_20260822_r36",
+  "runtime_artifacts": {
+    "prior_map": {
+      "file_count": 1,
+      "path": "/home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd",
+      "sha256": "828cb81778fbf0c919ef691e725d7478c22164da1d0fb5a983c7bd9f6d30d957",
+      "size_bytes": 128119581
+    },
+    "reloc_db": {
+      "file_count": 365,
+      "path": "/home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db",
+      "sha256": "e713f729cd0ad2c851bf5cbff2d0b778b9da267e082e33bf28c107612df90022",
+      "size_bytes": 19003100
+    }
+  },
+  "schema": "calibagent.p8.real.v1"
+}

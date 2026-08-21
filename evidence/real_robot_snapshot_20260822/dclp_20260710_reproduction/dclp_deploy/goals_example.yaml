@@ -1,0 +1,11 @@
+# Example goal list for DCLP real-robot deployment.
+
+frame: map
+dwell_sec: 1.0
+timeout_sec: 90.0
+auto_start: false
+
+goals:
+  - { x: 1.0, y: 0.0 }
+  - { x: 1.0, y: 1.0 }
+  - { x: 0.0, y: 0.0 }

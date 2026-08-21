@@ -1,0 +1,474 @@
+============================================
+ 一键陌生环境建图
+ 工作区: /home/unitree/ws_localization
+ RViz:   false
+
+ 流程:
+   1) 启动 MID360 + FAST-LIO 建图
+   2) 你遥控机器狗走完整个环境
+   3) 在本终端按一次 Ctrl-C 保存地图
+   4) 自动生成全局重定位数据库
+   5) 自动生成 2D 栅格地图
+
+ 输出:
+   3D地图:      /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+   重定位数据库: /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db
+   2D地图名:     scans
+============================================
+>>> 旧 scans.pcd 已保全为: /home/unitree/ws_localization/src/FAST_LIO/PCD/map_backup_before_20260821_232927.pcd
+>>> 旧 reloc_db 已保全为: /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db_backup_before_20260821_232927
+Setup unitree ros2 environment
+DDS 使用 eth0 (持有狗内网 192.168.123.18, 雷达/狗 DDS 可达)
+MID360 runtime config: lidar=192.168.123.20 host=192.168.123.18 iface=eth0
+启动头顶 MID360(192.168.123.20) + FAST-LIO2，rviz=false
+Livox runtime config: /tmp/go2_mid360_192_168_123_18.json
+结束时按一次 Ctrl-C；FAST-LIO2 将保存 /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+[INFO] [launch]: All log files can be found below /home/unitree/.ros/log/2026-08-21-23-29-30-121061-ubuntu-51667
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [livox_ros_driver2_node-1]: process started with pid [51669]
+[INFO] [fastlio_mapping-2]: process started with pid [51671]
+[livox_ros_driver2_node-1] [INFO] [1787326170.315177480] [livox_lidar_publisher]: Livox Ros Driver2 Version: 1.2.4
+[livox_ros_driver2_node-1] [INFO] [1787326170.315893758] [livox_lidar_publisher]: Data Source is raw lidar.
+[livox_ros_driver2_node-1] [INFO] [1787326170.315933663] [livox_lidar_publisher]: Config file : /tmp/go2_mid360_192_168_123_18.json
+[livox_ros_driver2_node-1] LdsLidar *GetInstance
+[livox_ros_driver2_node-1] config lidar type: 8
+[livox_ros_driver2_node-1] successfully parse base config, counts: 1
+[livox_ros_driver2_node-1] [INFO] [1787326170.321366055] [livox_lidar_publisher]: Init lds lidar success!
+[fastlio_mapping-2] [INFO] [1787326170.435172472] [laser_mapping]: Keyframe export enabled for global relocalization DB
+[fastlio_mapping-2] [INFO] [1787326170.435442880] [laser_mapping]: p_pre->lidar_type 1
+[fastlio_mapping-2] Multi thread started 
+[fastlio_mapping-2] ~~~~/home/unitree/ws_localization/src/FAST_LIO/ file opened
+[fastlio_mapping-2] [INFO] [1787326170.448735866] [laser_mapping]: Node init finished.
+[livox_ros_driver2_node-1] GetFreeIndex key:livox_lidar_343648448.
+[livox_ros_driver2_node-1] Init queue, real query size:16.
+[livox_ros_driver2_node-1] Lidar[0] storage queue size: 10
+[livox_ros_driver2_node-1] set pcl data type, handle: 343648448, data type: 1
+[livox_ros_driver2_node-1] set scan pattern, handle: 343648448, scan pattern: 0
+[livox_ros_driver2_node-1] begin to change work mode to 'Normal', handle: 343648448
+[livox_ros_driver2_node-1] successfully set data type, handle: 343648448, set_bit: 2
+[livox_ros_driver2_node-1] successfully set pattern mode, handle: 343648448, set_bit: 0
+[livox_ros_driver2_node-1] successfully set lidar attitude, ip: 192.168.123.20
+[livox_ros_driver2_node-1] successfully change work mode, handle: 343648448
+[livox_ros_driver2_node-1] successfully enable Livox Lidar imu, ip: 192.168.123.20
+[livox_ros_driver2_node-1] [INFO] [1787326173.322107235] [livox_lidar_publisher]: livox/imu publish use imu format
+[livox_ros_driver2_node-1] [INFO] [1787326173.328660814] [livox_lidar_publisher]: livox/lidar publish use livox custom format
+[livox_ros_driver2_node-1] [INFO] [1787326173.428860032] [livox_lidar_publisher]: livox/lidar_pc2 publish use PointCloud2 format
+[fastlio_mapping-2] IMU Initial Done
+[fastlio_mapping-2] [WARN] [1787326173.538153675] [laser_mapping]: No point, skip this scan!
+[fastlio_mapping-2] 
+[fastlio_mapping-2] [INFO] [1787326173.599888859] [laser_mapping]: Initialize the map kdtree
+[fastlio_mapping-2] [INFO] [1787326173.710627122] [laser_mapping]: Saved reloc keyframe 0 (1697 pts) at [0.02 0.00 0.00]
+[fastlio_mapping-2] [INFO] [1787326173.827668524] [laser_mapping]: Saved reloc keyframe 1 (1685 pts) at [0.07 0.02 -0.00]
+[fastlio_mapping-2] [INFO] [1787326173.917669828] [laser_mapping]: Saved reloc keyframe 2 (1718 pts) at [0.08 0.03 0.00]
+[fastlio_mapping-2] [INFO] [1787326174.603850265] [laser_mapping]: Saved reloc keyframe 3 (1663 pts) at [0.29 0.50 0.01]
+[fastlio_mapping-2] [INFO] [1787326174.660833847] [laser_mapping]: Saved reloc keyframe 4 (1598 pts) at [1.59 1.63 0.03]
+[fastlio_mapping-2] [INFO] [1787326174.989606552] [laser_mapping]: Saved reloc keyframe 5 (1568 pts) at [1.96 2.04 0.02]
+[fastlio_mapping-2] [INFO] [1787326175.035929614] [laser_mapping]: Saved reloc keyframe 6 (1557 pts) at [2.04 2.07 0.01]
+[fastlio_mapping-2] [INFO] [1787326175.115782255] [laser_mapping]: Saved reloc keyframe 7 (1570 pts) at [2.14 2.07 0.01]
+[fastlio_mapping-2] [INFO] [1787326175.208124882] [laser_mapping]: Saved reloc keyframe 8 (1560 pts) at [2.24 2.06 0.03]
+[fastlio_mapping-2] [INFO] [1787326175.289988082] [laser_mapping]: Saved reloc keyframe 9 (1588 pts) at [2.34 2.05 0.01]
+[fastlio_mapping-2] [INFO] [1787326175.336363241] [laser_mapping]: Saved reloc keyframe 10 (1543 pts) at [2.45 2.04 0.03]
+[fastlio_mapping-2] [INFO] [1787326175.425947383] [laser_mapping]: Saved reloc keyframe 11 (1585 pts) at [2.59 2.03 0.02]
+[fastlio_mapping-2] [INFO] [1787326175.565821109] [laser_mapping]: Saved reloc keyframe 12 (1559 pts) at [2.85 2.01 0.02]
+[fastlio_mapping-2] [INFO] [1787326175.706012989] [laser_mapping]: Saved reloc keyframe 13 (1579 pts) at [3.13 2.00 0.02]
+[fastlio_mapping-2] [INFO] [1787326175.865917222] [laser_mapping]: Saved reloc keyframe 14 (1553 pts) at [3.44 2.02 0.02]
+[fastlio_mapping-2] [INFO] [1787326175.946333496] [laser_mapping]: Saved reloc keyframe 15 (1509 pts) at [3.57 2.02 0.03]
+[fastlio_mapping-2] [INFO] [1787326176.015593619] [laser_mapping]: Saved reloc keyframe 16 (1576 pts) at [3.69 2.04 0.03]
+[fastlio_mapping-2] [INFO] [1787326176.099109222] [laser_mapping]: Saved reloc keyframe 17 (1562 pts) at [3.79 2.07 0.03]
+[fastlio_mapping-2] [INFO] [1787326176.155942946] [laser_mapping]: Saved reloc keyframe 18 (1568 pts) at [3.89 2.09 0.02]
+[fastlio_mapping-2] [INFO] [1787326176.253319905] [laser_mapping]: Saved reloc keyframe 19 (1552 pts) at [3.99 2.12 0.03]
+[fastlio_mapping-2] [INFO] [1787326176.339653484] [laser_mapping]: Saved reloc keyframe 20 (1554 pts) at [4.10 2.13 0.02]
+[fastlio_mapping-2] [INFO] [1787326176.385730395] [laser_mapping]: Saved reloc keyframe 21 (1531 pts) at [4.23 2.15 0.03]
+[fastlio_mapping-2] [INFO] [1787326176.487734154] [laser_mapping]: Saved reloc keyframe 22 (1535 pts) at [4.36 2.16 0.03]
+[fastlio_mapping-2] [INFO] [1787326176.551880583] [laser_mapping]: Saved reloc keyframe 23 (1489 pts) at [4.49 2.18 0.04]
+[fastlio_mapping-2] [INFO] [1787326176.604622468] [laser_mapping]: Saved reloc keyframe 24 (1475 pts) at [4.62 2.20 0.04]
+[fastlio_mapping-2] [INFO] [1787326176.674543988] [laser_mapping]: Saved reloc keyframe 25 (1459 pts) at [4.77 2.23 0.04]
+[fastlio_mapping-2] [INFO] [1787326176.754150735] [laser_mapping]: Saved reloc keyframe 26 (1423 pts) at [4.93 2.25 0.04]
+[fastlio_mapping-2] [INFO] [1787326176.834208247] [laser_mapping]: Saved reloc keyframe 27 (1402 pts) at [5.08 2.29 0.02]
+[fastlio_mapping-2] [INFO] [1787326176.974264445] [laser_mapping]: Saved reloc keyframe 28 (1337 pts) at [5.38 2.35 0.03]
+[fastlio_mapping-2] [INFO] [1787326177.132972325] [laser_mapping]: Saved reloc keyframe 29 (1290 pts) at [5.65 2.42 0.05]
+[fastlio_mapping-2] [INFO] [1787326177.203275394] [laser_mapping]: Saved reloc keyframe 30 (1321 pts) at [5.81 2.45 0.04]
+[fastlio_mapping-2] [INFO] [1787326177.282774682] [laser_mapping]: Saved reloc keyframe 31 (1266 pts) at [5.97 2.47 0.05]
+[fastlio_mapping-2] [INFO] [1787326177.440761964] [laser_mapping]: Saved reloc keyframe 32 (1247 pts) at [6.28 2.52 0.05]
+[fastlio_mapping-2] [INFO] [1787326177.524762448] [laser_mapping]: Saved reloc keyframe 33 (1237 pts) at [6.43 2.53 0.04]
+[fastlio_mapping-2] [INFO] [1787326177.602951648] [laser_mapping]: Saved reloc keyframe 34 (1221 pts) at [6.58 2.55 0.04]
+[fastlio_mapping-2] [INFO] [1787326177.652558941] [laser_mapping]: Saved reloc keyframe 35 (1230 pts) at [6.69 2.58 0.05]
+[fastlio_mapping-2] [INFO] [1787326177.732622983] [laser_mapping]: Saved reloc keyframe 36 (1236 pts) at [6.79 2.60 0.06]
+[fastlio_mapping-2] [INFO] [1787326177.822022578] [laser_mapping]: Saved reloc keyframe 37 (1224 pts) at [6.91 2.62 0.06]
+[fastlio_mapping-2] [INFO] [1787326177.872559051] [laser_mapping]: Saved reloc keyframe 38 (1197 pts) at [7.03 2.63 0.05]
+[fastlio_mapping-2] [INFO] [1787326177.972043246] [laser_mapping]: Saved reloc keyframe 39 (1170 pts) at [7.14 2.65 0.05]
+[fastlio_mapping-2] [INFO] [1787326178.049462983] [laser_mapping]: Saved reloc keyframe 40 (1162 pts) at [7.22 2.64 0.07]
+[fastlio_mapping-2] [INFO] [1787326178.141741996] [laser_mapping]: Saved reloc keyframe 41 (1144 pts) at [7.27 2.62 0.07]
+[fastlio_mapping-2] [INFO] [1787326178.826648194] [laser_mapping]: Saved reloc keyframe 42 (1370 pts) at [7.59 2.23 0.05]
+[fastlio_mapping-2] [INFO] [1787326178.923550166] [laser_mapping]: Saved reloc keyframe 43 (1341 pts) at [7.64 2.17 0.05]
+[fastlio_mapping-2] [INFO] [1787326179.023539914] [laser_mapping]: Saved reloc keyframe 44 (1346 pts) at [7.67 2.10 0.07]
+[fastlio_mapping-2] [INFO] [1787326179.133975266] [laser_mapping]: Saved reloc keyframe 45 (1346 pts) at [7.73 2.02 0.06]
+[fastlio_mapping-2] [INFO] [1787326179.245739843] [laser_mapping]: Saved reloc keyframe 46 (1380 pts) at [7.77 1.93 0.08]
+[fastlio_mapping-2] [INFO] [1787326179.348769173] [laser_mapping]: Saved reloc keyframe 47 (1291 pts) at [7.82 1.84 0.08]
+[fastlio_mapping-2] [INFO] [1787326179.446558246] [laser_mapping]: Saved reloc keyframe 48 (1333 pts) at [7.86 1.74 0.08]
+[fastlio_mapping-2] [INFO] [1787326179.534317568] [laser_mapping]: Saved reloc keyframe 49 (1342 pts) at [7.87 1.65 0.09]
+[fastlio_mapping-2] [INFO] [1787326179.625347552] [laser_mapping]: Saved reloc keyframe 50 (1358 pts) at [7.88 1.56 0.08]
+[fastlio_mapping-2] [INFO] [1787326179.724686945] [laser_mapping]: Saved reloc keyframe 51 (1404 pts) at [7.89 1.47 0.08]
+[fastlio_mapping-2] [INFO] [1787326179.834215549] [laser_mapping]: Saved reloc keyframe 52 (1351 pts) at [7.94 1.36 0.08]
+[fastlio_mapping-2] [INFO] [1787326179.942773434] [laser_mapping]: Saved reloc keyframe 53 (1400 pts) at [7.97 1.25 0.07]
+[fastlio_mapping-2] [INFO] [1787326180.034059554] [laser_mapping]: Saved reloc keyframe 54 (1349 pts) at [8.02 1.14 0.07]
+[fastlio_mapping-2] [INFO] [1787326180.140520289] [laser_mapping]: Saved reloc keyframe 55 (1332 pts) at [8.06 1.03 0.06]
+[fastlio_mapping-2] [INFO] [1787326180.223784433] [laser_mapping]: Saved reloc keyframe 56 (1315 pts) at [8.09 0.91 0.07]
+[fastlio_mapping-2] [INFO] [1787326180.343889078] [laser_mapping]: Saved reloc keyframe 57 (1387 pts) at [8.13 0.77 0.06]
+[fastlio_mapping-2] [INFO] [1787326180.554504620] [laser_mapping]: Saved reloc keyframe 58 (1299 pts) at [8.19 0.49 0.07]
+[fastlio_mapping-2] [INFO] [1787326180.754902213] [laser_mapping]: Saved reloc keyframe 59 (1327 pts) at [8.26 0.20 0.07]
+[fastlio_mapping-2] [INFO] [1787326180.845454103] [laser_mapping]: Saved reloc keyframe 60 (1340 pts) at [8.30 0.07 0.08]
+[fastlio_mapping-2] [INFO] [1787326180.941183370] [laser_mapping]: Saved reloc keyframe 61 (1304 pts) at [8.35 -0.08 0.05]
+[fastlio_mapping-2] [INFO] [1787326181.133760371] [laser_mapping]: Saved reloc keyframe 62 (1310 pts) at [8.42 -0.36 0.06]
+[fastlio_mapping-2] [INFO] [1787326181.335159630] [laser_mapping]: Saved reloc keyframe 63 (1300 pts) at [8.49 -0.64 0.06]
+[fastlio_mapping-2] [INFO] [1787326181.554982468] [laser_mapping]: Saved reloc keyframe 64 (1311 pts) at [8.56 -0.92 0.07]
+[fastlio_mapping-2] [INFO] [1787326181.743951550] [laser_mapping]: Saved reloc keyframe 65 (1242 pts) at [8.63 -1.20 0.07]
+[fastlio_mapping-2] [INFO] [1787326181.833377967] [laser_mapping]: Saved reloc keyframe 66 (1246 pts) at [8.67 -1.34 0.07]
+[fastlio_mapping-2] [INFO] [1787326181.922510934] [laser_mapping]: Saved reloc keyframe 67 (1199 pts) at [8.70 -1.45 0.07]
+[fastlio_mapping-2] [INFO] [1787326182.033056853] [laser_mapping]: Saved reloc keyframe 68 (1240 pts) at [8.72 -1.55 0.08]
+[fastlio_mapping-2] [INFO] [1787326182.152297635] [laser_mapping]: Saved reloc keyframe 69 (1172 pts) at [8.73 -1.66 0.07]
+[fastlio_mapping-2] [INFO] [1787326182.222100469] [laser_mapping]: Saved reloc keyframe 70 (1165 pts) at [8.75 -1.76 0.08]
+[fastlio_mapping-2] [INFO] [1787326182.322606718] [laser_mapping]: Saved reloc keyframe 71 (1171 pts) at [8.77 -1.87 0.09]
+[fastlio_mapping-2] [INFO] [1787326182.440838252] [laser_mapping]: Saved reloc keyframe 72 (1120 pts) at [8.77 -1.98 0.08]
+[fastlio_mapping-2] [INFO] [1787326182.523357384] [laser_mapping]: Saved reloc keyframe 73 (1165 pts) at [8.76 -2.09 0.09]
+[fastlio_mapping-2] [INFO] [1787326182.736814556] [laser_mapping]: Saved reloc keyframe 74 (1095 pts) at [8.77 -2.29 0.09]
+[fastlio_mapping-2] [INFO] [1787326182.822158703] [laser_mapping]: Saved reloc keyframe 75 (1081 pts) at [8.77 -2.40 0.08]
+[fastlio_mapping-2] [INFO] [1787326182.946285684] [laser_mapping]: Saved reloc keyframe 76 (1102 pts) at [8.75 -2.51 0.08]
+[fastlio_mapping-2] [INFO] [1787326183.032355710] [laser_mapping]: Saved reloc keyframe 77 (1145 pts) at [8.76 -2.61 0.08]
+[fastlio_mapping-2] [INFO] [1787326183.250151164] [laser_mapping]: Saved reloc keyframe 78 (1065 pts) at [8.74 -2.82 0.08]
+[fastlio_mapping-2] [INFO] [1787326183.331257837] [laser_mapping]: Saved reloc keyframe 79 (1029 pts) at [8.74 -2.93 0.08]
+[fastlio_mapping-2] [INFO] [1787326183.431969406] [laser_mapping]: Saved reloc keyframe 80 (1092 pts) at [8.72 -3.03 0.08]
+[fastlio_mapping-2] [INFO] [1787326184.050681828] [laser_mapping]: Saved reloc keyframe 81 (1100 pts) at [8.45 -3.51 0.08]
+[fastlio_mapping-2] [INFO] [1787326184.132511341] [laser_mapping]: Saved reloc keyframe 82 (1151 pts) at [8.41 -3.59 0.08]
+[fastlio_mapping-2] [INFO] [1787326184.232094076] [laser_mapping]: Saved reloc keyframe 83 (1085 pts) at [8.36 -3.66 0.08]
+[fastlio_mapping-2] [INFO] [1787326184.321968767] [laser_mapping]: Saved reloc keyframe 84 (1131 pts) at [8.30 -3.73 0.07]
+[fastlio_mapping-2] [INFO] [1787326184.432165751] [laser_mapping]: Saved reloc keyframe 85 (1112 pts) at [8.23 -3.77 0.09]
+[fastlio_mapping-2] [INFO] [1787326185.133561995] [laser_mapping]: Saved reloc keyframe 86 (1240 pts) at [7.66 -3.75 0.07]
+[fastlio_mapping-2] [INFO] [1787326185.534002511] [laser_mapping]: Saved reloc keyframe 87 (1243 pts) at [7.35 -3.71 0.06]
+[fastlio_mapping-2] [INFO] [1787326185.633557503] [laser_mapping]: Saved reloc keyframe 88 (1251 pts) at [7.26 -3.71 0.07]
+[fastlio_mapping-2] [INFO] [1787326185.723400866] [laser_mapping]: Saved reloc keyframe 89 (1239 pts) at [7.13 -3.70 0.06]
+[fastlio_mapping-2] [INFO] [1787326185.834680606] [laser_mapping]: Saved reloc keyframe 90 (1218 pts) at [7.00 -3.68 0.06]
+[fastlio_mapping-2] [INFO] [1787326185.951965108] [laser_mapping]: Saved reloc keyframe 91 (1276 pts) at [6.86 -3.66 0.06]
+[fastlio_mapping-2] [INFO] [1787326186.023649507] [laser_mapping]: Saved reloc keyframe 92 (1276 pts) at [6.73 -3.65 0.06]
+[fastlio_mapping-2] [INFO] [1787326186.124946667] [laser_mapping]: Saved reloc keyframe 93 (1281 pts) at [6.60 -3.64 0.06]
+[fastlio_mapping-2] [INFO] [1787326186.241899064] [laser_mapping]: Saved reloc keyframe 94 (1286 pts) at [6.45 -3.63 0.05]
+[fastlio_mapping-2] [INFO] [1787326186.334008034] [laser_mapping]: Saved reloc keyframe 95 (1304 pts) at [6.30 -3.61 0.06]
+[fastlio_mapping-2] [INFO] [1787326186.444118971] [laser_mapping]: Saved reloc keyframe 96 (1281 pts) at [6.15 -3.60 0.05]
+[fastlio_mapping-2] [INFO] [1787326186.534590803] [laser_mapping]: Saved reloc keyframe 97 (1337 pts) at [6.02 -3.58 0.06]
+[fastlio_mapping-2] [INFO] [1787326186.641042714] [laser_mapping]: Saved reloc keyframe 98 (1349 pts) at [5.88 -3.56 0.05]
+[fastlio_mapping-2] [INFO] [1787326186.724056842] [laser_mapping]: Saved reloc keyframe 99 (1349 pts) at [5.75 -3.55 0.06]
+[fastlio_mapping-2] [INFO] [1787326186.834941755] [laser_mapping]: Saved reloc keyframe 100 (1385 pts) at [5.62 -3.53 0.05]
+[fastlio_mapping-2] [INFO] [1787326186.945221050] [laser_mapping]: Saved reloc keyframe 101 (1337 pts) at [5.48 -3.51 0.05]
+[fastlio_mapping-2] [INFO] [1787326187.034231940] [laser_mapping]: Saved reloc keyframe 102 (1344 pts) at [5.34 -3.49 0.04]
+[fastlio_mapping-2] [INFO] [1787326187.124087626] [laser_mapping]: Saved reloc keyframe 103 (1362 pts) at [5.19 -3.47 0.04]
+[fastlio_mapping-2] [INFO] [1787326187.255580156] [laser_mapping]: Saved reloc keyframe 104 (1376 pts) at [5.04 -3.46 0.03]
+[fastlio_mapping-2] [INFO] [1787326187.324778305] [laser_mapping]: Saved reloc keyframe 105 (1412 pts) at [4.90 -3.45 0.04]
+[fastlio_mapping-2] [INFO] [1787326187.445399426] [laser_mapping]: Saved reloc keyframe 106 (1322 pts) at [4.75 -3.44 0.03]
+[fastlio_mapping-2] [INFO] [1787326187.534904668] [laser_mapping]: Saved reloc keyframe 107 (1382 pts) at [4.60 -3.43 0.04]
+[fastlio_mapping-2] [INFO] [1787326187.646893265] [laser_mapping]: Saved reloc keyframe 108 (1403 pts) at [4.45 -3.42 0.03]
+[fastlio_mapping-2] [INFO] [1787326187.757223699] [laser_mapping]: Saved reloc keyframe 109 (1457 pts) at [4.28 -3.40 0.04]
+[fastlio_mapping-2] [INFO] [1787326187.844025466] [laser_mapping]: Saved reloc keyframe 110 (1403 pts) at [4.15 -3.39 0.04]
+[fastlio_mapping-2] [INFO] [1787326187.944706479] [laser_mapping]: Saved reloc keyframe 111 (1427 pts) at [4.01 -3.38 0.04]
+[fastlio_mapping-2] [INFO] [1787326188.035139719] [laser_mapping]: Saved reloc keyframe 112 (1437 pts) at [3.88 -3.36 0.05]
+[fastlio_mapping-2] [INFO] [1787326188.146303844] [laser_mapping]: Saved reloc keyframe 113 (1401 pts) at [3.73 -3.35 0.04]
+[fastlio_mapping-2] [INFO] [1787326188.244669876] [laser_mapping]: Saved reloc keyframe 114 (1410 pts) at [3.59 -3.35 0.04]
+[fastlio_mapping-2] [INFO] [1787326188.459565894] [laser_mapping]: Saved reloc keyframe 115 (1431 pts) at [3.31 -3.33 0.05]
+[fastlio_mapping-2] [INFO] [1787326188.546895423] [laser_mapping]: Saved reloc keyframe 116 (1456 pts) at [3.14 -3.32 0.04]
+[fastlio_mapping-2] [INFO] [1787326188.625793458] [laser_mapping]: Saved reloc keyframe 117 (1497 pts) at [2.99 -3.30 0.05]
+[fastlio_mapping-2] [INFO] [1787326188.737165653] [laser_mapping]: Saved reloc keyframe 118 (1513 pts) at [2.82 -3.29 0.05]
+[fastlio_mapping-2] [INFO] [1787326188.847800225] [laser_mapping]: Saved reloc keyframe 119 (1481 pts) at [2.69 -3.28 0.07]
+[fastlio_mapping-2] [INFO] [1787326188.935499365] [laser_mapping]: Saved reloc keyframe 120 (1464 pts) at [2.54 -3.28 0.05]
+[fastlio_mapping-2] [INFO] [1787326189.236063808] [laser_mapping]: Saved reloc keyframe 121 (1509 pts) at [2.11 -3.27 0.05]
+[fastlio_mapping-2] [INFO] [1787326189.355807337] [laser_mapping]: Saved reloc keyframe 122 (1582 pts) at [1.95 -3.27 0.03]
+[fastlio_mapping-2] [INFO] [1787326189.452397027] [laser_mapping]: Saved reloc keyframe 123 (1506 pts) at [1.81 -3.28 0.03]
+[fastlio_mapping-2] [INFO] [1787326189.547014271] [laser_mapping]: Saved reloc keyframe 124 (1473 pts) at [1.67 -3.29 0.04]
+[fastlio_mapping-2] [INFO] [1787326189.657787921] [laser_mapping]: Saved reloc keyframe 125 (1544 pts) at [1.53 -3.28 0.04]
+[fastlio_mapping-2] [INFO] [1787326189.758029053] [laser_mapping]: Saved reloc keyframe 126 (1513 pts) at [1.38 -3.27 0.04]
+[fastlio_mapping-2] [INFO] [1787326189.844382776] [laser_mapping]: Saved reloc keyframe 127 (1523 pts) at [1.22 -3.26 0.04]
+[fastlio_mapping-2] [INFO] [1787326190.240556690] [laser_mapping]: Saved reloc keyframe 128 (1434 pts) at [0.64 -3.24 0.03]
+[fastlio_mapping-2] [INFO] [1787326190.645778729] [laser_mapping]: Saved reloc keyframe 129 (1413 pts) at [0.06 -3.24 0.05]
+[fastlio_mapping-2] [INFO] [1787326190.735429996] [laser_mapping]: Saved reloc keyframe 130 (1471 pts) at [-0.04 -3.22 0.07]
+[fastlio_mapping-2] [INFO] [1787326190.848417893] [laser_mapping]: Saved reloc keyframe 131 (1540 pts) at [-0.12 -3.19 0.06]
+[fastlio_mapping-2] [INFO] [1787326190.926555426] [laser_mapping]: Saved reloc keyframe 132 (1539 pts) at [-0.20 -3.15 0.06]
+[fastlio_mapping-2] [INFO] [1787326191.436656667] [laser_mapping]: Saved reloc keyframe 133 (1568 pts) at [-0.66 -2.87 0.04]
+[fastlio_mapping-2] [INFO] [1787326191.555762835] [laser_mapping]: Saved reloc keyframe 134 (1579 pts) at [-0.77 -2.82 0.03]
+[fastlio_mapping-2] [INFO] [1787326191.644232435] [laser_mapping]: Saved reloc keyframe 135 (1515 pts) at [-0.88 -2.77 0.03]
+[fastlio_mapping-2] [INFO] [1787326191.758863168] [laser_mapping]: Saved reloc keyframe 136 (1557 pts) at [-1.00 -2.71 0.02]
+[fastlio_mapping-2] [INFO] [1787326191.856133074] [laser_mapping]: Saved reloc keyframe 137 (1523 pts) at [-1.11 -2.65 0.02]
+[fastlio_mapping-2] [INFO] [1787326191.925897324] [laser_mapping]: Saved reloc keyframe 138 (1518 pts) at [-1.24 -2.60 0.03]
+[fastlio_mapping-2] [INFO] [1787326192.036996204] [laser_mapping]: Saved reloc keyframe 139 (1506 pts) at [-1.33 -2.54 0.03]
+[fastlio_mapping-2] [INFO] [1787326192.126225733] [laser_mapping]: Saved reloc keyframe 140 (1523 pts) at [-1.44 -2.48 0.02]
+[fastlio_mapping-2] [INFO] [1787326192.225978053] [laser_mapping]: Saved reloc keyframe 141 (1513 pts) at [-1.58 -2.40 0.01]
+[fastlio_mapping-2] [INFO] [1787326192.345051806] [laser_mapping]: Saved reloc keyframe 142 (1490 pts) at [-1.71 -2.33 -0.01]
+[fastlio_mapping-2] [INFO] [1787326192.425713932] [laser_mapping]: Saved reloc keyframe 143 (1494 pts) at [-1.85 -2.27 -0.01]
+[fastlio_mapping-2] [INFO] [1787326192.535743468] [laser_mapping]: Saved reloc keyframe 144 (1450 pts) at [-1.99 -2.21 -0.03]
+[fastlio_mapping-2] [INFO] [1787326192.647677447] [laser_mapping]: Saved reloc keyframe 145 (1472 pts) at [-2.13 -2.16 -0.02]
+[fastlio_mapping-2] [INFO] [1787326192.757826699] [laser_mapping]: Saved reloc keyframe 146 (1464 pts) at [-2.27 -2.10 -0.03]
+[fastlio_mapping-2] [INFO] [1787326192.842829408] [laser_mapping]: Saved reloc keyframe 147 (1424 pts) at [-2.41 -2.06 -0.01]
+[fastlio_mapping-2] [INFO] [1787326192.935112791] [laser_mapping]: Saved reloc keyframe 148 (1448 pts) at [-2.55 -2.02 -0.01]
+[fastlio_mapping-2] [INFO] [1787326193.053250484] [laser_mapping]: Saved reloc keyframe 149 (1406 pts) at [-2.70 -1.95 -0.00]
+[fastlio_mapping-2] [INFO] [1787326193.150906517] [laser_mapping]: Saved reloc keyframe 150 (1465 pts) at [-2.85 -1.89 -0.01]
+[fastlio_mapping-2] [INFO] [1787326193.234575809] [laser_mapping]: Saved reloc keyframe 151 (1377 pts) at [-2.98 -1.82 -0.00]
+[fastlio_mapping-2] [INFO] [1787326193.334986199] [laser_mapping]: Saved reloc keyframe 152 (1403 pts) at [-3.08 -1.75 -0.01]
+[fastlio_mapping-2] [INFO] [1787326193.436063394] [laser_mapping]: Saved reloc keyframe 153 (1435 pts) at [-3.18 -1.68 -0.01]
+[fastlio_mapping-2] [INFO] [1787326193.535391190] [laser_mapping]: Saved reloc keyframe 154 (1454 pts) at [-3.25 -1.62 -0.00]
+[fastlio_mapping-2] [INFO] [1787326194.160629314] [laser_mapping]: Saved reloc keyframe 155 (1478 pts) at [-3.38 -1.11 0.01]
+[fastlio_mapping-2] [INFO] [1787326194.236050543] [laser_mapping]: Saved reloc keyframe 156 (1496 pts) at [-3.41 -1.01 -0.00]
+[fastlio_mapping-2] [INFO] [1787326194.326062082] [laser_mapping]: Saved reloc keyframe 157 (1511 pts) at [-3.44 -0.91 -0.00]
+[fastlio_mapping-2] [INFO] [1787326194.454088406] [laser_mapping]: Saved reloc keyframe 158 (1479 pts) at [-3.47 -0.79 -0.01]
+[fastlio_mapping-2] [INFO] [1787326194.654792097] [laser_mapping]: Saved reloc keyframe 159 (1457 pts) at [-3.54 -0.55 -0.03]
+[fastlio_mapping-2] [INFO] [1787326194.749830033] [laser_mapping]: Saved reloc keyframe 160 (1473 pts) at [-3.59 -0.43 -0.02]
+[fastlio_mapping-2] [INFO] [1787326194.954875299] [laser_mapping]: Saved reloc keyframe 161 (1449 pts) at [-3.64 -0.31 -0.03]
+[fastlio_mapping-2] [INFO] [1787326194.979368862] [laser_mapping]: Saved reloc keyframe 162 (1417 pts) at [-3.69 -0.19 -0.01]
+[fastlio_mapping-2] [INFO] [1787326195.025652256] [laser_mapping]: Saved reloc keyframe 163 (1465 pts) at [-3.73 -0.06 -0.02]
+[fastlio_mapping-2] [INFO] [1787326195.236030652] [laser_mapping]: Saved reloc keyframe 164 (1479 pts) at [-3.81 0.22 -0.02]
+[fastlio_mapping-2] [INFO] [1787326195.324734472] [laser_mapping]: Saved reloc keyframe 165 (1375 pts) at [-3.86 0.35 -0.02]
+[fastlio_mapping-2] [INFO] [1787326195.435672009] [laser_mapping]: Saved reloc keyframe 166 (1454 pts) at [-3.90 0.46 -0.02]
+[fastlio_mapping-2] [INFO] [1787326195.525203854] [laser_mapping]: Saved reloc keyframe 167 (1423 pts) at [-3.94 0.56 -0.03]
+[fastlio_mapping-2] [INFO] [1787326195.644477747] [laser_mapping]: Saved reloc keyframe 168 (1406 pts) at [-3.98 0.67 -0.04]
+[fastlio_mapping-2] [INFO] [1787326195.855022932] [laser_mapping]: Saved reloc keyframe 169 (1357 pts) at [-4.06 0.86 -0.04]
+[fastlio_mapping-2] [INFO] [1787326195.935348027] [laser_mapping]: Saved reloc keyframe 170 (1417 pts) at [-4.10 0.98 -0.03]
+[fastlio_mapping-2] [INFO] [1787326196.034803318] [laser_mapping]: Saved reloc keyframe 171 (1367 pts) at [-4.16 1.09 -0.04]
+[fastlio_mapping-2] [INFO] [1787326196.142659705] [laser_mapping]: Saved reloc keyframe 172 (1387 pts) at [-4.22 1.20 -0.03]
+[fastlio_mapping-2] [INFO] [1787326196.225179365] [laser_mapping]: Saved reloc keyframe 173 (1404 pts) at [-4.29 1.32 -0.04]
+[fastlio_mapping-2] [INFO] [1787326196.346960922] [laser_mapping]: Saved reloc keyframe 174 (1371 pts) at [-4.37 1.41 -0.04]
+[fastlio_mapping-2] [INFO] [1787326196.443720930] [laser_mapping]: Saved reloc keyframe 175 (1342 pts) at [-4.43 1.49 -0.04]
+[fastlio_mapping-2] [INFO] [1787326196.545330626] [laser_mapping]: Saved reloc keyframe 176 (1322 pts) at [-4.48 1.58 -0.04]
+[fastlio_mapping-2] [INFO] [1787326196.634742341] [laser_mapping]: Saved reloc keyframe 177 (1332 pts) at [-4.53 1.67 -0.03]
+[fastlio_mapping-2] [INFO] [1787326196.724369871] [laser_mapping]: Saved reloc keyframe 178 (1340 pts) at [-4.59 1.77 -0.04]
+[fastlio_mapping-2] [INFO] [1787326196.945327255] [laser_mapping]: Saved reloc keyframe 179 (1282 pts) at [-4.70 1.98 -0.03]
+[fastlio_mapping-2] [INFO] [1787326197.042377577] [laser_mapping]: Saved reloc keyframe 180 (1257 pts) at [-4.74 2.08 -0.02]
+[fastlio_mapping-2] [INFO] [1787326197.647454945] [laser_mapping]: Saved reloc keyframe 181 (1444 pts) at [-4.59 2.58 -0.04]
+[fastlio_mapping-2] [INFO] [1787326198.356616428] [laser_mapping]: Saved reloc keyframe 182 (1353 pts) at [-4.04 2.77 -0.03]
+[fastlio_mapping-2] [INFO] [1787326198.635994489] [laser_mapping]: Saved reloc keyframe 183 (1382 pts) at [-3.78 2.85 -0.01]
+[fastlio_mapping-2] [INFO] [1787326198.835872662] [laser_mapping]: Saved reloc keyframe 184 (1370 pts) at [-3.56 2.91 -0.02]
+[fastlio_mapping-2] [INFO] [1787326199.034465579] [laser_mapping]: Saved reloc keyframe 185 (1308 pts) at [-3.30 2.97 -0.01]
+[fastlio_mapping-2] [INFO] [1787326199.142447222] [laser_mapping]: Saved reloc keyframe 186 (1341 pts) at [-3.16 3.00 0.00]
+[fastlio_mapping-2] [INFO] [1787326199.235499982] [laser_mapping]: Saved reloc keyframe 187 (1342 pts) at [-3.01 3.03 -0.01]
+[fastlio_mapping-2] [INFO] [1787326199.455308700] [laser_mapping]: Saved reloc keyframe 188 (1330 pts) at [-2.76 3.09 -0.01]
+[fastlio_mapping-2] [INFO] [1787326199.552961061] [laser_mapping]: Saved reloc keyframe 189 (1312 pts) at [-2.65 3.11 -0.01]
+[fastlio_mapping-2] [INFO] [1787326199.655594216] [laser_mapping]: Saved reloc keyframe 190 (1362 pts) at [-2.54 3.14 -0.02]
+[fastlio_mapping-2] [INFO] [1787326199.844141222] [laser_mapping]: Saved reloc keyframe 191 (1355 pts) at [-2.34 3.18 -0.03]
+[fastlio_mapping-2] [INFO] [1787326199.947050291] [laser_mapping]: Saved reloc keyframe 192 (1364 pts) at [-2.25 3.19 -0.03]
+[fastlio_mapping-2] [INFO] [1787326200.035019085] [laser_mapping]: Saved reloc keyframe 193 (1342 pts) at [-2.15 3.18 -0.01]
+[fastlio_mapping-2] [INFO] [1787326200.657990061] [laser_mapping]: Saved reloc keyframe 194 (1486 pts) at [-1.66 2.97 -0.01]
+[fastlio_mapping-2] [INFO] [1787326200.745519675] [laser_mapping]: Saved reloc keyframe 195 (1504 pts) at [-1.57 2.92 -0.02]
+[fastlio_mapping-2] [INFO] [1787326201.349100002] [laser_mapping]: Saved reloc keyframe 196 (1634 pts) at [-1.30 2.46 0.01]
+[fastlio_mapping-2] [INFO] [1787326201.437052894] [laser_mapping]: Saved reloc keyframe 197 (1585 pts) at [-1.26 2.38 0.03]
+[fastlio_mapping-2] [INFO] [1787326201.549161133] [laser_mapping]: Saved reloc keyframe 198 (1600 pts) at [-1.21 2.29 0.03]
+[fastlio_mapping-2] [INFO] [1787326201.654502024] [laser_mapping]: Saved reloc keyframe 199 (1657 pts) at [-1.15 2.18 0.03]
+[fastlio_mapping-2] [INFO] [1787326201.743221148] [laser_mapping]: Saved reloc keyframe 200 (1605 pts) at [-1.10 2.08 0.03]
+[fastlio_mapping-2] [INFO] [1787326201.839131345] [laser_mapping]: Saved reloc keyframe 201 (1677 pts) at [-1.04 1.97 0.02]
+[fastlio_mapping-2] [INFO] [1787326201.950328931] [laser_mapping]: Saved reloc keyframe 202 (1612 pts) at [-0.97 1.86 0.03]
+[fastlio_mapping-2] [INFO] [1787326202.038175068] [laser_mapping]: Saved reloc keyframe 203 (1705 pts) at [-0.90 1.74 0.02]
+[fastlio_mapping-2] [INFO] [1787326202.150920865] [laser_mapping]: Saved reloc keyframe 204 (1713 pts) at [-0.82 1.64 0.02]
+[fastlio_mapping-2] [INFO] [1787326202.253228671] [laser_mapping]: Saved reloc keyframe 205 (1679 pts) at [-0.74 1.58 0.02]
+[fastlio_mapping-2] [INFO] [1787326203.028067611] [laser_mapping]: Saved reloc keyframe 206 (1571 pts) at [-0.22 1.63 0.05]
+[fastlio_mapping-2] [INFO] [1787326203.150774713] [laser_mapping]: Saved reloc keyframe 207 (1645 pts) at [-0.15 1.67 0.04]
+[fastlio_mapping-2] [INFO] [1787326203.226470520] [laser_mapping]: Saved reloc keyframe 208 (1558 pts) at [-0.05 1.69 0.03]
+[fastlio_mapping-2] [INFO] [1787326203.358241073] [laser_mapping]: Saved reloc keyframe 209 (1615 pts) at [0.06 1.73 0.02]
+[fastlio_mapping-2] [INFO] [1787326203.436337467] [laser_mapping]: Saved reloc keyframe 210 (1531 pts) at [0.17 1.75 0.03]
+[fastlio_mapping-2] [INFO] [1787326203.560827824] [laser_mapping]: Saved reloc keyframe 211 (1562 pts) at [0.28 1.78 0.03]
+[fastlio_mapping-2] [INFO] [1787326203.649366145] [laser_mapping]: Saved reloc keyframe 212 (1582 pts) at [0.40 1.81 0.03]
+[fastlio_mapping-2] [INFO] [1787326203.748780006] [laser_mapping]: Saved reloc keyframe 213 (1581 pts) at [0.50 1.85 0.04]
+[fastlio_mapping-2] [INFO] [1787326203.851701336] [laser_mapping]: Saved reloc keyframe 214 (1613 pts) at [0.59 1.90 0.04]
+[fastlio_mapping-2] [INFO] [1787326203.926128688] [laser_mapping]: Saved reloc keyframe 215 (1554 pts) at [0.66 1.95 0.05]
+[fastlio_mapping-2] [INFO] [1787326204.049261979] [laser_mapping]: Saved reloc keyframe 216 (1618 pts) at [0.75 2.01 0.05]
+[fastlio_mapping-2] [INFO] [1787326204.136782894] [laser_mapping]: Saved reloc keyframe 217 (1590 pts) at [0.82 2.06 0.06]
+[fastlio_mapping-2] [INFO] [1787326204.226574151] [laser_mapping]: Saved reloc keyframe 218 (1594 pts) at [0.88 2.12 0.04]
+[fastlio_mapping-2] [INFO] [1787326204.345496719] [laser_mapping]: Saved reloc keyframe 219 (1568 pts) at [0.94 2.17 0.05]
+[fastlio_mapping-2] [INFO] [1787326204.445747184] [laser_mapping]: Saved reloc keyframe 220 (1578 pts) at [1.00 2.22 0.04]
+[fastlio_mapping-2] [INFO] [1787326204.526696309] [laser_mapping]: Saved reloc keyframe 221 (1580 pts) at [1.07 2.28 0.04]
+[fastlio_mapping-2] [INFO] [1787326204.636261912] [laser_mapping]: Saved reloc keyframe 222 (1530 pts) at [1.16 2.33 0.04]
+[fastlio_mapping-2] [INFO] [1787326205.245297002] [laser_mapping]: Saved reloc keyframe 223 (1577 pts) at [1.67 2.31 0.05]
+[fastlio_mapping-2] [INFO] [1787326205.645278258] [laser_mapping]: Saved reloc keyframe 224 (1580 pts) at [2.05 2.22 0.05]
+[fastlio_mapping-2] [INFO] [1787326205.759737041] [laser_mapping]: Saved reloc keyframe 225 (1620 pts) at [2.17 2.21 0.04]
+[fastlio_mapping-2] [INFO] [1787326205.856479557] [laser_mapping]: Saved reloc keyframe 226 (1550 pts) at [2.29 2.19 0.05]
+[fastlio_mapping-2] [INFO] [1787326205.927268044] [laser_mapping]: Saved reloc keyframe 227 (1569 pts) at [2.42 2.16 0.04]
+[fastlio_mapping-2] [INFO] [1787326206.037275648] [laser_mapping]: Saved reloc keyframe 228 (1610 pts) at [2.54 2.14 0.05]
+[fastlio_mapping-2] [INFO] [1787326206.160609814] [laser_mapping]: Saved reloc keyframe 229 (1642 pts) at [2.68 2.11 0.05]
+[fastlio_mapping-2] [INFO] [1787326206.249173195] [laser_mapping]: Saved reloc keyframe 230 (1583 pts) at [2.83 2.10 0.04]
+[fastlio_mapping-2] [INFO] [1787326206.341076361] [laser_mapping]: Saved reloc keyframe 231 (1584 pts) at [2.98 2.07 0.03]
+[fastlio_mapping-2] [INFO] [1787326206.436797919] [laser_mapping]: Saved reloc keyframe 232 (1590 pts) at [3.14 2.04 0.03]
+[fastlio_mapping-2] [INFO] [1787326206.536781114] [laser_mapping]: Saved reloc keyframe 233 (1580 pts) at [3.28 2.03 0.02]
+[fastlio_mapping-2] [INFO] [1787326206.645592777] [laser_mapping]: Saved reloc keyframe 234 (1602 pts) at [3.42 2.00 0.02]
+[fastlio_mapping-2] [INFO] [1787326206.726365962] [laser_mapping]: Saved reloc keyframe 235 (1567 pts) at [3.56 1.98 0.03]
+[fastlio_mapping-2] [INFO] [1787326206.846597375] [laser_mapping]: Saved reloc keyframe 236 (1609 pts) at [3.70 1.96 0.03]
+[fastlio_mapping-2] [INFO] [1787326206.926536743] [laser_mapping]: Saved reloc keyframe 237 (1563 pts) at [3.84 1.94 0.04]
+[fastlio_mapping-2] [INFO] [1787326207.042195949] [laser_mapping]: Saved reloc keyframe 238 (1551 pts) at [3.96 1.91 0.05]
+[fastlio_mapping-2] [INFO] [1787326207.126671171] [laser_mapping]: Saved reloc keyframe 239 (1527 pts) at [4.04 1.87 0.05]
+[fastlio_mapping-2] [INFO] [1787326207.736772556] [laser_mapping]: Saved reloc keyframe 240 (1568 pts) at [4.40 1.74 0.07]
+[fastlio_mapping-2] [INFO] [1787326207.859001506] [laser_mapping]: Saved reloc keyframe 241 (1562 pts) at [4.50 1.70 0.07]
+[fastlio_mapping-2] [INFO] [1787326207.959971133] [laser_mapping]: Saved reloc keyframe 242 (1581 pts) at [4.61 1.65 0.08]
+[fastlio_mapping-2] [INFO] [1787326208.036612958] [laser_mapping]: Saved reloc keyframe 243 (1565 pts) at [4.72 1.60 0.07]
+[fastlio_mapping-2] [INFO] [1787326208.235801441] [laser_mapping]: Saved reloc keyframe 244 (1501 pts) at [4.97 1.49 0.07]
+[fastlio_mapping-2] [INFO] [1787326208.448319462] [laser_mapping]: Saved reloc keyframe 245 (1511 pts) at [5.22 1.37 0.07]
+[fastlio_mapping-2] [INFO] [1787326208.542956508] [laser_mapping]: Saved reloc keyframe 246 (1494 pts) at [5.33 1.32 0.08]
+[fastlio_mapping-2] [INFO] [1787326208.648180382] [laser_mapping]: Saved reloc keyframe 247 (1517 pts) at [5.43 1.26 0.07]
+[fastlio_mapping-2] [INFO] [1787326208.748745902] [laser_mapping]: Saved reloc keyframe 248 (1529 pts) at [5.50 1.21 0.07]
+[fastlio_mapping-2] [INFO] [1787326209.437651883] [laser_mapping]: Saved reloc keyframe 249 (1634 pts) at [5.61 0.67 0.09]
+[fastlio_mapping-2] [INFO] [1787326210.151872264] [laser_mapping]: Saved reloc keyframe 250 (1701 pts) at [5.19 0.25 0.07]
+[fastlio_mapping-2] [INFO] [1787326210.228736243] [laser_mapping]: Saved reloc keyframe 251 (1641 pts) at [5.12 0.19 0.08]
+[fastlio_mapping-2] [INFO] [1787326210.351824776] [laser_mapping]: Saved reloc keyframe 252 (1712 pts) at [5.04 0.12 0.07]
+[fastlio_mapping-2] [INFO] [1787326210.428172867] [laser_mapping]: Saved reloc keyframe 253 (1693 pts) at [4.97 0.05 0.08]
+[fastlio_mapping-2] [INFO] [1787326210.550920718] [laser_mapping]: Saved reloc keyframe 254 (1669 pts) at [4.89 -0.02 0.07]
+[fastlio_mapping-2] [INFO] [1787326210.641299297] [laser_mapping]: Saved reloc keyframe 255 (1664 pts) at [4.79 -0.11 0.07]
+[fastlio_mapping-2] [INFO] [1787326210.729328811] [laser_mapping]: Saved reloc keyframe 256 (1678 pts) at [4.70 -0.20 0.08]
+[fastlio_mapping-2] [INFO] [1787326210.832394700] [laser_mapping]: Saved reloc keyframe 257 (1698 pts) at [4.59 -0.29 0.07]
+[fastlio_mapping-2] [INFO] [1787326210.927685913] [laser_mapping]: Saved reloc keyframe 258 (1673 pts) at [4.50 -0.36 0.07]
+[fastlio_mapping-2] [INFO] [1787326211.050642955] [laser_mapping]: Saved reloc keyframe 259 (1646 pts) at [4.42 -0.41 0.06]
+[fastlio_mapping-2] [INFO] [1787326211.138247720] [laser_mapping]: Saved reloc keyframe 260 (1709 pts) at [4.36 -0.45 0.07]
+[fastlio_mapping-2] [INFO] [1787326211.538166094] [laser_mapping]: Saved reloc keyframe 261 (1693 pts) at [4.04 -0.69 0.04]
+[fastlio_mapping-2] [INFO] [1787326211.627687464] [laser_mapping]: Saved reloc keyframe 262 (1659 pts) at [3.96 -0.77 0.05]
+[fastlio_mapping-2] [INFO] [1787326211.727399169] [laser_mapping]: Saved reloc keyframe 263 (1626 pts) at [3.87 -0.86 0.04]
+[fastlio_mapping-2] [INFO] [1787326211.951083949] [laser_mapping]: Saved reloc keyframe 264 (1645 pts) at [3.65 -1.00 0.05]
+[fastlio_mapping-2] [INFO] [1787326212.060331506] [laser_mapping]: Saved reloc keyframe 265 (1650 pts) at [3.55 -1.07 0.07]
+[fastlio_mapping-2] [INFO] [1787326212.151971088] [laser_mapping]: Saved reloc keyframe 266 (1684 pts) at [3.44 -1.15 0.06]
+[fastlio_mapping-2] [INFO] [1787326212.238391689] [laser_mapping]: Saved reloc keyframe 267 (1617 pts) at [3.32 -1.21 0.08]
+[fastlio_mapping-2] [INFO] [1787326212.351447814] [laser_mapping]: Saved reloc keyframe 268 (1681 pts) at [3.22 -1.26 0.07]
+[fastlio_mapping-2] [INFO] [1787326212.428291027] [laser_mapping]: Saved reloc keyframe 269 (1668 pts) at [3.12 -1.28 0.08]
+[fastlio_mapping-2] [INFO] [1787326212.527958732] [laser_mapping]: Saved reloc keyframe 270 (1669 pts) at [3.02 -1.32 0.07]
+[fastlio_mapping-2] [INFO] [1787326212.737515264] [laser_mapping]: Saved reloc keyframe 271 (1646 pts) at [2.82 -1.40 0.07]
+[fastlio_mapping-2] [INFO] [1787326212.837520931] [laser_mapping]: Saved reloc keyframe 272 (1640 pts) at [2.71 -1.46 0.06]
+[fastlio_mapping-2] [INFO] [1787326212.937735022] [laser_mapping]: Saved reloc keyframe 273 (1677 pts) at [2.60 -1.51 0.06]
+[fastlio_mapping-2] [INFO] [1787326213.057493215] [laser_mapping]: Saved reloc keyframe 274 (1677 pts) at [2.51 -1.55 0.05]
+[fastlio_mapping-2] [INFO] [1787326213.751308288] [laser_mapping]: Saved reloc keyframe 275 (1684 pts) at [1.93 -1.44 0.05]
+[fastlio_mapping-2] [INFO] [1787326213.861248701] [laser_mapping]: Saved reloc keyframe 276 (1694 pts) at [1.82 -1.43 0.06]
+[fastlio_mapping-2] [INFO] [1787326213.957118688] [laser_mapping]: Saved reloc keyframe 277 (1651 pts) at [1.71 -1.41 0.05]
+[fastlio_mapping-2] [INFO] [1787326214.027307197] [laser_mapping]: Saved reloc keyframe 278 (1637 pts) at [1.60 -1.40 0.05]
+[fastlio_mapping-2] [INFO] [1787326214.127018842] [laser_mapping]: Saved reloc keyframe 279 (1627 pts) at [1.48 -1.37 0.05]
+[fastlio_mapping-2] [INFO] [1787326214.226756953] [laser_mapping]: Saved reloc keyframe 280 (1604 pts) at [1.35 -1.35 0.05]
+[fastlio_mapping-2] [INFO] [1787326214.360184889] [laser_mapping]: Saved reloc keyframe 281 (1630 pts) at [1.23 -1.33 0.06]
+[fastlio_mapping-2] [INFO] [1787326214.460259234] [laser_mapping]: Saved reloc keyframe 282 (1633 pts) at [1.11 -1.30 0.05]
+[fastlio_mapping-2] [INFO] [1787326214.627152511] [laser_mapping]: Saved reloc keyframe 283 (1623 pts) at [0.84 -1.25 0.05]
+[fastlio_mapping-2] [INFO] [1787326214.727473199] [laser_mapping]: Saved reloc keyframe 284 (1644 pts) at [0.72 -1.23 0.05]
+[fastlio_mapping-2] [INFO] [1787326214.959612718] [laser_mapping]: Saved reloc keyframe 285 (1543 pts) at [0.47 -1.20 0.05]
+[fastlio_mapping-2] [INFO] [1787326215.027494723] [laser_mapping]: Saved reloc keyframe 286 (1655 pts) at [0.34 -1.20 0.04]
+[fastlio_mapping-2] [INFO] [1787326215.127265668] [laser_mapping]: Saved reloc keyframe 287 (1619 pts) at [0.23 -1.20 0.05]
+[fastlio_mapping-2] [INFO] [1787326215.346565170] [laser_mapping]: Saved reloc keyframe 288 (1535 pts) at [0.03 -1.21 0.05]
+[fastlio_mapping-2] [INFO] [1787326215.437588576] [laser_mapping]: Saved reloc keyframe 289 (1631 pts) at [-0.06 -1.22 0.05]
+[fastlio_mapping-2] [INFO] [1787326215.937110743] [laser_mapping]: Saved reloc keyframe 290 (1586 pts) at [-0.61 -1.25 0.06]
+[fastlio_mapping-2] [INFO] [1787326216.048591113] [laser_mapping]: Saved reloc keyframe 291 (1525 pts) at [-0.75 -1.26 0.06]
+[fastlio_mapping-2] [INFO] [1787326216.156986202] [laser_mapping]: Saved reloc keyframe 292 (1572 pts) at [-0.88 -1.26 0.05]
+[fastlio_mapping-2] [INFO] [1787326216.751307838] [laser_mapping]: Saved reloc keyframe 293 (1625 pts) at [-1.38 -1.06 0.04]
+[fastlio_mapping-2] [INFO] [1787326216.851172419] [laser_mapping]: Saved reloc keyframe 294 (1621 pts) at [-1.48 -1.02 0.03]
+[fastlio_mapping-2] [INFO] [1787326216.946111533] [laser_mapping]: Saved reloc keyframe 295 (1561 pts) at [-1.58 -0.99 0.02]
+[fastlio_mapping-2] [INFO] [1787326217.059458426] [laser_mapping]: Saved reloc keyframe 296 (1540 pts) at [-1.69 -0.97 -0.00]
+[fastlio_mapping-2] [INFO] [1787326217.136336621] [laser_mapping]: Saved reloc keyframe 297 (1510 pts) at [-1.79 -0.96 0.01]
+[fastlio_mapping-2] [INFO] [1787326217.257043651] [laser_mapping]: Saved reloc keyframe 298 (1491 pts) at [-1.89 -0.94 0.01]
+[fastlio_mapping-2] [INFO] [1787326217.349171414] [laser_mapping]: Saved reloc keyframe 299 (1491 pts) at [-2.01 -0.91 -0.00]
+[fastlio_mapping-2] [INFO] [1787326217.425850851] [laser_mapping]: Saved reloc keyframe 300 (1474 pts) at [-2.13 -0.89 0.00]
+[fastlio_mapping-2] [INFO] [1787326217.558235944] [laser_mapping]: Saved reloc keyframe 301 (1477 pts) at [-2.25 -0.86 0.00]
+[fastlio_mapping-2] [INFO] [1787326217.736298571] [laser_mapping]: Saved reloc keyframe 302 (1446 pts) at [-2.51 -0.80 0.00]
+[fastlio_mapping-2] [INFO] [1787326217.848020198] [laser_mapping]: Saved reloc keyframe 303 (1439 pts) at [-2.64 -0.78 0.01]
+[fastlio_mapping-2] [INFO] [1787326217.925500716] [laser_mapping]: Saved reloc keyframe 304 (1409 pts) at [-2.76 -0.75 0.00]
+[fastlio_mapping-2] [INFO] [1787326218.035251690] [laser_mapping]: Saved reloc keyframe 305 (1390 pts) at [-2.89 -0.73 0.02]
+[fastlio_mapping-2] [INFO] [1787326218.156529299] [laser_mapping]: Saved reloc keyframe 306 (1376 pts) at [-3.02 -0.70 -0.00]
+[fastlio_mapping-2] [INFO] [1787326218.241205085] [laser_mapping]: Saved reloc keyframe 307 (1384 pts) at [-3.12 -0.70 0.00]
+[fastlio_mapping-2] [INFO] [1787326218.324769187] [laser_mapping]: Saved reloc keyframe 308 (1349 pts) at [-3.21 -0.71 -0.01]
+[fastlio_mapping-2] [INFO] [1787326219.145668885] [laser_mapping]: Saved reloc keyframe 309 (1385 pts) at [-3.58 -1.17 -0.02]
+[fastlio_mapping-2] [INFO] [1787326219.825177164] [laser_mapping]: Saved reloc keyframe 310 (1452 pts) at [-3.43 -1.65 0.02]
+[fastlio_mapping-2] [INFO] [1787326220.659122443] [laser_mapping]: Saved reloc keyframe 311 (1562 pts) at [-2.90 -1.70 0.00]
+[fastlio_mapping-2] [INFO] [1787326220.726444340] [laser_mapping]: Saved reloc keyframe 312 (1525 pts) at [-2.82 -1.69 -0.00]
+[fastlio_mapping-2] [INFO] [1787326220.836427261] [laser_mapping]: Saved reloc keyframe 313 (1543 pts) at [-2.74 -1.67 0.01]
+[fastlio_mapping-2] [INFO] [1787326220.936911803] [laser_mapping]: Saved reloc keyframe 314 (1562 pts) at [-2.63 -1.65 0.01]
+[fastlio_mapping-2] [INFO] [1787326221.036844584] [laser_mapping]: Saved reloc keyframe 315 (1556 pts) at [-2.51 -1.63 -0.01]
+[fastlio_mapping-2] [INFO] [1787326221.155814414] [laser_mapping]: Saved reloc keyframe 316 (1554 pts) at [-2.38 -1.62 -0.01]
+[fastlio_mapping-2] [INFO] [1787326221.249239502] [laser_mapping]: Saved reloc keyframe 317 (1577 pts) at [-2.26 -1.61 -0.02]
+[fastlio_mapping-2] [INFO] [1787326221.344791186] [laser_mapping]: Saved reloc keyframe 318 (1608 pts) at [-2.13 -1.59 -0.01]
+[fastlio_mapping-2] [INFO] [1787326221.461208167] [laser_mapping]: Saved reloc keyframe 319 (1643 pts) at [-2.02 -1.56 -0.01]
+[fastlio_mapping-2] [INFO] [1787326221.561380349] [laser_mapping]: Saved reloc keyframe 320 (1639 pts) at [-1.92 -1.54 -0.00]
+[fastlio_mapping-2] [INFO] [1787326221.737491019] [laser_mapping]: Saved reloc keyframe 321 (1642 pts) at [-1.71 -1.52 0.02]
+[fastlio_mapping-2] [INFO] [1787326221.837714754] [laser_mapping]: Saved reloc keyframe 322 (1632 pts) at [-1.61 -1.50 0.02]
+[fastlio_mapping-2] [INFO] [1787326221.937538765] [laser_mapping]: Saved reloc keyframe 323 (1618 pts) at [-1.49 -1.48 0.04]
+[fastlio_mapping-2] [INFO] [1787326222.057366094] [laser_mapping]: Saved reloc keyframe 324 (1658 pts) at [-1.36 -1.46 0.04]
+[fastlio_mapping-2] [INFO] [1787326222.138427114] [laser_mapping]: Saved reloc keyframe 325 (1692 pts) at [-1.24 -1.43 0.04]
+[fastlio_mapping-2] [INFO] [1787326222.238216981] [laser_mapping]: Saved reloc keyframe 326 (1684 pts) at [-1.13 -1.40 0.05]
+[fastlio_mapping-2] [INFO] [1787326222.361978995] [laser_mapping]: Saved reloc keyframe 327 (1724 pts) at [-1.00 -1.37 0.04]
+[fastlio_mapping-2] [INFO] [1787326222.449548700] [laser_mapping]: Saved reloc keyframe 328 (1677 pts) at [-0.89 -1.34 0.05]
+[fastlio_mapping-2] [INFO] [1787326222.539408334] [laser_mapping]: Saved reloc keyframe 329 (1706 pts) at [-0.75 -1.31 0.04]
+[fastlio_mapping-2] [INFO] [1787326222.651372248] [laser_mapping]: Saved reloc keyframe 330 (1698 pts) at [-0.63 -1.27 0.05]
+[fastlio_mapping-2] [INFO] [1787326222.728284273] [laser_mapping]: Saved reloc keyframe 331 (1704 pts) at [-0.50 -1.23 0.04]
+[fastlio_mapping-2] [INFO] [1787326222.861774595] [laser_mapping]: Saved reloc keyframe 332 (1689 pts) at [-0.38 -1.20 0.03]
+[fastlio_mapping-2] [INFO] [1787326222.927896360] [laser_mapping]: Saved reloc keyframe 333 (1682 pts) at [-0.28 -1.17 0.02]
+[fastlio_mapping-2] [INFO] [1787326223.159116229] [laser_mapping]: Saved reloc keyframe 334 (1737 pts) at [-0.07 -1.11 0.03]
+[fastlio_mapping-2] [INFO] [1787326223.252300928] [laser_mapping]: Saved reloc keyframe 335 (1767 pts) at [0.04 -1.08 0.03]
+[fastlio_mapping-2] [INFO] [1787326223.361483380] [laser_mapping]: Saved reloc keyframe 336 (1676 pts) at [0.15 -1.05 0.04]
+[fastlio_mapping-2] [INFO] [1787326223.442505744] [laser_mapping]: Saved reloc keyframe 337 (1719 pts) at [0.25 -1.01 0.05]
+[fastlio_mapping-2] [INFO] [1787326223.527884661] [laser_mapping]: Saved reloc keyframe 338 (1677 pts) at [0.34 -0.97 0.07]
+[fastlio_mapping-2] [INFO] [1787326224.229173123] [laser_mapping]: Saved reloc keyframe 339 (1802 pts) at [0.69 -0.55 0.04]
+[fastlio_mapping-2] [INFO] [1787326224.428867201] [laser_mapping]: Saved reloc keyframe 340 (1760 pts) at [0.81 -0.36 0.04]
+[fastlio_mapping-2] [INFO] [1787326224.538795342] [laser_mapping]: Saved reloc keyframe 341 (1753 pts) at [0.85 -0.27 0.05]
+[fastlio_mapping-2] [INFO] [1787326224.646481173] [laser_mapping]: Saved reloc keyframe 342 (1690 pts) at [0.89 -0.19 0.05]
+[fastlio_mapping-2] [INFO] [1787326224.739181282] [laser_mapping]: Saved reloc keyframe 343 (1795 pts) at [0.94 -0.12 0.06]
+[fastlio_mapping-2] [INFO] [1787326226.360832962] [laser_mapping]: Saved reloc keyframe 344 (1662 pts) at [0.41 -0.04 0.06]
+[fastlio_mapping-2] [INFO] [1787326226.457638676] [laser_mapping]: Saved reloc keyframe 345 (1659 pts) at [0.36 -0.03 0.06]
+[fastlio_mapping-2] [INFO] [1787326226.538195172] [laser_mapping]: Saved reloc keyframe 346 (1679 pts) at [0.35 -0.03 0.05]
+[fastlio_mapping-2] [INFO] [1787326226.661084206] [laser_mapping]: Saved reloc keyframe 347 (1676 pts) at [0.37 -0.04 0.05]
+[fastlio_mapping-2] [INFO] [1787326226.728144276] [laser_mapping]: Saved reloc keyframe 348 (1692 pts) at [0.37 -0.05 0.05]
+[fastlio_mapping-2] [INFO] [1787326226.838644182] [laser_mapping]: Saved reloc keyframe 349 (1641 pts) at [0.37 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326226.951021139] [laser_mapping]: Saved reloc keyframe 350 (1649 pts) at [0.37 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326227.046862439] [laser_mapping]: Saved reloc keyframe 351 (1660 pts) at [0.37 -0.07 0.05]
+[fastlio_mapping-2] [INFO] [1787326227.162318376] [laser_mapping]: Saved reloc keyframe 352 (1682 pts) at [0.37 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326227.339552392] [laser_mapping]: Saved reloc keyframe 353 (1663 pts) at [0.37 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326227.450801315] [laser_mapping]: Saved reloc keyframe 354 (1663 pts) at [0.36 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326228.038882490] [laser_mapping]: Saved reloc keyframe 355 (1662 pts) at [0.34 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326228.461114750] [laser_mapping]: Saved reloc keyframe 356 (1666 pts) at [0.34 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326229.738227931] [laser_mapping]: Saved reloc keyframe 357 (1674 pts) at [0.32 -0.07 0.05]
+[fastlio_mapping-2] [INFO] [1787326229.956300588] [laser_mapping]: Saved reloc keyframe 358 (1730 pts) at [0.31 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326230.248007033] [laser_mapping]: Saved reloc keyframe 359 (1712 pts) at [0.31 -0.06 0.06]
+[fastlio_mapping-2] [INFO] [1787326230.559117484] [laser_mapping]: Saved reloc keyframe 360 (1726 pts) at [0.30 -0.06 0.05]
+[fastlio_mapping-2] [INFO] [1787326236.757697437] [laser_mapping]: Saved reloc keyframe 361 (1712 pts) at [0.32 -0.07 0.05]
+^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[fastlio_mapping-2] catch sig %d2
+[livox_ros_driver2_node-1] [INFO] [1787326237.538967023] [rclcpp]: signal_handler(signal_value=2)
+[fastlio_mapping-2] current scan saved to /PCD/scans.pcd
+[fastlio_mapping-2] Rebuild thread terminated normally
+[INFO] [fastlio_mapping-2]: process has finished cleanly [pid 51671]
+[livox_ros_driver2_node-1] Livox Lidar SDK Deinit completely!
+[livox_ros_driver2_node-1] lddc destory!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[ERROR] [livox_ros_driver2_node-1]: process has died [pid 51669, exit code -11, cmd '/home/unitree/project/ros2_ws/install/livox_ros_driver2/lib/livox_ros_driver2/livox_ros_driver2_node --ros-args -r __node:=livox_lidar_publisher --params-file /tmp/launch_params_d_v0dz2y --params-file /tmp/launch_params_0fzv0qsc --params-file /tmp/launch_params_ky8jdjee --params-file /tmp/launch_params_xfllvqar --params-file /tmp/launch_params_bprz345i --params-file /tmp/launch_params_w2m04d8j --params-file /tmp/launch_params_uo7pg3ko --params-file /tmp/launch_params_8pem4cg4'].
+>>> 本次地图已存档为: /home/unitree/ws_localization/src/FAST_LIO/PCD/map_20260821_233039.pcd
+
+>>> 收到 Ctrl-C，等待 run_mapping.sh 保存 scans.pcd，然后继续后处理...
+
+============================================
+ 建图进程已退出: rc=0, ctrl_c=1
+ scans.pcd mtime: before=1787318354 after=1787326237 size=128119581
+============================================
+
+>>> 构建全局重定位数据库...
+Setup unitree ros2 environment
+DDS 使用 eth0 (持有狗内网 192.168.123.18, 雷达/狗 DDS 可达)
+============================================
+ 构建全局重定位数据库
+ 地图: /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+ DB:   /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db
+============================================
+>>> 已清除旧派生缓存(map_gicp.pcd/map_voxel.pcd), 将从当前地图重建
+[0m[INFO] [1787326241.465826797] [build_reloc_db]: Saved voxel map /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db/map_voxel.pcd (18179 pts)[0m
+[0m[INFO] [1787326241.559654771] [build_reloc_db]: Loaded 362 keyframes from /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db[0m
+[0m[INFO] [1787326241.559848185] [build_reloc_db]: Relocalization DB ready: 362 keyframes[0m
+
+>>> 完成。启动自动重定位:
+    cd ~/ws_localization && ./run_reloc_only.sh
+
+>>> 生成 2D 栅格地图...
+Loading /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd ...
+  4003729 points
+  height-diff dz>=0.25 min_h=0.20 overhead=1.60 obstacle_cells=11379
+Wrote /home/unitree/ws_localization/src/go2_loc_bringup/maps/scans.pgm (2150x800)
+Wrote /home/unitree/ws_localization/src/go2_loc_bringup/maps/scans.yaml
+  origin=[-96.60, -7.12] res=0.05
+检测到虚拟障碍记录, 重新合成...
+已按 0 条记录重建 /home/unitree/ws_localization/src/go2_loc_bringup/maps/scans.pgm
+
+============================================
+ 一键建图完成
+
+ 下一步可验证:
+   cd /home/unitree/ws_localization
+   ./run_reloc_only.sh
+   ./run_localization.sh
+   ./run_navigation.sh
+============================================

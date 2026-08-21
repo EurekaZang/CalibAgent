@@ -1,0 +1,92 @@
+schema: calibagent.p8.real.v1
+protocol: nav
+robot:
+  model: unitree_go2_edu
+  geometry_m:
+    length_front: 0.42
+    length_rear: 0.42
+    width: 0.372
+files:
+  runtime_stack: runtime_stack.sha256
+  topic_map: topic_map.yaml
+  reference_extrinsic: reference_extrinsic.yaml
+  candidate_pool: commands/candidate_pool.csv
+  dense_design: commands/dense_design.csv
+  lhs_design: commands/lhs_design.csv
+  sobol_design: commands/sobol_design.csv
+  random_design: commands/random_design.csv
+  active_seed: commands/active_seed.csv
+  validation_commands: commands/validation_commands.csv
+  task_distribution: commands/task_distribution.csv
+  nav_schedule: schedules/nav_blocks.csv
+  real_offset_slalom: maps/real_offset_slalom.yaml
+  real_weighted_arc: maps/real_weighted_arc.yaml
+design:
+  blocks: 30
+  methods:
+  - B0_raw
+  - B1_dense
+  - B2_lhs
+  - B3_sobol
+  - B4_d_opt
+  - B5_active_no_task
+  - B6_random
+  - B8_full
+trial_profile:
+  ramp_in_s: 0.6
+  settle_s: 0.8
+  measure_s: 2.0
+  ramp_out_s: 0.6
+command_rate_hz: 50.0
+model:
+  feature_set: m1_affine
+  prior_scale: 1.0
+  noise_variance:
+  - 0.0025
+  - 0.0025
+  - 0.005
+calibration_transform:
+  type: discrete_bayesian_inverse
+  regularization: 0.02
+  risk_weight: 0.05
+navigation:
+  planner: dclp_fixed_model101
+  timeout_s: 60.0
+  goal_radius_m: 0.25
+quality:
+  max_reference_age_ms: 120.0
+  max_scan_age_ms: 120.0
+  max_planned_action_receive_age_ms: 80.0
+  min_scan_rate_hz: 15.0
+  min_reference_rate_hz: 10.0
+  min_planned_action_rate_hz: 20.0
+input_wait_s: 15.0
+recording:
+  rosbag: true
+  bag_topics:
+  - /scan
+  - /Odometry
+  - /sportmodestate
+  - /p8/planned_cmd_vel
+  - /nav_status
+  - /p8/collision
+  - /move_base_simple/goal
+  - /api/sport/request
+fake:
+  dynamics_matrix:
+  - - 0.82
+    - 0.03
+    - 0.02
+  - - 0.01
+    - 0.78
+    - -0.02
+  - - 0.02
+    - 0.01
+    - 0.86
+  dynamics_bias:
+  - 0.01
+  - -0.005
+  - 0.008
+runtime_artifacts:
+  prior_map: /home/unitree/ws_localization/src/FAST_LIO/PCD/scans.pcd
+  reloc_db: /home/unitree/ws_localization/src/FAST_LIO/PCD/reloc_db

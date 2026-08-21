@@ -1,0 +1,415 @@
+Setup unitree ros2 environment
+[go2:sport] connecting zmq: tcp://192.168.123.222:5596
+[go2:sport] DRY RUN: SportClient is not initialized; commands will only be logged
+[go2:sport] DRY cmd#1 seq=52 v=0.000 w=0.000 dt=0.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#2 seq=53 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#3 seq=54 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#4 seq=55 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#5 seq=56 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#6 seq=57 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#7 seq=58 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#8 seq=59 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#9 seq=60 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#10 seq=61 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#11 seq=62 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#12 seq=63 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#13 seq=64 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#14 seq=65 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#15 seq=66 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#16 seq=67 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#17 seq=68 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#18 seq=69 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#19 seq=70 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#20 seq=71 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#21 seq=72 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#22 seq=73 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#23 seq=74 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#24 seq=75 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#25 seq=76 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#26 seq=77 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#27 seq=78 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#28 seq=79 v=0.000 w=0.000 dt=51.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#29 seq=80 v=0.000 w=0.000 dt=48.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#30 seq=81 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#31 seq=82 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#32 seq=83 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#33 seq=84 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#34 seq=85 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#35 seq=86 v=0.000 w=0.000 dt=50.4ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#36 seq=87 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#37 seq=88 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#38 seq=89 v=0.000 w=0.000 dt=50.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#39 seq=90 v=0.000 w=0.000 dt=49.4ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#40 seq=91 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#41 seq=92 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#42 seq=93 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#43 seq=94 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#44 seq=95 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#45 seq=96 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#46 seq=97 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#47 seq=98 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#48 seq=99 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#49 seq=100 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#50 seq=101 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#51 seq=102 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#52 seq=103 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#53 seq=104 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#54 seq=105 v=0.000 w=0.000 dt=57.2ms policy_zmq_lag=1.5ms
+[go2:sport] DRY cmd#55 seq=106 v=0.000 w=0.000 dt=42.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#56 seq=107 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#57 seq=108 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#58 seq=109 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#59 seq=110 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#60 seq=111 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#61 seq=112 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#62 seq=113 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#63 seq=114 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#64 seq=115 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#65 seq=116 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#66 seq=117 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#67 seq=118 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#68 seq=119 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#69 seq=120 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#70 seq=121 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#71 seq=122 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#72 seq=123 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#73 seq=124 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#74 seq=125 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#75 seq=126 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#76 seq=127 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#77 seq=128 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#78 seq=129 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#79 seq=130 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#80 seq=131 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#81 seq=132 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#82 seq=133 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#83 seq=134 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#84 seq=135 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#85 seq=136 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#86 seq=137 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#87 seq=138 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#88 seq=139 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#89 seq=140 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#90 seq=141 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#91 seq=142 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#92 seq=143 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#93 seq=144 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#94 seq=145 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#95 seq=146 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#96 seq=147 v=0.000 w=0.000 dt=50.4ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#97 seq=148 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#98 seq=149 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#99 seq=150 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#100 seq=151 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#101 seq=152 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#102 seq=153 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#103 seq=154 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#104 seq=155 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#105 seq=156 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#106 seq=157 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#107 seq=158 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#108 seq=159 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#109 seq=160 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#110 seq=161 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#111 seq=162 v=0.000 w=0.000 dt=50.7ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#112 seq=163 v=0.000 w=0.000 dt=49.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#113 seq=164 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#114 seq=165 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#115 seq=166 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#116 seq=167 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#117 seq=168 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#118 seq=169 v=0.000 w=0.000 dt=50.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#119 seq=170 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#120 seq=171 v=0.000 w=0.000 dt=49.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#121 seq=172 v=0.000 w=0.000 dt=50.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#122 seq=173 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#123 seq=174 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#124 seq=175 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#125 seq=176 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#126 seq=177 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#127 seq=178 v=0.000 w=0.000 dt=50.4ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#128 seq=179 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#129 seq=180 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#130 seq=181 v=0.000 w=0.000 dt=50.6ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#131 seq=182 v=0.000 w=0.000 dt=49.4ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#132 seq=183 v=0.000 w=0.000 dt=51.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#133 seq=184 v=0.000 w=0.000 dt=48.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#134 seq=185 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#135 seq=186 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#136 seq=187 v=0.000 w=0.000 dt=50.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#137 seq=188 v=0.000 w=0.000 dt=49.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#138 seq=189 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#139 seq=190 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#140 seq=191 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#141 seq=192 v=0.000 w=0.000 dt=50.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#142 seq=193 v=0.000 w=0.000 dt=49.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#143 seq=194 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#144 seq=195 v=0.000 w=0.000 dt=50.4ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#145 seq=196 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#146 seq=197 v=0.000 w=0.000 dt=50.5ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#147 seq=198 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#148 seq=199 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#149 seq=200 v=0.000 w=0.000 dt=50.4ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#150 seq=201 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#151 seq=202 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#152 seq=203 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#153 seq=204 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#154 seq=205 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#155 seq=206 v=0.000 w=0.000 dt=50.5ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#156 seq=207 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#157 seq=208 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#158 seq=209 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#159 seq=210 v=0.000 w=0.000 dt=49.5ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#160 seq=211 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#161 seq=212 v=0.000 w=0.000 dt=50.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#162 seq=213 v=0.000 w=0.000 dt=49.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#163 seq=214 v=0.000 w=0.000 dt=50.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#164 seq=215 v=0.000 w=0.000 dt=49.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#165 seq=216 v=0.000 w=0.000 dt=50.7ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#166 seq=217 v=0.000 w=0.000 dt=49.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#167 seq=218 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#168 seq=219 v=0.000 w=0.000 dt=50.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#169 seq=220 v=0.000 w=0.000 dt=49.2ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#170 seq=221 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#171 seq=222 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#172 seq=223 v=0.000 w=0.000 dt=51.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#173 seq=224 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#174 seq=225 v=0.000 w=0.000 dt=49.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#175 seq=226 v=0.000 w=0.000 dt=50.5ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#176 seq=227 v=0.000 w=0.000 dt=49.4ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#177 seq=228 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#178 seq=229 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#179 seq=230 v=0.000 w=0.000 dt=50.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#180 seq=231 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#181 seq=232 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#182 seq=233 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#183 seq=234 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#184 seq=235 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#185 seq=236 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#186 seq=237 v=0.000 w=0.000 dt=51.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#187 seq=238 v=0.000 w=0.000 dt=48.4ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#188 seq=239 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#189 seq=240 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#190 seq=241 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#191 seq=242 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#192 seq=243 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#193 seq=244 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#194 seq=245 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#195 seq=246 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#196 seq=247 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#197 seq=248 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#198 seq=249 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#199 seq=250 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#200 seq=251 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#201 seq=252 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#202 seq=253 v=0.000 w=0.000 dt=50.8ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#203 seq=254 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#204 seq=255 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#205 seq=256 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#206 seq=257 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#207 seq=258 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#208 seq=259 v=0.000 w=0.000 dt=50.5ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#209 seq=260 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#210 seq=261 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#211 seq=262 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#212 seq=263 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#213 seq=264 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#214 seq=265 v=0.000 w=0.000 dt=52.5ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#215 seq=266 v=0.000 w=0.000 dt=47.6ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#216 seq=267 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#217 seq=268 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#218 seq=269 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#219 seq=270 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#220 seq=271 v=0.000 w=0.000 dt=49.5ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#221 seq=272 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#222 seq=273 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#223 seq=274 v=0.000 w=0.000 dt=50.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#224 seq=275 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#225 seq=276 v=0.000 w=0.000 dt=49.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#226 seq=277 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#227 seq=278 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#228 seq=279 v=0.000 w=0.000 dt=51.7ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#229 seq=280 v=0.000 w=0.000 dt=48.7ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#230 seq=281 v=0.000 w=0.000 dt=50.4ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#231 seq=282 v=0.000 w=0.000 dt=50.8ms policy_zmq_lag=1.1ms
+[go2:sport] DRY cmd#232 seq=283 v=0.000 w=0.000 dt=48.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#233 seq=284 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#234 seq=285 v=0.000 w=0.000 dt=50.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#235 seq=286 v=0.000 w=0.000 dt=49.3ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#236 seq=287 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#237 seq=288 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#238 seq=289 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#239 seq=290 v=0.000 w=0.000 dt=49.7ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#240 seq=291 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#241 seq=292 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#242 seq=293 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#243 seq=294 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#244 seq=295 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#245 seq=296 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#246 seq=297 v=0.000 w=0.000 dt=49.8ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#247 seq=298 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#248 seq=299 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#249 seq=300 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#250 seq=301 v=0.000 w=0.000 dt=50.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#251 seq=302 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#252 seq=303 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#253 seq=304 v=0.000 w=0.000 dt=49.6ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#254 seq=305 v=0.000 w=0.000 dt=51.0ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#255 seq=306 v=0.000 w=0.000 dt=48.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#256 seq=307 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#257 seq=308 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#258 seq=309 v=0.000 w=0.000 dt=50.1ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#259 seq=310 v=0.000 w=0.000 dt=50.4ms policy_zmq_lag=0.6ms
+[go2:sport] DRY cmd#260 seq=311 v=0.000 w=0.000 dt=49.9ms policy_zmq_lag=0.7ms
+[go2:sport] DRY cmd#261 seq=312 v=0.000 w=0.000 dt=50.2ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#262 seq=313 v=0.000 w=0.000 dt=49.5ms policy_zmq_lag=0.5ms
+[go2:sport] DRY cmd#263 seq=314 v=0.058 w=-0.058 dt=59.0ms policy_zmq_lag=0.7ms scan_age=47.4ms loop_to_send=8.7ms
+[go2:sport] DRY cmd#264 seq=315 v=0.208 w=-0.208 dt=47.1ms policy_zmq_lag=0.7ms scan_age=34.5ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#265 seq=316 v=0.360 w=-0.443 dt=49.7ms policy_zmq_lag=0.7ms scan_age=44.3ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#266 seq=317 v=0.553 w=-0.714 dt=50.0ms policy_zmq_lag=0.7ms scan_age=34.3ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#267 seq=318 v=0.855 w=-0.834 dt=50.7ms policy_zmq_lag=0.6ms scan_age=45.1ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#268 seq=319 v=0.897 w=-0.834 dt=49.1ms policy_zmq_lag=0.6ms scan_age=34.2ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#269 seq=320 v=0.897 w=-0.835 dt=51.6ms policy_zmq_lag=0.6ms scan_age=45.8ms loop_to_send=6.4ms
+[go2:sport] DRY cmd#270 seq=321 v=0.897 w=-0.835 dt=48.9ms policy_zmq_lag=0.6ms scan_age=34.8ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#271 seq=322 v=0.898 w=-0.835 dt=50.5ms policy_zmq_lag=0.6ms scan_age=45.0ms loop_to_send=6.4ms
+[go2:sport] DRY cmd#272 seq=323 v=0.898 w=-0.835 dt=49.7ms policy_zmq_lag=0.6ms scan_age=34.7ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#273 seq=324 v=0.898 w=-0.835 dt=51.6ms policy_zmq_lag=0.6ms scan_age=46.4ms loop_to_send=8.0ms
+[go2:sport] DRY cmd#274 seq=325 v=0.897 w=-0.835 dt=47.8ms policy_zmq_lag=0.6ms scan_age=34.1ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#275 seq=326 v=0.898 w=-0.835 dt=50.2ms policy_zmq_lag=0.6ms scan_age=44.2ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#276 seq=327 v=0.897 w=-0.835 dt=50.2ms policy_zmq_lag=0.7ms scan_age=34.4ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#277 seq=328 v=0.898 w=-0.835 dt=50.2ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#278 seq=329 v=0.897 w=-0.834 dt=49.3ms policy_zmq_lag=0.6ms scan_age=34.0ms loop_to_send=5.6ms
+[go2:sport] DRY cmd#279 seq=330 v=0.898 w=-0.835 dt=50.2ms policy_zmq_lag=0.6ms scan_age=44.0ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#280 seq=331 v=0.897 w=-0.834 dt=50.5ms policy_zmq_lag=0.6ms scan_age=33.9ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#281 seq=332 v=0.898 w=-0.834 dt=50.9ms policy_zmq_lag=0.7ms scan_age=45.4ms loop_to_send=6.5ms
+[go2:sport] DRY cmd#282 seq=333 v=0.897 w=-0.834 dt=49.3ms policy_zmq_lag=0.6ms scan_age=34.8ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#283 seq=334 v=0.899 w=-0.831 dt=49.4ms policy_zmq_lag=0.6ms scan_age=44.3ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#284 seq=335 v=0.897 w=-0.835 dt=50.4ms policy_zmq_lag=0.6ms scan_age=34.7ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#285 seq=336 v=0.898 w=-0.835 dt=50.8ms policy_zmq_lag=0.7ms scan_age=45.3ms loop_to_send=6.6ms
+[go2:sport] DRY cmd#286 seq=337 v=0.897 w=-0.834 dt=48.8ms policy_zmq_lag=0.6ms scan_age=34.2ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#287 seq=338 v=0.898 w=-0.835 dt=50.1ms policy_zmq_lag=0.6ms scan_age=44.2ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#288 seq=339 v=0.896 w=-0.835 dt=50.4ms policy_zmq_lag=0.6ms scan_age=34.6ms loop_to_send=6.3ms
+[go2:sport] DRY cmd#289 seq=340 v=0.900 w=-0.837 dt=50.0ms policy_zmq_lag=0.6ms scan_age=44.9ms loop_to_send=6.4ms
+[go2:sport] DRY cmd#290 seq=341 v=0.897 w=-0.835 dt=49.8ms policy_zmq_lag=0.6ms scan_age=34.5ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#291 seq=342 v=0.900 w=-0.747 dt=50.0ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=6.2ms
+[go2:sport] DRY cmd#292 seq=343 v=0.897 w=-0.834 dt=50.4ms policy_zmq_lag=0.6ms scan_age=35.1ms loop_to_send=6.5ms
+[go2:sport] DRY cmd#293 seq=344 v=0.900 w=-0.749 dt=49.7ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#294 seq=345 v=0.895 w=-0.836 dt=50.2ms policy_zmq_lag=0.7ms scan_age=34.8ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#295 seq=346 v=0.900 w=-0.750 dt=49.7ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#296 seq=347 v=0.897 w=-0.835 dt=50.1ms policy_zmq_lag=0.6ms scan_age=34.7ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#297 seq=348 v=0.900 w=-0.749 dt=49.9ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#298 seq=349 v=0.848 w=-0.837 dt=50.2ms policy_zmq_lag=0.6ms scan_age=34.9ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#299 seq=350 v=0.900 w=-0.750 dt=50.0ms policy_zmq_lag=0.6ms scan_age=44.8ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#300 seq=351 v=0.897 w=-0.835 dt=49.7ms policy_zmq_lag=0.8ms scan_age=34.4ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#301 seq=352 v=0.900 w=-0.750 dt=49.7ms policy_zmq_lag=0.6ms scan_age=44.3ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#302 seq=353 v=0.897 w=-0.834 dt=50.5ms policy_zmq_lag=0.6ms scan_age=34.8ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#303 seq=354 v=0.900 w=-0.748 dt=49.7ms policy_zmq_lag=0.7ms scan_age=44.3ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#304 seq=355 v=0.896 w=-0.835 dt=49.6ms policy_zmq_lag=0.5ms scan_age=34.2ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#305 seq=356 v=0.900 w=-0.751 dt=50.5ms policy_zmq_lag=0.7ms scan_age=44.5ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#306 seq=357 v=0.897 w=-0.834 dt=51.0ms policy_zmq_lag=0.6ms scan_age=35.5ms loop_to_send=6.5ms
+[go2:sport] DRY cmd#307 seq=358 v=0.900 w=-0.748 dt=49.2ms policy_zmq_lag=0.7ms scan_age=44.7ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#308 seq=359 v=0.897 w=-0.834 dt=49.6ms policy_zmq_lag=0.6ms scan_age=34.5ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#309 seq=360 v=0.900 w=-0.746 dt=50.9ms policy_zmq_lag=0.6ms scan_age=45.3ms loop_to_send=6.3ms
+[go2:sport] DRY cmd#310 seq=361 v=0.898 w=-0.834 dt=49.2ms policy_zmq_lag=0.8ms scan_age=34.3ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#311 seq=362 v=0.900 w=-0.837 dt=50.5ms policy_zmq_lag=0.6ms scan_age=45.1ms loop_to_send=6.6ms
+[go2:sport] DRY cmd#312 seq=363 v=0.881 w=-0.837 dt=49.9ms policy_zmq_lag=0.6ms scan_age=34.9ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#313 seq=364 v=0.900 w=-0.749 dt=49.4ms policy_zmq_lag=0.7ms scan_age=44.1ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#314 seq=365 v=0.900 w=-0.837 dt=50.4ms policy_zmq_lag=0.6ms scan_age=34.7ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#315 seq=366 v=0.900 w=-0.748 dt=50.0ms policy_zmq_lag=0.7ms scan_age=44.6ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#316 seq=367 v=0.899 w=-0.837 dt=50.0ms policy_zmq_lag=0.7ms scan_age=34.6ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#317 seq=368 v=0.899 w=-0.805 dt=49.9ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#318 seq=369 v=0.897 w=-0.834 dt=49.3ms policy_zmq_lag=0.6ms scan_age=34.0ms loop_to_send=5.6ms
+[go2:sport] DRY cmd#319 seq=370 v=0.898 w=-0.835 dt=50.8ms policy_zmq_lag=0.6ms scan_age=44.7ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#320 seq=371 v=0.899 w=-0.837 dt=49.9ms policy_zmq_lag=0.7ms scan_age=34.6ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#321 seq=372 v=0.898 w=-0.835 dt=50.1ms policy_zmq_lag=0.6ms scan_age=44.8ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#322 seq=373 v=0.899 w=-0.836 dt=49.5ms policy_zmq_lag=0.6ms scan_age=34.3ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#323 seq=374 v=0.898 w=-0.835 dt=50.3ms policy_zmq_lag=0.7ms scan_age=44.4ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#324 seq=375 v=0.898 w=-0.834 dt=49.8ms policy_zmq_lag=0.6ms scan_age=34.3ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#325 seq=376 v=0.898 w=-0.835 dt=50.5ms policy_zmq_lag=0.6ms scan_age=45.0ms loop_to_send=6.3ms
+[go2:sport] DRY cmd#326 seq=377 v=0.897 w=-0.834 dt=49.5ms policy_zmq_lag=0.6ms scan_age=34.4ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#327 seq=378 v=0.898 w=-0.835 dt=50.3ms policy_zmq_lag=0.8ms scan_age=44.6ms loop_to_send=6.2ms
+[go2:sport] DRY cmd#328 seq=379 v=0.897 w=-0.834 dt=50.3ms policy_zmq_lag=0.6ms scan_age=35.0ms loop_to_send=6.6ms
+[go2:sport] DRY cmd#329 seq=380 v=0.898 w=-0.835 dt=54.3ms policy_zmq_lag=0.7ms scan_age=49.2ms loop_to_send=10.7ms
+[go2:sport] DRY cmd#330 seq=381 v=0.897 w=-0.834 dt=45.9ms policy_zmq_lag=0.7ms scan_age=35.1ms loop_to_send=6.2ms
+[go2:sport] DRY cmd#331 seq=382 v=0.898 w=-0.835 dt=50.0ms policy_zmq_lag=0.6ms scan_age=45.2ms loop_to_send=6.8ms
+[go2:sport] DRY cmd#332 seq=383 v=0.897 w=-0.834 dt=49.8ms policy_zmq_lag=0.6ms scan_age=31.8ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#333 seq=384 v=0.898 w=-0.835 dt=49.7ms policy_zmq_lag=0.6ms scan_age=44.8ms loop_to_send=6.3ms
+[go2:sport] DRY cmd#334 seq=385 v=0.897 w=-0.834 dt=49.5ms policy_zmq_lag=0.6ms scan_age=34.4ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#335 seq=386 v=0.898 w=-0.835 dt=51.2ms policy_zmq_lag=0.6ms scan_age=45.6ms loop_to_send=6.7ms
+[go2:sport] DRY cmd#336 seq=387 v=0.897 w=-0.835 dt=49.2ms policy_zmq_lag=0.7ms scan_age=34.7ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#337 seq=388 v=0.898 w=-0.835 dt=49.9ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#338 seq=389 v=0.897 w=-0.834 dt=50.3ms policy_zmq_lag=0.6ms scan_age=34.9ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#339 seq=390 v=0.897 w=-0.835 dt=50.2ms policy_zmq_lag=0.6ms scan_age=45.3ms loop_to_send=6.7ms
+[go2:sport] DRY cmd#340 seq=391 v=0.897 w=-0.834 dt=49.6ms policy_zmq_lag=0.7ms scan_age=34.8ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#341 seq=392 v=0.897 w=-0.835 dt=50.1ms policy_zmq_lag=0.7ms scan_age=44.8ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#342 seq=393 v=0.897 w=-0.834 dt=49.5ms policy_zmq_lag=0.6ms scan_age=34.4ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#343 seq=394 v=0.897 w=-0.835 dt=50.3ms policy_zmq_lag=0.7ms scan_age=44.6ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#344 seq=395 v=0.897 w=-0.834 dt=50.1ms policy_zmq_lag=0.8ms scan_age=34.6ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#345 seq=396 v=0.896 w=-0.836 dt=49.9ms policy_zmq_lag=0.6ms scan_age=44.7ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#346 seq=397 v=0.897 w=-0.834 dt=50.2ms policy_zmq_lag=0.7ms scan_age=34.8ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#347 seq=398 v=0.896 w=-0.836 dt=49.9ms policy_zmq_lag=0.8ms scan_age=44.5ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#348 seq=399 v=0.897 w=-0.835 dt=50.2ms policy_zmq_lag=0.7ms scan_age=34.7ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#349 seq=400 v=0.897 w=-0.835 dt=50.2ms policy_zmq_lag=0.8ms scan_age=44.8ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#350 seq=401 v=0.897 w=-0.834 dt=50.5ms policy_zmq_lag=0.6ms scan_age=35.6ms loop_to_send=6.4ms
+[go2:sport] DRY cmd#351 seq=402 v=0.898 w=-0.834 dt=48.9ms policy_zmq_lag=0.6ms scan_age=44.4ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#352 seq=403 v=0.897 w=-0.834 dt=50.5ms policy_zmq_lag=0.7ms scan_age=34.9ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#353 seq=404 v=0.867 w=-0.837 dt=51.0ms policy_zmq_lag=1.9ms scan_age=44.6ms loop_to_send=6.2ms
+[go2:sport] DRY cmd#354 seq=405 v=0.897 w=-0.835 dt=48.9ms policy_zmq_lag=0.8ms scan_age=34.8ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#355 seq=406 v=0.897 w=-0.835 dt=49.8ms policy_zmq_lag=0.6ms scan_age=44.7ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#356 seq=407 v=0.897 w=-0.834 dt=50.1ms policy_zmq_lag=0.6ms scan_age=34.7ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#357 seq=408 v=0.897 w=-0.834 dt=49.7ms policy_zmq_lag=0.6ms scan_age=44.4ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#358 seq=409 v=0.897 w=-0.834 dt=50.5ms policy_zmq_lag=0.6ms scan_age=35.0ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#359 seq=410 v=0.897 w=-0.834 dt=49.7ms policy_zmq_lag=0.7ms scan_age=44.7ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#360 seq=411 v=0.897 w=-0.835 dt=50.3ms policy_zmq_lag=0.7ms scan_age=35.1ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#361 seq=412 v=0.895 w=-0.836 dt=49.8ms policy_zmq_lag=0.6ms scan_age=44.9ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#362 seq=413 v=0.897 w=-0.834 dt=50.0ms policy_zmq_lag=0.7ms scan_age=34.6ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#363 seq=414 v=0.894 w=-0.836 dt=51.0ms policy_zmq_lag=0.7ms scan_age=45.7ms loop_to_send=6.6ms
+[go2:sport] DRY cmd#364 seq=415 v=0.897 w=-0.834 dt=48.8ms policy_zmq_lag=0.6ms scan_age=34.5ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#365 seq=416 v=0.897 w=-0.834 dt=50.3ms policy_zmq_lag=0.7ms scan_age=44.8ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#366 seq=417 v=0.897 w=-0.834 dt=49.5ms policy_zmq_lag=0.6ms scan_age=34.3ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#367 seq=418 v=0.897 w=-0.835 dt=50.0ms policy_zmq_lag=0.6ms scan_age=44.4ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#368 seq=419 v=0.897 w=-0.835 dt=50.6ms policy_zmq_lag=0.7ms scan_age=34.9ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#369 seq=420 v=0.896 w=-0.835 dt=50.7ms policy_zmq_lag=0.7ms scan_age=45.6ms loop_to_send=6.6ms
+[go2:sport] DRY cmd#370 seq=421 v=0.897 w=-0.834 dt=49.4ms policy_zmq_lag=0.6ms scan_age=35.1ms loop_to_send=6.4ms
+[go2:sport] DRY cmd#371 seq=422 v=0.897 w=-0.834 dt=50.1ms policy_zmq_lag=0.6ms scan_age=45.2ms loop_to_send=6.6ms
+[go2:sport] DRY cmd#372 seq=423 v=0.897 w=-0.834 dt=49.6ms policy_zmq_lag=0.7ms scan_age=34.7ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#373 seq=424 v=0.896 w=-0.835 dt=52.5ms policy_zmq_lag=0.7ms scan_age=47.2ms loop_to_send=8.1ms
+[go2:sport] DRY cmd#374 seq=425 v=0.897 w=-0.835 dt=48.0ms policy_zmq_lag=0.7ms scan_age=35.1ms loop_to_send=6.7ms
+[go2:sport] DRY cmd#375 seq=426 v=0.897 w=-0.835 dt=49.6ms policy_zmq_lag=0.6ms scan_age=44.9ms loop_to_send=6.2ms
+[go2:sport] DRY cmd#376 seq=427 v=0.897 w=-0.834 dt=50.0ms policy_zmq_lag=0.6ms scan_age=34.9ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#377 seq=428 v=0.877 w=-0.837 dt=59.2ms policy_zmq_lag=0.8ms scan_age=53.8ms loop_to_send=10.8ms
+[go2:sport] DRY cmd#378 seq=429 v=0.897 w=-0.834 dt=41.6ms policy_zmq_lag=0.6ms scan_age=35.6ms loop_to_send=6.8ms
+[go2:sport] DRY cmd#379 seq=430 v=0.897 w=-0.834 dt=48.9ms policy_zmq_lag=0.6ms scan_age=44.4ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#380 seq=431 v=0.897 w=-0.835 dt=49.6ms policy_zmq_lag=0.6ms scan_age=34.1ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#381 seq=432 v=0.897 w=-0.834 dt=50.4ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#382 seq=433 v=0.898 w=-0.835 dt=50.2ms policy_zmq_lag=0.6ms scan_age=34.8ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#383 seq=434 v=0.897 w=-0.835 dt=49.9ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#384 seq=435 v=0.897 w=-0.835 dt=50.0ms policy_zmq_lag=0.6ms scan_age=34.7ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#385 seq=436 v=0.896 w=-0.836 dt=49.6ms policy_zmq_lag=0.7ms scan_age=44.1ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#386 seq=437 v=0.898 w=-0.835 dt=50.6ms policy_zmq_lag=0.6ms scan_age=34.8ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#387 seq=438 v=0.896 w=-0.835 dt=50.0ms policy_zmq_lag=0.6ms scan_age=44.8ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#388 seq=439 v=0.897 w=-0.835 dt=49.7ms policy_zmq_lag=0.6ms scan_age=34.4ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#389 seq=440 v=0.898 w=-0.833 dt=50.3ms policy_zmq_lag=0.8ms scan_age=43.8ms loop_to_send=6.0ms
+[go2:sport] DRY cmd#390 seq=441 v=0.898 w=-0.835 dt=49.9ms policy_zmq_lag=0.7ms scan_age=34.4ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#391 seq=442 v=0.897 w=-0.834 dt=50.0ms policy_zmq_lag=0.6ms scan_age=44.6ms loop_to_send=6.1ms
+[go2:sport] DRY cmd#392 seq=443 v=0.898 w=-0.835 dt=49.8ms policy_zmq_lag=0.6ms scan_age=34.4ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#393 seq=444 v=0.897 w=-0.834 dt=49.7ms policy_zmq_lag=0.6ms scan_age=44.2ms loop_to_send=5.6ms
+[go2:sport] DRY cmd#394 seq=445 v=0.898 w=-0.834 dt=50.3ms policy_zmq_lag=0.7ms scan_age=34.5ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#395 seq=446 v=0.896 w=-0.835 dt=50.2ms policy_zmq_lag=0.8ms scan_age=44.5ms loop_to_send=6.2ms
+[go2:sport] DRY cmd#396 seq=447 v=0.898 w=-0.835 dt=50.0ms policy_zmq_lag=0.6ms scan_age=34.8ms loop_to_send=6.2ms
+[go2:sport] DRY cmd#397 seq=448 v=0.896 w=-0.836 dt=49.4ms policy_zmq_lag=0.6ms scan_age=44.0ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#398 seq=449 v=0.898 w=-0.835 dt=50.1ms policy_zmq_lag=0.6ms scan_age=34.2ms loop_to_send=5.6ms
+[go2:sport] DRY cmd#399 seq=450 v=0.899 w=-0.837 dt=50.0ms policy_zmq_lag=0.6ms scan_age=44.1ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#400 seq=451 v=0.898 w=-0.835 dt=50.0ms policy_zmq_lag=0.6ms scan_age=34.1ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#401 seq=452 v=0.899 w=-0.837 dt=50.2ms policy_zmq_lag=0.6ms scan_age=44.4ms loop_to_send=5.9ms
+[go2:sport] DRY cmd#402 seq=453 v=0.898 w=-0.835 dt=49.7ms policy_zmq_lag=0.6ms scan_age=34.0ms loop_to_send=5.6ms
+[go2:sport] DRY cmd#403 seq=454 v=0.899 w=-0.837 dt=50.1ms policy_zmq_lag=0.6ms scan_age=44.1ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#404 seq=455 v=0.898 w=-0.835 dt=50.0ms policy_zmq_lag=0.6ms scan_age=34.3ms loop_to_send=5.6ms
+[go2:sport] DRY cmd#405 seq=456 v=0.899 w=-0.837 dt=50.2ms policy_zmq_lag=0.7ms scan_age=44.3ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#406 seq=457 v=0.898 w=-0.836 dt=49.8ms policy_zmq_lag=0.6ms scan_age=34.3ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#407 seq=458 v=0.899 w=-0.836 dt=49.9ms policy_zmq_lag=0.7ms scan_age=44.0ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#408 seq=459 v=0.900 w=-0.750 dt=50.3ms policy_zmq_lag=0.6ms scan_age=34.4ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#409 seq=460 v=0.898 w=-0.834 dt=49.7ms policy_zmq_lag=0.7ms scan_age=44.0ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#410 seq=461 v=0.900 w=-0.748 dt=50.1ms policy_zmq_lag=0.6ms scan_age=34.3ms loop_to_send=5.7ms
+[go2:sport] DRY cmd#411 seq=462 v=0.897 w=-0.834 dt=50.1ms policy_zmq_lag=0.7ms scan_age=44.3ms loop_to_send=5.8ms
+[go2:sport] DRY cmd#412 seq=463 v=0.899 w=-0.800 dt=50.4ms policy_zmq_lag=0.6ms scan_age=34.8ms loop_to_send=5.9ms
