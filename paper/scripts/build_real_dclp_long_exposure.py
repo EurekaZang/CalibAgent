@@ -5,7 +5,7 @@ The output contains no drawn trajectory, recoloring, or geometric annotation.
 For each run, a temporal-median background is estimated from uniformly sampled
 frames.  Robot appearances at matched elapsed times are then composited where
 they differ from that background.  Source-frame RGB values are unchanged;
-only foreground alpha encodes time, with later poses rendered more opaque.
+only foreground alpha encodes time, decreasing from 100% to 50% opacity.
 The direct-command run is placed on the left and the GAUGE-compensated run on
 the right.
 """
@@ -32,7 +32,7 @@ MANIFEST = ROOT / "evidence" / "paper_figure_provenance" / "real_dclp_long_expos
 
 BACKGROUND_FRAME_COUNT = 31
 EXPOSURE_TIMESTAMPS_S = tuple(np.linspace(0.8, 9.2, 11).round(3))
-EXPOSURE_OPACITIES = tuple(np.linspace(0.12, 1.0, len(EXPOSURE_TIMESTAMPS_S)).round(3))
+EXPOSURE_OPACITIES = tuple(np.linspace(1.0, 0.5, len(EXPOSURE_TIMESTAMPS_S)).round(3))
 DIFFERENCE_THRESHOLD = 15.0
 MIN_COMPONENT_AREA_PX = 180
 MASK_DILATION_ITERATIONS = 2
@@ -231,8 +231,8 @@ def build() -> dict[str, object]:
             "mask_dilation_iterations": MASK_DILATION_ITERATIONS,
             "mask_feather_sigma_px": MASK_FEATHER_SIGMA_PX,
             "time_encoding": (
-                "only foreground alpha changes with elapsed time; opacity increases and "
-                "transparency decreases, while source-frame RGB is unchanged"
+                "only foreground alpha changes with elapsed time; opacity decreases "
+                "linearly from 100% to 50%, while source-frame RGB is unchanged"
             ),
             "common_center_crop_height_px": target_height,
             "common_horizontal_crop_px": [PANEL_CROP_LEFT_PX, PANEL_CROP_RIGHT_PX],

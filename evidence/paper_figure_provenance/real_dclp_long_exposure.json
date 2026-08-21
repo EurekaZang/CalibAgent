@@ -21,30 +21,30 @@
     9.2
   ],
   "exposure_opacities": [
-    0.12,
-    0.208,
-    0.296,
-    0.384,
-    0.472,
-    0.56,
-    0.648,
-    0.736,
-    0.824,
-    0.912,
-    1.0
+    1.0,
+    0.95,
+    0.9,
+    0.85,
+    0.8,
+    0.75,
+    0.7,
+    0.65,
+    0.6,
+    0.55,
+    0.5
   ],
   "exposure_transparencies": [
-    0.88,
-    0.792,
-    0.704,
-    0.616,
-    0.528,
-    0.44,
-    0.352,
-    0.264,
-    0.176,
-    0.088,
-    0.0
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.25,
+    0.3,
+    0.35,
+    0.4,
+    0.45,
+    0.5
   ],
   "algorithm": {
     "background_frame_count": 31,
@@ -52,7 +52,7 @@
     "minimum_component_area_px": 180,
     "mask_dilation_iterations": 2,
     "mask_feather_sigma_px": 1.15,
-    "time_encoding": "only foreground alpha changes with elapsed time; opacity increases and transparency decreases, while source-frame RGB is unchanged",
+    "time_encoding": "only foreground alpha changes with elapsed time; opacity decreases linearly from 100% to 50%, while source-frame RGB is unchanged",
     "common_center_crop_height_px": 506,
     "common_horizontal_crop_px": [
       0,
@@ -146,7 +146,7 @@
   },
   "output": {
     "path": "paper/figures/real_dclp_long_exposure.png",
-    "sha256": "bced09ac822e2e1f2eb1fcde6b61ac90ddd24f8e3f9e98f40183d0cd0fa54810",
+    "sha256": "f01365d85d7f8098483b4acc3f53f6af9f37527ca8101f7c444df57a0ff52bbb",
     "width": 3132,
     "height": 506
   }
