@@ -52,6 +52,7 @@ calibagent-p4-benchmark = "calibagent.cli.run_p4_benchmark:main"
 calibagent-p5-benchmark = "calibagent.cli.run_p5_isaaclab:main"
 calibagent-p6-benchmark = "calibagent.cli.run_p6_isaaclab:main"
 calibagent-p7-benchmark = "calibagent.cli.run_p7_isaaclab:main"
+calibagent-p8-real = "calibagent.cli.p8_real:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -82,6 +83,10 @@ packages = ["calibagent"]
 [[tool.mypy.overrides]]
 module = ["scipy", "scipy.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["calibagent.p8.*", "calibagent.cli.p8_real"]
+ignore_errors = true
 
 [tool.coverage.run]
 source = ["calibagent"]
