@@ -3,14 +3,20 @@
 from __future__ import annotations
 
 import csv
+import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 from calibagent.p8.analysis import analyze
-from calibagent.p8.backend import _navigation_goal_reached, navigation_quality_reasons
+from calibagent.p8.backend import (
+    _navigation_goal_reached,
+    navigation_quality_reasons,
+    trial_quality_diagnostics,
+)
 from calibagent.p8.config import load_config, validate_config
-from calibagent.p8.recording import export_jsonl
+from calibagent.p8.recording import AppendCsv, export_jsonl
 from calibagent.p8.runner import P8Runtime
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -183,6 +189,80 @@ def test_navigation_quality_uses_delivery_and_active_action_freshness() -> None:
     ]
 
 
+def test_trial_quality_ignores_one_age_spike_but_detects_sustained_staleness() -> None:
+    receives = np.arange(80, dtype=np.float64) * 0.05
+    ages = [80.0] * 80
+    ages[35] = 127.4
+    measure_samples = [
+        {"age_ms": ages[index], "receive": float(receives[index])}
+        for index in range(20, 60)
+    ]
+    diagnostics, reasons = trial_quality_diagnostics(
+        ages,
+        receives,
+        [50.0] * 80,
+        receives,
+        measure_samples,
+        {"max_reference_age_ms": 120.0},
+    )
+    assert reasons == []
+    assert diagnostics["reference_max_age_ms"] == 127.4
+    assert diagnostics["reference_age_exceedance_count"] == 1
+    assert diagnostics["reference_measure_age_p95_ms"] == 80.0
+
+    for index in range(35, 40):
+        ages[index] = 140.0
+        measure_samples[index - 20]["age_ms"] = 140.0
+    _, reasons = trial_quality_diagnostics(
+        ages,
+        receives,
+        [50.0] * 80,
+        receives,
+        measure_samples,
+        {"max_reference_age_ms": 120.0},
+    )
+    assert reasons == [
+        "reference measure-window p95 age exceeded data-quality threshold"
+    ]
+
+
+def test_trial_quality_detects_measure_window_receive_gap() -> None:
+    measure_receives = np.arange(40, dtype=np.float64) * 0.05
+    measure_receives[20:] += 0.13
+    measure_samples = [
+        {"age_ms": 80.0, "receive": float(receive)}
+        for receive in measure_receives
+    ]
+    _, reasons = trial_quality_diagnostics(
+        [80.0] * 40,
+        measure_receives,
+        [50.0] * 40,
+        np.arange(40, dtype=np.float64) * 0.05,
+        measure_samples,
+        {"max_reference_age_ms": 120.0, "max_reference_gap_ms": 120.0},
+    )
+    assert reasons == [
+        "reference measure-window receive gap exceeded data-quality threshold"
+    ]
+
+
+def test_append_csv_resumes_legacy_compatible_header_without_widening_rows(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "legacy.csv"
+    path.write_text("id,status\nold,SUCCESS\n", encoding="utf-8")
+    table = AppendCsv(path, ("id", "new_metric", "status"))
+    table.append({"id": "new", "new_metric": 42, "status": "SUCCESS"})
+    with path.open(encoding="utf-8", newline="") as stream:
+        reader = csv.DictReader(stream)
+        rows = list(reader)
+        assert reader.fieldnames == ["id", "status"]
+    assert rows == [
+        {"id": "old", "status": "SUCCESS"},
+        {"id": "new", "status": "SUCCESS"},
+    ]
+
+
 def test_p8_nav_retries_inconsistent_false_success_episode(tmp_path: Path) -> None:
     runtime = P8Runtime(
         load_config(ROOT / "configs/p8/nav.yaml"),
@@ -286,6 +366,48 @@ def test_p8_nav_resume_is_append_only_and_does_not_duplicate_trials(tmp_path: Pa
     rows = list(csv.DictReader((tmp_path / "nav_resume" / "trials.csv").open(encoding="utf-8")))
     assert len(rows) == 20
     assert len({row["planned_unit_id"] for row in rows}) == 20
+
+
+def test_resume_code_migration_requires_explicit_manifest_audit(tmp_path: Path) -> None:
+    config = load_config(ROOT / "configs/p8/nav.yaml")
+    first = P8Runtime(
+        config,
+        "code_migration",
+        tmp_path,
+        backend_name="fake",
+        auto_continue=True,
+        max_units=1,
+    )
+    try:
+        first.run_nav(blocks=["NAV_BLOCK_01"], methods=["B0_raw"], routes=["A"])
+    finally:
+        first.close()
+    manifest_path = tmp_path / "code_migration" / "manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["git_commit"] = "pre-fix-commit"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="--allow-code-migration"):
+        P8Runtime(
+            config,
+            "code_migration",
+            tmp_path,
+            backend_name="fake",
+            resume=True,
+        )
+
+    resumed = P8Runtime(
+        config,
+        "code_migration",
+        tmp_path,
+        backend_name="fake",
+        resume=True,
+        allow_code_migration=True,
+    )
+    resumed.close()
+    migrated = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert migrated["code_history"][-1]["from_commit"] == "pre-fix-commit"
+    assert "explicitly authorized" in migrated["code_history"][-1]["reason"]
 
 
 def test_p8_shift_resume_never_marks_a_partial_sequence_complete(tmp_path: Path) -> None:

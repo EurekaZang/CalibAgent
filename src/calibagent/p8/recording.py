@@ -38,6 +38,18 @@ class AppendCsv:
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
         self.fields = list(fields)
+        # A resumed run may use an older compatible schema. Keep its original
+        # header so appends cannot create rows wider than that header; richer
+        # quality diagnostics remain available in the append-only JSONL trace.
+        if path.is_file() and path.stat().st_size > 0:
+            with path.open("r", encoding="utf-8", newline="") as stream:
+                existing_fields = next(csv.reader(stream), [])
+            unknown = [field for field in existing_fields if field not in self.fields]
+            if unknown:
+                raise RuntimeError(
+                    "existing CSV schema has unknown fields: {}".format(", ".join(unknown))
+                )
+            self.fields = existing_fields
 
     def append(self, row):  # type: (Dict[str, Any]) -> None
         exists = self.path.is_file() and self.path.stat().st_size > 0
@@ -87,8 +99,19 @@ TRIAL_FIELDS = (
     "measure_start",
     "measure_end",
     "sample_count",
+    "freshness_rule_version",
     "reference_max_age_ms",
+    "reference_age_p95_ms",
+    "reference_age_exceedance_count",
+    "reference_age_longest_exceedance_run",
+    "reference_measure_age_p95_ms",
+    "reference_measure_age_exceedance_count",
+    "reference_measure_age_longest_exceedance_run",
+    "reference_measure_max_gap_ms",
+    "reference_max_gap_ms",
     "scan_max_age_ms",
+    "scan_age_p95_ms",
+    "scan_max_gap_ms",
     "detector_statistic",
     "detector_alarm",
     "recovery_index",

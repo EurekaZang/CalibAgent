@@ -96,10 +96,11 @@ class P8Runtime:
         arm=False,
         resume=False,
         overwrite=False,
+        allow_code_migration=False,
         auto_continue=False,
         max_units=None,
     ):
-        # type: (ResolvedConfig, str, Path, str, bool, bool, bool, bool, Optional[int]) -> None
+        # type: (ResolvedConfig, str, Path, str, bool, bool, bool, bool, bool, Optional[int]) -> None
         self.config = config
         self.run_id = run_id
         self.output_root = output_root.expanduser().resolve()
@@ -113,6 +114,8 @@ class P8Runtime:
             raise ValueError("run directory must be directly inside output root") from exc
         if resume and overwrite:
             raise ValueError("--resume and --overwrite are mutually exclusive")
+        if allow_code_migration and not resume:
+            raise ValueError("--allow-code-migration requires --resume")
         self.code_commit = git_commit(Path(__file__).resolve().parents[3])
         self.code_migration = None
         self.config_migration = None
@@ -147,15 +150,21 @@ class P8Runtime:
                 }
             previous_commit = self.previous_manifest.get("git_commit")
             if previous_commit and previous_commit != self.code_commit:
-                if _run_has_completed_units(self.run_dir):
+                completed_units = _run_has_completed_units(self.run_dir)
+                if completed_units and not allow_code_migration:
                     raise RuntimeError(
                         "resume code commit differs after completed experimental units; use the "
-                        "original commit"
+                        "original commit or explicitly audit the technical migration with "
+                        "--allow-code-migration"
                     )
                 self.code_migration = {
                     "from_commit": previous_commit,
                     "to_commit": self.code_commit,
-                    "reason": "technical fix before the first valid experimental unit",
+                    "reason": (
+                        "explicitly authorized technical data-quality fix after completed units"
+                        if completed_units
+                        else "technical fix before the first valid experimental unit"
+                    ),
                     "timestamp": _utc(),
                 }
         self.runtime_artifacts = (
@@ -427,9 +436,30 @@ class P8Runtime:
             measure_start=result["measure_start"],
             measure_end=result["measure_end"],
             sample_count=result["sample_count"],
+            freshness_rule_version=result.get("freshness_rule_version", ""),
             reference_max_age_ms=result["reference_max_age_ms"],
+            reference_age_p95_ms=result.get("reference_age_p95_ms", ""),
+            reference_age_exceedance_count=result.get(
+                "reference_age_exceedance_count", ""
+            ),
+            reference_age_longest_exceedance_run=result.get(
+                "reference_age_longest_exceedance_run", ""
+            ),
+            reference_measure_age_p95_ms=result.get(
+                "reference_measure_age_p95_ms", ""
+            ),
+            reference_measure_age_exceedance_count=result.get(
+                "reference_measure_age_exceedance_count", ""
+            ),
+            reference_measure_age_longest_exceedance_run=result.get(
+                "reference_measure_age_longest_exceedance_run", ""
+            ),
+            reference_measure_max_gap_ms=result.get(
+                "reference_measure_max_gap_ms", ""
+            ),
             reference_max_gap_ms=result["reference_max_gap_ms"],
             scan_max_age_ms=result["scan_max_age_ms"],
+            scan_age_p95_ms=result.get("scan_age_p95_ms", ""),
             scan_max_gap_ms=result["scan_max_gap_ms"],
             detector_statistic=detector_statistic,
             detector_alarm=detector_alarm,
@@ -444,9 +474,30 @@ class P8Runtime:
             dict(
                 identity,
                 event="trial_quality",
+                freshness_rule_version=result.get("freshness_rule_version", ""),
                 reference_max_age_ms=result["reference_max_age_ms"],
+                reference_age_p95_ms=result.get("reference_age_p95_ms", ""),
+                reference_age_exceedance_count=result.get(
+                    "reference_age_exceedance_count", ""
+                ),
+                reference_age_longest_exceedance_run=result.get(
+                    "reference_age_longest_exceedance_run", ""
+                ),
+                reference_measure_age_p95_ms=result.get(
+                    "reference_measure_age_p95_ms", ""
+                ),
+                reference_measure_age_exceedance_count=result.get(
+                    "reference_measure_age_exceedance_count", ""
+                ),
+                reference_measure_age_longest_exceedance_run=result.get(
+                    "reference_measure_age_longest_exceedance_run", ""
+                ),
+                reference_measure_max_gap_ms=result.get(
+                    "reference_measure_max_gap_ms", ""
+                ),
                 reference_max_gap_ms=result["reference_max_gap_ms"],
                 scan_max_age_ms=result["scan_max_age_ms"],
+                scan_age_p95_ms=result.get("scan_age_p95_ms", ""),
                 scan_max_gap_ms=result["scan_max_gap_ms"],
                 timestamp=time.time(),
             )

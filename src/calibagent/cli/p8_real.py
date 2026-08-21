@@ -29,6 +29,7 @@ def _runtime(args):  # type: (argparse.Namespace) -> P8Runtime
         arm=args.arm,
         resume=args.resume,
         overwrite=args.overwrite,
+        allow_code_migration=args.allow_code_migration,
         auto_continue=args.auto_continue,
         max_units=args.max_units,
     )
@@ -48,6 +49,14 @@ def _add_run_arguments(parser):  # type: (argparse.ArgumentParser) -> None
         "--overwrite",
         action="store_true",
         help="Delete an existing run directory with this exact run ID and start from zero",
+    )
+    parser.add_argument(
+        "--allow-code-migration",
+        action="store_true",
+        help=(
+            "Resume completed units under a new commit after an audited technical fix; "
+            "the migration is recorded in manifest.json"
+        ),
     )
     parser.add_argument("--auto-continue", action="store_true")
     parser.add_argument("--max-units", type=int, default=None)

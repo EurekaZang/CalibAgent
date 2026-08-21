@@ -15,6 +15,7 @@ import numpy as np
 
 
 NAVIGATION_FRESHNESS_RULE_VERSION = "p8_navigation_freshness_v2"
+TRIAL_FRESHNESS_RULE_VERSION = "p8_trial_freshness_v2"
 
 
 def _stamp_sec(stamp):  # type: (Any) -> float
@@ -103,6 +104,82 @@ def navigation_quality_reasons(metrics, quality):
     return reasons
 
 
+def _percentile_ms(values, percentile):
+    # type: (Sequence[float], float) -> float
+    return (
+        float(np.percentile(np.asarray(values, dtype=np.float64), percentile))
+        if values
+        else float("inf")
+    )
+
+
+def _exceedance_summary(values, threshold):
+    # type: (Sequence[float], float) -> Tuple[int, int]
+    count = 0
+    longest = 0
+    current = 0
+    for value in values:
+        if float(value) > threshold:
+            count += 1
+            current += 1
+            longest = max(longest, current)
+        else:
+            current = 0
+    return count, longest
+
+
+def trial_quality_diagnostics(
+    reference_ages,
+    reference_receives,
+    scan_ages,
+    scan_receives,
+    measure_samples,
+    quality,
+):
+    # type: (Sequence[float], Sequence[float], Sequence[float], Sequence[float], Sequence[Dict[str, float]], Dict[str, Any]) -> Tuple[Dict[str, Any], List[str]]
+    """Evaluate the observation window without failing on an isolated scheduler spike.
+
+    Whole-trial maxima remain in the audit record. Validity is based on the
+    reference samples that actually enter the velocity fit: their p95 source
+    age, receive continuity, and count.
+    """
+    reference_limit = float(quality.get("max_reference_age_ms", 80.0))
+    reference_gap_limit = float(quality.get("max_reference_gap_ms", 120.0))
+    minimum_samples = int(quality.get("min_reference_measure_samples", 20))
+    measure_ages = [float(sample["age_ms"]) for sample in measure_samples]
+    measure_receives = [float(sample["receive"]) for sample in measure_samples]
+    reference_exceedances, reference_longest_run = _exceedance_summary(
+        reference_ages, reference_limit
+    )
+    measure_exceedances, measure_longest_run = _exceedance_summary(
+        measure_ages, reference_limit
+    )
+    diagnostics = {
+        "freshness_rule_version": TRIAL_FRESHNESS_RULE_VERSION,
+        "reference_max_age_ms": max(reference_ages) if reference_ages else float("inf"),
+        "reference_age_p95_ms": _percentile_ms(reference_ages, 95.0),
+        "reference_age_exceedance_count": reference_exceedances,
+        "reference_age_longest_exceedance_run": reference_longest_run,
+        "reference_max_gap_ms": _max_gap_ms(reference_receives),
+        "reference_measure_age_p95_ms": _percentile_ms(measure_ages, 95.0),
+        "reference_measure_age_exceedance_count": measure_exceedances,
+        "reference_measure_age_longest_exceedance_run": measure_longest_run,
+        "reference_measure_max_gap_ms": _max_gap_ms(measure_receives),
+        "scan_max_age_ms": max(scan_ages) if scan_ages else float("inf"),
+        "scan_age_p95_ms": _percentile_ms(scan_ages, 95.0),
+        "scan_max_gap_ms": _max_gap_ms(scan_receives),
+        "sample_count": len(measure_samples),
+    }
+    reasons = []
+    if len(measure_samples) < minimum_samples:
+        reasons.append("reference measure window has too few samples")
+    if diagnostics["reference_measure_age_p95_ms"] > reference_limit:
+        reasons.append("reference measure-window p95 age exceeded data-quality threshold")
+    if diagnostics["reference_measure_max_gap_ms"] > reference_gap_limit:
+        reasons.append("reference measure-window receive gap exceeded data-quality threshold")
+    return diagnostics, reasons
+
+
 def estimate_velocity(samples):  # type: (List[Dict[str, float]]) -> Tuple[np.ndarray, np.ndarray]
     if len(samples) < 3:
         raise ValueError("reference measure window has fewer than 3 samples")
@@ -175,9 +252,18 @@ class FakeBackend:
             + float(profile["settle_s"])
             + float(profile["measure_s"]),
             "reference_max_age_ms": 0.0,
+            "reference_age_p95_ms": 0.0,
+            "reference_age_exceedance_count": 0,
+            "reference_age_longest_exceedance_run": 0,
             "reference_max_gap_ms": 0.0,
+            "reference_measure_age_p95_ms": 0.0,
+            "reference_measure_age_exceedance_count": 0,
+            "reference_measure_age_longest_exceedance_run": 0,
+            "reference_measure_max_gap_ms": 0.0,
             "scan_max_age_ms": 0.0,
+            "scan_age_p95_ms": 0.0,
             "scan_max_gap_ms": 0.0,
+            "freshness_rule_version": TRIAL_FRESHNESS_RULE_VERSION,
             "terminal_reason": "completed",
         }
         self.trace.write(dict(identity, event="fake_trial", **result))
@@ -533,23 +619,16 @@ class Go2RosBackend:
         except ValueError as exc:
             measured, covariance = np.full(3, np.nan), np.full((3, 3), np.nan)
             valid, reason = False, str(exc)
-        quality = self.config.get("quality", {})
-        max_reference_age = max(ref_ages) if ref_ages else float("inf")
-        max_scan_age = max(scan_ages) if scan_ages else float("inf")
-        max_reference_gap = (
-            max((right - left) * 1000.0 for left, right in zip(ref_receives, ref_receives[1:]))
-            if len(ref_receives) >= 2
-            else float("inf")
+        diagnostics, quality_reasons = trial_quality_diagnostics(
+            ref_ages,
+            ref_receives,
+            scan_ages,
+            scan_receives,
+            measure_samples,
+            self.config.get("quality", {}),
         )
-        max_scan_gap = (
-            max((right - left) * 1000.0 for left, right in zip(scan_receives, scan_receives[1:]))
-            if len(scan_receives) >= 2
-            else float("inf")
-        )
-        if max_reference_age > float(quality.get("max_reference_age_ms", 80.0)):
-            valid, reason = False, "reference age exceeded data-quality threshold"
-        elif max_reference_gap > float(quality.get("max_reference_gap_ms", 120.0)):
-            valid, reason = False, "reference gap exceeded data-quality threshold"
+        if valid and quality_reasons:
+            valid, reason = False, "; ".join(quality_reasons)
         return {
             "planned_command": planned.tolist(),
             "sent_command": target.tolist(),
@@ -557,14 +636,10 @@ class Go2RosBackend:
             "covariance": covariance.tolist(),
             "valid": valid,
             "reason": reason,
-            "sample_count": len(measure_samples),
             "measure_start": self.now() - ramp_out - measure,
             "measure_end": self.now() - ramp_out,
-            "reference_max_age_ms": max_reference_age,
-            "reference_max_gap_ms": max_reference_gap,
-            "scan_max_age_ms": max_scan_age,
-            "scan_max_gap_ms": max_scan_gap,
             "terminal_reason": "completed" if valid else "invalid_observation",
+            **diagnostics,
         }
 
     def publish_goal(self, goal, frame):  # type: (Dict[str, Any], str) -> None
