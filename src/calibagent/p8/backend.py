@@ -29,6 +29,17 @@ def _unwrap(values):  # type: (Sequence[float]) -> np.ndarray
     return np.unwrap(np.asarray(values, dtype=np.float64))
 
 
+def _navigation_goal_reached(status, reference, goal, radius):
+    # type: (str, Optional[Dict[str, Any]], Dict[str, Any], float) -> bool
+    if not str(status).startswith("REACHED") or reference is None:
+        return False
+    distance = math.hypot(
+        float(goal["x"]) - float(reference["x"]),
+        float(goal["y"]) - float(reference["y"]),
+    )
+    return distance <= float(radius)
+
+
 def estimate_velocity(samples):  # type: (List[Dict[str, float]]) -> Tuple[np.ndarray, np.ndarray]
     if len(samples) < 3:
         raise ValueError("reference measure window has fewer than 3 samples")
@@ -475,6 +486,12 @@ class Go2RosBackend:
             self.collision = False
         route_goals = list(route.get("waypoints", [])) + [route["goal_pose"]]
         route_frame = str(route.get("frame", "map"))
+        goal_radius = float(
+            route.get(
+                "goal_radius_m",
+                self.config.get("navigation", {}).get("goal_radius_m", 0.25),
+            )
+        )
         goal_index = 0
         awaiting_goal_acceptance = True
         self.publish_goal(route_goals[goal_index], route_frame)
@@ -496,6 +513,7 @@ class Go2RosBackend:
         scan_ages = []  # type: List[float]
         reference_ages = []  # type: List[float]
         action_ages = []  # type: List[float]
+        last_status = None  # type: Optional[str]
         terminal = "timeout"
         success = False
         collision = False
@@ -554,9 +572,50 @@ class Go2RosBackend:
                     break
                 status = str(snapshot["status"])
                 reached = status.startswith("REACHED")
+                current_goal = route_goals[goal_index]
+                current_goal_distance = (
+                    math.hypot(
+                        float(current_goal["x"]) - float(reference["x"]),
+                        float(current_goal["y"]) - float(reference["y"]),
+                    )
+                    if reference
+                    else float("nan")
+                )
+                if status != last_status:
+                    self.trace.write(
+                        dict(
+                            identity,
+                            event="navigation_status",
+                            status=status,
+                            route_goal_index=goal_index,
+                            route_goal_distance_m=current_goal_distance,
+                            awaiting_goal_acceptance=awaiting_goal_acceptance,
+                            timestamp=time.time(),
+                        )
+                    )
+                    if reached and not _navigation_goal_reached(
+                        status, reference, current_goal, goal_radius
+                    ):
+                        self.trace.write(
+                            dict(
+                                identity,
+                                event="route_goal_reached_rejected",
+                                route_goal_index=goal_index,
+                                route_goal_distance_m=current_goal_distance,
+                                goal_radius_m=goal_radius,
+                                timestamp=time.time(),
+                            )
+                        )
+                    last_status = status
                 if status.startswith("NAVIGATING"):
                     awaiting_goal_acceptance = False
-                elif not awaiting_goal_acceptance:
+                elif (
+                    reached
+                    and not awaiting_goal_acceptance
+                    and _navigation_goal_reached(
+                        status, reference, current_goal, goal_radius
+                    )
+                ):
                     if goal_index + 1 < len(route_goals):
                         goal_index += 1
                         awaiting_goal_acceptance = True

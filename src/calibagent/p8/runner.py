@@ -244,6 +244,41 @@ class P8Runtime:
         ]
         return rows[-1] if rows else None
 
+    def _completed_episode_row(self, planned_unit_id, route):
+        # type: (str, Dict[str, Any]) -> Optional[Dict[str, str]]
+        expected_goal_count = len(route.get("waypoints", [])) + 1
+        expected_waypoints = len(route.get("waypoints", []))
+        goal_radius = float(
+            route.get(
+                "goal_radius_m",
+                self.config.payload.get("navigation", {}).get("goal_radius_m", 0.25),
+            )
+        )
+        rows = [
+            row
+            for row in self.recorder.episodes.rows()
+            if row.get("planned_unit_id") == planned_unit_id
+        ]
+        for row in reversed(rows):
+            if row.get("status") == "RESULT":
+                return row
+            if row.get("status") != "SUCCESS":
+                continue
+            try:
+                consistent = bool(
+                    row.get("success", "").lower() in ("1", "true")
+                    and row.get("collision", "").lower() not in ("1", "true")
+                    and row.get("terminal_reason") == "reached"
+                    and int(row.get("route_goal_count", "")) == expected_goal_count
+                    and int(row.get("waypoints_reached", "")) == expected_waypoints
+                    and float(row.get("final_goal_distance_m", "inf")) <= goal_radius
+                )
+            except (TypeError, ValueError):
+                consistent = False
+            if consistent:
+                return row
+        return None
+
     def _restore_model(self, model, prefix):  # type: (VelocityModel, str) -> Tuple[VelocityModel, List[np.ndarray]]
         rows = [
             row
@@ -498,7 +533,7 @@ class P8Runtime:
                         break
                     map_id = map_by_letter[letter]
                     planned_unit_id = f"{base_id}_NAV_{map_id}"
-                    if planned_unit_id in self.recorder.completed("episode"):
+                    if self._completed_episode_row(planned_unit_id, routes[map_id]) is not None:
                         continue
                     self._pause(f"Place the robot at the marked start for {block_id}/{map_id}.")
                     attempt_id = self.recorder.attempt_id(planned_unit_id, "episode")

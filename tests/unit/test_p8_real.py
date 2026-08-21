@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from calibagent.p8.analysis import analyze
+from calibagent.p8.backend import _navigation_goal_reached
 from calibagent.p8.config import load_config, validate_config
 from calibagent.p8.recording import export_jsonl
 from calibagent.p8.runner import P8Runtime
@@ -82,6 +83,63 @@ def test_p8_nav_max_units_stops_between_formal_routes(tmp_path: Path) -> None:
         )
     )
     assert [row["map_id"] for row in episodes] == ["real_offset_slalom"]
+
+
+def test_navigation_goal_requires_explicit_reached_and_geometric_arrival() -> None:
+    goal = {"x": 2.0, "y": 3.0}
+    near = {"x": 2.1, "y": 3.1}
+    far = {"x": 8.0, "y": 9.0}
+    assert not _navigation_goal_reached("WAITING_FOR_SCAN", near, goal, 0.25)
+    assert not _navigation_goal_reached("NAVIGATING", near, goal, 0.25)
+    assert not _navigation_goal_reached("REACHED", far, goal, 0.25)
+    assert _navigation_goal_reached("REACHED", near, goal, 0.25)
+
+
+def test_p8_nav_retries_inconsistent_false_success_episode(tmp_path: Path) -> None:
+    runtime = P8Runtime(
+        load_config(ROOT / "configs/p8/nav.yaml"),
+        "nav_retry_false_success",
+        tmp_path,
+        backend_name="fake",
+        auto_continue=True,
+        max_units=9,
+    )
+    planned_unit_id = "NAV_BLOCK_01_B0_raw_NAV_real_offset_slalom"
+    runtime.recorder.episodes.append(
+        {
+            "run_id": "nav_retry_false_success",
+            "planned_unit_id": planned_unit_id,
+            "attempt_id": planned_unit_id + "_attempt_01",
+            "block_id": "NAV_BLOCK_01",
+            "method_id": "B0_raw",
+            "map_id": "real_offset_slalom",
+            "route_order": "AB",
+            "status": "SUCCESS",
+            "terminal_reason": "reached",
+            "success": True,
+            "collision": False,
+            "duration_s": 0.4,
+            "path_length_m": 0.05,
+            "final_goal_distance_m": 8.4,
+            "route_goal_count": 5,
+            "waypoints_reached": 4,
+        }
+    )
+    try:
+        result = runtime.run_nav(blocks=["NAV_BLOCK_01"], methods=["B0_raw"])
+    finally:
+        runtime.close()
+    assert result["completed_trials"] == 8
+    episodes = list(
+        csv.DictReader(
+            (tmp_path / "nav_retry_false_success" / "navigation_episodes.csv").open(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert len(episodes) == 2
+    assert episodes[-1]["attempt_id"].endswith("attempt_02")
+    assert float(episodes[-1]["final_goal_distance_m"]) == 0.0
 
 
 def test_p8_shift_fake_complete_sequence_and_method_isolation(tmp_path: Path) -> None:
