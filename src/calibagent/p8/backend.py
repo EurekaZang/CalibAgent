@@ -101,7 +101,9 @@ class FakeBackend:
             + float(profile["settle_s"])
             + float(profile["measure_s"]),
             "reference_max_age_ms": 0.0,
+            "reference_max_gap_ms": 0.0,
             "scan_max_age_ms": 0.0,
+            "scan_max_gap_ms": 0.0,
             "terminal_reason": "completed",
         }
         self.trace.write(dict(identity, event="fake_trial", **result))
@@ -243,10 +245,11 @@ class Go2RosBackend:
                     "child_frame": str(message.child_frame_id),
                 }
                 with outer.lock:
-                    outer.latest_ref = row
+                    row["sequence"] = outer.counts["reference"] + 1
                     outer.counts["reference"] += 1
                     outer.times["reference"].append(receive)
                     outer.ages["reference"].append(row["age_ms"])
+                    outer.latest_ref = row
 
             def _scan(self, message):
                 receive = time.time()
@@ -370,6 +373,10 @@ class Go2RosBackend:
         measure_samples = []  # type: List[Dict[str, float]]
         ref_ages = []  # type: List[float]
         scan_ages = []  # type: List[float]
+        ref_receives = []  # type: List[float]
+        scan_receives = []  # type: List[float]
+        last_ref_sequence = -1
+        last_scan_sequence = -1
         sent_values = []  # type: List[List[float]]
         next_tick = start
         try:
@@ -393,14 +400,18 @@ class Go2RosBackend:
                 snapshot = self.snapshot()
                 reference = snapshot["reference"]
                 scan = snapshot["scan"]
-                if reference:
-                    ref_ages.append((sent_stamp - float(reference["stamp"])) * 1000.0)
+                if reference and int(reference["sequence"]) != last_ref_sequence:
+                    last_ref_sequence = int(reference["sequence"])
+                    ref_ages.append(float(reference["age_ms"]))
+                    ref_receives.append(float(reference["receive"]))
                     if phase == "measure" and (
                         not measure_samples or reference["stamp"] > measure_samples[-1]["stamp"]
                     ):
                         measure_samples.append(reference)
-                if scan:
-                    scan_ages.append((sent_stamp - float(scan["stamp"])) * 1000.0)
+                if scan and int(scan["sequence"]) != last_scan_sequence:
+                    last_scan_sequence = int(scan["sequence"])
+                    scan_ages.append(float(scan["age_ms"]))
+                    scan_receives.append(float(scan["receive"]))
                 next_tick += period
                 time.sleep(max(0.0, next_tick - time.monotonic()))
         finally:
@@ -414,8 +425,20 @@ class Go2RosBackend:
         quality = self.config.get("quality", {})
         max_reference_age = max(ref_ages) if ref_ages else float("inf")
         max_scan_age = max(scan_ages) if scan_ages else float("inf")
+        max_reference_gap = (
+            max((right - left) * 1000.0 for left, right in zip(ref_receives, ref_receives[1:]))
+            if len(ref_receives) >= 2
+            else float("inf")
+        )
+        max_scan_gap = (
+            max((right - left) * 1000.0 for left, right in zip(scan_receives, scan_receives[1:]))
+            if len(scan_receives) >= 2
+            else float("inf")
+        )
         if max_reference_age > float(quality.get("max_reference_age_ms", 80.0)):
             valid, reason = False, "reference age exceeded data-quality threshold"
+        elif max_reference_gap > float(quality.get("max_reference_gap_ms", 120.0)):
+            valid, reason = False, "reference gap exceeded data-quality threshold"
         return {
             "planned_command": planned.tolist(),
             "sent_command": target.tolist(),
@@ -427,7 +450,9 @@ class Go2RosBackend:
             "measure_start": self.now() - ramp_out - measure,
             "measure_end": self.now() - ramp_out,
             "reference_max_age_ms": max_reference_age,
+            "reference_max_gap_ms": max_reference_gap,
             "scan_max_age_ms": max_scan_age,
+            "scan_max_gap_ms": max_scan_gap,
             "terminal_reason": "completed" if valid else "invalid_observation",
         }
 

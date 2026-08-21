@@ -1,6 +1,7 @@
 """Complete P8-NAV and P8-SHIFT experiment state machines."""
 
 import contextlib
+import csv
 import hashlib
 import json
 import shutil
@@ -69,6 +70,22 @@ def _runtime_artifact_hashes(payload):  # type: (Dict[str, Any]) -> Dict[str, Di
     }
 
 
+def _run_has_completed_units(run_dir):  # type: (Path) -> bool
+    statuses = {
+        "trials.csv": {"SUCCESS"},
+        "navigation_episodes.csv": {"SUCCESS", "RESULT"},
+        "shift_sequences.csv": {"SUCCESS"},
+    }
+    for name, completed in statuses.items():
+        path = run_dir / name
+        if not path.is_file():
+            continue
+        with path.open("r", encoding="utf-8", newline="") as stream:
+            if any(row.get("status") in completed for row in csv.DictReader(stream)):
+                return True
+    return False
+
+
 class P8Runtime:
     def __init__(
         self,
@@ -87,6 +104,8 @@ class P8Runtime:
         self.output_root = output_root
         self.backend_name = backend_name
         self.run_dir = output_root / run_id
+        self.code_commit = git_commit(Path(__file__).resolve().parents[3])
+        self.code_migration = None
         if self.run_dir.exists() and not resume:
             raise FileExistsError(f"run directory exists; use --resume: {self.run_dir}")
         self.previous_manifest = {}
@@ -95,6 +114,19 @@ class P8Runtime:
             self.previous_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             if self.previous_manifest.get("config_hash") != self.config.config_hash:
                 raise RuntimeError("resume config hash differs from run manifest")
+            previous_commit = self.previous_manifest.get("git_commit")
+            if previous_commit and previous_commit != self.code_commit:
+                if _run_has_completed_units(self.run_dir):
+                    raise RuntimeError(
+                        "resume code commit differs after completed experimental units; use the "
+                        "original commit"
+                    )
+                self.code_migration = {
+                    "from_commit": previous_commit,
+                    "to_commit": self.code_commit,
+                    "reason": "technical fix before the first valid experimental unit",
+                    "timestamp": _utc(),
+                }
         self.runtime_artifacts = (
             _runtime_artifact_hashes(self.config.payload) if backend_name == "ros" else {}
         )
@@ -156,6 +188,9 @@ class P8Runtime:
         shutil.copy2(str(self.config.files[schedule_key]), str(self.run_dir / "schedule.csv"))
         manifest_path = self.run_dir / "manifest.json"
         previous = self.previous_manifest
+        code_history = list(previous.get("code_history", []))
+        if self.code_migration is not None:
+            code_history.append(self.code_migration)
         manifest = dict(previous)
         manifest.update(
             {
@@ -164,7 +199,8 @@ class P8Runtime:
                 "protocol": self.config.payload["protocol"],
                 "created_at": previous.get("created_at", _utc()),
                 "last_opened_at": _utc(),
-                "git_commit": git_commit(Path(__file__).resolve().parents[3]),
+                "git_commit": self.code_commit,
+                "code_history": code_history,
                 "config_hash": self.config.config_hash,
                 "input_hashes": self.config.hashes,
                 "backend": self.backend_name,
@@ -321,7 +357,9 @@ class P8Runtime:
             measure_end=result["measure_end"],
             sample_count=result["sample_count"],
             reference_max_age_ms=result["reference_max_age_ms"],
+            reference_max_gap_ms=result["reference_max_gap_ms"],
             scan_max_age_ms=result["scan_max_age_ms"],
+            scan_max_gap_ms=result["scan_max_gap_ms"],
             detector_statistic=detector_statistic,
             detector_alarm=detector_alarm,
             recovery_index=recovery_index or "",
@@ -330,6 +368,17 @@ class P8Runtime:
             status="SUCCESS" if result["valid"] else "INVALID",
             terminal_reason=result["terminal_reason"],
             created_at=_utc(),
+        )
+        self.recorder.trace.write(
+            dict(
+                identity,
+                event="trial_quality",
+                reference_max_age_ms=result["reference_max_age_ms"],
+                reference_max_gap_ms=result["reference_max_gap_ms"],
+                scan_max_age_ms=result["scan_max_age_ms"],
+                scan_max_gap_ms=result["scan_max_gap_ms"],
+                timestamp=time.time(),
+            )
         )
         self.recorder.trials.append(row)
         self.units += 1
