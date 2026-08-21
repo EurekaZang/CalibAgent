@@ -13,7 +13,6 @@ PAPER_INPUTS := main.tex references.bib ieeeconf.cls \
 	figures/closed_loop_response.pdf \
 	figures/shift_recovery_results.pdf \
 	figures/navigation_results.pdf \
-	figures/real_go2_navigation.pdf \
 	figures/real_dclp_long_exposure.png
 
 .PHONY: all clean figures simulation-audit compliance-audit
@@ -24,7 +23,6 @@ figures:
 	$(PYTHON) scripts/build_review_analyses.py
 	$(PYTHON) scripts/build_paper_figures.py
 	$(PYTHON) scripts/build_simulation_scientific_figures.py
-	$(PYTHON) scripts/build_real_navigation_figure.py
 	$(PYTHON) scripts/build_real_dclp_long_exposure.py
 
 simulation-audit: figures

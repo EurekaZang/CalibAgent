@@ -323,13 +323,11 @@ margins are a 1.25 capped-time ratio and $-0.05$ success difference.
 
 For physical navigation, a Unitree Go2 runs the same fixed DRL-DCLP local
 planner \cite{zhang2025drldclp} with either direct velocity commands or the
-frozen \method\ inverse between planner and robot. Two static-obstacle scenes
-and one crossing-pedestrian scene are each repeated five times per condition;
-matched-time frames, source video, and exact extraction times are retained.
-A separate fixed-camera static layout is retained as two full-run videos and
-visualized by compositing the robot at identical elapsed times over a temporal-
-median background. This visualization is qualitative and is excluded from all
-statistical endpoints.
+frozen \method\ inverse between planner and robot. A fixed-camera obstacle
+layout is retained as one full-run video per condition. We visualize the pair
+by compositing the robot at identical elapsed times over independently
+estimated temporal-median backgrounds. This comparison is qualitative and is
+excluded from all statistical endpoints.
 
 \begin{figure*}[t]
   \centering
@@ -511,17 +509,6 @@ this simulator pipeline.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.99\textwidth]{figures/real_go2_navigation.pdf}
-  \caption{Matched-time real-Go2 navigation with a fixed DRL-DCLP planner.
-  Rows compare direct commands (red) and \method-compensated commands (blue)
-  in (a)--(b) two static-obstacle scenes and (c) a crossing-pedestrian scene.
-  Each condition has five repetitions; the displayed sequences are
-  representative, not independent statistical samples.}
-  \label{fig:realnav}
-\end{figure*}
-
-\begin{figure*}[t]
-  \centering
   \includegraphics[width=0.99\textwidth]{figures/real_dclp_long_exposure.png}
   \caption{Long-exposure visualization of a matched-layout real-Go2 run with
   the fixed DRL-DCLP planner. Left: direct velocity commands. Right: DRL-DCLP
@@ -531,20 +518,18 @@ this simulator pipeline.
   monotonically with elapsed time; opacity is fixed and both panels use the
   same spatial crop. No path, annotation, or geometry is drawn; the images
   provide qualitative motion context rather than a pixel-derived endpoint.}
-  \label{fig:realnav-long}
+  \label{fig:realnav}
 \end{figure*}
 
 \subsection{Physical Navigation Consequence}
 
-At equal elapsed times, direct commands produce visible stop-and-correct motion
-and contact at static obstacles, while \method\ advances with less hesitation
-and contact (Fig.~\ref{fig:realnav}a--b). Compensation also clears the pedestrian
-crossing earlier (Fig.~\ref{fig:realnav}c). Across five repetitions per
-condition, every scene improves in hesitation, contact, or both. The fixed
-planner isolates the effect of planner-facing command compensation. The
-full-run long exposures provide a complementary view at matched wall-clock
-times (Fig.~\ref{fig:realnav-long}): repeated poses remain visible rather than
-being reduced to a selected frame pair.
+At matched wall-clock times, the direct-command run accumulates repeated poses
+beside the central obstacle group, consistent with the stop-and-correct motion
+visible in the source video. With \method, the matched-time poses progress more
+continuously through the same layout (Fig.~\ref{fig:realnav}). Holding the local
+planner fixed isolates the displayed difference to planner-facing command
+compensation; the comparison remains qualitative rather than a trajectory-level
+effect estimate.
 
 \section{Discussion and Limitations}
 
@@ -565,12 +550,12 @@ detection, and the fixed early-recovery window.
 
 Hardware evidence comprises passive calibration and qualitative closed-loop
 navigation on one Go2; active selection and shift recovery use a pinned
-simulator. The three physical scenes and five repetitions support behavior-level
-comparison, not trajectory-level effect sizes. The compact basis targets steady
-response rather than arbitrary history dependence, gait switching, or rapid
-transients. Logged standardized routes and physical interface, load,
-center-of-mass, and friction shifts are required for quantitative hardware
-effect sizes and shift-transfer claims.
+simulator. The physical navigation pair supports a behavior-level comparison,
+not a trajectory-level effect size. The compact basis targets steady response
+rather than arbitrary history dependence, gait switching, or rapid transients.
+Logged standardized routes and physical interface, load, center-of-mass, and
+friction shifts are required for quantitative hardware effect sizes and
+shift-transfer claims.
 
 \section{Conclusion}
 
