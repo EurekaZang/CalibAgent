@@ -12,6 +12,18 @@ mkdir -p "${LOG_DIR}"
 
 ros_env='source /home/unitree/ws_localization/setup_env.sh'
 
+verify_stack() {
+  sha256sum --check "${ROOT}/configs/p8/runtime_stack.sha256"
+  # Do not attach a second Python subscriber to the full 20 Hz PointCloud2
+  # stream here.  Deserializing that stream competes with pc2scan and was
+  # measured to create >2 s of observer-induced DDS backlog.  /scan verifies
+  # the complete Mid360 -> projection path without perturbing the raw stream;
+  # the raw cloud is checked once, before pc2scan starts, in the start path.
+  bash -lc "${ros_env}; /usr/bin/python3 '${HEALTH}' --topic /Odometry --type nav_msgs/msg/Odometry --duration 2 --min-rate 10 --min-count 20 --max-age-ms 120"
+  bash -lc "${ros_env}; /usr/bin/python3 '${HEALTH}' --topic /scan --type sensor_msgs/msg/LaserScan --duration 3 --min-rate 15 --min-count 30 --max-age-ms 120 --min-valid-beams 64"
+  bash -lc "${ros_env}; /usr/bin/python3 '${HEALTH}' --topic /p8/planned_cmd_vel --type geometry_msgs/msg/Twist --duration 3 --min-rate 20 --min-count 40"
+}
+
 case "${1:-}" in
   start)
     if tmux has-session -t "${SESSION}" 2>/dev/null; then echo "P8 stack already running" >&2; exit 1; fi
@@ -49,6 +61,10 @@ case "${1:-}" in
     tmux list-windows -t "${SESSION}" -F '#{window_name} pid=#{pane_pid} dead=#{pane_dead}' 2>/dev/null || true
     bash -lc "${ros_env}; ros2 topic list | grep -E '^/(Odometry|scan|p8/planned_cmd_vel|livox/lidar_pc2)$' || true"
     ;;
+  verify)
+    verify_stack
+    echo "P8 input stack verified"
+    ;;
   stop)
     if pgrep -f 'calibagent.cli.p8_real (nav|shift)' >/dev/null; then
       echo "Stop the foreground P8 runner first so its defined trial/episode end sends zero." >&2; exit 1
@@ -63,5 +79,5 @@ case "${1:-}" in
   attach)
     exec tmux attach-session -t "${SESSION}"
     ;;
-  *) echo "Usage: $0 {start|status|stop [--with-localization]|log [policy|pc2scan|localization]|attach}"; exit 2 ;;
+  *) echo "Usage: $0 {start|verify|status|stop [--with-localization]|log [policy|pc2scan|localization]|attach}"; exit 2 ;;
 esac
