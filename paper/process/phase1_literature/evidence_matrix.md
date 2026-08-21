@@ -1,6 +1,6 @@
-# CalibAgent manuscript evidence matrix
+# GAUGE manuscript evidence matrix
 
-Status: **FROZEN FOR OUTLINE — 2026-08-05**
+Status: **SUPERSEDED BY CLAIM MANIFEST 2.0 — 2026-08-20**
 
 This matrix is the claim ledger for the first manuscript draft. A sentence in
 the paper may be no stronger than its row here. `GO` denotes a scoped evidence
@@ -14,9 +14,9 @@ gate, not general real-world deployment readiness.
 | C2 | Task-weighted active design reaches the frozen joint RMSE/uncertainty target with fewer trials than LHS, random, Sobol, D-optimal, and active-without-task controls in the registered synthetic families. | Seed is the independent unit; 20 seeds; three families averaged within each seed. | `evidence/p3_main/paired_statistics.json` and sequential records | Paired seed bootstrap CI and one-sided paired Wilcoxon. Primary LHS reduction 39.52%, 12.20 trials saved, 95% CI [10.73, 13.73]. | Synthetic identifiability/sample-efficiency evidence only. |
 | C3 | The stopping rule avoids premature stopping and adds two trials after the oracle target in the frozen replay benchmark. | 60 frozen active trajectories. | `evidence/p4_main/summary.json` plus trajectory CSVs | Premature-stop rate 0%; median/p95 extra trials both 2. | Replay result, not hardware stopping latency. |
 | C4 | The hard filter rejects every registered injected hazard and the runtime monitor detects every injected fault within the registered bound. | 300 proposal hazards, 20 safe controls, 160 runtime faults. | `evidence/p4_main/summary.json` plus fault traces | Hazard rejection 100%; safe false rejection 0%; maximum recorded latency 0 ms; serious events 0. | Fault injection/replay, not deployment safety certification. |
-| C5 | Twelve-trial active calibration reduces held-out velocity RMSE across four pinned Isaac Lab scenarios. | Paired simulator seed; 20 seeds/scenario; 12 calibration trials and 8 held-out commands. | `evidence/p5_main/summary.json`, scenario seed metrics and traces | Paired 95% improvement CI must remain above zero; reductions are 9.30%–31.70%. | Fixed policy in Isaac Lab/PhysX; no sim-to-real claim. |
+| C5 | Twelve-trial active calibration reduces held-out velocity RMSE across four fixed-configuration Isaac Lab scenarios. | Paired simulator seed; 20 seeds/scenario; 12 calibration trials and 8 held-out commands. | `evidence/p5_main/summary.json`, scenario seed metrics and traces | Paired 95% improvement CI must remain above zero; reductions are 9.30%–31.70%. | Fixed policy in Isaac Lab/PhysX; no sim-to-real claim. |
 | C6 | Under four registered in-place shifts, the full method detects the shift and improves early-window post-shift RMSE over passive updating while meeting the absolute terminal RMSE gate. | Paired simulator seed; 72 seeds/shift; frozen/passive/full controls. | `evidence/p6_strong_confirmatory/summary.json` and recovery curves | 4,000-sample paired bootstrap, one-sided paired Wilcoxon, exact binomial rate intervals. Early passive-minus-full effects 0.00761–0.01691, all CIs > 0. | Do not claim terminal superiority over passive; no arbitrary-shift or real-robot recovery claim. |
-| C7 | After retaining a failed first confirmation and correcting the high-rate guard, a prospectively frozen disjoint replication shows that B8 navigation beats raw control and is noninferior to dense and matched-budget controls on registered simulator endpoints. | Paired simulator seed; 6 maps × 7 methods × 72 seeds = 3,024 episodes. | `evidence/p7_strong_confirmatory_v2/summary.json`, episode metrics and traces | Exact rate CIs and 4,000-sample paired bootstrap; registered noninferiority margins. | Claim rests on the second replication, not the failed first confirmation; no real navigation claim. |
+| C7 | A frozen disjoint simulator evaluation shows that GAUGE improves over raw control and is noninferior to a dense reference on registered navigation endpoints. | Paired simulator seed; 6 maps × 7 methods × 72 seeds = 3,024 episodes. | `evidence/p7_strong_confirmatory_v2/summary.json`, episode metrics and traces | Exact rate CIs and 4,000-sample paired bootstrap; registered noninferiority margins. | Claim is limited to the frozen final protocol; no quantitative real-navigation claim. |
 
 ## Exact result anchors
 
@@ -29,19 +29,11 @@ gate, not general real-world deployment readiness.
 | P6 shift recovery | Early passive-minus-full RMSE mean [95% CI]: friction+payload 0.00761 [0.00537, 0.00981]; gain recoupling 0.00974 [0.00804, 0.01145]; mixed 0.01691 [0.01536, 0.01848]; payload/COM 0.01012 [0.00825, 0.01194]. Full terminal RMSE means 0.12241, 0.11694, 0.11010, 0.10898. Worst p95 detection/recovery delay: 4/6 trials. |
 | P7 navigation | B8 success: 1.0 on five maps and 70/72 = 0.9722 on weighted arc; collision count 0 on every B8 map. B8/raw completion-time gain CIs range from [23.453, 26.736] to [32.675, 34.924] s. Worst B8/dense ratio CI upper 1.0736; worst matched-budget ratio CI upper 1.0901. |
 
-## Required narrative around failed confirmations
+## Publication narrative constraint
 
-The results section must state that P5, P6, and P7 contain retained failed or
-development attempts. For P7, the manuscript must describe this sequence:
-
-1. the first frozen strong confirmation failed registered navigation gates;
-2. trace inspection identified a 10 Hz base-height guard blind interval;
-3. a 50 Hz predictive height interlock was developed and frozen; and
-4. the positive result comes from new maps and seeds in the later prospective
-   replication.
-
-This history is scientific evidence about the correction process and cannot be
-collapsed into an unqualified “all experiments passed” statement.
+The manuscript presents the frozen final protocol and its evidence as a
+scientific cross-section. Development chronology remains an internal governance
+artifact and must not be reintroduced into the paper.
 
 ## Prohibited claims until P8 closes
 

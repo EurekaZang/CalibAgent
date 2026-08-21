@@ -6,8 +6,8 @@
   "all_asset_hashes_unique": true,
   "all_declared_seed_memberships_verified": true,
   "scientific_figure_manifest": "evidence/paper_figure_provenance/simulation_scientific_figure_manifest.json",
-  "scientific_figure_manifest_sha256": "3768f8d2ed48b48a4160afe639df739eec9202b4bf2fc0738dfdda21a4e6db79",
-  "scientific_figure_source_count": 14,
+  "scientific_figure_manifest_sha256": "35f7aff0dfe73779e188bad29ce98f5dfd161ce47c9aa8e56f914f18481f281e",
+  "scientific_figure_source_count": 9,
   "entries": [
     {
       "asset": "docs/assets/readme/isaac_sim/p7_replicate_s_bend_overview.png",

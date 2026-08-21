@@ -13,7 +13,7 @@
   },
   {
     "method": "recovery_no_task",
-    "label": "No-task",
+    "label": "No task",
     "mean_selector_minus_task_ivr_rmse": 0.015829562571768353,
     "ci95": [
       0.014180429737726407,

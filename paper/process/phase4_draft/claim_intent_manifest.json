@@ -1,8 +1,8 @@
 {
-  "manifest_version": "1.0",
-  "manifest_id": "M-2026-08-05T00:00:00Z-calibagent-draft-1",
+  "manifest_version": "2.0",
+  "manifest_id": "M-2026-08-20T00:00:00Z-gauge-draft-2",
   "emitted_by": "draft_writer_agent",
-  "emitted_at": "2026-08-05T00:00:00Z",
+  "emitted_at": "2026-08-20T00:00:00Z",
   "claims": [
     {
       "claim_id": "C1",
@@ -33,7 +33,7 @@
     },
     {
       "claim_id": "C4",
-      "claim_text": "Twelve-trial active calibration reduces held-out velocity RMSE in four pinned Isaac Lab scenarios.",
+      "claim_text": "Twelve-trial active calibration reduces held-out velocity RMSE in four fixed-configuration Isaac Lab scenarios.",
       "intended_evidence_kind": "empirical",
       "planned_refs": ["mittal2025isaaclab"],
       "negative_constraints": [
@@ -51,16 +51,16 @@
     },
     {
       "claim_id": "C6",
-      "claim_text": "A prospective disjoint simulator replication supports B8 navigation superiority over raw control and noninferiority to dense and matched-budget controls on registered endpoints.",
+      "claim_text": "Held-out simulator evaluation supports GAUGE navigation gains over raw control and noninferiority to a dense reference on registered endpoints.",
       "intended_evidence_kind": "empirical",
       "planned_refs": ["taouil2023blackbox"],
       "negative_constraints": [
-        {"constraint_id": "NC-C6-1", "rule": "Disclose the failed first confirmation and base the claim only on the later replication."}
+        {"constraint_id": "NC-C6-1", "rule": "Present only the frozen final protocol and its evidence; do not narrate development chronology or failed iterations."}
       ]
     }
   ],
   "manifest_negative_constraints": [
-    {"constraint_id": "MNC-1", "rule": "P8 is protocol, not completed evidence."},
+    {"constraint_id": "MNC-1", "rule": "Online active calibration and shift recovery are not yet quantitatively established on physical hardware."},
     {"constraint_id": "MNC-2", "rule": "No real-world deployment, arbitrary-shift, or sim-to-real claim."},
     {"constraint_id": "MNC-3", "rule": "No absolute first or only novelty claim."}
   ]

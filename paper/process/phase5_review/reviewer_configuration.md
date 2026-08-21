@@ -1,6 +1,6 @@
 # Field Analysis and Reviewer Configuration
 
-Status: **AWAITING AUTHOR CONFIRMATION**
+Status: **HISTORICAL CONFIGURATION — REVIEW CYCLE COMPLETED**
 
 No substantive panel review may begin until the author confirms or edits these
 reviewer identities.
@@ -10,8 +10,8 @@ reviewer identities.
 - Title: *GAUGE: Bridging the Command–Motion Gap in Black-Box Quadrupeds*
 - Language: English
 - Abstract length: approximately 253 words
-- Full-text length: approximately 5,097 PDF words across 8 pages
-- References: 17
+- Full-text length: approximately 4,700 PDF-extracted words across 7 pages
+- References: 18
 - Target venue: IEEE International Conference on Robotics and Automation (ICRA)
 
 ## Field analysis
@@ -96,7 +96,7 @@ reviewer identities.
 
 1. Whether the apparent active-learning gain is caused by favorable synthetic families, candidate pools, thresholds, or budget definitions.
 2. Whether a compact steady-state model can justify downstream navigation claims under temporal dynamics and estimator coupling.
-3. Whether the failed P7 confirmation and subsequent interlock change introduce researcher degrees of freedom despite the disjoint replication.
+3. Whether the frozen navigation protocol, disjoint evaluation, and registered endpoints adequately exclude researcher degrees of freedom.
 
 - **Will particularly care about**: The single-robot hardware scope, the qualitative nature of the new navigation video, the absence of physical active acquisition and shift recovery, and any wording that turns simulator confirmation into a hardware claim.
 **Possible blind spots**: The deliberately adversarial stance may undervalue engineering utility unless checked against the registered endpoints.

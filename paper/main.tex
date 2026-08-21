@@ -20,34 +20,29 @@
 \pagestyle{empty}
 
 \begin{abstract}
-Commercial and learned quadruped controllers often expose a planar velocity
-command while hiding the dynamics that map commands to realized motion.
-Payload, surface, controller, and estimator changes can therefore preserve
-balance yet distort navigation. We present \method\ (Goal-Aware
-Uncertainty-Guided Exploration), a task-aware active calibration and
-shift-recovery layer for opaque quadruped velocity interfaces. A Bayesian
-command-to-motion model represents
-cross-axis coupling and asymmetric response, and a task-weighted integrated
-variance objective selects commands for a declared deployment distribution.
-Hard authorization, validation stopping, bounded inverse compensation, and
-residual-triggered recovery remain separate from acquisition. On 183 passive
-Unitree Go2 trials, a coupled affine map reduces held-out root-mean-square
-error (RMSE) by
-54.5\% relative to raw commands. Across controlled synthetic families, task
-weighting reaches a joint accuracy--uncertainty target in 18.67 trials, saving
-39.5\% over Latin hypercube sampling and 18.8\% over D-optimal design. A
-candidate-noise oracle sensitivity changes the heteroscedastic result by one
-trial without changing the method ranking. Pinned Isaac Lab experiments show
-9.3--31.7\% held-out RMSE reduction and a matched-budget task-error advantage
-over D-optimal design on every navigation map. A paired residual-signature
-monitor produces 0/120 stationary-sequence alarms over 12,000 trials; across
-four shifts and 144 seeds per shift, detection is 99.3--100\%, recovery is
-97.9--100\%, and active selection improves early recovery over passive
-updating. Failure-aware navigation is noninferior to a dense reference across
-six held-out maps. These results establish the active mechanism in controlled
-simulation and the need for a coupled response model in passive hardware data;
-qualitative real-Go2 trials further show reduced hesitation and contacts under
-fixed-planner compensation.
+Commercial quadrupeds expose desired planar velocity commands while hiding the
+controller and dynamics that determine realized motion. Cross-axis coupling,
+asymmetric response, and deployment shifts can therefore preserve balance while
+corrupting the variable used by a navigation planner. We present \method\
+(Goal-Aware Uncertainty-Guided \mbox{Exploration}), a task-aware active calibration and
+shift-recovery layer for opaque quadruped velocity interfaces. \method\ learns a
+coupled Bayesian response model and allocates hard-authorized trials according
+to a planner-facing task distribution. The same posterior supports validated
+stopping, bounded inverse compensation, and residual-triggered active recovery.
+On 183 passive Unitree Go2 trials, coupled affine calibration reduces held-out
+root-mean-square error (RMSE) by 54.5\% relative to raw commands. Across
+controlled synthetic families, task weighting reaches a joint
+accuracy--uncertainty target in 18.67 trials, saving 39.5\% over Latin hypercube
+sampling and 18.8\% over D-optimal design; a no-task ablation and a
+task-distribution negative control localize the benefit to the declared task
+measure. Fixed-configuration Isaac Lab experiments yield 9.3--31.7\% held-out RMSE
+reductions. Across four shifts, detection reaches 99.3--100\%, recovery reaches
+97.9--100\%, and task-weighted selection improves early recovery over passive
+updating. Across six held-out Isaac Sim maps, failure-aware navigation is
+noninferior to a dense reference. A fixed-planner Go2 comparison further shows more continuous
+qualitative progress under command compensation. Together, these results show
+how an opaque velocity interface can become a task-conditioned calibrated
+control variable.
 \end{abstract}
 
 \section{Introduction}
@@ -57,116 +52,149 @@ controllers accept a desired planar velocity
 $\vect{u}=[v_x,v_y,\omega_z]^\top$, but the steady body velocity may contain
 gain error, dead zones, saturation, and cross-axis coupling. These errors are
 particularly consequential when a planner assumes that the exposed command is
-a calibrated control variable. Taouil \emph{et al.} showed that learned motion
-models of a black-box quadruped controller can improve footstep planning
-\cite{taouil2023blackbox}; related work has calibrated velocity-controlled
-kinematic models online for wheeled visual--inertial odometry
-\cite{li2022vio}. The remaining question is how to collect the calibration
-trials themselves when hardware time is limited and the useful part of command
-space is task dependent.
+a calibrated control variable. With a limited interaction budget, calibration
+must decide which executable commands to measure when deployment occupies only
+a structured subset of the admissible command space.
 
-Robot calibration has long treated measurement configuration as a design
-variable \cite{hollerbach1996calibration,calafiore2001dynamic}. Classical
-observability and D-optimal criteria prioritize parameter identification
-\cite{sun2008observability,sun2008active}. Task-oriented calibration instead
-scores a design by uncertainty at the end-effector or another quantity of
-interest \cite{carrillo2013task,attia2018goal}. We apply that principle to the
-external velocity interface of a fixed quadruped controller: trials are chosen
-for their reduction of predictive uncertainty over commands expected during
-deployment, not for uniform parameter-space coverage.
+Three lines of prior work expose the missing connection. Taouil \emph{et al.}
+learned center-of-mass and footstep response models from exhaustive command
+permutations of a black-box quadruped controller and integrated them into
+footstep planning \cite{taouil2023blackbox}. Carrillo \emph{et al.} selected
+calibration configurations by downstream tool-center-point error and used that
+task-space quantity to assess when calibration was sufficient
+\cite{carrillo2013task}. SPI-Active optimizes legged-robot excitation using
+Fisher information, but identifies simulator-facing physical parameters for
+sim-to-real transfer \cite{sobanbabu2025spiactive}. This leaves a distinct
+calibration problem: directing a limited trial budget toward the external
+command interface itself when neither the low-level controller nor its physical
+model is available.
 
-This layer differs from locomotion-policy adaptation. Rapid Motor Adaptation conditions a trained
-policy on latent environment estimates \cite{kumar2021rma}, residual models can
-update model-based legged controllers online \cite{sun2021unknown}, and recent
-embodiment adaptation identifies hardware changes from short interaction
-histories \cite{li2026embodiment}. \method\ neither retrains nor instruments the
-low-level controller. It identifies the mapping from user commands to measured
-steady motion, translates desired velocities through a constrained inverse, and
-reactivates calibration when predictive residuals indicate a shift.
+Legged adaptation usually changes the controller or estimates variables used
+inside it. Rapid Motor Adaptation conditions a learned policy on latent
+environment estimates \cite{kumar2021rma}; safe Bayesian optimization can tune
+feedback gains directly \cite{widmer2023safe}; and online system identification
+can estimate mass and center of mass before updating a model-based controller
+\cite{haack2025adaptive}. Residual and embodiment adaptation likewise operate on
+controller or policy state \cite{sun2021unknown,fey2024adapt,li2026embodiment}.
+\method\ instead calibrates the user-visible command-to-motion interface while
+leaving the hidden dynamics and controller unchanged.
 
-This paper contributes (i) a compact Bayesian response model with coupled,
-asymmetric features and per-trial uncertainty; (ii) a conditional task-weighted
-integrated variance reduction (IVR) score with safe sequential design; (iii) an
-operational composition of authorization, validation stopping, constrained
-inversion, and latched shift recovery; and (iv) evidence spanning passive Go2
-data, synthetic controls, fault injection, pinned physics, six held-out maps,
-and qualitative physical navigation. The novelty is the task-measure-to-command
-design and its closed-loop composition, not the individual regression, design
-update, or detector. Active selection and shift recovery are evaluated in
-controlled simulation.
-
-\begin{figure*}[t]
-  \centering
-  \setlength{\tabcolsep}{2pt}
-  \begin{tabular}{@{}ccc@{}}
-    \includegraphics[width=0.265\textwidth]{figures/map_s_bend.png} &
-    \includegraphics[width=0.265\textwidth]{figures/map_offset_slalom.png} &
-    \includegraphics[width=0.265\textwidth]{figures/map_narrow_lane.png} \\
-    \textbf{(a) S-bend} & \textbf{(b) Offset slalom} & \textbf{(c) Narrow lane} \\[2pt]
-    \includegraphics[width=0.265\textwidth]{figures/map_double_chicane.png} &
-    \includegraphics[width=0.265\textwidth]{figures/map_weighted_arc.png} &
-    \includegraphics[width=0.265\textwidth]{figures/map_extended_lane.png} \\
-    \textbf{(d) Double chicane} & \textbf{(e) Weighted arc} & \textbf{(f) Extended lane}
-  \end{tabular}
-  \caption{Elevated Isaac Sim views of the six held-out navigation maps. Cyan
-  segments and spheres show the map waypoints; orange geometry shows the
-  obstacles. The overlays are non-colliding
-  visualization geometry and do not contribute to the quantitative endpoints.}
-  \label{fig:navmaps}
-\end{figure*}
-
-\section{Related Work}
-
-\subsection{Calibration and Experimental Design}
-
-Calibration accuracy depends on both model structure and measurement
-configuration \cite{hollerbach1996calibration,calafiore2001dynamic}.
-Observability and alphabetic designs optimize identification
-\cite{sun2008observability,sun2008active}; task-oriented calibration instead
-targets downstream error \cite{carrillo2013task}, paralleling goal-oriented
-Bayesian design \cite{attia2018goal}. Equation~\eqref{eq:ivr} specializes a
-sequential Bayesian I/V-optimal criterion to safety-filtered velocity commands,
-integrates uncertainty over the planner-facing distribution, and sends the
-posterior to the same bounded inverse and change detector.
-
-\subsection{Legged Command Models and Adaptation}
-
-Simulation-trained policies achieve robust quadruped locomotion
-\cite{hwangbo2019agile,lee2020terrain,rudin2022minutes}, but need not expose an
-exact velocity interface. Learned black-box motion models support planning
-\cite{taouil2023blackbox}, and dynamics or policy adaptation handles broader
-disturbances \cite{fey2024adapt,kumar2021rma,li2026embodiment}. \method\ instead
-calibrates a fixed controller's external response, quantifies uncertainty, and
-compensates only inside a non-learned envelope.
-
-\section{Method}
+\method\ treats calibration as a deployment lifecycle (Fig.~\ref{fig:pipeline}).
+A planner-facing task measure specifies which desired velocities the planner is
+likely to request. The
+response posterior then selects informative commands, quantifies whether
+validation is sufficient, and supplies a bounded inverse from desired motion to
+the opaque interface. A non-learned authorization layer remains the sole arbiter
+of execution. Frozen residual signatures detect when the calibrated map has
+changed; a latched alarm reopens task-weighted calibration and returns to
+validation before normal operation resumes.
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=0.757\textwidth]{figures/GAUGE.drawo.png}
-  \caption{\method\ architecture. Task-weighted acquisition ranks calibration
-  commands, but the hard filter alone authorizes execution. Valid observations
-  update the Bayesian model; held-out validation and uncertainty control
-  stopping. A latched residual alarm inflates posterior uncertainty and opens a
-  bounded active-recovery phase. The inverse compensator uses the same bounded
-  command set during navigation.}
+  \includegraphics[width=0.79\textwidth]{figures/GAUGE.drawo.png}\\[-1pt]
+  \includegraphics[width=0.76\textwidth]{figures/real_dclp_long_exposure.png}
+  \caption{\method\ at a glance. Top: a planner-facing task measure directs
+  active calibration of the external command--motion response; the posterior
+  supports validation stopping, bounded inverse compensation, and
+  residual-triggered recovery, while hard authorization alone permits
+  execution. Bottom: matched-time composites from one direct-command run
+  (left) and one compensated run (right) with the same Go2 and fixed DRL-DCLP
+  planner, shown as qualitative behavior-level evidence.}
   \label{fig:pipeline}
 \end{figure*}
 
-The low-level controller is fixed and opaque (Fig.~\ref{fig:pipeline}). Each
-trial executes a constant body-frame command, extracts a robust steady-motion
-observation and covariance, and rejects invalid data before updating.
+The contributions are threefold. First, we formulate opaque velocity-interface
+calibration as deployment-task-conditioned Bayesian experimental design, with
+planner-facing predictive uncertainty determining trial selection. Second, we
+use one response posterior throughout an operational lifecycle that separates
+information ranking from hard authorization and supports validated stopping,
+bounded inversion, and residual-triggered active recovery. Third, we establish
+an evidence ladder: passive Go2 data test model need; controlled synthetic and
+Isaac experiments isolate acquisition and recovery mechanisms; held-out
+navigation tests downstream consequence; and a fixed-planner physical
+comparison provides qualitative interface-level evidence.
+
+\section{Related Work}
+
+\subsection{Black-Box Command Models}
+
+Velocity-controlled robots can be calibrated from externally measured motion
+without access to their internal dynamics. Li and St\"uckler jointly calibrate a
+velocity-control kinematic model within visual--inertial odometry
+\cite{li2022vio}. For quadrupeds, Taouil \emph{et al.} learn motion models of an
+opaque controller and use them in an A*-based footstep planner
+\cite{taouil2023blackbox}. Their calibration data exhaust the command
+permutations of interest. \method\ treats data collection itself as the limited
+resource and allocates it according to the command distribution induced by the
+downstream planner.
+
+\subsection{Active and Task-Oriented Calibration}
+
+Robot calibration has long treated measurement configuration as a design
+variable \cite{hollerbach1996calibration,calafiore2001dynamic}.
+Observability and alphabetic criteria target parameter identification
+\cite{sun2008observability,sun2008active}, whereas task-oriented calibration
+scores configurations by uncertainty in an operational quantity
+\cite{carrillo2013task}. Goal-oriented Bayesian design formalizes the same shift
+from global parameter uncertainty to a quantity of interest
+\cite{attia2018goal}. SPI-Active brings active excitation to legged system
+identification by maximizing trajectory Fisher information for physical
+parameters \cite{sobanbabu2025spiactive}. \method\ applies task-directed design
+to a different estimand: the external velocity response under a
+planner-facing command measure.
+
+\subsection{Legged Adaptation and Safety-Filtered Exploration}
+
+Policy adaptation handles changing embodiment or terrain through latent state,
+residual models, or short interaction histories
+\cite{kumar2021rma,sun2021unknown,fey2024adapt,li2026embodiment}. Widmer
+\emph{et al.} instead optimize locomotion-controller gains with contextual safe
+Bayesian optimization \cite{widmer2023safe}, while Haack \emph{et al.} estimate
+mass and horizontal center of mass and feed reliable estimates back into a
+model-based controller \cite{haack2025adaptive}. These methods adapt internal
+policy, controller, or physical-model variables. \method\ operates at the
+external command boundary. Its acquisition is hard-authorized: a non-learned
+filter checks every ranked proposal before execution, without asserting a
+probabilistic safety guarantee.
+
+\section{GAUGE}
+
+\subsection{Problem Setting and Task Measure}
+
+The low-level controller is fixed and opaque. A trial applies a constant
+body-frame command $\vect{u}\in\mathcal{U}\subset\mathbb{R}^{3}$ and extracts a
+robust steady-motion observation $\vect{y}\in\mathbb{R}^{3}$ with measurement
+covariance $R$. Invalid observations are rejected before the dataset
+$\mathcal{D}_n=\{(\vect{u}_i,\vect{y}_i,R_i)\}_{i=1}^{n}$ is updated. A finite
+design pool $\mathcal{C}$ defines the modeled command envelope; runtime state
+$\vect{x}$ induces a separate hard-authorized subset
+$\mathcal{A}(\vect{x})\subseteq\mathcal{C}$.
+
+The deployment task is a weighted command measure
+$\mathcal{T}=\{(\vect{g}_j,w_j)\}_{j=1}^{G}$ with $\sum_jw_j=1$. Nominal
+waypoint-planner outputs provide the support points $\vect{g}_j$. Given response
+posterior covariance $\vect{\Sigma}_a$ for output axis $a$, the task-facing
+epistemic uncertainty is
+\begin{equation}
+ \mathcal{V}_{\mathcal{T}}(\mathcal{D}_n)=
+ \sum_{a=1}^{3}\sum_{j=1}^{G} w_j
+ \vect{\phi}(\vect{g}_j)^\top\vect{\Sigma}_a
+ \vect{\phi}(\vect{g}_j).
+ \label{eq:taskvariance}
+\end{equation}
+Calibration aims to reduce this deployment-facing quantity under the available
+trial budget, rather than reconstructing the response uniformly over
+$\mathcal{C}$.
 
 \subsection{Bayesian Command-to-Motion Model}
 
 For command $\vect{u}$ and measured steady velocity $\vect{y}\in\mathbb{R}^3$,
-the coupled affine basis is $[1,v_x,v_y,\omega_z]$; the diagonal control zeros
+the coupled affine basis is $[1,v_x,v_y,\omega_z]$; a diagonal control zeros
 off-axis coefficients. The nonlinear 13-term basis adds pairwise products and
 $[v_k-\tau_k]_+,[-v_k-\tau_k]_+$, with
 $\vect{\tau}=[0.15,0.10,0.25]$. Non-intercept columns are standardized once on
-the safe pool. Hardware and navigation use the affine basis; synthetic and
-recovery studies use the nonlinear basis. Closed-loop priors regularize the
-linear projection toward identity.
+the design pool, and the closed-loop prior regularizes the linear projection
+toward identity.
 
 For output axis $a$, the model is
 \begin{equation}
@@ -188,19 +216,22 @@ $\mathcal{N}(\vect{m}_{a0},\vect{\Sigma}_{a0})$, sequential updates use
  \vect{m}_a=\vect{\Sigma}_a\vect{\eta}_a .
  \label{eq:update}
 \end{align}
-The predictive mean is $\mu_a=\vect{m}_a^\top\vect{\phi}$; future-observation
-variance is $\vect{\phi}^\top\vect{\Sigma}_a\vect{\phi}+\sigma_a^2+r_a$.
-Coverage uses the full variance and acquisition only its reducible epistemic
-term. Coupled input features represent cross-axis response while output
-posteriors remain independent. The error norm uses equal-axis unit
-normalization $W$; axiswise errors are also reported.
+The predictive mean is
+$\mu_a(\vect{u})=\vect{m}_a^\top\vect{\phi}(\vect{u})$. The response variance
+used by bounded inversion is
+$s_a^2(\vect{u})=\vect{\phi}(\vect{u})^\top\vect{\Sigma}_a
+\vect{\phi}(\vect{u})+\sigma_a^2$; coverage of a future measured response also
+adds its observation variance $r_a$. Acquisition uses only the reducible
+epistemic term. Coupled input features represent cross-axis response while the
+three output posteriors remain conditionally independent.
 
-\subsection{Task-Weighted Active Selection}
+\subsection{Task-Weighted Active Calibration}
 
-A task distribution is represented by commands $\{\vect{g}_j\}_{j=1}^{G}$ and
-weights $w_j$ within the forward-model domain. Nominal waypoint-planner outputs
-proxy the commands visited by inverse compensation. For candidate $\vect{c}$,
-a Sherman--Morrison update gives the conditional one-step IVR:
+Uniformly reducing uncertainty over the admissible envelope wastes trials when
+deployment concentrates on a structured command distribution. For candidate
+$\vect{c}\in\mathcal{C}$, task-weighted integrated variance reduction (IVR),
+obtained by a Sherman--Morrison update, gives the conditional one-step reduction
+in Eq.~\eqref{eq:taskvariance}:
 \begin{equation}
  \mathcal{I}(\vect{c})=
  \sum_{a=1}^{3}\sum_{j=1}^{G} w_j
@@ -211,356 +242,306 @@ a Sherman--Morrison update gives the conditional one-step IVR:
  \vect{\phi}(\vect{c})}.
  \label{eq:ivr}
 \end{equation}
-The default $\tilde r_a=0$ because future covariance is unavailable, while
-Eq.~\eqref{eq:update} uses realized $r_a$; an oracle sensitivity supplies known
-synthetic noise. The planner maximizes
-$\mathcal{I}(\vect{c})-\lambda_r R(\vect{c})-\lambda_dD(\vect{c})$, where
-$R$ and $D$ penalize command magnitude and travel, over a finite pool. The hard
-filter acts only after ranking. Greedy batches use covariance-only fantasy
-updates; the sample-efficiency study sets both penalties to zero.
+The optional $\tilde r_a(\vect{c})$ predicts candidate observation-noise
+variance; the posterior update always uses the realized $r_a$. The selector maximizes
+$\mathcal{I}(\vect{c})-\lambda_mP_{\mathrm{mag}}(\vect{c})-
+\lambda_{\Delta}P_{\mathrm{move}}(\vect{c})$, where the two penalties limit
+command magnitude and travel. Greedy batches use
+outcome-independent covariance updates. This score ranks information value;
+the hard authorization layer makes the execution decision.
 
-\subsection{Safety, Stopping, Compensation, and Shift Recovery}
+\subsection{Authorization, Stopping, and Bounded Inversion}
 
 The hard filter checks state validity, localization, battery, attitude, base
-height, command and slew bounds, coupled load, and workspace occupancy. It
-fails closed if no ranked candidate remains; an independent 50~Hz monitor can
-zero commands. Statistical value therefore cannot relax an execution limit.
+height, command and slew bounds, combined normalized linear--angular load, and
+workspace occupancy. It
+fails closed if no ranked candidate remains, and an independent 50~Hz monitor
+can zero commands. Statistical value cannot relax an execution limit.
 
-Stopping requires minimum coverage and three consecutive checks of validation
-RMSE and integrated uncertainty; hard budgets take priority. Synthetic oracle
-crossings remain hidden evaluation endpoints. The inverse searches the bounded
-candidate set and minimizes
+Stopping requires minimum coverage and three consecutive checks of held-out
+validation RMSE and task-facing uncertainty; hard budgets take priority. During
+deployment, the inverse searches the bounded candidate set for planner target
+$\vect{v}^{*}$ and minimizes
 \begin{equation}
  \|W(\vect{\mu}(\vect{u})-\vect{v}^{*})\|_2^2+\lambda
  \|W(\vect{u}-\vect{v}^{*})\|_2^2+\rho\sum_a s_a^2(\vect{u}),
  \label{eq:inverse}
 \end{equation}
-then passes the selected command through the hard filter.
+where $W$ normalizes the three axes and $\lambda,\rho\geq0$ trade command
+regularization against predictive risk. The selected command then passes
+through the hard filter.
 
-Shift monitoring cycles through four safe commands
+\subsection{Shift Detection and Active Recovery}
+
+Shift monitoring cycles through four authorized commands
 $(-.20,0,-.20)$, $(-.20,0,.20)$, $(.12,-.10,-.15)$, and
 $(.12,.10,.15)$. Commissioning freezes the corresponding residual signatures
 $\vect{r}^{0}_{j}=\vect{y}_{j}-\vect{\mu}(\vect{u}_{j})$. For a later response
-to signature command $j(t)$, the detector evaluates
+to signature command $j(t)$, the current residual is
+$\vect{r}_t=\vect{y}_t-\vect{\mu}(\vect{u}_{j(t)})$, and the detector evaluates
 \begin{equation}
  d_t=\left\|\operatorname{diag}(.14,.08,.18)^{-1}
  \left(\vect{r}_t-\vect{r}^{0}_{j(t)}\right)\right\|_2 .
  \label{eq:signature}
 \end{equation}
 An alarm requires $d_t>.30$ on at least two of the last four valid monitor
-trials and a two-trial minimum dwell, so an isolated response change cannot
-trigger recovery. The alarm latches, inflates epistemic covariance by a factor
-of eight without changing the posterior mean, and opens a 12-command recovery
-budget. Normal validation stopping resumes after recovery.
+trials and a two-trial minimum dwell. The alarm latches, inflates epistemic
+covariance by a factor of eight without changing the posterior mean, and opens
+a 12-command task-weighted recovery budget. Normal validation stopping resumes
+after recovery.
 
-\section{Experimental Evaluation}
+\section{Experiments and Results}
 
-\subsection{Passive Hardware and Sample Efficiency}
+We organize the evaluation around four questions. \textbf{Q1:} Is coupled
+calibration necessary for a real black-box quadruped velocity interface?
+\textbf{Q2:} Does task weighting reduce calibration effort relative to passive,
+parameter-oriented, and task-agnostic designs? \textbf{Q3:} Can the calibrated
+interface detect deployment shifts and recover without conflating information
+ranking with execution authorization? \textbf{Q4:} Do command-level gains
+translate into navigation? Hardware evidence comprises passive model data and a
+qualitative fixed-planner comparison; active-selection and recovery mechanisms
+are tested in controlled synthetic and fixed-configuration Isaac experiments.
 
-The hardware dataset contains 183 valid passive Go2 trials in three 61-trial
-sessions, referenced by globally localized Livox MID360 FAST-LIO. Leave-one-
-session-out folds compare raw, diagonal, and coupled linear/affine models.
-Sampled fits use 30 fixed-LHS commands from 122 training trials; dense fits use
-all 122. Each command has 0.6~s ramp-in, 0.8~s settling, 2.0~s measurement, and
-0.6~s ramp-out.
+\subsection{Coupled Response Modeling Is Necessary}
 
-Sample efficiency uses 20 paired seeds in affine, dead-zone, and
-heteroscedastic synthetic families. All methods share a six-command seed and
-160-trial horizon over
-$[-1,1]\times[-.5,.5]\times[-1.5,1.5]$, with
-$\|(v_x,v_y)\|_2\leq1$. Frozen draws vary diagonal gain, off-axis coupling,
-bias, saturation, and noise. The task mixture centers on forward motion and
-left/right turns, with weights $(.50,.25,.25)$. The joint target is RMSE
-$\leq0.04$ and integrated epistemic variance $\leq0.0015$. Random, LHS, Sobol,
-D-optimal, no-task IVR, and a dense oracle are controls. A hidden 400-command
-grid determines crossing and a disjoint 1,024-command grid audits it. The
-primary one-sided paired Wilcoxon test compares trials against LHS after
-averaging families within seed; all baseline contrasts undergo Holm correction.
-Paired bootstrap intervals use 5,000 resamples for trials saved and 4,000 for
-fixed-budget errors.
+The passive Go2 data show that an intercept alone cannot absorb off-axis
+response (Fig.~\ref{fig:calibration}a). The dataset contains 183 valid trials in
+three 61-trial sessions, measured with a Livox MID-360 running
+FAST-LIO~\cite{xu2021fastlio}. Leave-one-session-out folds compare raw commands with diagonal and
+coupled linear/affine maps. Pooled RMSE is 0.06605 for raw commands, 0.04828 for
+diagonal linear, 0.04563 for diagonal affine, 0.03517 for coupled linear, and
+0.03009 for coupled affine. Coupled linear therefore improves on diagonal
+affine without adding an intercept. The coupled-affine map reduces error by
+54.45\% relative to raw commands and 34.07\% relative to diagonal affine; its
+three held-out-session RMSE values are 0.02888, 0.03158, and 0.02974. Lateral
+RMSE falls from 0.08459 to 0.02569, while the yaw-to-lateral coefficient remains
+0.119--0.129 across holdouts. A 30-trial fit is within 3.33\% of the 122-trial
+dense fit.
 
-Distribution sensitivity freezes acquisition, then reweights the three task
-components to forward-, left-, or right-heavy mixtures and finally expands to
-the uniform safe envelope; no command is reselected.
-
-\subsection{Closed-Loop Simulation and Safety Evaluation}
-
-Physics experiments use Isaac Lab v2.3.2, Isaac Sim 5.1.0, and PhysX
-\cite{mittal2025isaaclab}. Four contexts each use 20 paired seeds, 12
-calibration commands, and eight held-out commands. Hardware and simulation
-share a Huber constant-twist estimator from body-frame pose increments;
-timestamp, constancy, sample-count, and steady-window checks reject invalid
-observations.
-
-Safety tests replay 60 acquisition traces, 300 hazardous proposals, 20 safe
-controls, and 160 state faults under a 50~Hz monitor. Shift recovery uses two
-disjoint 72-seed blocks for each of four changes: gain/coupling;
-friction/load/gain; physical/nonlinear; and load/COM/gain. Fixed-model,
-passive-update, and \method\ arms share 12 initial commands, four signatures,
-five monitor commands, a 12-command recovery budget, and rolling validation;
-early RMSE averages trials 4--9. Stationary monitoring spans 30 sequences per
-context and 100 trials per sequence (12,000 trials). A 30-seed selector ablation
-holds recovery fixed while replacing task IVR with no-task IVR, D-optimal, LHS,
-or random selection.
-
-\subsection{Held-Out Navigation}
-
-Navigation crosses six disjoint maps (Fig.~\ref{fig:navmaps}), seven calibration
-methods, and 72 paired seeds per map (3,024 episodes). All arms share the
-controller, 50~Hz interlock, 10~Hz waypoint follower, geometry, and
-randomization. \method\ and matched controls use 12 calibration commands; the
-dense reference uses 30, followed by eight common validation commands. Task
-IVR ranks a 512-command safe pool under the planner-facing command measure.
-
-Routes are 2.85--3.60~m with a minimum 0.79~m opening and 0.20~m collision
-radius. The command envelope is
-$[-.40,.40]\times[-.30,.30]\times[-.70,.70]$, with linear norm at most
-0.45~m/s. Success reaches the 0.25~m goal ball without collision or serious
-event by 60~s; failures retain the 60-s cap. Calibration takes 31.2~s for 12
-trials and 78.0~s for 30 (52.0 and 98.8~s with validation). Marginal rates use
-exact intervals; paired endpoints use 4,000 seed resamples. Noninferiority
-margins are a 1.25 capped-time ratio and $-0.05$ success difference.
-
-For physical navigation, a Unitree Go2 runs the same fixed DRL-DCLP local
-planner \cite{zhang2025drldclp} with either direct velocity commands or the
-frozen \method\ inverse between planner and robot. A fixed-camera obstacle
-layout is recorded as one full run per condition. The comparison is qualitative
-and is excluded from all statistical endpoints.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.98\textwidth]{figures/closed_loop_response.pdf}
-  \caption{Closed-loop simulation responses and calibration.
-  (a)--(d) Body-displacement trajectories for coupled and forward-turn validation commands in a
-  representative paired run; colored curves are measured, dashed gray curves and crosses are
-  the ideal response to the declared command/timing, and diamonds mark the
-  common start. (e) Raw and calibrated held-out velocity RMSE across 20 paired
-  seeds; labels give relative reduction. (f) Seed-paired absolute improvement
-  with 95\% 4,000-sample bootstrap intervals. The trajectories are qualitative
-  examples; all inference uses paired summaries specified before evaluation.}
-  \label{fig:response}
-\end{figure*}
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.98\textwidth]{figures/shift_recovery_results.pdf}
-  \caption{Held-out simulator shifts and active recovery. (a)--(d)
-  Measured body-displacement trajectories and dashed ideal command responses
-  for the same validation commands in a representative paired run. (e) Exact
-  pre$\rightarrow$post static and dynamic friction, payload, fore--aft COM,
-  per-axis gain range, and maximum off-axis coupling. Blue cells identify
-  altered quantities, and every cell gives the exact pre- or post-shift value.
-  The mixed condition additionally introduces
-  dead zones, saturation, lag, and observation noise. (f) \method\ improvement over passive updating
-  in the pre-specified early window. (g) \method\ terminal RMSE and
-  the declared 0.14 gate. (h) Recovery-selector ablation, averaging the four
-  contexts within each of 30 paired seeds; positive values favor task IVR.
-  Error bars are paired 95\% 4,000-sample bootstrap intervals. Recovery
-  inference pools two disjoint 72-seed blocks per shift; stationary false
-  alarms are evaluated separately over 120 sequences and 12,000 trials.}
-  \label{fig:recovery}
-\end{figure*}
-
-\section{Results}
+Controlled closed-loop runs test whether calibration improves realized motion
+under physics. Four Isaac Lab contexts \cite{mittal2025isaaclab} use 20 paired
+seeds, 12 calibration commands, and eight held-out commands with a common robust
+constant-twist estimator. Raw-to-calibrated RMSE is
+0.15199$\rightarrow$0.10635 for affine distortion,
+0.15054$\rightarrow$0.10282 for dead-zone distortion,
+0.10741$\rightarrow$0.09742 for low friction with load and center-of-mass
+offset, and 0.09554$\rightarrow$0.07849 on rough terrain with load and offset
+(Fig.~\ref{fig:calibration}b). Relative reductions span 9.30--31.70\%, and all
+20 paired seeds improve in every context. The hardware inference is passive
+model need; the paired Isaac runs supply the closed-loop intervention test.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=0.98\textwidth]{figures/calibration_evidence.pdf}
-  \caption{Calibration evidence. (a) Passive real-Go2 held-out RMSE for raw,
-  diagonal-linear, diagonal-affine, coupled-linear, and coupled-affine
-  commands. (b) Paired trials saved by task IVR;
-  bars are 95\% seed-bootstrap intervals. (c) Family-resolved time to the same
-  joint target; every method reaches it in all 20 seeds per family. (d)
-  Realized held-out task RMSE at matched trial budgets; bands are 95\%
-  paired-seed bootstrap intervals. (e) Frozen-acquisition performance under
-  task-distribution mismatch at 24 trials; positive control-minus-task-IVR
-  values favor task IVR. (f) Task-IVR error relative to the declared measure;
-  the uniform safe-envelope negative control crosses the pre-specified 2$\times$
-  sensitivity gate.}
+  \caption{Why coupled, task-directed calibration is needed. (a) Passive Go2
+  held-out RMSE across nested response models. (b) Seed-paired raw-minus-
+  calibrated RMSE in four Isaac Lab contexts. (c) Trials saved by task IVR
+  relative to five controls. (d) Realized held-out task RMSE at fixed budgets.
+  (e) Frozen acquisitions evaluated under task-distribution reweighting; positive
+  values favor task IVR over each control, while the broad-uniform negative
+  control reverses the ordering. Error bars and bands are paired 95\% bootstrap
+  intervals.}
   \label{fig:calibration}
 \end{figure*}
 
-\subsection{Model Need and Calibration Efficiency}
+\subsection{Task Weighting Reduces Calibration Effort}
 
-Figure~\ref{fig:calibration}a shows a consistent held-out benefit from coupled
-calibration on the passive Go2 data. Pooled RMSE falls from 0.06605 for raw
-commands to 0.04563 for diagonal-affine and 0.03009 for coupled-affine calibration.
-The nested diagonal-linear and coupled-linear fits obtain 0.04828 and 0.03517,
-respectively. Coupled linear therefore outperforms diagonal affine without an
-intercept, isolating cross-axis response. Coupled-affine calibration reduces
-error by 54.45\% versus raw commands and 34.07\% versus diagonal-affine
-calibration. Its three held-out-session values are
-0.02888, 0.03158, and 0.02974, and its 30-trial fit is within 3.33\% of the
-122-trial dense reference. The gain is concentrated laterally, where RMSE
-falls from 0.08459 to 0.02569 and the yaw-to-lateral coefficient remains
-0.119--0.129 across holdouts. These data establish passive hardware model need
-rather than active hardware efficiency.
+The acquisition study uses 20 paired seeds in affine, dead-zone, and
+heteroscedastic synthetic families. All methods share a six-command seed and a
+160-trial horizon over
+$[-1,1]\times[-.5,.5]\times[-1.5,1.5]$, with
+$\|(v_x,v_y)\|_2\leq1$. Frozen draws vary gain, off-axis coupling, bias,
+saturation, and noise. The declared task measure weights forward, left-turn,
+and right-turn command components by $(.50,.25,.25)$. The stopping target is
+RMSE $\leq0.04$ and integrated epistemic variance $\leq0.0015$. Random, Latin
+hypercube sampling (LHS), Sobol, D-optimal, no-task IVR, and a dense oracle form
+the controls; acquisition penalties are zero. A hidden 400-command grid defines
+crossing and a disjoint 1,024-command grid audits it. Paired Wilcoxon contrasts
+use Holm correction, and paired bootstrap intervals use 4,000--5,000
+resamples.
 
-The synthetic benchmark isolates the acquisition rule
-(Fig.~\ref{fig:calibration}b). \method{}
-reaches the joint target in 18.67 trials, versus 30.87 for LHS, 30.67 for
-random, 25.72 for Sobol, 23.00 for D-optimal, and 25.67 without task weighting.
-The respective savings are 39.52\%, 39.13\%, 27.41\%, 18.84\%, and 27.27\%;
-all paired tests remain significant after Holm correction. The primary LHS
-contrast saves 12.20 trials [10.73, 13.73]. Horizon-end active RMSE is 0.00846,
-and future-observation 95\% predictive coverage is 94.14\%.
+Task IVR reaches the joint target in 18.67 trials, compared with 30.87 for LHS,
+30.67 for random, 25.72 for Sobol, 23.00 for D-optimal, and 25.67 for no-task IVR
+(Fig.~\ref{fig:calibration}c). The corresponding savings are 39.52\%, 39.13\%,
+27.41\%, 18.84\%, and 27.27\%; all paired contrasts remain significant after
+Holm correction. The primary LHS contrast saves 12.20 trials [10.73, 13.73].
+The no-task comparison identifies the planner-facing measure, beyond generic
+active selection, as the source of the gain.
 
-Realized task error shows the same ordering (Fig.~\ref{fig:calibration}d). At
-budgets 18, 24, and 30, task-IVR RMSE is 0.02143, 0.01684, and 0.01420. Its
-paired improvement is 0.00392--0.00466 over D-optimal and 0.00545--0.00881
-over no-task IVR; all six 95\% intervals exclude zero.
+Realized held-out error preserves this ordering (Fig.~\ref{fig:calibration}d).
+At budgets 18, 24, and 30, task IVR RMSE is 0.02143, 0.01684, and 0.01420. Its
+paired improvement is 0.00392--0.00466 over D-optimal and 0.00545--0.00881 over
+no-task IVR; all six 95\% intervals exclude zero. The uncertainty gate binds in
+all 60 active conditions, with family-level crossings at 18, 18, and 20 trials.
+The disjoint audit yields crossing RMSE 0.01796--0.02315 and axiswise predictive
+coverage 0.917--0.955. Supplying exact heteroscedastic candidate noise moves one
+crossing from 20 to 21 trials and preserves the 11-trial lead over the two
+principal controls.
 
-Frozen designs remain effective under navigation-family reweighting
-(Fig.~\ref{fig:calibration}e): forward- and right-heavy tests retain positive
-intervals against every control, while the left-heavy D-optimal contrast
-becomes positive by 30 trials. A uniform safe-envelope measure reverses the
-ordering at 24 trials; task-IVR error is 3.21 times its declared-task error
-(Fig.~\ref{fig:calibration}f). Deployment support expansion therefore requires
-an updated task measure or a general-purpose design.
+The benefit follows the declared deployment support. Frozen acquisitions retain
+positive paired differences relative to task IVR under forward- and right-heavy
+navigation mixtures, and the left-heavy D-optimal contrast becomes positive by
+30 trials (Fig.~\ref{fig:calibration}e). When evaluation expands to the uniform
+authorized envelope, the ordering reverses at 24 trials and task IVR error becomes
+3.21 times its error under the declared measure. Task-directed calibration thus
+trades global coverage for lower error on the planner-facing distribution.
 
-The uncertainty gate binds in all 60 active conditions. Task IVR requires 18,
-18, and 20 trials across the three families, versus 19, 19, and 31 for
-D-optimal and 23, 23, and 31 without task weights
-(Fig.~\ref{fig:calibration}c). A disjoint 1,024-command audit gives crossing
-RMSE 0.01796--0.02315 and axiswise 95\% coverage 0.917--0.955. Task IVR also
-saves at least 3.33 trials over D-optimal across nine predeclared gate pairs.
-Supplying exact heteroscedastic candidate noise changes its crossing from 20 to
-21 trials while preserving the 11-trial advantage over both principal controls.
+\subsection{Operational Robustness and Shift Recovery}
 
-In closed-loop simulation (Fig.~\ref{fig:response}e), raw-to-calibrated
-RMSE is 0.15199 to 0.10635 for affine distortion, 0.15054 to 0.10282 for
-dead-zone distortion, 0.10741 to 0.09742 for low friction with payload and COM
-offset, and 0.09554 to 0.07849 on rough terrain with payload and COM offset. Relative reductions
-span 9.30--31.70\%.
-The corresponding paired absolute-improvement intervals are [0.04290, 0.04780],
-[0.04495, 0.05002], [0.00981, 0.01017], and [0.01477, 0.01889]. All 20 paired
-seeds improve in each scenario.
+Replay tests first verify the separation between ranking and authorization.
+Across 60 acquisition traces, the hard filter rejects 300/300 hazardous
+proposals, rejects 0/20 authorized controls, and catches all 160 injected state faults.
+The stopping rule makes no premature decision on 60 trajectories; median and
+p95 overshoot are two trials. The 50~Hz physics monitor has a maximum 20~ms abort
+interval. These tests establish the implemented authorization and stopping
+behavior under replay and simulation, not a physical safety guarantee.
 
-\subsection{Stopping, Safety, and Shift Recovery}
+Four held-out shifts are evaluated: combined friction, load, and gain; gain and
+coupling; physical and nonlinear response; and load, center of mass, and gain
+(Fig.~\ref{fig:recovery}a). Each shift pools two disjoint 72-seed blocks.
+Fixed-model, passive-update, and \method\ arms share 12 initial commands, four
+residual signatures, five monitor commands, a 12-command recovery budget, and
+rolling validation. The pre-specified early endpoint averages recovery trials
+4--9. Stationary monitoring covers 120 sequences and 12,000 valid trials.
 
-The stopping test records no premature stop across 60 trajectories; median and
-p95 overshoot are two trials. The hard filter rejects 300/300 declared hazards,
-0/20 safe controls, and all 160 sampled-state faults. In physics, the 50~Hz
-monitor's maximum abort interval is 20~ms. These software and simulator checks
-are not physical safety certification.
+The stationary monitor produces 0/120 sequence alarms, with a two-sided exact
+95\% upper bound of 0.0303. Detection is 143/144 for two shifts and 144/144 for
+the other two; the lowest exact interval is [0.9619, 0.9998]. \method\ recovers
+in 141/144 friction/load/gain trials and 144/144 elsewhere, with lowest interval
+[0.9403, 0.9957]. Worst p95 detection and recovery delays are 3.9 and 9 trials,
+equivalent to 10.1~s of monitor commands and 46.8~s for the fixed
+recovery-plus-validation schedule.
 
-The stationary-monitor experiment produces 0/120 sequence alarms over 12,000
-valid trials; the two-sided exact 95\% upper bound is 0.0303. Under shift,
-detection is 143/144 for the combined friction, load, and gain change and the
-gain-and-coupling change, and 144/144 for the physical-and-nonlinear change and
-the load, COM, and gain change. The
-lowest exact 95\% detection-rate bound is
-[0.9619, 0.9998]. \method\ recovers in 141/144 friction-plus-payload trials and 144/144
-for the other shifts; its lowest exact interval is [0.9403, 0.9957]. Worst p95
-detection and recovery delays are 3.9 and 9 trials, or 10.1~s of monitor-command
-time and 46.8~s for adaptation-plus-validation cycles under the fixed schedule.
+Active recovery lowers early RMSE relative to passive updating by 0.00936,
+0.01053, 0.01847, and 0.01192 across the four shifts; every paired 95\%
+interval is positive (Fig.~\ref{fig:recovery}b). Terminal RMSE ranges from
+0.09762 to 0.11227, and every interval upper endpoint remains below 0.116 and
+the declared 0.14 gate (Fig.~\ref{fig:recovery}c). The selector ablation keeps
+detection, updating, and recovery budgets fixed. Task IVR lowers early RMSE by
+0.02192 versus D-optimal, 0.01583 versus no-task IVR, 0.00937 versus LHS, and
+0.00986 versus random selection, with positive paired intervals throughout
+(Fig.~\ref{fig:recovery}d). The early-recovery gain therefore depends on the
+task-directed selector rather than detection and posterior updating alone.
 
-\method\ improves early RMSE over passive updating by 0.00936 for the combined
-friction, load, and gain change, 0.01053 for the gain-and-coupling change,
-0.01847 for the physical-and-nonlinear change, and 0.01192 for the load, COM,
-and gain change (Fig.~\ref{fig:recovery}f). Their paired 95\%
-intervals are [0.00811, 0.01065], [0.00961, 0.01140], [0.01774, 0.01917], and
-[0.01092, 0.01291]. Its terminal RMSE ranges from 0.09762 to 0.11227; every
-upper interval endpoint is below 0.116 and the declared 0.14 absolute gate
-(Fig.~\ref{fig:recovery}g). These estimates pool both independent blocks and
-retain the fixed-model, passive-update, and \method\ pairing within every seed.
-
-The selector ablation isolates acquisition (Fig.~\ref{fig:recovery}h). Task IVR
-lowers early RMSE by 0.02192 [0.02046, 0.02343] versus D-optimal, 0.01583
-[0.01418, 0.01761] versus no-task IVR, 0.00937 [0.00655, 0.01212] versus LHS,
-and 0.00986 [0.00654, 0.01309] versus random selection. With no serious event,
-this establishes that early recovery depends on task-directed commands rather
-than detection and updating alone.
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.98\textwidth]{figures/shift_recovery_results.pdf}
+  \caption{Operational shift and recovery. (a) Registered pre$\rightarrow$post
+  friction, payload, fore--aft center-of-mass, gain, and coupling specification;
+  the third, mixed physical/nonlinear context also introduces dead zones,
+  saturation, lag, and observation noise. Cell shading is normalized within
+  each parameter row. (b) Early RMSE improvement over passive updating. (c) Terminal RMSE
+  against the 0.14 absolute gate. (d) Recovery-selector ablation, averaging the
+  four contexts within each of 30 paired seeds; positive values favor task IVR.
+  Error bars are 95\% bootstrap intervals. Panels (b) and (c) pool two disjoint
+  72-seed blocks per shift; panels (b) and (d) use seed-paired contrasts.}
+  \label{fig:recovery}
+\end{figure*}
 
 \subsection{Navigation Consequence}
 
-\method\ succeeds in 72/72 episodes on five maps and 70/72 on weighted arc,
-while raw commands succeed in 0/72 or 1/72 (Fig.~\ref{fig:navigation}a). Every \method{}
-collision count is zero. The failure-aware 60-s capped-time gain over raw has
-95\% lower endpoints of 23.45--32.68~s (Fig.~\ref{fig:navigation}b). At the same
-12-trial budget, task IVR reduces command-validation RMSE over D-optimal by
-9.98--12.28\% on every map (Fig.~\ref{fig:navigation}c); its advantage over
-no-task IVR is positive on five maps and unresolved on S-bend.
+Held-out navigation crosses six disjoint maps, seven calibration methods, and
+72 paired seeds per map, for 3,024 episodes (Fig.~\ref{fig:navigation}). All arms
+share the controller, 50~Hz interlock, 10~Hz waypoint follower, geometry, and
+randomization. \method\ and matched controls use 12 calibration commands; the
+dense reference uses 30, followed by eight common validation commands. Task IVR
+ranks a 512-command design pool under the planner-facing task measure. Routes
+span 2.85--3.60~m, with a 0.79~m minimum opening and 0.20~m collision radius.
+Success requires reaching the 0.25~m goal ball without collision or simulator
+termination (a serious event) by 60~s, and every failure retains the 60-s cap.
+The declared
+noninferiority margins are a 1.25 capped-time ratio and a $-0.05$ success
+difference.
+
+\method\ succeeds in 72/72 episodes on five maps and 70/72 on weighted arc;
+raw commands succeed in 0/72 or 1/72 (Fig.~\ref{fig:navigation}a). Every
+\method\ collision count is zero. The 95\% lower endpoints of the paired
+raw-minus-\method\ capped-time gain are 23.45--32.68~s
+(Fig.~\ref{fig:navigation}b). At the same 12-trial budget, task IVR reduces
+validation RMSE over D-optimal by 9.98--12.28\% on every map; its advantage over
+no-task IVR is positive on five maps and unresolved on S-bend
+(Fig.~\ref{fig:navigation}c).
 
 The worst \method/dense capped-time ratio upper bound is 1.0736, below the 1.25
 margin, and every paired success-difference lower bound exceeds $-0.05$
 (Fig.~\ref{fig:navigation}d). The two weighted-arc timeouts are neither
-collisions nor serious events. Navigation excludes calibration: \method\ executes
-31.2~s of acquisition commands versus 78.0~s for dense, or 52.0 versus 98.8~s
-after common validation commands are included. Across 432 episodes it
-records 10 non-serious safety events and no serious event. Identical seeds,
-policy, planner, interlock, maps, and navigation logic isolate calibration in
-this simulator pipeline.
+collisions nor simulator terminations. Acquisition takes 31.2~s for \method\ and 78.0~s
+for dense calibration, or 52.0 and 98.8~s after common validation. Across its
+432 episodes, \method\ records 10 authorization interventions and no simulator
+termination.
 
 \begin{figure*}[t]
   \centering
+  \setlength{\tabcolsep}{1pt}
+  \begin{tabular}{@{}cccccc@{}}
+    \includegraphics[width=0.158\textwidth]{figures/map_s_bend.png} &
+    \includegraphics[width=0.158\textwidth]{figures/map_offset_slalom.png} &
+    \includegraphics[width=0.158\textwidth]{figures/map_narrow_lane.png} &
+    \includegraphics[width=0.158\textwidth]{figures/map_double_chicane.png} &
+    \includegraphics[width=0.158\textwidth]{figures/map_weighted_arc.png} &
+    \includegraphics[width=0.158\textwidth]{figures/map_extended_lane.png} \\
+    \scriptsize S-bend & \scriptsize Offset & \scriptsize Narrow &
+    \scriptsize Chicane & \scriptsize W. arc & \scriptsize Extended
+  \end{tabular}\\[-1pt]
   \includegraphics[width=0.97\textwidth]{figures/navigation_results.pdf}
-  \caption{Held-out simulator navigation (72 seeds/cell). (a) Success
-  rate. (b) Paired raw-minus-\method\ gain in the 60-s capped-time estimand, which
-  retains every failure as 60~s. (c) Matched-budget validation-RMSE reduction
-  from task IVR relative to D-optimal and no-task IVR; bars are paired 95\%
-  intervals. (d) \method/dense capped-time ratios and the declared 1.25
-  noninferiority margin. Every \method{}
-  collision count is 0/72.}
+  \caption{Navigation consequence on six held-out Isaac Sim maps (72
+  seeds/cell). Top: map geometry and waypoint overlays. Bottom: (a) success
+  rate; (b) paired raw-minus-\method\ gain in the failure-aware 60-s capped-time
+  estimand; (c) matched-budget validation-RMSE reduction relative to D-optimal
+  and no-task IVR; and (d) \method/dense capped-time ratio with the 1.25
+  noninferiority margin. Every \method\ collision count is 0/72.}
   \label{fig:navigation}
 \end{figure*}
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.99\textwidth]{figures/real_dclp_long_exposure.png}
-  \caption{Long-exposure real-Go2 navigation comparison in the same obstacle
-  layout with a fixed DRL-DCLP planner. Left: direct velocity commands. Right:
-  DRL-DCLP followed by \method\ command compensation.}
-  \label{fig:realnav}
-\end{figure*}
-
-\subsection{Physical Navigation Consequence}
-
-At matched wall-clock times, the direct-command run accumulates repeated poses
-beside the central obstacle group, consistent with the stop-and-correct motion
-visible in the source video. With \method, the matched-time poses progress more
-continuously through the same layout (Fig.~\ref{fig:realnav}). Holding the local
-planner fixed isolates the displayed difference to planner-facing command
-compensation; the comparison remains qualitative rather than a trajectory-level
-effect estimate.
+A qualitative physical comparison uses the same fixed DRL-DCLP local planner
+\cite{zhang2025drldclp} with either direct commands or the frozen \method\
+inverse. One complete run per condition is recorded from a fixed camera in the
+same obstacle layout. At matched wall-clock times, the direct run accumulates
+poses beside the central obstacle and visibly contacts it, whereas the
+compensated run progresses more continuously through the layout
+(Fig.~\ref{fig:pipeline}, bottom). The fixed software path supports an
+interface-level behavioral comparison; one run per condition does not estimate
+a trajectory-level effect or run-to-run variability.
 
 \section{Discussion and Limitations}
 
-The experiments separate model need, task-directed acquisition, and downstream
-navigation. No-task and D-optimal controls isolate task weighting; noise and
-gate sensitivities preserve the ordering. Reweighting within the navigation
-family retains the benefit, whereas safe-envelope support expansion does not,
-so the task measure must change with deployment support. Dense and
-matched-budget navigation controls establish downstream noninferiority, while
-the raw arm exposes the cost of an uncalibrated interface.
+Task weighting converts deployment structure into calibration efficiency. When
+the planner concentrates commands on a structured subset of the interface,
+global identification spends trials on responses that do not affect the task.
+The no-task ablation shows that sequential information gain alone does not
+achieve the same trial efficiency, and the broad-uniform negative control gives the complementary
+boundary: once deployment support expands, the advantage disappears and can
+reverse. The task measure is therefore part of the calibration specification,
+not a fixed property of the robot.
 
-The joint crossing is uncertainty-limited in all 60 active conditions, so the
-measured efficiency is faster acquisition of posterior confidence. Independent
-400- and 1,024-command grids audit accuracy and predictive coverage; trace
-replay separately verifies stopping logic. Shift evaluation likewise separates
-four-command commissioning, 12,000 stationary monitor trials, shifted
-detection, and the fixed early-recovery window.
+Each evidence tier answers a different part of the argument. Passive Go2 data
+establish the need for a coupled external response model. Synthetic controls
+isolate the acquisition principle, and fixed-configuration Isaac experiments test
+closed-loop calibration, authorization logic, shift detection, and active
+recovery. Held-out simulator maps connect command calibration to quantitative
+navigation outcomes. The fixed-planner Go2 comparison adds qualitative
+behavior-level evidence without replacing a replicated physical endpoint.
 
-Hardware evidence comprises passive calibration and qualitative closed-loop
-navigation on one Go2; active selection and shift recovery use a pinned
-simulator. The physical navigation pair supports a behavior-level comparison,
-not a trajectory-level effect size. The compact basis targets steady response
-rather than arbitrary history dependence, gait switching, or rapid transients.
-Logged standardized routes and physical interface, load, center-of-mass, and
-friction shifts are required for quantitative hardware effect sizes and
-shift-transfer claims.
+The current model targets a steady command--response map. Strong history
+dependence, rapid transients, or gait and controller switching require an
+expanded response state or separate models. A changed planner distribution
+requires a new task measure, as the support-expansion control demonstrates.
+Quantitative physical evaluation of online active acquisition, structured
+shifts, and recovery remains the main step needed to test whether the complete
+lifecycle transfers beyond the fixed simulator configuration.
 
 \section{Conclusion}
 
-\method\ directs calibration trials toward task-relevant predictive uncertainty
-and composes coupled Bayesian regression with hard safety, validated stopping,
-bounded inversion, and latched recovery. Passive Go2 data establish model need;
-controlled synthetic and Isaac Lab experiments establish sample efficiency,
-early recovery, and downstream navigation. Real-Go2 sequences demonstrate the
-planner-facing effect of command compensation with DRL-DCLP; online active
-acquisition and physical shift recovery remain to be evaluated.
+\method\ turns an opaque quadruped velocity interface into a task-conditioned
+calibrated control variable. It directs a limited trial budget toward
+planner-facing uncertainty, validates the learned response before bounded
+compensation, and reopens active calibration when residual signatures indicate
+a shift. Passive Go2 data establish coupled model need; controlled synthetic
+and Isaac experiments establish task-weighted acquisition and recovery; and
+held-out navigation establishes downstream consequence.
 
-\IEEEtriggeratref{14}
+\newpage
+\IEEEtriggeratref{12}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 

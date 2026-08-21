@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build formal P5/P6 simulation figures from registered machine-readable data."""
+"""Build the manuscript's shift-recovery figure from registered evidence."""
 
 from __future__ import annotations
 
@@ -568,30 +568,224 @@ def build_p6() -> None:
     finish(fig, "shift_recovery_results")
 
 
+def build_p6_story() -> None:
+    """Build the compact four-panel shift figure used in the ICRA paper."""
+    p6_caps = captures(P6_CAPTURE_NAMES)
+    summary = load_json(P6_SUMMARY)
+    rows = {item["context"]: item for item in summary["contexts"]}
+    ordered = [rows[str(item["scenario_id"]).removeprefix("confirm_")] for item in p6_caps]
+    context_labels = [
+        "Friction + load + gain",
+        "Gain + coupling",
+        "Physical + nonlinear",
+        "Load + COM + gain",
+    ]
+
+    fig = plt.figure(figsize=(7.05, 2.90), constrained_layout=True)
+    grid = fig.add_gridspec(
+        2,
+        2,
+        hspace=0.30,
+        wspace=0.32,
+        width_ratios=[1.08, 0.92],
+    )
+
+    # (a) Exact shift construction.
+    ax_matrix = fig.add_subplot(grid[0, 0])
+    all_texts, all_mags = [], []
+    for capture in p6_caps:
+        texts, mags = shift_cell_text(capture)
+        all_texts.append(texts)
+        all_mags.append(mags)
+    text_matrix = np.asarray(all_texts, dtype=object).T
+    mag_matrix = np.asarray(all_mags, dtype=float).T
+    normalized = np.zeros_like(mag_matrix)
+    for row_index in range(mag_matrix.shape[0]):
+        maximum = np.max(mag_matrix[row_index])
+        normalized[row_index] = mag_matrix[row_index] / maximum if maximum else 0.0
+    cmap = LinearSegmentedColormap.from_list("shift_story", ["#FFFFFF", "#D7EAF5", "#75AADB"])
+    ax_matrix.imshow(normalized, cmap=cmap, vmin=0, vmax=1, aspect="auto")
+    for row_index in range(text_matrix.shape[0]):
+        for column_index in range(text_matrix.shape[1]):
+            ax_matrix.text(
+                column_index,
+                row_index,
+                text_matrix[row_index, column_index],
+                ha="center",
+                va="center",
+                fontsize=6.1,
+                color=BLACK,
+            )
+    ax_matrix.set_xticks(
+        np.arange(4),
+        ["Fric.+\nload+gain", "Gain+\ncoupling", "Physical+\nnonlinear", "Load+\nCOM+gain"],
+    )
+    ax_matrix.set_yticks(
+        np.arange(8),
+        [
+            r"$\mu_s$",
+            r"$\mu_d$",
+            "Payload [kg]",
+            "COM [mm]",
+            "Gain range (pre)",
+            "Gain range (post)",
+            r"$|c_{ij}|$ bound (pre)",
+            r"$|c_{ij}|$ bound (post)",
+        ],
+    )
+    ax_matrix.tick_params(length=0, pad=1.5)
+    ax_matrix.set_xticks(np.arange(-0.5, 4, 1), minor=True)
+    ax_matrix.set_yticks(np.arange(-0.5, 8, 1), minor=True)
+    ax_matrix.grid(which="minor", color="white", linewidth=1.0)
+    ax_matrix.tick_params(which="minor", bottom=False, left=False)
+    for spine in ax_matrix.spines.values():
+        spine.set_visible(True)
+        spine.set_color("white")
+        spine.set_linewidth(0.8)
+    ax_matrix.set_title("a  Registered shift specification", loc="left", fontweight="bold")
+
+    # (b) Early active-recovery effect.
+    ax_early = fig.add_subplot(grid[0, 1])
+    y = np.arange(4)
+    early = np.asarray([row["full_vs_passive_early_rmse_improvement_mean"] for row in ordered])
+    early_ci = np.asarray([row["full_vs_passive_early_rmse_improvement_ci95"] for row in ordered])
+    ax_early.errorbar(
+        early,
+        y,
+        xerr=np.vstack([early - early_ci[:, 0], early_ci[:, 1] - early]),
+        fmt="o",
+        color=BLUE,
+        ecolor=BLUE,
+        capsize=2.2,
+        markersize=4.0,
+        lw=1.05,
+    )
+    ax_early.axvline(0, color=BLACK, lw=0.7)
+    ax_early.set_yticks(y, context_labels)
+    ax_early.invert_yaxis()
+    ax_early.set_xlim(0, 0.0205)
+    ax_early.set_xlabel("Passive $-$ GAUGE RMSE")
+    ax_early.set_title("b  Early recovery", loc="left", fontweight="bold")
+    ax_early.grid(axis="x", color=LIGHT_GREY, lw=0.55)
+
+    # (c) Absolute terminal accuracy.
+    ax_terminal = fig.add_subplot(grid[1, 0])
+    terminal = np.asarray([row["full_final_rmse_mean"] for row in ordered])
+    terminal_ci = np.asarray([row["full_final_rmse_ci95"] for row in ordered])
+    ax_terminal.errorbar(
+        terminal,
+        y,
+        xerr=np.vstack([terminal - terminal_ci[:, 0], terminal_ci[:, 1] - terminal]),
+        fmt="D",
+        color=GREEN,
+        ecolor=GREEN,
+        capsize=2.2,
+        markersize=3.8,
+        lw=1.05,
+    )
+    ax_terminal.axvline(0.14, color=ORANGE, ls="--", lw=1.0, label="0.14 gate")
+    ax_terminal.set_yticks(y, context_labels)
+    ax_terminal.invert_yaxis()
+    ax_terminal.set_xlim(0.09, 0.142)
+    ax_terminal.set_xticks([0.10, 0.12, 0.14])
+    ax_terminal.set_xlabel("Terminal RMSE")
+    ax_terminal.set_title("c  Validated terminal accuracy", loc="left", fontweight="bold")
+    ax_terminal.grid(axis="x", color=LIGHT_GREY, lw=0.55)
+    ax_terminal.legend(frameon=False, loc="lower right")
+
+    # (d) Recovery-selector ablation averaged across contexts within seed.
+    methods = ["recovery_d_opt", "recovery_no_task", "recovery_lhs", "recovery_random"]
+    method_labels = ["D-opt", "No task", "LHS", "Random"]
+    scenario_effects: list[pd.DataFrame] = []
+    for scenario_dir in sorted((SELECTOR_ROOT / "scenarios").iterdir()):
+        curve = pd.read_csv(scenario_dir / "recovery_curve.csv")
+        early_window = curve.loc[curve["recovery_trial"].between(4, 9)]
+        means = early_window.groupby(["seed", "method"], as_index=False)["rolling_rmse"].mean()
+        pivot = means.pivot(index="seed", columns="method", values="rolling_rmse")
+        scenario_effects.append(
+            pd.DataFrame(
+                {method: pivot[method] - pivot["full"] for method in methods},
+                index=pivot.index,
+            )
+        )
+    paired = sum(scenario_effects[1:], scenario_effects[0].copy()) / len(scenario_effects)
+    rng = np.random.default_rng(61337)
+    selector_rows: list[dict[str, Any]] = []
+    for method, label in zip(methods, method_labels, strict=True):
+        values = paired[method].to_numpy(dtype=float)
+        samples = np.mean(rng.choice(values, size=(4000, len(values)), replace=True), axis=1)
+        selector_rows.append(
+            {
+                "method": method,
+                "label": label,
+                "mean_selector_minus_task_ivr_rmse": float(np.mean(values)),
+                "ci95": [float(np.quantile(samples, 0.025)), float(np.quantile(samples, 0.975))],
+                "task_ivr_win_rate": float(np.mean(values > 0.0)),
+                "paired_seeds": len(values),
+                "contexts_averaged_within_seed": len(scenario_effects),
+            }
+        )
+    PROVENANCE_OUT.mkdir(parents=True, exist_ok=True)
+    (PROVENANCE_OUT / "recovery_selector_effects.json").write_text(
+        json.dumps(selector_rows, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    selector_mean = np.asarray(
+        [row["mean_selector_minus_task_ivr_rmse"] for row in selector_rows], dtype=float
+    )
+    selector_ci = np.asarray([row["ci95"] for row in selector_rows], dtype=float)
+    selector_y = np.arange(len(methods))
+    ax_selector = fig.add_subplot(grid[1, 1])
+    ax_selector.errorbar(
+        selector_mean,
+        selector_y,
+        xerr=np.vstack([selector_mean - selector_ci[:, 0], selector_ci[:, 1] - selector_mean]),
+        fmt="s",
+        color=VERMILLION,
+        ecolor=VERMILLION,
+        capsize=2.2,
+        markersize=3.8,
+        lw=1.05,
+    )
+    ax_selector.axvline(0, color=BLACK, lw=0.7)
+    ax_selector.set_yticks(selector_y, method_labels)
+    ax_selector.invert_yaxis()
+    ax_selector.set_xlim(0, 0.026)
+    ax_selector.set_xlabel("Selector $-$ task IVR RMSE")
+    ax_selector.set_title("d  Recovery-selector ablation", loc="left", fontweight="bold")
+    ax_selector.grid(axis="x", color=LIGHT_GREY, lw=0.55)
+
+    finish(fig, "shift_recovery_results")
+
+
 def write_manifest() -> None:
-    sources = [CAPTURE_DIR / name for name in P5_CAPTURE_NAMES + P6_CAPTURE_NAMES]
-    sources.extend([P5_SUMMARY, P6_SUMMARY])
+    generator = Path(__file__).resolve()
+    sources = [CAPTURE_DIR / name for name in P6_CAPTURE_NAMES]
+    sources.append(P6_SUMMARY)
     sources.extend(sorted((SELECTOR_ROOT / "scenarios").glob("*/recovery_curve.csv")))
+    outputs = [
+        OUT / "shift_recovery_results.pdf",
+        OUT / "shift_recovery_results.png",
+    ]
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
+        "generator": {
+            "path": str(generator.relative_to(ROOT)),
+            "sha256": sha256(generator),
+        },
         "figures": {
-            "closed_loop_response": {
-                "purpose": "Closed-loop response geometry and paired calibration effects",
-                "display_seed": 5301,
-                "statistical_unit": "20 paired seeds per scenario",
-            },
             "shift_recovery_results": {
-                "purpose": "Held-out shift construction, response geometry, and recovery effects",
-                "display_seed": 10101,
+                "purpose": "Registered shift specification and recovery effects",
                 "statistical_unit": "144 paired seeds per shift in two disjoint blocks",
             },
         },
         "sources": [
             {"path": str(path.relative_to(ROOT)), "sha256": sha256(path)} for path in sources
         ],
+        "outputs": {str(path.relative_to(ROOT)): sha256(path) for path in outputs},
         "constraint": (
-            "Trajectory panels use registered capture overlays; effect panels use frozen "
-            "multi-seed summaries. No values are digitized from prior raster figures."
+            "The shift specification and effect panels use registered context records and "
+            "frozen multi-seed summaries. No value is digitized from a raster figure."
         ),
     }
     PROVENANCE_OUT.mkdir(parents=True, exist_ok=True)
@@ -601,8 +795,7 @@ def write_manifest() -> None:
 
 
 def main() -> None:
-    build_p5()
-    build_p6()
+    build_p6_story()
     write_manifest()
 
 

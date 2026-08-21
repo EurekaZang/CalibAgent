@@ -4,6 +4,7 @@
     "evidence/p1_real/baseline_fold_metrics.csv": "ec1e7cba1bcd6246e7c0d25e734c613b29c42a53247a74894f18dc9a2be6787d",
     "evidence/p1_real/baseline_metrics.csv": "cca6baff8464fd3a7d9a93586512fcc9afca519c286b14cb54ad8c15778b5aa8",
     "evidence/p3_main/paired_statistics.json": "25537ea2f64d2bca4b07282fcf91c9e9b5be6c5bd9e7ae10aad5646d751197c7",
+    "evidence/p5_main/summary.json": "988f702a064c1eda80fe579f5b69452270ffffec9a6d95eb2e4b86fb67b84b46",
     "evidence/p7_strong_confirmatory_v2/summary.json": "85590a56bef758ed8c2ad30300756c62ce3925eba18338d462b4d62042f6ca46",
     "evidence/task_distribution_mismatch/comparisons.csv": "4cc50b71928801087ffd09b5a68aced749ba1ca724e1e2de9f0bc2757168cc1a",
     "evidence/task_distribution_mismatch/task_ivr_mismatch_ratios.csv": "3da33e7167de3b80870dabab30697a1313e6c6ce868a3a76a1feda97fe7ad906",
@@ -17,10 +18,10 @@
     "P7 intervals are the registered intervals stored in summary.json."
   ],
   "outputs": {
-    "paper/figures/calibration_evidence.pdf": "da64095d9e8fdc4c34c17bb7a9f106a687e50547efa9db94a3f64ac0f819ef48",
-    "paper/figures/calibration_evidence.png": "b3e2fb9eb189c950b871aadf8bc156d393f8a2787e352c1151704f50c62e77b2",
-    "paper/figures/navigation_results.pdf": "fb839841da066deeb7d7628ca81286df6a117cc7bc84d63b9169dbeee92d5dd4",
-    "paper/figures/navigation_results.png": "dbcbbaa123ac8ba670f0b9c6214ca77094ba1e9601f7c46fb59b54cbf4371282"
+    "paper/figures/calibration_evidence.pdf": "a0ae7014162858cfd9d6660c20c4240e9639c6c1ffb51c1a9af555ca29c7f5b2",
+    "paper/figures/calibration_evidence.png": "14898f8fe6242403d6e941050185038eb85f92ebb3baad080c251349e057954e",
+    "paper/figures/navigation_results.pdf": "72cbf89af59cb83f7d0b7685116eca7884de001a6b18c8c698d59be17d9b251c",
+    "paper/figures/navigation_results.png": "f2e3655dc2d4dcce8ee0f9046bf6ee3f07656dc0d4a826bdf9f3236dfb7d63c6"
   },
   "schema_version": "1.0"
 }

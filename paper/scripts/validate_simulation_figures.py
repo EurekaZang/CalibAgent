@@ -3,7 +3,7 @@
 
 Direct scene PNGs must be declared by companion capture records, match their
 registered hashes and resolutions, come from declared experimental seeds, and
-be used only once.  Data-driven P5/P6 PDFs must trace to the registered capture
+be used only once. The data-driven recovery figure must trace to the registered
 records and frozen summaries listed in the scientific-figure manifest.
 """
 
@@ -81,11 +81,19 @@ def main() -> None:
         source_path = ROOT / source["path"]
         if sha256(source_path) != source["sha256"]:
             raise SystemExit(f"Scientific-figure source hash mismatch: {source['path']}")
+    generator = scientific["generator"]
+    generator_path = ROOT / generator["path"]
+    if sha256(generator_path) != generator["sha256"]:
+        raise SystemExit(f"Scientific-figure generator hash mismatch: {generator['path']}")
     for stem in scientific["figures"]:
         for suffix in (".pdf", ".png"):
             figure_path = ROOT / "paper" / "figures" / f"{stem}{suffix}"
             if not figure_path.is_file():
                 raise SystemExit(f"Missing data-driven simulation figure: {figure_path}")
+    for output_path, expected_hash in scientific["outputs"].items():
+        output = ROOT / output_path
+        if sha256(output) != expected_hash:
+            raise SystemExit(f"Scientific-figure output hash mismatch: {output_path}")
 
     entries: list[dict[str, object]] = []
     seen_hashes: dict[str, str] = {}
