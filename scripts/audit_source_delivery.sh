@@ -39,6 +39,9 @@ required_paths=(
   "paper/figures/uncalib.mp4"
   "paper/figures/real_dclp_long_exposure.png"
   "paper/scripts/build_real_dclp_long_exposure.py"
+  "paper/scripts/export_real_dclp_source_frames.py"
+  "paper/figures/real_dclp_source_frames/README.md"
+  "paper/figures/real_dclp_source_frames/manifest.json"
   "evidence/paper_figure_provenance/real_dclp_long_exposure.json"
   "docs/assets/readme/p7_slalom_seed_8006.png"
   "docs/assets/readme/isaac_sim/p5_tier_a_affine_experiment_card.png"
@@ -62,6 +65,14 @@ for path in "${required_paths[@]}"; do
     exit 1
   fi
 done
+
+source_frame_count="$(
+  git ls-files 'paper/figures/real_dclp_source_frames/*.png' | wc -l | tr -d ' '
+)"
+if [[ "${source_frame_count}" != "22" ]]; then
+  echo "FAIL: expected 22 tracked DCLP source frames, found ${source_frame_count}" >&2
+  exit 1
+fi
 
 status="$(git status --porcelain --untracked-files=all)"
 if [[ -n "${status}" ]]; then
