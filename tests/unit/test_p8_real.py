@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from calibagent.p8.analysis import analyze
-from calibagent.p8.backend import _navigation_goal_reached
+from calibagent.p8.backend import _navigation_goal_reached, navigation_quality_reasons
 from calibagent.p8.config import load_config, validate_config
 from calibagent.p8.recording import export_jsonl
 from calibagent.p8.runner import P8Runtime
@@ -150,6 +150,37 @@ def test_navigation_goal_requires_explicit_reached_and_geometric_arrival() -> No
     assert not _navigation_goal_reached("NAVIGATING", near, goal, 0.25)
     assert not _navigation_goal_reached("REACHED", far, goal, 0.25)
     assert _navigation_goal_reached("REACHED", near, goal, 0.25)
+
+
+def test_navigation_quality_uses_delivery_and_active_action_freshness() -> None:
+    metrics = {
+        "max_scan_age_ms": 99.0,
+        "max_reference_source_age_ms": 101.0,
+        "max_reference_receive_gap_ms": 87.0,
+        "max_scan_receive_gap_ms": 68.0,
+        "max_active_action_receive_age_ms": 40.0,
+        "max_planned_action_receive_gap_ms": 76.0,
+        "max_active_action_receive_gap_ms": 76.0,
+        "planned_action_rate_hz": 22.0,
+        "reference_rate_hz": 20.0,
+        "scan_rate_hz": 20.0,
+    }
+    quality = {
+        "max_scan_age_ms": 120.0,
+        "max_reference_age_ms": 120.0,
+        "max_reference_gap_ms": 120.0,
+        "max_scan_gap_ms": 120.0,
+        "max_planned_action_receive_age_ms": 80.0,
+        "max_planned_action_gap_ms": 120.0,
+        "min_planned_action_rate_hz": 20.0,
+        "min_reference_rate_hz": 10.0,
+        "min_scan_rate_hz": 15.0,
+    }
+    assert navigation_quality_reasons(metrics, quality) == []
+    metrics["max_reference_receive_gap_ms"] = 121.0
+    assert navigation_quality_reasons(metrics, quality) == [
+        "reference receive gap exceeded data-quality threshold"
+    ]
 
 
 def test_p8_nav_retries_inconsistent_false_success_episode(tmp_path: Path) -> None:

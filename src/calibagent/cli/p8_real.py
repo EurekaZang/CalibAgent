@@ -8,6 +8,7 @@ from pathlib import Path
 from calibagent.p8.analysis import analyze
 from calibagent.p8.config import load_config, validate_config
 from calibagent.p8.recording import export_jsonl
+from calibagent.p8.reassess import reassess_navigation_run
 from calibagent.p8.runner import P8Runtime
 
 
@@ -78,6 +79,12 @@ def build_parser():  # type: () -> argparse.ArgumentParser
     export.add_argument("--run-dir", required=True)
     analysis = sub.add_parser("analyze", help="Generate paired-block NAV/SHIFT analysis")
     analysis.add_argument("--run-dir", required=True)
+    reassess = sub.add_parser(
+        "reassess-nav", help="Recompute NAV freshness from trace and rosbag evidence"
+    )
+    reassess.add_argument("--config", required=True)
+    reassess.add_argument("--run-dir", required=True)
+    reassess.add_argument("--apply", action="store_true")
     return parser
 
 
@@ -89,6 +96,12 @@ def main(argv=None):  # type: (Optional[Sequence[str]]) -> int
         result = export_jsonl(Path(args.run_dir).expanduser().resolve())
     elif args.command == "analyze":
         result = analyze(Path(args.run_dir).expanduser().resolve())
+    elif args.command == "reassess-nav":
+        config = load_config(Path(args.config))
+        validate_config(config)
+        result = reassess_navigation_run(
+            Path(args.run_dir), config.payload.get("quality", {}), apply=args.apply
+        )
     elif args.command == "io-check":
         config = load_config(Path(args.config))
         validate_config(config)

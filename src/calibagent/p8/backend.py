@@ -14,6 +14,9 @@ import time
 import numpy as np
 
 
+NAVIGATION_FRESHNESS_RULE_VERSION = "p8_navigation_freshness_v2"
+
+
 def _stamp_sec(stamp):  # type: (Any) -> float
     return float(stamp.sec) + float(stamp.nanosec) * 1e-9
 
@@ -38,6 +41,66 @@ def _navigation_goal_reached(status, reference, goal, radius):
         float(goal["y"]) - float(reference["y"]),
     )
     return distance <= float(radius)
+
+
+def _max_gap_ms(receive_times):  # type: (Sequence[float]) -> float
+    if len(receive_times) < 2:
+        return float("inf")
+    return max(
+        (right - left) * 1000.0
+        for left, right in zip(receive_times, receive_times[1:])
+    )
+
+
+def _max_active_hold_gap_ms(receive_times, active_flags):
+    # type: (Sequence[float], Sequence[bool]) -> float
+    gaps = [
+        (right - left) * 1000.0
+        for left, right, active in zip(
+            receive_times, receive_times[1:], active_flags[:-1]
+        )
+        if active
+    ]
+    return max(gaps) if gaps else 0.0
+
+
+def navigation_quality_reasons(metrics, quality):
+    # type: (Dict[str, float], Dict[str, Any]) -> List[str]
+    """Evaluate actual stream delivery and active scan-to-action freshness."""
+    reasons = []
+    if metrics["max_scan_age_ms"] > float(quality.get("max_scan_age_ms", 80.0)):
+        reasons.append("scan-to-action age exceeded data-quality threshold")
+    if metrics["max_reference_source_age_ms"] > float(
+        quality.get("max_reference_age_ms", 80.0)
+    ):
+        reasons.append("reference source age exceeded data-quality threshold")
+    if metrics["max_reference_receive_gap_ms"] > float(
+        quality.get("max_reference_gap_ms", 120.0)
+    ):
+        reasons.append("reference receive gap exceeded data-quality threshold")
+    if metrics["max_scan_receive_gap_ms"] > float(
+        quality.get("max_scan_gap_ms", 120.0)
+    ):
+        reasons.append("scan receive gap exceeded data-quality threshold")
+    if metrics["max_active_action_receive_age_ms"] > float(
+        quality.get("max_planned_action_receive_age_ms", 80.0)
+    ):
+        reasons.append("active planned-action age exceeded data-quality threshold")
+    if metrics["max_active_action_receive_gap_ms"] > float(
+        quality.get("max_planned_action_gap_ms", 120.0)
+    ):
+        reasons.append("active planned-action receive gap exceeded data-quality threshold")
+    if metrics["planned_action_rate_hz"] < float(
+        quality.get("min_planned_action_rate_hz", 20.0)
+    ):
+        reasons.append("planned-action rate below data-quality threshold")
+    if metrics["reference_rate_hz"] < float(
+        quality.get("min_reference_rate_hz", 10.0)
+    ):
+        reasons.append("reference rate below data-quality threshold")
+    if metrics["scan_rate_hz"] < float(quality.get("min_scan_rate_hz", 15.0)):
+        reasons.append("scan rate below data-quality threshold")
+    return reasons
 
 
 def estimate_velocity(samples):  # type: (List[Dict[str, float]]) -> Tuple[np.ndarray, np.ndarray]
@@ -171,6 +234,7 @@ class FakeBackend:
             "route_reached": True,
             "data_quality_valid": True,
             "data_quality_reason": "",
+            "freshness_rule_version": NAVIGATION_FRESHNESS_RULE_VERSION,
             "collision": False,
             "duration_s": min(1.0, timeout_s),
             "path_length_m": path,
@@ -182,6 +246,14 @@ class FakeBackend:
             "max_scan_age_ms": 0.0,
             "max_reference_age_ms": 0.0,
             "max_sent_action_age_ms": 0.0,
+            "max_reference_source_age_ms": 0.0,
+            "max_reference_receive_gap_ms": 0.0,
+            "max_scan_receive_gap_ms": 0.0,
+            "max_planned_action_receive_gap_ms": 0.0,
+            "max_active_action_receive_gap_ms": 0.0,
+            "max_active_action_receive_age_ms": 0.0,
+            "reference_rate_hz": 50.0,
+            "scan_rate_hz": 50.0,
         }
 
     def io_check(self, duration_s):  # type: (float) -> Dict[str, Any]
@@ -238,6 +310,7 @@ class Go2RosBackend:
         self.times = {"reference": [], "scan": [], "planned_action": []}  # type: Dict[str, List[float]]
         self.ages = {"reference": [], "scan": []}  # type: Dict[str, List[float]]
         self.scan_valid_beams = []  # type: List[int]
+        self.planned_active = []  # type: List[bool]
         self.request_id = 0
         if not rclpy.ok():
             rclpy.init()
@@ -329,6 +402,9 @@ class Go2RosBackend:
                     outer.latest_planned = row
                     outer.counts["planned_action"] += 1
                     outer.times["planned_action"].append(receive)
+                    outer.planned_active.append(
+                        max(abs(value) for value in row["command"]) > 1e-9
+                    )
 
             def _status(self, message):
                 with outer.lock:
@@ -651,14 +727,20 @@ class Go2RosBackend:
             )
         )
         start = time.monotonic()
-        self.snapshot()["reference"]
+        with self.lock:
+            freshness_baseline = dict(self.counts)
+            initial_planned = (
+                dict(self.latest_planned) if self.latest_planned else None
+            )
         previous_position = None  # type: Optional[np.ndarray]
         path_length = 0.0
-        last_sequence = -1
+        # Do not reuse an action published before this route began.
+        last_sequence = int(initial_planned["sequence"]) if initial_planned else -1
         ticks = 0
         scan_ages = []  # type: List[float]
         reference_ages = []  # type: List[float]
         action_ages = []  # type: List[float]
+        active_action_ages = []  # type: List[float]
         last_status = None  # type: Optional[str]
         terminal = "timeout"
         success = False
@@ -698,6 +780,8 @@ class Go2RosBackend:
                     scan_ages.append(scan_age)
                     reference_ages.append(reference_age)
                     action_ages.append(action_age)
+                    if float(np.max(np.abs(sent))) > 1e-9:
+                        active_action_ages.append(action_age)
                     self.trace.write(
                         dict(
                             identity,
@@ -791,24 +875,59 @@ class Go2RosBackend:
                 float(goal["x"]) - float(final_ref["x"]), float(goal["y"]) - float(final_ref["y"])
             )
         duration_s = time.monotonic() - start
+        with self.lock:
+            final_counts = dict(self.counts)
+            reference_source_ages = list(
+                self.ages["reference"][
+                    freshness_baseline["reference"] : final_counts["reference"]
+                ]
+            )
+            reference_receives = list(
+                self.times["reference"][
+                    freshness_baseline["reference"] : final_counts["reference"]
+                ]
+            )
+            scan_receives = list(
+                self.times["scan"][freshness_baseline["scan"] : final_counts["scan"]]
+            )
+            planned_receives = list(
+                self.times["planned_action"][
+                    freshness_baseline["planned_action"] : final_counts["planned_action"]
+                ]
+            )
+            planned_active = list(
+                self.planned_active[
+                    freshness_baseline["planned_action"] : final_counts["planned_action"]
+                ]
+            )
         max_scan_age = max(scan_ages) if scan_ages else float("inf")
         max_reference_age = max(reference_ages) if reference_ages else float("inf")
         max_action_age = max(action_ages) if action_ages else float("inf")
-        planned_action_rate = ticks / max(duration_s, 1e-9)
+        max_active_action_age = max(active_action_ages) if active_action_ages else 0.0
+        max_reference_source_age = (
+            max(reference_source_ages) if reference_source_ages else float("inf")
+        )
+        max_reference_receive_gap = _max_gap_ms(reference_receives)
+        max_scan_receive_gap = _max_gap_ms(scan_receives)
+        max_planned_action_receive_gap = _max_gap_ms(planned_receives)
+        max_active_action_receive_gap = _max_active_hold_gap_ms(
+            planned_receives, planned_active
+        )
+        planned_action_rate = len(planned_receives) / max(duration_s, 1e-9)
         quality = self.config.get("quality", {})
-        quality_reasons = []
-        if max_scan_age > float(quality.get("max_scan_age_ms", 80.0)):
-            quality_reasons.append("scan age exceeded data-quality threshold")
-        if max_reference_age > float(quality.get("max_reference_age_ms", 80.0)):
-            quality_reasons.append("reference age exceeded data-quality threshold")
-        if max_action_age > float(
-            quality.get("max_planned_action_receive_age_ms", 80.0)
-        ):
-            quality_reasons.append("planned-action age exceeded data-quality threshold")
-        if planned_action_rate < float(
-            quality.get("min_planned_action_rate_hz", 20.0)
-        ):
-            quality_reasons.append("planned-action rate below data-quality threshold")
+        metrics = {
+            "max_scan_age_ms": max_scan_age,
+            "max_reference_source_age_ms": max_reference_source_age,
+            "max_reference_receive_gap_ms": max_reference_receive_gap,
+            "max_scan_receive_gap_ms": max_scan_receive_gap,
+            "max_active_action_receive_age_ms": max_active_action_age,
+            "max_planned_action_receive_gap_ms": max_planned_action_receive_gap,
+            "max_active_action_receive_gap_ms": max_active_action_receive_gap,
+            "planned_action_rate_hz": planned_action_rate,
+            "reference_rate_hz": len(reference_receives) / max(duration_s, 1e-9),
+            "scan_rate_hz": len(scan_receives) / max(duration_s, 1e-9),
+        }
+        quality_reasons = navigation_quality_reasons(metrics, quality)
         data_quality_valid = not quality_reasons
         route_reached = success and not collision
         overall_success = route_reached and data_quality_valid
@@ -827,6 +946,7 @@ class Go2RosBackend:
             "route_reached": route_reached,
             "data_quality_valid": data_quality_valid,
             "data_quality_reason": "; ".join(quality_reasons),
+            "freshness_rule_version": NAVIGATION_FRESHNESS_RULE_VERSION,
             "collision": collision,
             "duration_s": duration_s,
             "path_length_m": path_length,
@@ -838,6 +958,7 @@ class Go2RosBackend:
             "max_scan_age_ms": max_scan_age,
             "max_reference_age_ms": max_reference_age,
             "max_sent_action_age_ms": max_action_age,
+            **metrics,
         }
 
     def io_check(self, duration_s):  # type: (float) -> Dict[str, Any]

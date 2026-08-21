@@ -8,7 +8,7 @@ export PYTHONPATH="${ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 export P8_OUTPUT_ROOT="${P8_OUTPUT_ROOT:-/home/unitree/lly/p8_real}"
 
 usage() {
-  echo "Usage: $0 {validate-nav|validate-shift|io-check|nav|shift|resume-nav|resume-shift|export|analyze|collision|clear-collision|fake-smoke} ..."
+  echo "Usage: $0 {validate-nav|validate-shift|io-check|nav|shift|resume-nav|resume-shift|reassess-nav|export|analyze|collision|clear-collision|fake-smoke} ..."
 }
 
 ensure_p8_stack() {
@@ -40,6 +40,7 @@ case "${cmd}" in
   shift) run_id="${1:?run-id required}"; shift; ensure_p8_stack; exec "${PYTHON_BIN}" -m calibagent.cli.p8_real shift --config "${ROOT}/configs/p8/shift.yaml" --run-id "${run_id}" --output-root "${P8_OUTPUT_ROOT}" --backend ros --arm "$@" ;;
   resume-nav) run_id="${1:?run-id required}"; shift; ensure_p8_stack; exec "${PYTHON_BIN}" -m calibagent.cli.p8_real nav --config "${ROOT}/configs/p8/nav.yaml" --run-id "${run_id}" --output-root "${P8_OUTPUT_ROOT}" --backend ros --arm --resume "$@" ;;
   resume-shift) run_id="${1:?run-id required}"; shift; ensure_p8_stack; exec "${PYTHON_BIN}" -m calibagent.cli.p8_real shift --config "${ROOT}/configs/p8/shift.yaml" --run-id "${run_id}" --output-root "${P8_OUTPUT_ROOT}" --backend ros --arm --resume "$@" ;;
+  reassess-nav) run_dir="${1:?run-dir required}"; shift; set +u; source /opt/ros/foxy/setup.bash; set -u; exec "${PYTHON_BIN}" -m calibagent.cli.p8_real reassess-nav --config "${ROOT}/configs/p8/nav.yaml" --run-dir "${run_dir}" "$@" ;;
   export) exec "${PYTHON_BIN}" -m calibagent.cli.p8_real export --run-dir "${1:?run-dir required}" ;;
   analyze) exec "${PYTHON_BIN}" -m calibagent.cli.p8_real analyze --run-dir "${1:?run-dir required}" ;;
   collision) exec ros2 topic pub --once /p8/collision std_msgs/msg/Bool '{data: true}' ;;
