@@ -857,7 +857,7 @@ class P8Runtime:
                         adapter_matrix=shift_matrix,
                         recovery_index=index + 1,
                     )
-                if partial or self._limit_reached():
+                if partial:
                     continue
                 if shift_id != "R1_command_gain_coupling":
                     self._pause(f"Restore nominal physical context after {sequence_id}.")
@@ -875,7 +875,7 @@ class P8Runtime:
                         model,
                         False,
                     )
-                if partial or self._limit_reached():
+                if partial:
                     continue
                 final_posterior = self.run_dir / "posterior" / (sequence_id + "_final.npz")
                 model.save(final_posterior)
