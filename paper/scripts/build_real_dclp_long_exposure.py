@@ -31,7 +31,7 @@ MANIFEST = ROOT / "evidence" / "paper_figure_provenance" / "real_dclp_long_expos
 
 BACKGROUND_FRAME_COUNT = 31
 EXPOSURE_TIMESTAMPS_S = tuple(np.linspace(0.8, 9.2, 11).round(3))
-EXPOSURE_BRIGHTNESS = tuple(np.linspace(1.0, 0.72, len(EXPOSURE_TIMESTAMPS_S)).round(3))
+EXPOSURE_BRIGHTNESS = tuple(np.linspace(1.0, 0.50, len(EXPOSURE_TIMESTAMPS_S)).round(3))
 DIFFERENCE_THRESHOLD = 15.0
 MIN_COMPONENT_AREA_PX = 180
 MASK_DILATION_ITERATIONS = 2

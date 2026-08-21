@@ -22,16 +22,16 @@
   ],
   "exposure_brightness_factors": [
     1.0,
-    0.972,
-    0.944,
-    0.916,
-    0.888,
-    0.86,
-    0.832,
-    0.804,
-    0.776,
-    0.748,
-    0.72
+    0.95,
+    0.9,
+    0.85,
+    0.8,
+    0.75,
+    0.7,
+    0.65,
+    0.6,
+    0.55,
+    0.5
   ],
   "algorithm": {
     "background_frame_count": 31,
@@ -133,7 +133,7 @@
   },
   "output": {
     "path": "paper/figures/real_dclp_long_exposure.png",
-    "sha256": "fb1762ff86b62a8788b3aabeadcd06270753020b51f4723d538ca81b969f557d",
+    "sha256": "48eeee207f05393d4107d95b77999bd34572f6293a07a3f237d5208885f047e9",
     "width": 3132,
     "height": 506
   }

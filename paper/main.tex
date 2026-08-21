@@ -324,10 +324,8 @@ margins are a 1.25 capped-time ratio and $-0.05$ success difference.
 For physical navigation, a Unitree Go2 runs the same fixed DRL-DCLP local
 planner \cite{zhang2025drldclp} with either direct velocity commands or the
 frozen \method\ inverse between planner and robot. A fixed-camera obstacle
-layout is retained as one full-run video per condition. We visualize the pair
-by compositing the robot at identical elapsed times over independently
-estimated temporal-median backgrounds. This comparison is qualitative and is
-excluded from all statistical endpoints.
+layout is recorded as one full run per condition. The comparison is qualitative
+and is excluded from all statistical endpoints.
 
 \begin{figure*}[t]
   \centering
@@ -510,14 +508,9 @@ this simulator pipeline.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=0.99\textwidth]{figures/real_dclp_long_exposure.png}
-  \caption{Long-exposure visualization of a matched-layout real-Go2 run with
-  the fixed DRL-DCLP planner. Left: direct velocity commands. Right: DRL-DCLP
-  followed by \method\ command compensation. Each panel composites the robot
-  at the same 11 elapsed times from 0.8 to 9.2~s over an independently
-  estimated temporal-median background. Pose brightness decreases
-  monotonically with elapsed time; opacity is fixed and both panels use the
-  same spatial crop. No path, annotation, or geometry is drawn; the images
-  provide qualitative motion context rather than a pixel-derived endpoint.}
+  \caption{Long-exposure real-Go2 navigation comparison in the same obstacle
+  layout with a fixed DRL-DCLP planner. Left: direct velocity commands. Right:
+  DRL-DCLP followed by \method\ command compensation.}
   \label{fig:realnav}
 \end{figure*}
 
