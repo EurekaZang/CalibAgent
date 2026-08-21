@@ -85,6 +85,34 @@ def test_p8_nav_max_units_stops_between_formal_routes(tmp_path: Path) -> None:
     assert [row["map_id"] for row in episodes] == ["real_offset_slalom"]
 
 
+def test_p8_nav_route_phase_runs_only_selected_route(tmp_path: Path) -> None:
+    runtime = P8Runtime(
+        load_config(ROOT / "configs/p8/nav.yaml"),
+        "nav_route_b_phase",
+        tmp_path,
+        backend_name="fake",
+        auto_continue=True,
+        max_units=9,
+    )
+    try:
+        result = runtime.run_nav(
+            blocks=["NAV_BLOCK_01"], methods=["B0_raw"], routes=["B"]
+        )
+    finally:
+        runtime.close()
+    assert result["completed_trials"] == 8
+    assert result["completed_episodes"] == 1
+    episodes = list(
+        csv.DictReader(
+            (tmp_path / "nav_route_b_phase" / "navigation_episodes.csv").open(
+                encoding="utf-8"
+            )
+        )
+    )
+    assert [row["map_id"] for row in episodes] == ["real_weighted_arc"]
+    assert episodes[0]["route_order"] == "B"
+
+
 def test_navigation_goal_requires_explicit_reached_and_geometric_arrival() -> None:
     goal = {"x": 2.0, "y": 3.0}
     near = {"x": 2.1, "y": 3.1}

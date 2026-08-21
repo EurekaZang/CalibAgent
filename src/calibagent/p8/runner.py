@@ -470,13 +470,18 @@ class P8Runtime:
         pool_index, diagnostics = self.selector.select(model, history, kind)
         return self.pool.ids[pool_index], self.pool.commands[pool_index], kind, diagnostics
 
-    def run_nav(self, blocks=None, methods=None):  # type: (Optional[Sequence[str]], Optional[Sequence[str]]) -> Dict[str, Any]
+    def run_nav(self, blocks=None, methods=None, routes=None):
+        # type: (Optional[Sequence[str]], Optional[Sequence[str]], Optional[Sequence[str]]) -> Dict[str, Any]
         if self.config.payload["protocol"] != "nav":
             raise ValueError("NAV runner requires nav config")
         validate_config(self.config)
         schedule = read_csv(self.config.files["nav_schedule"])
         selected_blocks = set(blocks or [])
         selected_methods = set(methods or NAV_METHODS)
+        selected_routes = {str(value).upper() for value in (routes or ("A", "B"))}
+        invalid_routes = selected_routes.difference(("A", "B"))
+        if invalid_routes:
+            raise ValueError("unknown NAV route letters: {}".format(sorted(invalid_routes)))
         schedule = [
             row
             for row in schedule
@@ -545,7 +550,19 @@ class P8Runtime:
                     )
                 if self._limit_reached():
                     continue
-                for letter in schedule_row["route_order"]:
+                execution_route_order = "".join(
+                    letter for letter in schedule_row["route_order"] if letter in selected_routes
+                )
+                self.recorder.trace.write(
+                    dict(
+                        base,
+                        event="route_phase_selection",
+                        scheduled_route_order=schedule_row["route_order"],
+                        execution_route_order=execution_route_order,
+                        timestamp=time.time(),
+                    )
+                )
+                for letter in execution_route_order:
                     if self._limit_reached():
                         break
                     map_id = map_by_letter[letter]
@@ -580,7 +597,7 @@ class P8Runtime:
                     )
                     row = dict(
                         identity,
-                        route_order=schedule_row["route_order"],
+                        route_order=execution_route_order,
                         posterior_path=str(final_posterior),
                         bag_path=bag.path,
                         created_at=_utc(),

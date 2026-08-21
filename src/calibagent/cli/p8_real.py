@@ -54,6 +54,11 @@ def build_parser():  # type: () -> argparse.ArgumentParser
     validate.add_argument("--config", required=True)
     nav = sub.add_parser("nav", help="Run or resume P8-NAV")
     _add_run_arguments(nav)
+    nav.add_argument(
+        "--routes",
+        default="all",
+        help="Run only route letters A and/or B; e.g. --routes A for route-phase execution",
+    )
     shift = sub.add_parser("shift", help="Run or resume P8-SHIFT")
     _add_run_arguments(shift)
     shift.add_argument("--shifts", default="all")
@@ -103,7 +108,11 @@ def main(argv=None):  # type: (Optional[Sequence[str]]) -> int
         runtime = _runtime(args)
         try:
             if args.command == "nav":
-                result = runtime.run_nav(blocks=_split(args.blocks), methods=_split(args.methods))
+                result = runtime.run_nav(
+                    blocks=_split(args.blocks),
+                    methods=_split(args.methods),
+                    routes=_split(args.routes),
+                )
             else:
                 result = runtime.run_shift(
                     shifts=_split(args.shifts),
