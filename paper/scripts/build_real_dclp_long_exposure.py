@@ -4,9 +4,10 @@
 The output contains no drawn trajectory, recoloring, or geometric annotation.
 For each run, a temporal-median background is estimated from uniformly sampled
 frames.  Robot appearances at matched elapsed times are then composited where
-they differ from that background.  Only brightness encodes time: later poses
-are darker, while the foreground-mask opacity is time invariant.  The direct-
-command run is placed on the left and the GAUGE-compensated run on the right.
+they differ from that background.  Source-frame RGB values are unchanged;
+only foreground alpha encodes time, with later poses rendered more opaque.
+The direct-command run is placed on the left and the GAUGE-compensated run on
+the right.
 """
 
 from __future__ import annotations
@@ -31,7 +32,7 @@ MANIFEST = ROOT / "evidence" / "paper_figure_provenance" / "real_dclp_long_expos
 
 BACKGROUND_FRAME_COUNT = 31
 EXPOSURE_TIMESTAMPS_S = tuple(np.linspace(0.8, 9.2, 11).round(3))
-EXPOSURE_BRIGHTNESS = tuple(np.linspace(1.0, 0.50, len(EXPOSURE_TIMESTAMPS_S)).round(3))
+EXPOSURE_OPACITIES = tuple(np.linspace(0.12, 1.0, len(EXPOSURE_TIMESTAMPS_S)).round(3))
 DIFFERENCE_THRESHOLD = 15.0
 MIN_COMPONENT_AREA_PX = 180
 MASK_DILATION_ITERATIONS = 2
@@ -151,17 +152,16 @@ def build_panel(
 ) -> tuple[np.ndarray, list[float]]:
     background, background_timestamps = temporal_background(path, duration_s, target_height)
     canvas = background.astype(np.float32)
-    for timestamp_s, brightness in zip(
+    for timestamp_s, opacity in zip(
         EXPOSURE_TIMESTAMPS_S,
-        EXPOSURE_BRIGHTNESS,
+        EXPOSURE_OPACITIES,
         strict=True,
     ):
         if timestamp_s >= duration_s:
             raise ValueError(f"exposure timestamp {timestamp_s} exceeds {path.name}")
         frame = center_crop_height(decode_frame(path, float(timestamp_s)), target_height)
-        mask = foreground_mask(frame, background)[..., None]
-        darkened_frame = frame.astype(np.float32) * float(brightness)
-        canvas = darkened_frame * mask + canvas * (1.0 - mask)
+        alpha = foreground_mask(frame, background)[..., None] * float(opacity)
+        canvas = frame.astype(np.float32) * alpha + canvas * (1.0 - alpha)
     return np.clip(canvas, 0, 255).astype(np.uint8), background_timestamps
 
 
@@ -220,7 +220,10 @@ def build() -> dict[str, object]:
         ),
         "panel_order": ["direct_command", "gauge"],
         "exposure_timestamps_s": [float(value) for value in EXPOSURE_TIMESTAMPS_S],
-        "exposure_brightness_factors": [float(value) for value in EXPOSURE_BRIGHTNESS],
+        "exposure_opacities": [float(value) for value in EXPOSURE_OPACITIES],
+        "exposure_transparencies": [
+            round(1.0 - float(value), 3) for value in EXPOSURE_OPACITIES
+        ],
         "algorithm": {
             "background_frame_count": BACKGROUND_FRAME_COUNT,
             "difference_threshold_rgb_rms": DIFFERENCE_THRESHOLD,
@@ -228,7 +231,8 @@ def build() -> dict[str, object]:
             "mask_dilation_iterations": MASK_DILATION_ITERATIONS,
             "mask_feather_sigma_px": MASK_FEATHER_SIGMA_PX,
             "time_encoding": (
-                "brightness decreases linearly with elapsed time; foreground-mask opacity is fixed"
+                "only foreground alpha changes with elapsed time; opacity increases and "
+                "transparency decreases, while source-frame RGB is unchanged"
             ),
             "common_center_crop_height_px": target_height,
             "common_horizontal_crop_px": [PANEL_CROP_LEFT_PX, PANEL_CROP_RIGHT_PX],
